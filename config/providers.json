@@ -1,0 +1,53 @@
+{
+  "sentinel-2-l2a": {
+    "family": "optical",
+    "resolution_m": 10,
+    "access": "no_login_preferred",
+    "providers": ["earth-search", "planetary-computer", "copernicus-cdse"],
+    "bands": {"blue": "B02", "green": "B03", "red": "B04", "nir": "B08", "swir1": "B11", "scl": "SCL"}
+  },
+  "sentinel-1-grd": {
+    "family": "radar",
+    "resolution_m": 10,
+    "access": "provider_dependent",
+    "providers": ["copernicus-cdse", "earth-search"],
+    "bands": {"vv": "VV", "vh": "VH"}
+  },
+  "landsat-c2-l2": {
+    "family": "optical_thermal",
+    "resolution_m": 30,
+    "access": "no_login_preferred",
+    "providers": ["usgs", "earth-search", "planetary-computer"],
+    "bands": {"blue": "SR_B2", "green": "SR_B3", "red": "SR_B4", "nir": "SR_B5", "swir1": "SR_B6", "surface_temperature": "ST_B10", "qa": "QA_PIXEL"}
+  },
+  "hls": {
+    "family": "harmonized_optical",
+    "resolution_m": 30,
+    "access": "free_login_may_be_required",
+    "providers": ["nasa-cmr-stac"]
+  },
+  "copernicus-dem": {
+    "family": "terrain",
+    "resolution_m": 30,
+    "access": "provider_dependent",
+    "providers": ["copernicus-cdse", "planetary-computer"]
+  },
+  "srtm": {
+    "family": "terrain",
+    "resolution_m": 30,
+    "access": "free_login_may_be_required",
+    "providers": ["nasa-earthdata", "planetary-computer"]
+  },
+  "modis": {
+    "family": "time_series",
+    "resolution_m": 250,
+    "access": "free_login_may_be_required",
+    "providers": ["nasa-cmr-stac"]
+  },
+  "ecostress": {
+    "family": "thermal",
+    "resolution_m": 70,
+    "access": "free_login_required",
+    "providers": ["nasa-cmr"]
+  }
+}
