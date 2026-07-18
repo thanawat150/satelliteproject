@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "default_intent": "auto_discovery",
+  "rules": [
+    {
+      "intent": "latest_basemap",
+      "keywords": ["ล่าสุด", "ภาพล่าสุด", "พื้นหลัง", "basemap", "current view", "แผนที่"],
+      "primary": "sentinel-2-l2a",
+      "fallbacks": ["sentinel-1-grd", "landsat-c2-l2"],
+      "outputs": ["rgb", "preview"],
+      "lookback_days": 365
+    },
+    {
+      "intent": "vegetation_health",
+      "keywords": ["สมบูรณ์", "พืช", "ต้นไม้", "ป่า", "ndvi", "ความเขียว", "สุขภาพพืช", "vegetation"],
+      "primary": "sentinel-2-l2a",
+      "fallbacks": ["hls", "landsat-c2-l2"],
+      "outputs": ["rgb", "ndvi", "ndmi", "preview"],
+      "lookback_days": 365
+    },
+    {
+      "intent": "forest_change",
+      "keywords": ["บุกรุก", "ถาง", "ป่าลด", "เปลี่ยนแปลง", "ก่อนหลัง", "before after", "forest loss", "change"],
+      "primary": "sentinel-2-l2a",
+      "secondary": "sentinel-1-grd",
+      "fallbacks": ["landsat-c2-l2", "hls"],
+      "outputs": ["before_rgb", "after_rgb", "ndvi_change", "change_preview"],
+      "selection_mode": "before_after"
+    },
+    {
+      "intent": "flood_water",
+      "keywords": ["น้ำท่วม", "น้ำขัง", "น้ำ", "ชื้น", "ความชื้น", "flood", "water", "wetness"],
+      "primary": "sentinel-1-grd",
+      "secondary": "sentinel-2-l2a",
+      "fallbacks": ["landsat-c2-l2"],
+      "outputs": ["radar_water", "ndwi", "preview"],
+      "lookback_days": 180
+    },
+    {
+      "intent": "surface_temperature",
+      "keywords": ["อุณหภูมิ", "ความร้อน", "เกาะความร้อน", "temperature", "thermal", "heat"],
+      "primary": "landsat-c2-l2",
+      "fallbacks": ["ecostress"],
+      "outputs": ["surface_temperature", "temperature_preview"],
+      "lookback_days": 365
+    },
+    {
+      "intent": "historical_trend",
+      "keywords": ["ย้อนหลัง", "หลายปี", "แนวโน้ม", "อดีต", "historical", "trend", "time series"],
+      "primary": "landsat-c2-l2",
+      "fallbacks": ["hls", "modis"],
+      "outputs": ["time_series", "summary_csv"],
+      "selection_mode": "time_series"
+    },
+    {
+      "intent": "terrain",
+      "keywords": ["ความสูง", "ระดับ", "ลาดชัน", "ภูมิประเทศ", "elevation", "slope", "dem", "terrain"],
+      "primary": "copernicus-dem",
+      "fallbacks": ["srtm"],
+      "outputs": ["dem", "slope", "hillshade", "preview"]
+    }
+  ],
+  "auto_discovery": {
+    "sources": ["sentinel-2-l2a", "sentinel-1-grd", "copernicus-dem"],
+    "outputs": ["rgb", "ndvi", "radar_preview", "terrain_summary"],
+    "max_download_gb": 2
+  }
+}
