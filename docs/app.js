@@ -67,7 +67,7 @@ function bindUI(){
   document.getElementById('map-sat-visible')?.addEventListener('change',e=>{mapSatelliteVisible=e.target.checked;updateMapSatelliteOverlay(selected)});
   document.getElementById('map-sat-opacity')?.addEventListener('input',e=>{mapSatelliteOpacity=Number(e.target.value)/100;Object.values(satelliteImageLayers).forEach(l=>l?.setOpacity(mapSatelliteOpacity))});
 }
-function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap)fullMap.invalidateSize();if(tab==='overview'&&overviewMap)overviewMap.invalidateSize()},120)}
+function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap){fullMap.invalidateSize();if(selected){populateMapSatelliteDates(selected);updateMapSatelliteOverlay(selected);focusMaps(selected)}}if(tab==='overview'&&overviewMap)overviewMap.invalidateSize()},160)}
 function openReportCenter(){switchTab('report');renderReportPreview()}
 function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};plots.forEach(p=>c[p.status]++);document.getElementById('kpi-total').textContent=plots.length;document.getElementById('kpi-high').textContent=c.HIGH;document.getElementById('kpi-watch').textContent=c.WATCH;document.getElementById('kpi-nodata').textContent=c.NO_DATA}
 function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div><div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.onclick=()=>selectPlot(p);list.appendChild(d)})}
@@ -240,7 +240,6 @@ function updateMapSatelliteOverlay(p){
   if(status)status.textContent=`${p.plot} • ${datePretty(date)} • True Color 10 m • JPG Preview`;
   updateMapHighlight();
   updateNewWaterOverlay(p);
-  updateMapSatelliteOverlay(p);
 }
 function updateChart(p){const labels=['น้ำ (%)','NDVI ×100','NDRE ×100','NDMI ×100'];const before=[p.water_before_pct,p.ndvi_before==null?null:p.ndvi_before*100,p.ndre_before==null?null:p.ndre_before*100,p.ndmi_before==null?null:p.ndmi_before*100];const current=[p.water_current_pct,p.ndvi_current==null?null:p.ndvi_current*100,p.ndre_current==null?null:p.ndre_current*100,p.ndmi_current==null?null:p.ndmi_current*100];if(chart)chart.destroy();chart=new Chart(document.getElementById('change-chart'),{type:'bar',data:{labels,datasets:[{label:'เดิม',data:before,backgroundColor:'rgba(56,189,248,.45)',borderColor:'#38bdf8',borderWidth:1},{label:'ปัจจุบัน',data:current,backgroundColor:'rgba(245,158,11,.55)',borderColor:'#f59e0b',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9cb4c7',boxWidth:10}}},scales:{x:{ticks:{color:'#9cb4c7'},grid:{display:false}},y:{ticks:{color:'#7792a7'},grid:{color:'rgba(255,255,255,.06)'}}}}})}
 function popupHtml(p){
@@ -253,7 +252,7 @@ function addPlotLayer(m,p,store){
   if(feat && feat.geometry && feat.geometry.type!=='Point'){
     layer=L.geoJSON(feat,{style:{
       color:STATUS[p.status].color,weight:2,opacity:.95,
-      fillColor:STATUS[p.status].color,fillOpacity:.22
+      fillColor:STATUS[p.status].color,fillOpacity:.10
     }}).addTo(m);
   }else{
     layer=L.circleMarker([p.lat,p.lon],{radius:9,color:'#07111c',weight:2,fillColor:STATUS[p.status].color,fillOpacity:.92}).addTo(m);
@@ -307,7 +306,7 @@ function updateNewWaterOverlay(p){
         weight:1.5,
         opacity:1,
         fillColor:'#38bdf8',
-        fillOpacity:.42,
+        fillOpacity:.24,
         dashArray:'5 3'
       }
     }).addTo(map);
