@@ -6,6 +6,7 @@ on:
     paths:
       - "docs/**"
       - "scripts/validate_portal.py"
+      - "scripts/derive_daily_monitoring.py"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -33,6 +34,7 @@ jobs:
           node --check docs/map-studio.js
           node --check docs/trend-report.js
           node --check docs/monitoring-studio.js
+          python -m py_compile scripts/derive_daily_monitoring.py
 
       - name: Prepare static site
         run: |
