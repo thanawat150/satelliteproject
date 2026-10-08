@@ -1,18 +1,26 @@
 {
   "1jT9spUKGJN7DdAvzXF5o8tfwUYpMxmV8": {
     "jpg_preview_url": "https://drive.google.com/file/d/1uwS8Hs25ulepLwYy-4zVWyOrxC6elS-z/view?usp=drivesdk",
-    "jpg_thumbnail_url": "https://drive.google.com/thumbnail?id=1uwS8Hs25ulepLwYy-4zVWyOrxC6elS-z&sz=w1200"
+    "jpg_thumbnail_url": "https://drive.google.com/thumbnail?id=1uwS8Hs25ulepLwYy-4zVWyOrxC6elS-z&sz=w1600",
+    "web_preview_url": "https://drive.google.com/thumbnail?id=1uwS8Hs25ulepLwYy-4zVWyOrxC6elS-z&sz=w1600",
+    "preview_kind": "true_color"
   },
   "1nYVMIXsMPd_eaacpcWa10fgUvTq1Snwt": {
     "jpg_preview_url": "https://drive.google.com/file/d/1hfCed2a93wRecI40DMygf7vsPFjffVIu/view?usp=drivesdk",
-    "jpg_thumbnail_url": "https://drive.google.com/thumbnail?id=1hfCed2a93wRecI40DMygf7vsPFjffVIu&sz=w1200"
+    "jpg_thumbnail_url": "https://drive.google.com/thumbnail?id=1hfCed2a93wRecI40DMygf7vsPFjffVIu&sz=w1600",
+    "web_preview_url": "https://drive.google.com/thumbnail?id=1hfCed2a93wRecI40DMygf7vsPFjffVIu&sz=w1600",
+    "preview_kind": "true_color"
   },
   "1W62EIqfDmBJqp3ZgislhMRELD5B3Vddq": {
     "jpg_preview_url": "https://drive.google.com/file/d/10dHFYEoZDMQDiT6w4jHzq7sjCA2_kX-9/view?usp=drivesdk",
-    "jpg_thumbnail_url": "https://drive.google.com/thumbnail?id=10dHFYEoZDMQDiT6w4jHzq7sjCA2_kX-9&sz=w1200"
+    "jpg_thumbnail_url": "https://drive.google.com/thumbnail?id=10dHFYEoZDMQDiT6w4jHzq7sjCA2_kX-9&sz=w1600",
+    "web_preview_url": "https://drive.google.com/thumbnail?id=10dHFYEoZDMQDiT6w4jHzq7sjCA2_kX-9&sz=w1600",
+    "preview_kind": "true_color"
   },
   "1gZqqXLwgOt5ArjsnSJkaMo3deEK5bRiG": {
     "jpg_preview_url": "https://drive.google.com/file/d/1QQHPZAn6Y7I_GtCay9TVAxbpHdP6QSE3/view?usp=drivesdk",
-    "jpg_thumbnail_url": "https://drive.google.com/thumbnail?id=1QQHPZAn6Y7I_GtCay9TVAxbpHdP6QSE3&sz=w1200"
+    "jpg_thumbnail_url": "https://drive.google.com/thumbnail?id=1QQHPZAn6Y7I_GtCay9TVAxbpHdP6QSE3&sz=w1600",
+    "web_preview_url": "https://drive.google.com/thumbnail?id=1QQHPZAn6Y7I_GtCay9TVAxbpHdP6QSE3&sz=w1600",
+    "preview_kind": "true_color"
   }
 }
