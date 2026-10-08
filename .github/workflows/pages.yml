@@ -7,6 +7,7 @@ on:
       - "docs/**"
       - "scripts/validate_portal.py"
       - "scripts/derive_daily_monitoring.py"
+      - "scripts/test_monitoring_qa_alerts.cjs"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -34,6 +35,10 @@ jobs:
           node --check docs/map-studio.js
           node --check docs/trend-report.js
           node --check docs/monitoring-studio.js
+          node --check docs/monitoring-qa.js
+          node --check docs/alert-engine.js
+          node --check docs/alert-center.js
+          node scripts/test_monitoring_qa_alerts.cjs
           node --check docs/live-report-model.js
           node scripts/test_live_report.cjs
           python -m py_compile scripts/derive_daily_monitoring.py
