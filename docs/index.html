@@ -100,6 +100,50 @@
               </label>
             </div>
           </div>
+          <div class="studio-toolbar">
+            <label>รูปแบบภาพ<select id="studio-mode">
+              <option value="true">สีจริง (B4-B3-B2)</option>
+              <option value="false">สีเท็จพืช (B8-B4-B3)</option>
+              <option value="mndwi">MNDWI (ดัชนีน้ำเปิด)</option>
+              <option value="ndmi">NDMI (ความชื้นพืช/พื้นที่)</option>
+              <option value="ndvi">NDVI (ความเขียวพืช)</option>
+              <option value="ndre">NDRE (สภาพใบพืช)</option>
+              <option value="bsi">BSI (ดินเปิดโล่ง)</option>
+            </select></label>
+            <label class="studio-check"><input id="studio-boundary" type="checkbox" checked> ขอบเขต</label>
+            <label class="studio-check"><input id="studio-water" type="checkbox" checked> น้ำใหม่</label>
+            <label class="studio-check"><input id="studio-labels" type="checkbox"> ชื่อแปลง</label>
+            <label>รูปแบบสำหรับรายงาน<select id="studio-preset">
+              <option value="custom">กำหนดเอง</option>
+              <option value="natural">สีจริง + ขอบเขต</option>
+              <option value="clean">ภาพล้วน</option>
+              <option value="water">ติดตามน้ำ</option>
+              <option value="vegetation">ติดตามพืช</option>
+              <option value="soil">ติดตามดิน</option>
+            </select></label>
+            <button id="studio-reset" class="ghost-btn" type="button">รีเซ็ตสี</button>
+          </div>
+          <details class="studio-adjust"><summary>ปรับสีและการแสดงผลด้วยตนเอง</summary>
+            <div class="studio-sliders">
+              <label>ความสว่าง <output id="studio-value-brightness">100%</output><input id="studio-brightness" type="range" min="40" max="200" value="100"></label>
+              <label>ความต่างสี <output id="studio-value-contrast">100%</output><input id="studio-contrast" type="range" min="40" max="200" value="100"></label>
+              <label>ความอิ่มสี <output id="studio-value-saturation">100%</output><input id="studio-saturation" type="range" min="0" max="250" value="100"></label>
+              <label>Gamma <output id="studio-value-gamma">100%</output><input id="studio-gamma" type="range" min="50" max="200" value="100"></label>
+              <label>Red <output id="studio-value-r">100%</output><input id="studio-r" type="range" min="0" max="200" value="100"></label>
+              <label>Green <output id="studio-value-g">100%</output><input id="studio-g" type="range" min="0" max="200" value="100"></label>
+              <label>Blue <output id="studio-value-b">100%</output><input id="studio-b" type="range" min="0" max="200" value="100"></label>
+            </div>
+            <p class="studio-hint">การปรับสีเป็นการปรับภาพเพื่อการแสดงผล ไม่เปลี่ยนค่าดัชนีทางวิทยาศาสตร์ที่คำนวณใน Report</p>
+          </details>
+          <svg aria-hidden="true" width="0" height="0" class="studio-filter"><defs><filter id="studio-color-filter" color-interpolation-filters="sRGB"><feColorMatrix id="studio-color-matrix" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/><feComponentTransfer id="studio-gamma"><feFuncR type="gamma" amplitude="1" exponent="1" offset="0"/><feFuncG type="gamma" amplitude="1" exponent="1" offset="0"/><feFuncB type="gamma" amplitude="1" exponent="1" offset="0"/></feComponentTransfer></filter></defs></svg>
+          <div id="studio-legend" class="studio-legend" hidden><span id="studio-legend-label">ดัชนี</span><div id="studio-ramp"></div><div class="studio-legend-scale"><span>−1</span><span>0</span><span>+1</span></div></div>
+          <div class="studio-actions">
+            <span id="studio-data-status">เลือกแปลงและวันที่เพื่อแสดงชั้นข้อมูล</span>
+            <button id="studio-save-report" class="ghost-btn" type="button">บันทึกมุมมองใน Report</button>
+            <button id="studio-export-svg" class="ghost-btn" type="button">Export SVG</button>
+            <button id="studio-export-png" class="ghost-btn" type="button">Export PNG</button>
+          </div>
+          <p id="studio-saved-note" class="studio-saved-note"></p>
           <div id="full-map" class="map full-map"></div>
           <div class="prototype-note">ภาพสีจริง 10 m จะแสดงเป็น JPG ที่แปลงจาก GeoTIFF แล้ววางตามพิกัดจริง • เส้นแดง = ขอบเขตแปลง • สีฟ้า = พื้นที่น้ำใหม่</div>
         </section>
@@ -166,6 +210,7 @@
     </main>
   </div>
 
+  <script src="map-studio.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
