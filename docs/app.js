@@ -9,6 +9,9 @@ const VEG = {
 };
 let dataset=null, plots=[], selected=null, overviewMap=null, fullMap=null, chart=null, activeStatus='ALL';
 let satelliteFiles=[], satellitePartsMeta=null, jpgPreviewMap={};
+let satelliteBounds=[], satelliteBoundsByKey=new Map();
+const satelliteImageLayers={overview:null,full:null};
+let mapSatelliteDate=null, mapSatelliteOpacity=.82, mapSatelliteVisible=true;
 let boundaryFC=null, boundaryByPlot=new Map();
 let newWaterFC=null, newWaterByPlot=new Map();
 const mapLayers={overview:new Map(),full:new Map()};
@@ -19,17 +22,21 @@ const dateTH=s=>{if(!s||s.length!==8)return '—';return `${s.slice(6,8)}/${s.sl
 const delta=(a,b,digits=3)=>a==null||b==null?'N/A':`${b-a>=0?'+':''}${(b-a).toFixed(digits)}`;
 
 async function init(){
-  const [r,b,w]=await Promise.all([
+  const [r,b,w,sb]=await Promise.all([
     fetch('data/plots.json',{cache:'no-store'}),
     fetch('data/boundaries.geojson',{cache:'no-store'}),
-    fetch('data/new_water.geojson',{cache:'no-store'})
+    fetch('data/new_water.geojson',{cache:'no-store'}),
+    fetch('data/satellite_bounds.json',{cache:'no-store'})
   ]);
   if(!r.ok) throw new Error(`plots.json HTTP ${r.status}`);
   if(!b.ok) throw new Error(`boundaries.geojson HTTP ${b.status}`);
   if(!w.ok) throw new Error(`new_water.geojson HTTP ${w.status}`);
+  if(!sb.ok) throw new Error(`satellite_bounds.json HTTP ${sb.status}`);
   dataset=await r.json(); plots=dataset.plots;
   boundaryFC=await b.json();
   newWaterFC=await w.json();
+  const sbData=await sb.json(); satelliteBounds=sbData.overlays||[];
+  satelliteBoundsByKey=new Map(satelliteBounds.map(x=>[`${x.plot}|${x.date}`,x]));
   boundaryByPlot=new Map(boundaryFC.features.map(f=>[f.properties.plot,f]));
   newWaterByPlot=new Map(newWaterFC.features.map(f=>[f.properties.plot,f]));
   document.getElementById('updated-pill').textContent=`อัปเดต ${dataset.updated}`;
@@ -56,6 +63,9 @@ function bindUI(){
   document.getElementById('report-plot').addEventListener('change',renderReportPreview);
   document.getElementById('report-type').addEventListener('change',renderReportPreview);
   ['sat-filter-plot','sat-filter-date','sat-filter-sensor','sat-filter-resolution'].forEach(id=>document.getElementById(id)?.addEventListener('change',renderSatelliteGallery));
+  document.getElementById('map-sat-date')?.addEventListener('change',e=>{mapSatelliteDate=e.target.value;updateMapSatelliteOverlay(selected)});
+  document.getElementById('map-sat-visible')?.addEventListener('change',e=>{mapSatelliteVisible=e.target.checked;updateMapSatelliteOverlay(selected)});
+  document.getElementById('map-sat-opacity')?.addEventListener('input',e=>{mapSatelliteOpacity=Number(e.target.value)/100;Object.values(satelliteImageLayers).forEach(l=>l?.setOpacity(mapSatelliteOpacity))});
 }
 function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap)fullMap.invalidateSize();if(tab==='overview'&&overviewMap)overviewMap.invalidateSize()},120)}
 function openReportCenter(){switchTab('report');renderReportPreview()}
@@ -63,7 +73,7 @@ function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};plots.forEach(
 function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div><div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.onclick=()=>selectPlot(p);list.appendChild(d)})}
 function renderPriority(){const el=document.getElementById('priority-list');el.innerHTML='';const sorted=plots.filter(p=>p.status!=='NO_DATA').sort((a,b)=>(b.water_change_pp??-999)-(a.water_change_pp??-999)).slice(0,7);sorted.forEach((p,i)=>{const d=document.createElement('div');d.className='priority-item';d.innerHTML=`<div class="priority-rank">${i+1}</div><div><strong>${p.plot}</strong><small>${STATUS[p.status].label} • น้ำล่าสุด ${fmt(p.water_current_pct)}%</small></div><div class="priority-value">${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} pp</div>`;d.onclick=()=>selectPlot(p);el.appendChild(d)})}
 function summaryText(p){if(p.status==='NO_DATA')return 'ภาพปัจจุบันไม่มี valid pixels เพียงพอ จึงยังไม่ควรสรุปผลกระทบของแปลงนี้';const veg=VEG[p.vegetation_status];if(p.status==='HIGH')return `พบสัญญาณน้ำเพิ่มขึ้นอย่างชัดเจนภายในแปลง โดยมีพื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;if(p.status==='WATCH')return `พบการเปลี่ยนแปลงของน้ำที่ควรติดตามต่อ พื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;return `ไม่พบสัญญาณน้ำเพิ่มสูงในรอบเปรียบเทียบนี้ • ${veg}`}
-function selectPlot(p,updateUrl=true){selected=p;renderSidebar();document.getElementById('detail-title').textContent=p.plot;const st=document.getElementById('detail-status');st.textContent=STATUS[p.status].label;st.className=`status-pill status-${p.status}`;document.getElementById('detail-area').textContent=`พื้นที่ ${fmt(p.area_rai)} ไร่`;document.getElementById('detail-dates').textContent=`${dateTH(p.baseline)} → ${dateTH(p.current)}`;document.getElementById('plain-summary').textContent=summaryText(p);document.getElementById('water-values').textContent=`${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่`;document.getElementById('water-delta').textContent=p.water_change_pp==null?'N/A':`${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} จุดเปอร์เซ็นต์`;document.getElementById('ndvi-values').textContent=`${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}`;document.getElementById('ndvi-delta').textContent=delta(p.ndvi_before,p.ndvi_current);document.getElementById('ndre-values').textContent=`${idx(p.ndre_before)} → ${idx(p.ndre_current)}`;document.getElementById('ndre-delta').textContent=delta(p.ndre_before,p.ndre_current);document.getElementById('ndmi-values').textContent=`${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}`;document.getElementById('ndmi-delta').textContent=delta(p.ndmi_before,p.ndmi_current);updateChart(p);focusMaps(p);document.getElementById('report-plot').value=p.plot;updateMapHighlight();syncSatellitePlotFilter(p.plot);if(updateUrl)updateQuery({plot:p.plot})}
+function selectPlot(p,updateUrl=true){selected=p;renderSidebar();document.getElementById('detail-title').textContent=p.plot;const st=document.getElementById('detail-status');st.textContent=STATUS[p.status].label;st.className=`status-pill status-${p.status}`;document.getElementById('detail-area').textContent=`พื้นที่ ${fmt(p.area_rai)} ไร่`;document.getElementById('detail-dates').textContent=`${dateTH(p.baseline)} → ${dateTH(p.current)}`;document.getElementById('plain-summary').textContent=summaryText(p);document.getElementById('water-values').textContent=`${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่`;document.getElementById('water-delta').textContent=p.water_change_pp==null?'N/A':`${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} จุดเปอร์เซ็นต์`;document.getElementById('ndvi-values').textContent=`${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}`;document.getElementById('ndvi-delta').textContent=delta(p.ndvi_before,p.ndvi_current);document.getElementById('ndre-values').textContent=`${idx(p.ndre_before)} → ${idx(p.ndre_current)}`;document.getElementById('ndre-delta').textContent=delta(p.ndre_before,p.ndre_current);document.getElementById('ndmi-values').textContent=`${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}`;document.getElementById('ndmi-delta').textContent=delta(p.ndmi_before,p.ndmi_current);updateChart(p);focusMaps(p);document.getElementById('report-plot').value=p.plot;updateMapHighlight();syncSatellitePlotFilter(p.plot);populateMapSatelliteDates(p);updateMapSatelliteOverlay(p);if(updateUrl)updateQuery({plot:p.plot})}
 function datePretty(s){
   if(!s)return '—';
   const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -91,6 +101,8 @@ async function loadSatelliteLibrary(){
     if(status)status.textContent=`ซิงก์จาก Google Drive • ${satelliteFiles.length} ไฟล์ • อัปเดตรายการ ${new Date(satellitePartsMeta.updated_at).toLocaleString('th-TH')}`;
     populateSatelliteFilters();
     renderSatelliteGallery();
+    populateMapSatelliteDates(selected);
+    updateMapSatelliteOverlay(selected);
   }catch(e){
     console.error(e);
     if(status)status.textContent='โหลดรายการภาพจาก Google Drive ไม่สำเร็จ';
@@ -175,6 +187,61 @@ function closeSatelliteViewer(){
   modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
   const img=document.getElementById('sat-modal-image'); if(img){img.removeAttribute('src');img.style.display='none'}
 }
+function mapSatelliteCandidates(plot){
+  return satelliteFiles
+    .filter(x=>x.plot===plot && x.sensor==='Sentinel-2' && x.resolution==='10m')
+    .filter(x=>satelliteBoundsByKey.has(`${x.plot}|${x.date}`))
+    .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+}
+function populateMapSatelliteDates(p){
+  const sel=document.getElementById('map-sat-date'); if(!sel||!p)return;
+  const rows=mapSatelliteCandidates(p.plot);
+  const dates=[...new Set(rows.map(x=>x.date).filter(Boolean))];
+  const current=mapSatelliteDate && dates.includes(mapSatelliteDate) ? mapSatelliteDate : (dates[0]||'');
+  sel.innerHTML=dates.length?dates.map(d=>`<option value="${d}">${datePretty(d)}</option>`).join(''):'<option value="">ไม่มีภาพ 10 m</option>';
+  sel.value=current; mapSatelliteDate=current||null;
+}
+function satelliteRowForMap(plot,date){
+  const rows=mapSatelliteCandidates(plot).filter(x=>x.date===date);
+  return rows.find(x=>x.web_preview_url)||rows[0]||null;
+}
+function removeMapSatelliteLayers(){
+  [[overviewMap,'overview'],[fullMap,'full']].forEach(([map,key])=>{
+    if(map && satelliteImageLayers[key]) map.removeLayer(satelliteImageLayers[key]);
+    satelliteImageLayers[key]=null;
+  });
+}
+function updateMapSatelliteOverlay(p){
+  const status=document.getElementById('map-sat-status');
+  if(!p){removeMapSatelliteLayers();return}
+  if(!mapSatelliteVisible){
+    removeMapSatelliteLayers();
+    if(status)status.textContent='ซ่อนภาพดาวเทียมอยู่';
+    return;
+  }
+  const date=mapSatelliteDate || mapSatelliteCandidates(p.plot)[0]?.date;
+  const row=satelliteRowForMap(p.plot,date);
+  const geo=satelliteBoundsByKey.get(`${p.plot}|${date}`);
+  removeMapSatelliteLayers();
+  if(!row||!geo){
+    if(status)status.textContent=`${p.plot} • ยังไม่มีภาพ 10 m ที่ผูกพิกัดสำหรับวันที่เลือก`;
+    return;
+  }
+  if(!row.web_preview_url){
+    if(status)status.textContent=`${p.plot} • ${datePretty(date)} • กำลังรอ JPG Preview จาก GeoTIFF`;
+    return;
+  }
+  const bounds=L.latLngBounds(geo.bounds[0],geo.bounds[1]);
+  [[overviewMap,'overview'],[fullMap,'full']].forEach(([map,key])=>{
+    if(!map)return;
+    const layer=L.imageOverlay(row.web_preview_url,bounds,{opacity:mapSatelliteOpacity,pane:'satellitePane',interactive:false,crossOrigin:false}).addTo(map);
+    satelliteImageLayers[key]=layer;
+  });
+  if(status)status.textContent=`${p.plot} • ${datePretty(date)} • True Color 10 m • JPG Preview`;
+  updateMapHighlight();
+  updateNewWaterOverlay(p);
+  updateMapSatelliteOverlay(p);
+}
 function updateChart(p){const labels=['น้ำ (%)','NDVI ×100','NDRE ×100','NDMI ×100'];const before=[p.water_before_pct,p.ndvi_before==null?null:p.ndvi_before*100,p.ndre_before==null?null:p.ndre_before*100,p.ndmi_before==null?null:p.ndmi_before*100];const current=[p.water_current_pct,p.ndvi_current==null?null:p.ndvi_current*100,p.ndre_current==null?null:p.ndre_current*100,p.ndmi_current==null?null:p.ndmi_current*100];if(chart)chart.destroy();chart=new Chart(document.getElementById('change-chart'),{type:'bar',data:{labels,datasets:[{label:'เดิม',data:before,backgroundColor:'rgba(56,189,248,.45)',borderColor:'#38bdf8',borderWidth:1},{label:'ปัจจุบัน',data:current,backgroundColor:'rgba(245,158,11,.55)',borderColor:'#f59e0b',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9cb4c7',boxWidth:10}}},scales:{x:{ticks:{color:'#9cb4c7'},grid:{display:false}},y:{ticks:{color:'#7792a7'},grid:{color:'rgba(255,255,255,.06)'}}}}})}
 function popupHtml(p){
   const q=boundaryByPlot.get(p.plot)?.properties?.boundary_quality;
@@ -197,6 +264,7 @@ function addPlotLayer(m,p,store){
 }
 function initBaseMap(id,store){
   const m=L.map(id,{zoomControl:true}).setView([12.72,101.72],11);
+  m.createPane('satellitePane'); m.getPane('satellitePane').style.zIndex=250;
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Esri World Imagery'}).addTo(m);
   plots.forEach(p=>addPlotLayer(m,p,store));
   return m;
