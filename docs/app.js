@@ -87,7 +87,7 @@ function updateMapHighlight(){
     store.forEach((layer,name)=>{
       const p=plots.find(x=>x.plot===name); if(!p)return;
       if(layer.setStyle){
-        layer.setStyle({color:STATUS[p.status].color,weight:name===selected?.plot?4:2,fillOpacity:name===selected?.plot?.28:.18});
+        layer.setStyle({color:STATUS[p.status].color,weight:name===selected?.plot?4:2,fillOpacity:name===selected?.plot ? .28 : .18});
       }
     });
   }
