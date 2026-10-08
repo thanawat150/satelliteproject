@@ -482,5 +482,5 @@ async function renderReportPreview(){
     if(request===liveReportRequest)paper.innerHTML='<div class="live-report-alert"><strong>โหลดผลวิเคราะห์ล่าสุดไม่สำเร็จ</strong><p>ไม่แสดงตัวเลขเก่าจาก plots.json แทนโดยไม่แจ้ง • กรุณากด Preview Report เพื่อลองใหม่</p><small></small></div>';
   }
 }
-function printReport(){if(document.getElementById('report-type').value==='verified'){const p=plots.find(x=>x.plot===document.getElementById('report-plot').value);if(p?.report_url)window.open(p.report_url,'_blank','noopener');return}renderReportPreview();window.print()}
+async function printReport(){if(document.getElementById('report-type').value==='verified'){const p=plots.find(x=>x.plot===document.getElementById('report-plot').value);if(p?.report_url)window.open(p.report_url,'_blank','noopener');return}await renderReportPreview();window.print()}
 init().catch(err=>{console.error(err);document.body.insertAdjacentHTML('beforeend',`<div style="position:fixed;bottom:12px;right:12px;background:#7f1d1d;color:white;padding:10px;border-radius:8px;z-index:9999">โหลดข้อมูลไม่สำเร็จ: ${err.message}</div>`)})
