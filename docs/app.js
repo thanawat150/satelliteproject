@@ -386,60 +386,101 @@ function badge(status){return `<span class="matrix-badge status-${status}">${STA
 function renderMatrix(){const body=document.getElementById('impact-body');body.innerHTML='';plots.forEach(p=>{const tr=document.createElement('tr');tr.innerHTML=`<td><b>${p.plot}</b></td><td>${badge(p.status)}</td><td>${fmt(p.water_before_pct)}%</td><td>${fmt(p.water_current_pct)}%</td><td>${fmt(p.new_water_rai)} ไร่</td><td>${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}</td><td>${idx(p.ndre_before)} → ${idx(p.ndre_current)}</td><td>${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}</td><td>${VEG[p.vegetation_status]}</td>`;tr.onclick=()=>{selectPlot(p);switchTab('overview')};body.appendChild(tr)})}
 function populateReportSelect(){const s=document.getElementById('report-plot');s.innerHTML=plots.map(p=>`<option>${p.plot}</option>`).join('')}
 function showSelectedReport(){document.getElementById('report-plot').value=selected.plot;switchTab('report');renderReportPreview()}
-function renderReportPreview(){
+let liveReportRequest=0;
+async function renderReportPreview(){
+  const request=++liveReportRequest;
   const name=document.getElementById('report-plot').value||selected?.plot;
   const p=plots.find(x=>x.plot===name)||plots[0];
+  if(!p)return;
   const type=document.getElementById('report-type').value;
   const verifiedLink=document.getElementById('verified-folder-2');
   const paper=document.getElementById('report-paper');
   const frame=document.getElementById('verified-pdf-frame');
   const printBtn=document.getElementById('print-report-btn');
-  if(verifiedLink) verifiedLink.href=p.report_url||dataset.report_folder;
+  if(verifiedLink)verifiedLink.href=p.report_url||dataset.report_folder;
   updateQuery({plot:p.plot,tab:'report',report:type==='verified'?'verified':null});
-
   if(type==='verified'){
-    paper.style.display='none';
-    frame.style.display='block';
-    frame.src=drivePreviewUrl(p.report_url||dataset.report_folder);
-    if(printBtn) printBtn.style.display='none';
+    paper.style.display='none';frame.style.display='block';frame.src=drivePreviewUrl(p.report_url||dataset.report_folder);
+    if(printBtn)printBtn.style.display='none';
     return;
   }
-
+  frame.style.display='none';frame.src='about:blank';
+  paper.style.display='block';
+  if(printBtn)printBtn.style.display='block';
   if(type==='compare'){
-    frame.style.display='none'; frame.src='about:blank';
-    paper.style.display='block';
-    if(printBtn) printBtn.style.display='block';
-    paper.innerHTML='<p>กำลังโหลดข้อมูลสำหรับ Report เปรียบเทียบสองวัน...</p>';
+    paper.innerHTML='<p class="live-report-loading">กำลังโหลดข้อมูลสำหรับ Report เปรียบเทียบสองวัน...</p>';
     window.MonitoringStudio?.renderReport?.();
     return;
   }
-
-  frame.style.display='none'; frame.src='about:blank';
-  paper.style.display='block';
-  if(printBtn) printBtn.style.display='block';
-  paper.innerHTML=`<div class="report-title">รายงานติดตามน้ำท่วมและผลกระทบสิ่งแวดล้อม</div>
-  <div class="report-sub">${p.plot} • จังหวัดระยอง • Sentinel-2 L2A • ${dateTH(p.baseline)} → ${dateTH(p.current)}</div>
-  <div class="report-rule"></div>
-  <div class="report-kpis">
-    <div class="report-kpi"><span>พื้นที่โครงการ</span><strong>${fmt(p.area_rai)} ไร่</strong></div>
-    <div class="report-kpi"><span>น้ำล่าสุด</span><strong>${fmt(p.water_current_pct)}%</strong></div>
-    <div class="report-kpi"><span>พื้นที่น้ำใหม่</span><strong>${fmt(p.new_water_rai)} ไร่</strong></div>
-  </div>
-  <div class="report-section"><h4>ข้อสรุปการเปลี่ยนแปลง</h4><div class="report-summary">${summaryText(p)}</div></div>
-  <div class="report-section"><h4>ค่าดัชนีที่ใช้ติดตาม</h4><div class="report-grid">
-    <div class="report-block"><b>MNDWI (ดัชนีน้ำเปิด)</b><p>พื้นที่น้ำ: ${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่<br>สัดส่วน: ${fmt(p.water_before_pct)}% → ${fmt(p.water_current_pct)}%</p></div>
-    <div class="report-block"><b>NDVI (ความเขียวพืช)</b><p>Stable land: ${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}<br>เปลี่ยนแปลง ${delta(p.ndvi_before,p.ndvi_current)}</p></div>
-    <div class="report-block"><b>NDRE (สุขภาพใบพืช)</b><p>Stable land: ${idx(p.ndre_before)} → ${idx(p.ndre_current)}<br>เปลี่ยนแปลง ${delta(p.ndre_before,p.ndre_current)}</p></div>
-    <div class="report-block"><b>NDMI (ความชื้นพืช/พื้นที่)</b><p>Stable land: ${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}<br>เปลี่ยนแปลง ${delta(p.ndmi_before,p.ndmi_current)}</p></div>
-  </div></div>
-  <div class="report-section"><h4>QA / การตีความ</h4><div class="report-grid">
-    <div class="report-block"><b>Stable land check</b><p>พื้นที่ที่ยังเป็น land ทั้งสองวัน ${fmt(p.stable_land_rai)} ไร่ ใช้แยกผลของน้ำออกจากการเปลี่ยนแปลงของพืช</p></div>
-    <div class="report-block"><b>ภาพล่าสุดที่ตรวจ QA</b><p>2 ต.ค. 2026 usable pixels ${fmt(p.latest_valid_pct)}% • วันที่ที่ใช้สรุปผลคือ ${dateTH(p.current)}</p></div>
-  </div></div>
-  <div class="report-footer">Live Report อ่านค่าจากประวัติการวิเคราะห์ • วันที่คุณภาพต่ำจะไม่แทน Current อัตโนมัติ • รายงาน Verified PDF ยังคงเป็นฉบับอ้างอิง</div>`;
-  const studioImage=window.MapStudio?.reportMarkup?.(p)||'';
-  if(studioImage)paper.insertAdjacentHTML('beforeend',studioImage);
-  window.TrendReport?.render?.(p.plot,paper).catch?.(err=>console.warn('Live report trend unavailable',err));
+  paper.innerHTML='<div class="live-report-loading">กำลังตรวจผลการวิเคราะห์ล่าสุดและสถานะ QA...</div>';
+  try{
+    if(!window.TrendReport?.load||!window.LiveReportModel?.make)throw Error('โมดูล Live Report ยังโหลดไม่ครบ');
+    // Force a fresh server read on Preview, but do not reprocess the satellite TIFF.
+    const history=await window.TrendReport.load(true);
+    if(request!==liveReportRequest||document.getElementById('report-type').value!=='quick'||document.getElementById('report-plot').value!==p.plot)return;
+    const rs=history?.plots?.[p.plot]||[];
+    const sceneDates=satelliteFiles.filter(x=>x.plot===p.plot&&x.date).map(x=>x.date);
+    const model=window.LiveReportModel.make(rs,sceneDates);
+    const cur=model.current,prev=model.previous,latest=model.latestRecord;
+    const dt=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'—';
+    const n=v=>v==null||!Number.isFinite(Number(v))?'—':Number(v).toLocaleString('th-TH',{maximumFractionDigits:2});
+    const ix=v=>v==null||!Number.isFinite(Number(v))?'—':Number(v).toFixed(3);
+    const sign=v=>v==null||!Number.isFinite(Number(v))?'—':(v>0?'+':'')+n(v);
+    const qaCode={VERIFIED:'ผ่านการตรวจยืนยัน (VERIFIED)',AUTO_VALID:'ผ่าน QA อัตโนมัติ',PARTIAL:'ข้อมูลใช้ได้บางส่วน',NO_DATA:'ข้อมูลไม่เพียงพอ'};
+    const latestStatus=latest?(qaCode[latest.analysis_status]||latest.analysis_status):'รอการประมวลผล';
+    const latestPct=latest&&latest.valid_pct!=null?n(latest.valid_pct)+'%':'ยังไม่ทราบ';
+    const currentQA=cur?(qaCode[cur.analysis_status]||cur.analysis_status):'ยังไม่มีข้อมูลผ่าน QA';
+    const dateCurrent=dt(cur?.date),datePrev=dt(prev?.date),dateLatest=dt(model.latestDate);
+    const changed=model.deltaWater;
+    const netSummary=changed==null?'ยังไม่มีข้อมูลสองวันที่ผ่าน QA สำหรับเปรียบเทียบ':changed>0?'พื้นที่น้ำจากสองรอบที่ผ่าน QA เพิ่มสุทธิ '+n(changed)+' ไร่':changed<0?'พื้นที่น้ำจากสองรอบที่ผ่าน QA ลดสุทธิ '+n(Math.abs(changed))+' ไร่':'พื้นที่น้ำสุทธิไม่เปลี่ยนแปลงระหว่างสองรอบที่ผ่าน QA';
+    const summary=netSummary+' • ผลการเปลี่ยนแปลงนี้ไม่ยืนยันว่าน้ำเพิ่มเป็นอุทกภัย ต้องพิจารณาน้ำขึ้นน้ำลงและคุณภาพข้อมูลประกอบ';
+    let warning='';
+    if(model.pending){
+      const partial=latest?.analysis_status==='PARTIAL'&&latest.observed_water_rai!=null;
+      const observed=partial?' • พื้นที่น้ำที่ตรวจพบเฉพาะพิกเซลที่ใช้ได้ '+n(latest.observed_water_rai)+' ไร่ (ไม่ใช่พื้นที่น้ำทั้งหมดของแปลง)':'';
+      warning='<section class="live-report-alert"><strong>มีภาพใหม่กว่ารอบที่ใช้สรุป — '+dateLatest+'</strong><p>'+latestStatus+' • พื้นที่ใช้ได้ '+latestPct+observed+'</p><p>รายงานจึงยังใช้ผลรอบ '+dateCurrent+' ที่ผ่าน QA ไม่ตีความพื้นที่ที่ถูกเมฆบังว่าเป็นน้ำลดหรือพืชฟื้นตัว</p></section>';
+    }else if(cur)warning='<section class="live-report-ok"><strong>ข้อมูลที่ใช้สรุปผ่าน QA</strong><p>รอบ '+dateCurrent+' • '+currentQA+' • พื้นที่ใช้ได้ '+n(cur.valid_pct)+'%</p></section>';
+    else warning='<section class="live-report-alert"><strong>ยังไม่มีรอบวิเคราะห์ที่ผ่าน QA</strong><p>ยังไม่แสดงพื้นที่น้ำหรือผลต่างจากตัวเลขเดิมเพื่อหลีกเลี่ยงการสรุปผิด</p></section>';
+    const indexBlock=(label,key)=>{
+      const before=prev?.[key],after=cur?.[key],change=before!=null&&after!=null?after-before:null;
+      return '<div class="report-block"><b>'+label+'</b><p>'+datePrev+': '+ix(before)+' → '+dateCurrent+': '+ix(after)+(change!=null?'<br>ผลต่าง '+(change>0?'+':'')+ix(change):'')+'</p></div>';
+    };
+    const waterBlock='<div class="report-block"><b>MNDWI / พื้นที่น้ำ</b><p>'+datePrev+': '+n(prev?.water_rai)+' ไร่ ('+n(prev?.water_pct)+'%)<br>'+dateCurrent+': '+n(cur?.water_rai)+' ไร่ ('+n(cur?.water_pct)+'%)<br>ผลต่างสุทธิ '+(changed==null?'—':sign(changed)+' ไร่')+'</p></div>';
+    const newWater=model.newWater==null?'ยังไม่มีผลคำนวณพื้นที่น้ำใหม่สำหรับคู่วันที่ล่าสุดที่ผ่าน QA':n(model.newWater)+' ไร่ (น้ำใหม่ ไม่ใช่ผลต่างสุทธิ)';
+    const legacyMatch=cur&&prev&&cur.date===String(p.current).replace(/^(\d{4})(\d{2})(\d{2})$/,'$1-$2-$3')&&prev.date===String(p.baseline).replace(/^(\d{4})(\d{2})(\d{2})$/,'$1-$2-$3');
+    const stableLand=legacyMatch&&p.stable_land_rai!=null?n(p.stable_land_rai)+' ไร่ (รอบ Verified '+datePrev+' → '+dateCurrent+')':'ยังไม่มีค่าพื้นที่ Stable Land ที่ตรวจสอบได้สำหรับคู่วันที่ล่าสุด';
+    const historyUpdated=history?.generated_at?new Date(history.generated_at).toLocaleString('th-TH',{timeZone:'Asia/Bangkok'}):'—';
+    paper.innerHTML=
+      '<div class="report-title">รายงานติดตามน้ำท่วมและผลกระทบสิ่งแวดล้อม</div>'+
+      '<div class="report-sub">'+p.plot+' • จังหวัดระยอง • Sentinel-2 L2A • ภาพล่าสุด '+dateLatest+' • ผลล่าสุดที่ผ่าน QA '+dateCurrent+'</div>'+
+      '<div class="report-rule"></div>'+
+      warning+
+      '<div class="report-kpis">'+
+        '<div class="report-kpi"><span>พื้นที่โครงการ</span><strong>'+n(p.area_rai)+' ไร่</strong></div>'+
+        '<div class="report-kpi"><span>น้ำรอบล่าสุดที่ผ่าน QA</span><strong>'+(cur?n(cur.water_pct)+'%':'—')+'</strong><small>'+dateCurrent+'</small></div>'+
+        '<div class="report-kpi"><span>น้ำเปลี่ยนสุทธิ (จากรอบผ่าน QA)</span><strong>'+(changed==null?'—':sign(changed)+' ไร่')+'</strong><small>'+datePrev+' → '+dateCurrent+'</small></div>'+
+      '</div>'+
+      '<div class="report-section"><h4>ข้อสรุปการเปลี่ยนแปลง</h4><div class="report-summary">'+summary+'</div></div>'+
+      '<div class="report-section"><h4>ค่าดัชนีที่ใช้ติดตาม</h4><div class="report-grid">'+
+        waterBlock+indexBlock('NDVI (ความเขียวพืช)','ndvi')+indexBlock('NDRE (สภาพใบพืช)','ndre')+
+        indexBlock('NDMI (ความชื้นพืช/พื้นที่)','ndmi')+indexBlock('MNDWI (ดัชนีน้ำเปิด)','mndwi')+indexBlock('BSI (สัญญาณดินเปิด)','bsi')+
+      '</div><p class="live-report-note">ค่าเฉลี่ยดัชนีสองวันอาจคำนวณบนพื้นที่ที่ผ่าน QA ต่างกัน จึงไม่ควรสรุปการเปลี่ยนแปลงของพืชรายพิกเซลโดยไม่มี Common Valid Mask</p></div>'+
+      '<div class="report-section"><h4>น้ำใหม่และ QA / การตีความ</h4><div class="report-grid">'+
+        '<div class="report-block"><b>พื้นที่น้ำใหม่เฉพาะคู่วันที่ผ่าน QA</b><p>'+newWater+'</p></div>'+
+        '<div class="report-block"><b>Stable land check</b><p>'+stableLand+'</p></div>'+
+        '<div class="report-block"><b>ภาพล่าสุดในระบบ</b><p>'+dateLatest+' • '+latestStatus+' • usable '+latestPct+'</p></div>'+
+        '<div class="report-block"><b>ผลล่าสุดที่ใช้สรุป</b><p>'+dateCurrent+' • '+currentQA+' • usable '+n(cur?.valid_pct)+'%</p></div>'+
+      '</div></div>'+
+      '<div class="report-footer">แหล่งตัวเลขหลัก: analysis_history.json • ประวัติประมวลผลล่าสุด '+historyUpdated+' • ผลคุณภาพต่ำไม่แทนค่า Current • Verified PDF ต้นฉบับไม่ถูกแก้ไข</div>';
+    const studioImage=window.MapStudio?.reportMarkup?.(p)||'';
+    if(studioImage)paper.insertAdjacentHTML('beforeend',studioImage);
+    await window.TrendReport.render(p.plot,paper);
+    // A later user selection may finish before an older network response.
+    if(request!==liveReportRequest)return;
+  }catch(err){
+    console.error('Live report failed:',err);
+    if(request===liveReportRequest)paper.innerHTML='<div class="live-report-alert"><strong>โหลดผลวิเคราะห์ล่าสุดไม่สำเร็จ</strong><p>ไม่แสดงตัวเลขเก่าจาก plots.json แทนโดยไม่แจ้ง • กรุณากด Preview Report เพื่อลองใหม่</p><small></small></div>';
+  }
 }
 function printReport(){if(document.getElementById('report-type').value==='verified'){const p=plots.find(x=>x.plot===document.getElementById('report-plot').value);if(p?.report_url)window.open(p.report_url,'_blank','noopener');return}renderReportPreview();window.print()}
 init().catch(err=>{console.error(err);document.body.insertAdjacentHTML('beforeend',`<div style="position:fixed;bottom:12px;right:12px;background:#7f1d1d;color:white;padding:10px;border-radius:8px;z-index:9999">โหลดข้อมูลไม่สำเร็จ: ${err.message}</div>`)})
