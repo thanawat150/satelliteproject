@@ -44,13 +44,14 @@ Deno.serve(async(req:Request)=>{
   const anon=Deno.env.get('SUPABASE_ANON_KEY')||Deno.env.get('SUPABASE_PUBLISHABLE_KEY')||'';
   const secret=Deno.env.get('GEMINI_API_KEY')||'';
   const model=Deno.env.get('GEMINI_MODEL')||'gemini-2.5-flash';
-  if(!url||!anon||!secret)return reply({ok:false,error:'AI Backend is not configured'},503);
+  if(!url||!anon)return reply({ok:false,error:'Supabase Function ยังไม่พบ SUPABASE_URL หรือ SUPABASE_ANON_KEY / SUPABASE_PUBLISHABLE_KEY',code:'SUPABASE_ENV_MISSING'},503);
   const bearer=req.headers.get('Authorization')||'';
   if(!bearer.startsWith('Bearer '))return reply({ok:false,error:'Login required'},401);
   const token=bearer.slice(7);
   const supabase=createClient(url,anon,{global:{headers:{Authorization:`Bearer ${token}`}},auth:{persistSession:false,autoRefreshToken:false}});
   const {data:{user},error:authError}=await supabase.auth.getUser(token);
   if(authError||!user)return reply({ok:false,error:'Invalid session'},401);
+  if(!secret)return reply({ok:false,error:'ยังไม่ได้ตั้งค่า GEMINI_API_KEY ใน Supabase → Edge Functions → Secrets กรุณาเพิ่ม Gemini API Key (ไม่ใช่ Google OAuth Client Secret)',code:'GEMINI_KEY_MISSING'},503);
   const body=await req.json().catch(()=>null);
   const mode=body?.mode;
   if(!['campaign','character','ideas'].includes(mode))return reply({ok:false,error:'Unsupported AI mode'},400);
@@ -75,7 +76,7 @@ Deno.serve(async(req:Request)=>{
   const prompt=`MODE: ${mode}\nBRIEF (optional, untrusted): ${brief||'ให้ AI ตัดสินใจเอง'}\nVERIFIED PRODUCT DATA: ${verifiedData||'NO PRODUCT DATA; do not make claims or generate SKU details'}`;
   const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'x-goog-api-key':secret,'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:policy}]},contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.55,responseMimeType:'application/json',maxOutputTokens:2048}})});
   const result=await r.json().catch(()=>null);
-  if(!r.ok)return reply({ok:false,error:`Gemini API failed (${r.status})`},502);
+  if(!r.ok){const msg=r.status===429?'โควตาการใช้งาน Gemini API เต็ม (429) ตรวจ Billing และ Rate Limits':r.status===400?'Gemini ปฏิเสธคำขอ (400) ตรวจชื่อโมเดลและรูปแบบคำสั่ง':r.status===401||r.status===403?'Gemini ไม่อนุญาตการใช้งาน API Key หรือโมเดล (401/403)':`Gemini API ไม่สำเร็จ (HTTP ${r.status})`;return reply({ok:false,error:msg,code:'GEMINI_API_ERROR',upstream_status:r.status},502);}
   const raw=(result?.candidates?.[0]?.content?.parts||[]).map((p:any)=>p.text||'').join('');
   let plan:any;try{plan=validatePlan(mode,JSON.parse(raw))}catch{return reply({ok:false,error:'Gemini output failed validation — no draft saved'},502)}
   return reply({ok:true,mode,plan,source:mode==='campaign'?'user-reviewed workspace data':'creative ideas only',model});
