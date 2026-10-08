@@ -216,7 +216,10 @@ async function init(){
   ms.plots=plots.plots||[];ms.previews=new Map(previews.flatMap(x=>Object.entries(x.files||{})));
   ms.visual=new Map((visual.layers||[]).map(x=>[x.plot+"|"+x.date+"|"+x.mode,x]));
   ms.full=new Map(fulls.flatMap(x=>x.layers||[]).map(x=>[x.plot+"|"+x.date+"|"+(x.mode==="false_color"?"false":x.mode==="true_color"?"true":x.mode),x]));
-  ms.plot=ms.plots.some(p=>p.plot==="13-STC")?"13-STC":ms.plots[0]?.plot;ms.ready=true;
+  const urlPlot=new URLSearchParams(location.search).get("plot");
+  const selectedPlot=typeof selected!=="undefined"&&selected?.plot?selected.plot:null;
+  ms.plot=ms.plots.some(p=>p.plot===selectedPlot)?selectedPlot:ms.plots.some(p=>p.plot===urlPlot)?urlPlot:ms.plots.some(p=>p.plot==="13-STC")?"13-STC":ms.plots[0]?.plot;
+  ms.ready=true;
   refreshInputs();updateCenter();renderSummary();redrawMap();
   eltxt("compare-loading",ms.rows.length+" ไฟล์ • "+ms.water.length+" ขอบน้ำรายวัน • "+ms.newwater.length+" พื้นที่น้ำใหม่ (รอบ Verified)");
   if($("report-type")?.value==="compare")renderReport();
