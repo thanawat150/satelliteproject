@@ -49,7 +49,7 @@ async function init(){
   selectPlot(initial,false);
   await loadSatelliteLibrary();
   const requestedTab=params.get('tab');
-  if(['overview','map','impact','satellite','calendar','compare','hotspots','report'].includes(requestedTab)) switchTab(requestedTab,false);
+  if(['overview','map','impact','satellite','calendar','compare','hotspots','alerts','report'].includes(requestedTab)) switchTab(requestedTab,false);
   if(params.get('report')==='verified'){
     document.getElementById('report-type').value='verified';
     switchTab('report',false);
@@ -67,7 +67,7 @@ function bindUI(){
   document.getElementById('map-sat-visible')?.addEventListener('change',e=>{mapSatelliteVisible=e.target.checked;updateMapSatelliteOverlay(selected)});
   document.getElementById('map-sat-opacity')?.addEventListener('input',e=>{mapSatelliteOpacity=Number(e.target.value)/100;Object.values(satelliteImageLayers).forEach(l=>l?.setOpacity(mapSatelliteOpacity))});
 }
-function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap){fullMap.invalidateSize();if(selected){populateMapSatelliteDates(selected);updateMapSatelliteOverlay(selected);focusMaps(selected)}}if(tab==='overview'&&overviewMap)overviewMap.invalidateSize();window.MonitoringStudio?.showTab?.(tab);if(tab==='report')renderReportPreview()},160)}
+function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap){fullMap.invalidateSize();if(selected){populateMapSatelliteDates(selected);updateMapSatelliteOverlay(selected);focusMaps(selected)}}if(tab==='overview'&&overviewMap)overviewMap.invalidateSize();window.MonitoringStudio?.showTab?.(tab);if(tab==='alerts')window.AlertCenter?.show?.();if(tab==='report')renderReportPreview()},160)}
 function openReportCenter(){switchTab('report');renderReportPreview()}
 function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};plots.forEach(p=>c[p.status]++);document.getElementById('kpi-total').textContent=plots.length;document.getElementById('kpi-high').textContent=c.HIGH;document.getElementById('kpi-watch').textContent=c.WATCH;document.getElementById('kpi-nodata').textContent=c.NO_DATA}
 function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div><div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.onclick=()=>selectPlot(p);list.appendChild(d)})}
