@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261008-fullindex1" />
+  <link rel="stylesheet" href="styles.css?v=20261008-calendar1" />
 </head>
 <body>
   <header class="topbar">
@@ -49,6 +49,7 @@
         <button class="tab" data-tab="map">แผนที่</button>
         <button class="tab" data-tab="impact">Impact Matrix</button>
         <button class="tab" data-tab="satellite">ภาพดาวเทียม</button>
+        <button class="tab" data-tab="calendar">ปฏิทิน</button>
         <button class="tab" data-tab="report">Report Center</button>
       </nav>
 
@@ -149,6 +150,15 @@
         </section>
       </section>
 
+      <section class="tab-panel" id="tab-calendar">
+        <section class="card full-card cal-card">
+          <div class="card-head">
+            <div><div class="eyebrow">SATELLITE MONITORING CALENDAR</div><h3>ปฏิทินภาพดาวเทียมและรอบตรวจข้อมูล</h3><p>ดูวันที่มีภาพจริง คุณภาพข้อมูล และกำหนดตรวจทุก 3 วัน + วันจันทร์ • คลิกวันที่เพื่อเปิดภาพหรือรายงาน</p></div>
+          </div>
+          <div id="calendar-root" class="calendar-root"><p class="cal-loading">กำลังโหลดปฏิทิน...</p></div>
+        </section>
+      </section>
+
       <section class="tab-panel" id="tab-impact">
         <section class="card full-card"><div class="card-head"><div><div class="eyebrow">IMPACT MATRIX</div><h3>เปรียบเทียบทุกแปลงในหน้าเดียว</h3></div><div class="card-actions"><button class="ghost-btn" onclick="downloadCSV()">ดาวน์โหลด CSV</button><p>คลิกแถวเพื่อเปิดรายละเอียด</p></div></div><div class="table-scroll"><table><thead><tr><th>แปลง</th><th>สถานะน้ำ</th><th>น้ำเดิม</th><th>น้ำล่าสุด</th><th>น้ำใหม่</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>สภาพพืช</th></tr></thead><tbody id="impact-body"></tbody></table></div></section>
       </section>
@@ -212,6 +222,7 @@
 
   <script src="map-studio.js?v=20261008-fullindex1"></script>
   <script src="trend-report.js?v=20261008-fullindex1"></script>
-  <script src="app.js?v=20261008-fullindex1"></script>
+  <script src="app.js?v=20261008-calendar1"></script>
+  <script src="calendar.js?v=20261008-calendar1"></script>
 </body>
 </html>
