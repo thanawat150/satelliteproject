@@ -64,6 +64,10 @@ async function init(){
  $("studio-export-svg")?.addEventListener("click",exportSVG);
  $("studio-export-png")?.addEventListener("click",exportPNG);
  updateInputs();
+ if(typeof selected!=='undefined' && selected){
+   populateMapSatelliteDates(selected);
+   render(selected);
+ }
 }
 function updateInputs(){
  $("studio-mode").value=state.mode;$("studio-preset").value=state.preset;
@@ -74,7 +78,10 @@ function syncModes(p){
  if(!p)return;
  const d=date(),e=$("studio-mode");
  [...e.options].forEach(o=>{if(o.value!=="true"){o.disabled=!available(p,d,o.value);o.title=o.disabled?"ยังไม่มีชั้นภาพจาก raster ของวัน/แปลงนี้":"";}});
- if(e.querySelector('option[value="'+state.mode+'"]')?.disabled)state.mode="true";
+ const truth=pick(p,d,"true");
+ if((state.mode==="true"&&!truth) || e.querySelector('option[value="'+state.mode+'"]')?.disabled){
+   state.mode=truth?"true":(["mndwi","ndmi","ndre","ndvi","false","bsi"].find(m=>available(p,d,m))||"true");
+ }
  e.value=state.mode;
  const isIndex=MODES[state.mode].type==="index", legend=$("studio-legend");
  legend.hidden=!isIndex;
@@ -153,7 +160,7 @@ function exportSVG(){if(!current)return notify("ยังไม่มีภา�
 async function exportPNG(){
  if(!current)return notify("ยังไม่มีภาพที่จะส่งออก");
  const u=new URL(current.url,location.href);
- if(u.origin!==location.origin)return notify("ไฟล์ JPG ใน Drive ไม่อนุญาตสร้าง PNG ผ่านเว็บ กรุณาใช้ Export SVG หรือ Quick Report PDF");
+ if(!current.url.startsWith("data:")&&u.origin!==location.origin)return notify("ไฟล์ JPG ใน Drive ไม่อนุญาตสร้าง PNG ผ่านเว็บ กรุณาใช้ Export SVG หรือ Quick Report PDF");
  const raw=svg({...current,style:{...state},opacity:mapSatelliteOpacity}),blob=new Blob([raw],{type:"image/svg+xml"}),src=URL.createObjectURL(blob);
  try{const im=new Image();im.src=src;await im.decode();const c=document.createElement("canvas");c.width=1200;c.height=Math.round(c.width*im.height/im.width);c.getContext("2d").drawImage(im,0,0,c.width,c.height);c.toBlob(b=>{if(!b)return notify("Export PNG ไม่สำเร็จ");const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=safe(current.plot)+"_"+current.date+"_"+state.mode+".png";a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}, "image/png");}
  catch(e){console.warn(e);notify("Export PNG ไม่สำเร็จ ใช้ SVG หรือ PDF แทน");}finally{URL.revokeObjectURL(src)}
