@@ -92,6 +92,27 @@ for row in sat_files:
     if not row.get("url") or not row.get("preview_url"):
         errors.append(f"{row.get('plot')}: satellite row missing Drive URL")
 
+# Existing TIFF gallery: every listed source file must have a browser-ready WebP.
+display_ready=0
+for i, part in enumerate(sat_parts.get("parts",[]), start=1):
+    display_path=ROOT/"docs/data"/f"existing_display_part_{i}.json"
+    if not display_path.exists():
+        errors.append(f"Missing image previews for satellite part {i}")
+        continue
+    previews=json.loads(display_path.read_text(encoding="utf-8")).get("files",{})
+    source_path=ROOT/"docs/data"/part["file"]
+    if not source_path.exists():
+        continue
+    for row in json.loads(source_path.read_text(encoding="utf-8")):
+        name=row.get("title")
+        image=previews.get(name,{})
+        if not image.get("src","").startswith("data:image/webp;base64,"):
+            errors.append(f"Missing image preview: {name}")
+        elif image.get("kind") is None or not image.get("width") or not image.get("height"):
+            errors.append(f"Invalid image metadata: {name}")
+        else:
+            display_ready+=1
+
 # Map Studio: compact real-raster spectral views
 studio=json.loads((ROOT/"docs/data/visual_layers.json").read_text(encoding="utf-8"))
 map_modes={"false","ndvi","ndre","ndmi","mndwi","bsi"}
@@ -125,4 +146,4 @@ if errors:
     for e in errors: print(" -",e)
     sys.exit(1)
 
-print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays, {len(sat_files)} satellite files, {len(view_ids)} map studio spectral layers")
+print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays, {len(sat_files)} satellite files, {display_ready} ready web previews, {len(view_ids)} map studio spectral layers")
