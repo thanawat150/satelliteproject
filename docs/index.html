@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261008-livereport3" />
+  <link rel="stylesheet" href="styles.css?v=20261008-alertfix2" />
 </head>
 <body>
   <header class="topbar">
@@ -53,7 +53,7 @@
         <button class="tab" data-tab="calendar">ปฏิทิน</button>
         <button class="tab" data-tab="compare">เปรียบเทียบ 2 วัน</button>
         <button class="tab" data-tab="hotspots">พื้นที่เฝ้าระวัง</button>
-        <button class="tab" data-tab="alerts">แจ้งเตือนแปลงผิดปกติ</button>
+        <button class="tab" data-tab="alerts">แจ้งเตือนแปลงผิดปกติ<span id="nav-alert-count"></span></button>
         <button class="tab" data-tab="report">Report Center</button>
       </nav>
 
@@ -306,11 +306,11 @@
   <script src="map-studio.js?v=20261008-fullindex1"></script>
   <script src="trend-report.js?v=20261008-livereport3"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261008-livereport4"></script>
-  <script src="monitoring-qa.js?v=20261008-fixcompare1"></script>
-  <script src="alert-engine.js?v=20261008-fixcompare1"></script>
-  <script src="alert-center.js?v=20261008-fixcompare1"></script>
-  <script src="monitoring-studio.js?v=20261008-fixcompare1"></script>
+  <script src="app.js?v=20261008-alertfix2"></script>
+  <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
+  <script src="alert-engine.js?v=20261008-alertfix2"></script>
+  <script src="alert-center.js?v=20261008-alertfix2"></script>
+  <script src="monitoring-studio.js?v=20261008-alertfix2"></script>
   <script src="calendar.js?v=20261008-monitor2"></script>
 </body>
 </html>
