@@ -290,3 +290,14 @@
 @media(max-width:920px){.alert-layout{grid-template-columns:1fr}.alert-map{height:310px}.alert-list{max-height:none}}
 @media(max-width:600px){#tab-alerts .alert-kpis{grid-template-columns:1fr 1fr}.alert-filters{gap:8px}.alert-filters label{flex:1 1 140px}.alert-filters select{width:100%;min-width:0}.cmp-layer-label small{font-size:9px}}
 @media print{#tab-alerts{display:none!important}}
+
+
+/* Dashboard office alerts and calendar history */
+.overview-alert-strip{display:flex;align-items:center;gap:10px 15px;flex-wrap:wrap;background:#edf7fb;border:1px solid #cfe5ef;border-left:4px solid #3186ac;border-radius:9px;padding:12px 16px;margin-bottom:15px;color:#31546a}
+.overview-alert-strip strong{font-size:13px;font-weight:700}
+.overview-alert-strip span{color:#567a90;font-size:12px}
+.overview-alert-strip small{flex:1 1 100%;font-size:10px;color:#6a8292}
+.overview-alert-strip .ghost-btn{padding:7px 13px;margin-left:auto}
+.cal-alert-dot{background:#e06b54!important}
+.alert-plot-only{display:block;width:100%;border:1px solid #cadde7;background:#f5fafd;color:#2d607f;border-radius:8px;padding:8px 10px;margin-top:10px;font:600 12px 'IBM Plex Sans Thai',sans-serif;cursor:pointer}
+.alert-plot-only.is-active{background:#d8edf7;border-color:#8eb8cc;color:#124761}
