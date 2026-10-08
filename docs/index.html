@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261008-calendar1" />
+  <link rel="stylesheet" href="styles.css?v=20261008-monitor1" />
 </head>
 <body>
   <header class="topbar">
@@ -50,6 +50,8 @@
         <button class="tab" data-tab="impact">Impact Matrix</button>
         <button class="tab" data-tab="satellite">ภาพดาวเทียม</button>
         <button class="tab" data-tab="calendar">ปฏิทิน</button>
+        <button class="tab" data-tab="compare">เปรียบเทียบ 2 วัน</button>
+        <button class="tab" data-tab="hotspots">พื้นที่เฝ้าระวัง</button>
         <button class="tab" data-tab="report">Report Center</button>
       </nav>
 
@@ -81,6 +83,7 @@
           </section>
         </div>
 
+        <section class="card monitoring-update-center" id="monitoring-update-center"><p>กำลังโหลดสถานะอัปเดต...</p></section>
         <div class="lower-grid">
           <section class="card"><div class="card-head"><div><div class="eyebrow">CHANGE PROFILE</div><h3>ก่อน → ปัจจุบัน</h3></div></div><div class="chart-wrap"><canvas id="change-chart"></canvas></div></section>
           <section class="card"><div class="card-head"><div><div class="eyebrow">PRIORITY</div><h3>แปลงที่ควรดูเป็นอันดับแรก</h3></div></div><div id="priority-list" class="priority-list"></div></section>
@@ -159,6 +162,46 @@
         </section>
       </section>
 
+      <section class="tab-panel" id="tab-compare">
+        <section class="card full-card">
+          <div class="card-head"><div><div class="eyebrow">SATELLITE CHANGE COMPARISON</div><h3>เปรียบเทียบภาพดาวเทียม 2 วัน</h3><p>เลือกแปลง วันที่ และชั้นภาพจริง ระบบจะใช้ตำแหน่งพิกัดของ GeoTIFF ในการซ้อนภาพ</p><p id="compare-loading">กำลังโหลดภาพและขอบเขตที่มีอยู่...</p></div></div>
+          <div class="cmp-toolbar">
+            <label>แปลง<select id="compare-plot"></select></label>
+            <label>วันที่ A (ก่อน)<select id="compare-date-a"></select></label>
+            <label>วันที่ B (หลัง)<select id="compare-date-b"></select></label>
+            <label>ชั้นภาพ<select id="compare-layer">
+              <option value="true">True Color B4-B3-B2</option><option value="false">False Color B8-B4-B3</option>
+              <option value="mndwi">MNDWI — น้ำเปิด</option><option value="ndvi">NDVI — พืช</option>
+              <option value="ndre">NDRE — ใบพืช</option><option value="ndmi">NDMI — ความชื้น</option>
+              <option value="bsi">BSI — ดินเปิด</option>
+            </select></label>
+            <label>การเปรียบเทียบ<select id="compare-mode"><option value="side">ภาพคู่ Side-by-side</option><option value="swipe">เลื่อน Before/After</option><option value="change">ขอบเขตการเปลี่ยนแปลง</option></select></label>
+          </div>
+          <div class="cmp-options">
+            <label><input id="compare-boundary" type="checkbox" checked> ขอบเขตแปลง</label>
+            <label><input id="compare-water" type="checkbox" checked> ขอบเขตน้ำตามวันที่ (ถ้ามี)</label>
+            <label><input id="compare-newwater" type="checkbox" checked> น้ำใหม่รอบ Verified</label>
+          </div>
+          <div id="compare-map-wrap" class="cmp-map-wrap">
+            <div class="cmp-map-panel"><div id="compare-map-a" class="cmp-map"></div><span id="compare-qa-a" class="cmp-map-label">วันที่ A</span></div>
+            <div class="cmp-map-panel"><div id="compare-map-b" class="cmp-map"></div><span id="compare-qa-b" class="cmp-map-label">วันที่ B</span></div>
+          </div>
+          <div class="cmp-slider"><label>เส้นเปรียบเทียบ <strong id="compare-split-value">50%</strong></label><input id="compare-split" type="range" min="5" max="95" value="50"></div>
+          <p class="cmp-note" id="compare-note"></p>
+          <div class="cmp-summary" id="compare-summary"></div>
+          <div class="cmp-buttons"><button class="primary-btn" type="button" id="compare-to-report">ใช้คู่วันที่นี้สร้าง Report</button><button class="ghost-btn" type="button" id="compare-export-csv">ส่งออกข้อมูลเปรียบเทียบ CSV</button></div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="tab-hotspots">
+        <section class="card full-card">
+          <div class="card-head"><div><div class="eyebrow">REMOTE MONITORING HOTSPOTS</div><h3>พื้นที่เปลี่ยนแปลงที่ควรติดตามจากออฟฟิศ</h3><p>แสดงตำแหน่งเฉพาะเมื่อมี Polygon จริง • ไม่สร้างจุดสมมติจากค่าดัชนีเฉลี่ยทั้งแปลง</p></div></div>
+          <div class="cmp-toolbar"><label>เลือกแปลง<select id="hotspot-plot"></select></label><button class="ghost-btn" type="button" id="hotspot-open-compare">เปิดเปรียบเทียบภาพ</button></div>
+          <div class="cmp-hotspot-layout"><div id="hotspot-map" class="cmp-hotspot-map"></div><div id="hotspot-results" class="cmp-hotspot-results"></div></div>
+          <p class="cmp-note">Monitoring Hotspots คือข้อบ่งชี้สำหรับตรวจภาพเพิ่มเติม ไม่ใช่หลักฐานยืนยันสาเหตุของน้ำท่วม พืชตาย หรือการบุกรุก ต้องพิจารณาเมฆและน้ำขึ้นน้ำลงประกอบ</p>
+        </section>
+      </section>
+
       <section class="tab-panel" id="tab-impact">
         <section class="card full-card"><div class="card-head"><div><div class="eyebrow">IMPACT MATRIX</div><h3>เปรียบเทียบทุกแปลงในหน้าเดียว</h3></div><div class="card-actions"><button class="ghost-btn" onclick="downloadCSV()">ดาวน์โหลด CSV</button><p>คลิกแถวเพื่อเปิดรายละเอียด</p></div></div><div class="table-scroll"><table><thead><tr><th>แปลง</th><th>สถานะน้ำ</th><th>น้ำเดิม</th><th>น้ำล่าสุด</th><th>น้ำใหม่</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>สภาพพืช</th></tr></thead><tbody id="impact-body"></tbody></table></div></section>
       </section>
@@ -208,7 +251,14 @@
           <section class="card report-controls">
             <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3>
             <label>เลือกแปลง<select id="report-plot"></select></label>
-            <label>รูปแบบ<select id="report-type"><option value="quick">Live Report — อัปเดตตามประวัติข้อมูล</option><option value="verified">Verified Report — 6 หน้า</option></select></label>
+            <label>รูปแบบ<select id="report-type"><option value="quick">Live Report — อัปเดตตามประวัติข้อมูล</option><option value="compare">Compare Report — เลือก 2 วัน</option><option value="verified">Verified Report — 6 หน้า</option></select></label><div class="cmp-report-controls"><label>วันที่ A<select id="report-date-a"></select></label><label>วันที่ B<select id="report-date-b"></select></label><p>เลือกกราฟสำหรับ Compare Report</p><div class="cmp-metrics">
+ <label><input data-monitor-metric type="checkbox" value="water" checked> พื้นที่น้ำ</label>
+ <label><input data-monitor-metric type="checkbox" value="ndvi" checked> NDVI</label>
+ <label><input data-monitor-metric type="checkbox" value="ndre" checked> NDRE</label>
+ <label><input data-monitor-metric type="checkbox" value="ndmi" checked> NDMI</label>
+ <label><input data-monitor-metric type="checkbox" value="mndwi"> MNDWI</label>
+ <label><input data-monitor-metric type="checkbox" value="bsi"> BSI</label>
+ <label><input data-monitor-metric type="checkbox" value="valid_pct"> คุณภาพภาพ (QA)</label></div></div>
             <div class="check-grid"><label><input type="checkbox" checked> สถานะน้ำ</label><label><input type="checkbox" checked> ดัชนีพืช</label><label><input type="checkbox" checked> Stable land</label><label><input type="checkbox" checked> QA / วันที่</label></div>
             <button class="primary-btn wide" onclick="renderReportPreview()">Preview Report</button>
             <button class="ghost-btn wide" id="print-report-btn" onclick="printReport()">Export Quick Report เป็น PDF</button>
@@ -222,7 +272,8 @@
 
   <script src="map-studio.js?v=20261008-fullindex1"></script>
   <script src="trend-report.js?v=20261008-fullindex1"></script>
-  <script src="app.js?v=20261008-calendar1"></script>
+  <script src="app.js?v=20261008-monitor1"></script>
+  <script src="monitoring-studio.js?v=20261008-monitor1"></script>
   <script src="calendar.js?v=20261008-calendar1"></script>
 </body>
 </html>
