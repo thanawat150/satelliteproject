@@ -51,3 +51,29 @@ scripts/plan_job.py         วางแผนโดยไม่เรียก 
 ## สถานะ
 
 เวอร์ชันนี้เป็นแกนวางแผนงานแบบประหยัด Token ขั้นต่อไปคือเพิ่ม Provider adapters สำหรับ Earth Search, Planetary Computer, Copernicus Data Space, USGS และ NASA พร้อมระบบ clip-to-boundary และ manifest กลาง
+
+
+---
+
+## Rayong Flood & Environmental Monitoring Portal
+
+Prototype dashboard files are in `docs/`.
+
+Main features:
+
+- Rayong flood situation dashboard
+- plot status and priority ranking
+- Leaflet map
+- water / NDVI / NDRE / NDMI comparison
+- Impact Matrix
+- Report Center with browser PDF export
+- link to verified PDF reports in Google Drive
+
+To publish with GitHub Pages:
+
+1. Open **Settings → Pages**
+2. Choose **Deploy from a branch**
+3. Branch: **main**
+4. Folder: **/docs**
+
+Expected site URL: `https://thanawat150.github.io/satelliteproject/`
