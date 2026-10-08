@@ -100,3 +100,13 @@ No real product claims or sample sales data are included in tests. Tests use syn
 ## Current published subfolder
 
 The static frontend is deployed into a new, isolated `docs/affiliate-studio/` folder in the user's existing GitHub Pages portal repository. This preserves the portal's existing root pages and makes the app available at `https://thanawat150.github.io/satelliteproject/affiliate-studio/`. In this static hosting configuration all business data remains local to the browser unless a separately created Supabase project is configured. There is no data API connection by default.
+
+## v7 (2026-10-08): Google Login + Gmail + Gemini AI Director
+
+- Main login button is Google via Supabase OAuth. Email Magic Link remains optional and requires Email provider/SMTP setup.
+- `?tab=ai` is AI Director: `campaign` from fresh user-reviewed product, `character` profile, and `ideas` (creative concepts without manufactured market claims). Results persist as **drafts only**.
+- `?tab=gmail` optionally requests Gmail read-only access via a separate Google OAuth consent. Gmail subject/from/date metadata is displayed locally; message content is **not** sent to Gemini and is **not** treated as source of product truth.
+- `supabase/functions/ai-director/index.ts` is the backend function that checks Supabase user JWT, uses per-user RLS, data freshness/approval, logs limited usage, calls Gemini using a server-only secret, and validates returned JSON before any draft is saved.
+- Set up instructions: [GOOGLE_AI_SETUP.md](GOOGLE_AI_SETUP.md).
+- Google Login, Gmail OAuth, and live Gemini generation are not active until a dedicated Supabase project, OAuth credentials and GEMINI_API_KEY are provisioned. There are **no credentials in this repo**.
+- AI cinematic video creation, auto posting, and basket tagging are still separate integrations and not represented as working.
