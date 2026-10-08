@@ -6,6 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 plots=json.loads((ROOT/"docs/data/plots.json").read_text(encoding="utf-8"))
 bounds=json.loads((ROOT/"docs/data/boundaries.geojson").read_text(encoding="utf-8"))
 new_water=json.loads((ROOT/"docs/data/new_water.geojson").read_text(encoding="utf-8"))
+sat_parts=json.loads((ROOT/"docs/data/satellite_parts.json").read_text(encoding="utf-8"))
 
 errors=[]
 items=plots.get("plots",[])
@@ -66,9 +67,34 @@ for f in nw_features:
     if expected is not None and stated is not None and abs(float(expected)-float(stated))>0.05:
         errors.append(f"{name}: new-water property differs from plots.json ({stated} vs {expected})")
 
+# Satellite library manifests
+sat_files=[]
+for part in sat_parts.get("parts",[]):
+    part_path=ROOT/"docs/data"/part["file"]
+    if not part_path.exists():
+        errors.append(f"missing satellite manifest part: {part['file']}")
+        continue
+    rows=json.loads(part_path.read_text(encoding="utf-8"))
+    sat_files.extend(rows)
+known=set(names)
+sat_ids=set()
+for row in sat_files:
+    rid=row.get("id")
+    if not rid:
+        errors.append("satellite row missing id")
+    elif rid in sat_ids:
+        errors.append(f"duplicate satellite file id: {rid}")
+    sat_ids.add(rid)
+    if row.get("plot") not in known:
+        errors.append(f"satellite row references unknown plot: {row.get('plot')}")
+    if not row.get("date"):
+        errors.append(f"{row.get('plot')}: satellite row missing date")
+    if not row.get("url") or not row.get("preview_url"):
+        errors.append(f"{row.get('plot')}: satellite row missing Drive URL")
+
 if errors:
     print("PORTAL VALIDATION FAILED")
     for e in errors: print(" -",e)
     sys.exit(1)
 
-print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays")
+print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays, {len(sat_files)} satellite files")
