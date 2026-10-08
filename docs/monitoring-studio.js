@@ -126,7 +126,7 @@ function refreshInputs(){
  if(!ms.B||!dates.includes(ms.B))ms.B=trusted.at(-1)||dates.at(-1)||dates[0];
  selectVal("compare-date-a",ms.A);selectVal("compare-date-b",ms.B);selectVal("report-date-a",ms.A);selectVal("report-date-b",ms.B);
 }
-function changePlot(p){if(!ms.ready||!ms.plots.some(x=>x.plot===p))return;ms.plot=p;ms.A=ms.B=null;refreshInputs();redrawMap();drawHotspots();renderSummary();renderReport()}
+function changePlot(p){if(!ms.ready||!ms.plots.some(x=>x.plot===p))return;ms.plot=p;ms.A=ms.B=null;refreshInputs();if(typeof selected!=="undefined"&&selected?.plot!==p&&typeof selectPlot==="function"&&typeof plots!=="undefined"){const row=plots.find(x=>x.plot===p);if(row)selectPlot(row,true)}redrawMap();drawHotspots();renderSummary();renderReport()}
 function renderSummary(){
  const p=ms.plot,a=observation(p,ms.A),b=observation(p,ms.B),x=$("compare-summary");
  if(!x)return;
