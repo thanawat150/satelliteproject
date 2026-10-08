@@ -21,6 +21,7 @@
     </div>
     <div class="top-actions">
       <span class="update-pill" id="updated-pill">กำลังโหลด...</span>
+      <button class="ghost-btn" onclick="copyShareLink()">คัดลอกลิงก์</button>
       <a class="ghost-btn" id="verified-folder" target="_blank" rel="noopener">Verified Reports</a>
       <button class="primary-btn" onclick="openReportCenter()">สร้าง Report</button>
     </div>
@@ -89,7 +90,7 @@
       </section>
 
       <section class="tab-panel" id="tab-impact">
-        <section class="card full-card"><div class="card-head"><div><div class="eyebrow">IMPACT MATRIX</div><h3>เปรียบเทียบทุกแปลงในหน้าเดียว</h3></div><p>คลิกแถวเพื่อเปิดรายละเอียด</p></div><div class="table-scroll"><table><thead><tr><th>แปลง</th><th>สถานะน้ำ</th><th>น้ำเดิม</th><th>น้ำล่าสุด</th><th>น้ำใหม่</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>สภาพพืช</th></tr></thead><tbody id="impact-body"></tbody></table></div></section>
+        <section class="card full-card"><div class="card-head"><div><div class="eyebrow">IMPACT MATRIX</div><h3>เปรียบเทียบทุกแปลงในหน้าเดียว</h3></div><div class="card-actions"><button class="ghost-btn" onclick="downloadCSV()">ดาวน์โหลด CSV</button><p>คลิกแถวเพื่อเปิดรายละเอียด</p></div></div><div class="table-scroll"><table><thead><tr><th>แปลง</th><th>สถานะน้ำ</th><th>น้ำเดิม</th><th>น้ำล่าสุด</th><th>น้ำใหม่</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>สภาพพืช</th></tr></thead><tbody id="impact-body"></tbody></table></div></section>
       </section>
 
       <section class="tab-panel" id="tab-report">
@@ -97,13 +98,13 @@
           <section class="card report-controls">
             <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3>
             <label>เลือกแปลง<select id="report-plot"></select></label>
-            <label>รูปแบบ<select id="report-type"><option value="quick">Quick Report — 1 หน้า</option><option value="full">Full Report — Preview สรุป</option></select></label>
+            <label>รูปแบบ<select id="report-type"><option value="quick">Quick Report — 1 หน้า</option><option value="verified">Verified Report — 6 หน้า</option></select></label>
             <div class="check-grid"><label><input type="checkbox" checked> สถานะน้ำ</label><label><input type="checkbox" checked> ดัชนีพืช</label><label><input type="checkbox" checked> Stable land</label><label><input type="checkbox" checked> QA / วันที่</label></div>
             <button class="primary-btn wide" onclick="renderReportPreview()">Preview Report</button>
-            <button class="ghost-btn wide" onclick="printReport()">Export PDF / Print</button>
+            <button class="ghost-btn wide" id="print-report-btn" onclick="printReport()">Export Quick Report เป็น PDF</button>
             <a class="ghost-btn wide" id="verified-folder-2" target="_blank" rel="noopener">เปิด Verified PDF ของแปลงนี้</a>
           </section>
-          <section class="report-paper" id="report-paper"></section>
+          <div class="report-viewer"><section class="report-paper" id="report-paper"></section><iframe id="verified-pdf-frame" class="verified-pdf-frame" title="Verified report preview"></iframe></div>
         </div>
       </section>
     </main>
