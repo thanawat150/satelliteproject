@@ -107,11 +107,14 @@ def change_feature(geom, current_crs, plot, date, other_props):
     return {"type": "Feature", "geometry": mapping(out), "properties": {"plot": plot, "date": date, **other_props}}
 
 
-def make_feature(mask, affine, crs, plot, date, cls, valid_px, source):
+def make_feature(mask, affine, crs, plot, date, cls, valid_px, source, plot_boundary):
     geom = mask_to_geometry(mask, affine)
     if geom is None:
         return None
-    area_rai = float(mask.sum() * abs(affine.a * affine.e) / 1600.0)
+    geom = clean_shape(geom.intersection(plot_boundary))
+    if geom.is_empty:
+        return None
+    area_rai = float(geom.area / 1600.0)
     return change_feature(geom, crs, plot, date, {
         "class": cls, "area_rai": round(area_rai, 3), "valid_pct": round(valid_px, 2),
         "analysis_status": source,
@@ -182,10 +185,12 @@ def analyze(plot: str, date: str, tif10: Path, tif20: Path, allow_verified=False
         clear = inside & np.isin(scl, GOOD_SCL) & np.isfinite(mndwi) & (np.abs(mndwi) <= 1.05)
         valid_pct = round(100 * float(clear.sum()) / float(inside.sum()), 2)
         status = "AUTO_VALID" if valid_pct >= 70 else "PARTIAL" if valid_pct >= 20 else "NO_DATA"
-        area_factor = abs(twenty.transform.a * twenty.transform.e) / 1600
         water_mask = clear & (mndwi > 0)
-        observed_water_rai = round(float(water_mask.sum()) * area_factor, 3)
-        water_total_pct = round(float(water_mask.sum()) / float(inside.sum()) * 100, 2)
+        water_geom = mask_to_geometry(water_mask, twenty.transform)
+        if water_geom is not None:
+            water_geom = clean_shape(water_geom.intersection(projected))
+        observed_water_rai = round(float(water_geom.area / 1600.0), 3) if water_geom is not None else 0.0
+        water_total_pct = round(float(water_geom.area / projected.area * 100), 2) if water_geom is not None else 0.0
         observed_water_pct_of_valid = round(float(water_mask.sum()) / float(clear.sum()) * 100, 2) if clear.any() else None
         row = {
             "date": date, "role": "auto_current" if status == "AUTO_VALID" else "qa_partial",
@@ -210,13 +215,13 @@ def analyze(plot: str, date: str, tif10: Path, tif20: Path, allow_verified=False
         hotspots = read_json("monitoring_hotspots.geojson", {"type": "FeatureCollection", "features": []})
         if status != "NO_DATA":
             waterf = make_feature(water_mask, twenty.transform, twenty.crs, plot, date,
-                                  "water", valid_pct, status)
+                                  "water", valid_pct, status, projected)
             if waterf:
                 waterf["properties"]["derived_water_rai"] = observed_water_rai
                 waterf["properties"]["threshold"] = "MNDWI > 0"
                 upsert_feature(water_fc, waterf, ["plot", "date"])
             valid_f = make_feature(clear, twenty.transform, twenty.crs, plot, date,
-                                   "valid_coverage", valid_pct, status)
+                                   "valid_coverage", valid_pct, status, projected)
             upsert_feature(valid_fc, valid_f, ["plot", "date"])
             # Exclusive base classes: water takes precedence over vegetation, then bare soil.
             veg = clear & ~water_mask & np.isfinite(ndvi) & (ndvi >= 0.35)
@@ -225,7 +230,7 @@ def analyze(plot: str, date: str, tif10: Path, tif20: Path, allow_verified=False
             # Wet is an overlapping status layer, not an additional base-class area.
             for cls, mask in [("vegetation", veg), ("bare_soil", soil), ("wetness", wet)]:
                 upsert_feature(cover_fc, make_feature(mask, twenty.transform, twenty.crs,
-                    plot, date, cls, valid_pct, status), ["plot", "date", "class"])
+                    plot, date, cls, valid_pct, status, projected), ["plot", "date", "class"])
             # Change polygons are produced only if both dates have stored valid-coverage geometries.
             trusted_prev = sorted(
                 [r for r in old_rows if r.get("date", "") < date and
@@ -241,7 +246,7 @@ def analyze(plot: str, date: str, tif10: Path, tif20: Path, allow_verified=False
                 if prev_cov and prev_water:
                     overlap = geoms_as_crs(prev_cov, twenty.crs).intersection(geoms_as_crs(valid_f, twenty.crs))
                     before_w = geoms_as_crs(prev_water, twenty.crs)
-                    now_w = mask_to_geometry(water_mask, twenty.transform)
+                    now_w = water_geom
                     if now_w is not None and not overlap.is_empty:
                         new_area = clean_shape(now_w.difference(before_w).intersection(overlap))
                         loss_area = clean_shape(before_w.difference(now_w).intersection(overlap))
