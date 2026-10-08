@@ -5,6 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 plots=json.loads((ROOT/"docs/data/plots.json").read_text(encoding="utf-8"))
 bounds=json.loads((ROOT/"docs/data/boundaries.geojson").read_text(encoding="utf-8"))
+new_water=json.loads((ROOT/"docs/data/new_water.geojson").read_text(encoding="utf-8"))
 
 errors=[]
 items=plots.get("plots",[])
@@ -47,9 +48,27 @@ for f in features:
         if diff>0.01:
             errors.append(f"{name}: geometry area differs from official area by {diff:.2%}")
 
+nw_features=new_water.get("features",[])
+nw_names=[f.get("properties",{}).get("plot") for f in nw_features]
+if len(set(nw_names))!=len(nw_names):
+    errors.append("duplicate plot names in new_water.geojson")
+valid_water_names={p["plot"] for p in items if p.get("status")!="NO_DATA" and (p.get("new_water_rai") or 0)>0}
+if set(nw_names)!=valid_water_names:
+    errors.append(f"new-water mismatch: missing={sorted(valid_water_names-set(nw_names))}, extra={sorted(set(nw_names)-valid_water_names)}")
+for f in nw_features:
+    p=f.get("properties",{})
+    name=p.get("plot")
+    geom=f.get("geometry") or {}
+    if geom.get("type") not in ("Polygon","MultiPolygon"):
+        errors.append(f"{name}: new-water geometry is not polygonal ({geom.get('type')})")
+    expected=next((x.get("new_water_rai") for x in items if x.get("plot")==name),None)
+    stated=p.get("new_water_rai")
+    if expected is not None and stated is not None and abs(float(expected)-float(stated))>0.05:
+        errors.append(f"{name}: new-water property differs from plots.json ({stated} vs {expected})")
+
 if errors:
     print("PORTAL VALIDATION FAILED")
     for e in errors: print(" -",e)
     sys.exit(1)
 
-print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries")
+print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays")
