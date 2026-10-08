@@ -15,6 +15,16 @@ async function load(){
  return loading;
 }
 function rows(plot){return [...(history?.plots?.[plot]||[])].sort((a,b)=>a.date.localeCompare(b.date))}
+function imageDates(plot){
+  try{
+    if(typeof satelliteFiles==='undefined')return[];
+    return [...new Set(satelliteFiles.filter(x=>x.plot===plot&&x.sensor==='Sentinel-2').map(x=>x.date).filter(Boolean))].sort();
+  }catch(_){return[]}
+}
+function pendingIndexDates(plot){
+  const analyzed=new Set(rows(plot).filter(x=>["VERIFIED","AUTO_VALID","PARTIAL"].includes(x.analysis_status)).map(x=>x.date));
+  return imageDates(plot).filter(d=>!analyzed.has(d));
+}
 function latestTrusted(plot){return rows(plot).filter(trusted).at(-1)||null}
 function previousTrusted(plot){const a=rows(plot).filter(trusted);return a.length>1?a.at(-2):null}
 function liveSnapshot(plot){
@@ -109,8 +119,10 @@ async function render(plot,paper){
  const old=paper.querySelector(".live-trend-section");if(old)old.remove();
  const snap=liveSnapshot(plot),all=rows(plot);
  const root=document.createElement("section");root.className="report-section live-trend-section";
- root.innerHTML=`<div class="live-title-row"><div><h4>แนวโน้มตามเวลา / Live Analysis History</h4><p>${summarize(plot)}</p></div><span class="live-update">ข้อมูล ${all.length} รอบ • history updated ${history.generated_at?new Date(history.generated_at).toLocaleString("th-TH"):"—"}</span></div>
- <div class="live-kpis"><div><span>รอบข้อมูลทั้งหมด</span><strong>${all.length}</strong></div><div><span>Current ที่ผ่าน QA</span><strong>${snap?dth(snap.current.date):"—"}</strong></div><div><span>พื้นที่น้ำ Current</span><strong>${snap?fmt(snap.current.water_rai)+" ไร่":"—"}</strong></div><div><span>Usable pixels</span><strong>${snap?fmt(snap.current.valid_pct)+"%":"—"}</strong></div></div>
+ const imgDates=imageDates(plot),pending=pendingIndexDates(plot),latestImage=imgDates.at(-1)||null;
+ root.innerHTML=`<div class="live-title-row"><div><h4>แนวโน้มตามเวลา / Live Analysis History</h4><p>${summarize(plot)}</p></div><span class="live-update">ข้อมูลวิเคราะห์ ${all.length} รอบ • history updated ${history.generated_at?new Date(history.generated_at).toLocaleString("th-TH"):"—"}</span></div>
+ <div class="live-kpis"><div><span>ภาพล่าสุด</span><strong>${latestImage?dth(latestImage):"—"}</strong></div><div><span>Current ที่ผ่าน QA</span><strong>${snap?dth(snap.current.date):"—"}</strong></div><div><span>พื้นที่น้ำ Current</span><strong>${snap?fmt(snap.current.water_rai)+" ไร่":"—"}</strong></div><div><span>รอดัชนี</span><strong>${pending.length}</strong></div></div>
+ ${pending.length?`<div class="live-pending"><b>ภาพพร้อม แต่ดัชนียังไม่ครบ:</b> ${pending.map(d=>dth(d)).join(", ")} • วันที่เหล่านี้เปิดดูภาพได้ แต่ยังไม่ใช้คำนวณ Report จนกว่าไฟล์ดัชนีจริงจะถูกอัปโหลด</div>`:""}
  <div class="live-grid"><article><h5>ขอบเขตน้ำตามเวลา</h5><div class="live-chart"><canvas data-chart="water"></canvas></div></article><article><h5>น้ำเพิ่ม/ลดจากรอบก่อน</h5><div class="live-chart"><canvas data-chart="water-change"></canvas></div></article><article><h5>พืช: NDVI / NDRE</h5><div class="live-chart"><canvas data-chart="vegetation"></canvas></div></article><article><h5>น้ำและความชื้น: NDMI / MNDWI</h5><div class="live-chart"><canvas data-chart="moisture"></canvas></div></article><article class="live-wide"><h5>คุณภาพข้อมูลที่ใช้วิเคราะห์</h5><div class="live-chart live-chart-short"><canvas data-chart="qa"></canvas></div></article></div>
  <div class="live-water-map-wrap"></div>
  <div class="live-table-wrap"><table class="live-table"><thead><tr><th>วันที่</th><th>QA</th><th>Usable</th><th>น้ำ (ไร่)</th><th>น้ำ (%)</th><th>Δน้ำ (ไร่)</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>MNDWI</th><th>BSI</th></tr></thead><tbody>${tableRows(plot)}</tbody></table></div>
