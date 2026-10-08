@@ -47,6 +47,7 @@
         <button class="tab active" data-tab="overview">ภาพรวม</button>
         <button class="tab" data-tab="map">แผนที่</button>
         <button class="tab" data-tab="impact">Impact Matrix</button>
+        <button class="tab" data-tab="timeline">Timeline</button>
         <button class="tab" data-tab="report">Report Center</button>
       </nav>
 
@@ -90,6 +91,14 @@
 
       <section class="tab-panel" id="tab-impact">
         <section class="card full-card"><div class="card-head"><div><div class="eyebrow">IMPACT MATRIX</div><h3>เปรียบเทียบทุกแปลงในหน้าเดียว</h3></div><p>คลิกแถวเพื่อเปิดรายละเอียด</p></div><div class="table-scroll"><table><thead><tr><th>แปลง</th><th>สถานะน้ำ</th><th>น้ำเดิม</th><th>น้ำล่าสุด</th><th>น้ำใหม่</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>สภาพพืช</th></tr></thead><tbody id="impact-body"></tbody></table></div></section>
+      </section>
+
+      <section class="tab-panel" id="tab-timeline">
+        <section class="card full-card">
+          <div class="card-head"><div><div class="eyebrow">OBSERVATION TIMELINE</div><h3 id="timeline-title">ลำดับภาพที่ใช้ติดตาม</h3></div><p>แยกวันที่ใช้เป็น baseline / current / ภาพล่าสุดที่ตรวจ QA</p></div>
+          <div id="timeline-container" class="timeline-container"></div>
+          <div class="timeline-note">Timeline นี้แสดงเฉพาะวันที่ที่ใช้ในรอบวิเคราะห์ปัจจุบัน ส่วนเวอร์ชันถัดไปสามารถเพิ่มทุก observation date จาก Sentinel-2 ได้</div>
+        </section>
       </section>
 
       <section class="tab-panel" id="tab-report">
