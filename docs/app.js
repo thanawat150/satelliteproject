@@ -9,22 +9,28 @@ const VEG = {
 };
 let dataset=null, plots=[], selected=null, overviewMap=null, fullMap=null, chart=null, activeStatus='ALL';
 let boundaryFC=null, boundaryByPlot=new Map();
+let newWaterFC=null, newWaterByPlot=new Map();
 const mapLayers={overview:new Map(),full:new Map()};
+const newWaterLayers={overview:null,full:null};
 const fmt=n=>n===null||n===undefined||Number.isNaN(n)?'N/A':Number(n).toLocaleString('th-TH',{maximumFractionDigits:2});
 const idx=n=>n===null||n===undefined||Number.isNaN(n)?'N/A':Number(n).toFixed(3);
 const dateTH=s=>{if(!s||s.length!==8)return '—';return `${s.slice(6,8)}/${s.slice(4,6)}/${s.slice(0,4)}`};
 const delta=(a,b,digits=3)=>a==null||b==null?'N/A':`${b-a>=0?'+':''}${(b-a).toFixed(digits)}`;
 
 async function init(){
-  const [r,b]=await Promise.all([
+  const [r,b,w]=await Promise.all([
     fetch('data/plots.json',{cache:'no-store'}),
-    fetch('data/boundaries.geojson',{cache:'no-store'})
+    fetch('data/boundaries.geojson',{cache:'no-store'}),
+    fetch('data/new_water.geojson',{cache:'no-store'})
   ]);
   if(!r.ok) throw new Error(`plots.json HTTP ${r.status}`);
   if(!b.ok) throw new Error(`boundaries.geojson HTTP ${b.status}`);
+  if(!w.ok) throw new Error(`new_water.geojson HTTP ${w.status}`);
   dataset=await r.json(); plots=dataset.plots;
   boundaryFC=await b.json();
+  newWaterFC=await w.json();
   boundaryByPlot=new Map(boundaryFC.features.map(f=>[f.properties.plot,f]));
+  newWaterByPlot=new Map(newWaterFC.features.map(f=>[f.properties.plot,f]));
   document.getElementById('updated-pill').textContent=`อัปเดต ${dataset.updated}`;
   ['verified-folder','verified-folder-2'].forEach(id=>{const el=document.getElementById(id);el.href=dataset.report_folder});
   bindUI(); renderKPIs(); renderSidebar(); renderPriority(); renderMatrix(); initMaps(); populateReportSelect();
@@ -103,6 +109,31 @@ function updateMapHighlight(){
     });
   }
 }
+function updateNewWaterOverlay(p){
+  const feature=newWaterByPlot.get(p.plot);
+  const pairs=[[overviewMap,'overview'],[fullMap,'full']];
+  pairs.forEach(([map,key])=>{
+    if(!map)return;
+    if(newWaterLayers[key]){
+      map.removeLayer(newWaterLayers[key]);
+      newWaterLayers[key]=null;
+    }
+    if(!feature)return;
+    const layer=L.geoJSON(feature,{
+      style:{
+        color:'#38bdf8',
+        weight:1.5,
+        opacity:1,
+        fillColor:'#38bdf8',
+        fillOpacity:.42,
+        dashArray:'5 3'
+      }
+    }).addTo(map);
+    layer.bindPopup(`<b>${p.plot}</b><br><span style="color:#38bdf8">พื้นที่น้ำใหม่</span><br>ประมาณ ${fmt(feature.properties.new_water_rai)} ไร่<br><small>เทียบ ${dateTH(p.baseline)} → ${dateTH(p.current)}</small>`);
+    newWaterLayers[key]=layer;
+    if(layer.bringToFront)layer.bringToFront();
+  });
+}
 function focusMaps(p){
   [overviewMap,fullMap].forEach((m,i)=>{
     if(!m)return; const store=i===0?mapLayers.overview:mapLayers.full; const layer=store.get(p.plot);
@@ -110,6 +141,7 @@ function focusMaps(p){
     else if(p.lat&&p.lon) m.flyTo([p.lat,p.lon],14,{duration:.5});
   });
   updateMapHighlight();
+  updateNewWaterOverlay(p);
 }
 function openVerifiedReport(){if(selected?.report_url)window.open(selected.report_url,'_blank','noopener')}
 function updateQuery(values){
