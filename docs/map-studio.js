@@ -153,7 +153,10 @@ function svg(v){
 }
 function reportMarkup(p){
  if(!saved||saved.plot!==p.plot)return"";
- return '<div class="report-section studio-report-figure"><h4>ภาพประกอบจาก Map Viewer</h4><div class="studio-report-svg">'+svg(saved)+'</div><p>'+saved.plot+' • '+nice(saved.date)+' • '+MODES[saved.mode].name+'</p><small>ภาพใช้เพื่อแสดงผลและสื่อสารผลวิเคราะห์ ค่าสถิติในรายงานยังอ้างอิงผล raster ที่ตรวจสอบแล้ว</small></div>';
+ const isExternal=/^https?:/.test(saved.url);
+ const b=saved.bounds,lat=(b[0][0]+b[1][0])/2*Math.PI/180,ratio=(b[1][1]-b[0][1])*Math.cos(lat)/(b[1][0]-b[0][0]);
+ const imageHTML=isExternal?'<div class="studio-report-stage" style="aspect-ratio:'+ratio.toFixed(5)+'"><img class="studio-report-base" src="'+String(saved.url).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" style="opacity:'+saved.opacity+';filter:brightness('+saved.style.brightness+'%) contrast('+saved.style.contrast+'%) saturate('+saved.style.saturation+'%)" alt="ภาพสีจริงดาวเทียม"/><div class="studio-report-vector">'+svg(saved).replace(/<image\b[^>]*\/>/,'')+'</div></div>':svg(saved);
+ return '<div class="report-section studio-report-figure"><h4>ภาพประกอบจาก Map Viewer</h4><div class="studio-report-svg">'+imageHTML+'</div><p>'+saved.plot+' • '+nice(saved.date)+' • '+MODES[saved.mode].name+'</p><small>ภาพสำหรับแสดงผลและสื่อสารผลวิเคราะห์ ค่าสถิติในรายงานยังอ้างอิงผล raster ที่ตรวจสอบแล้ว</small></div>';
 }
 function saveFile(name,s,mime){const a=document.createElement("a"),u=URL.createObjectURL(new Blob([s],{type:mime}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 function exportSVG(){if(!current)return notify("ยังไม่มีภาพที่จะส่งออก");saveFile(safe(current.plot)+"_"+current.date+"_"+state.mode+".svg",svg({...current,style:{...state},opacity:mapSatelliteOpacity}),"image/svg+xml");notify("ส่งออก SVG แล้ว (ภาพฐานเชื่อมจาก URL ต้นทาง)")}
