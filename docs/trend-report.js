@@ -5,13 +5,13 @@ let history=null,waterFC=null,loading=null,charts=[],miniMap=null,miniLayers=[];
 const fmt=n=>n==null||Number.isNaN(Number(n))?"—":Number(n).toLocaleString("th-TH",{maximumFractionDigits:2});
 const dth=d=>{if(!d)return"—";const [y,m,dd]=d.split("-");return `${dd}/${m}/${y}`};
 const trusted=x=>x&&["VERIFIED","AUTO_VALID"].includes(x.analysis_status)&&(x.valid_pct==null||x.valid_pct>=70);
-async function load(){
- if(history)return history;
+async function load(force=false){
  if(loading)return loading;
+ if(history&&!force)return history;
  loading=Promise.all([
    fetch("data/analysis_history.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("analysis_history HTTP "+r.status);return r.json()}),
    fetch("data/water_history.geojson",{cache:"no-store"}).then(r=>r.ok?r.json():({type:"FeatureCollection",features:[]})).catch(()=>({type:"FeatureCollection",features:[]}))
- ]).then(([h,w])=>{history=h;waterFC=w;return h});
+ ]).then(([h,w])=>{history=h;waterFC=w;return h}).finally(()=>{loading=null});
  return loading;
 }
 function rows(plot){return [...(history?.plots?.[plot]||[])].sort((a,b)=>a.date.localeCompare(b.date))}
@@ -115,7 +115,7 @@ function renderWaterMap(plot,root){
 async function render(plot,paper){
  await load();
  if(!paper||!history?.plots?.[plot])return;
- decorateReport(plot,paper);
+ // Report headline is rendered from this same history by LiveReportModel.
  const old=paper.querySelector(".live-trend-section");if(old)old.remove();
  const snap=liveSnapshot(plot),all=rows(plot);
  const root=document.createElement("section");root.className="report-section live-trend-section";
