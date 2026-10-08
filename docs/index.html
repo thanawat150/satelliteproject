@@ -181,12 +181,15 @@
             <label><input id="compare-boundary" type="checkbox" checked> ขอบเขตแปลง</label>
             <label><input id="compare-water" type="checkbox" checked> ขอบเขตน้ำตามวันที่ (ถ้ามี)</label>
             <label><input id="compare-newwater" type="checkbox" checked> น้ำใหม่รอบ Verified</label>
+            <label><input id="compare-vegetation" type="checkbox" checked> ขอบเขตพืช (เมื่อมีผลวิเคราะห์)</label>
+            <label><input id="compare-soil" type="checkbox" checked> ขอบเขตดิน (เมื่อมีผลวิเคราะห์)</label>
           </div>
           <div id="compare-map-wrap" class="cmp-map-wrap">
             <div class="cmp-map-panel"><div id="compare-map-a" class="cmp-map"></div><span id="compare-qa-a" class="cmp-map-label">วันที่ A</span></div>
             <div class="cmp-map-panel"><div id="compare-map-b" class="cmp-map"></div><span id="compare-qa-b" class="cmp-map-label">วันที่ B</span></div>
           </div>
           <div class="cmp-slider"><label>เส้นเปรียบเทียบ <strong id="compare-split-value">50%</strong></label><input id="compare-split" type="range" min="5" max="95" value="50"></div>
+          <div class="cmp-options cmp-legend"><span><i style="background:#fa7064"></i> ขอบแปลง</span><span><i style="background:#23cbf0"></i> ขอบน้ำรายวัน</span><span><i style="background:#b2df52"></i> น้ำใหม่ Verified</span><span><i style="background:#42b971"></i> พืช</span><span><i style="background:#c49c61"></i> ดินเปิด</span></div>
           <p class="cmp-note" id="compare-note"></p>
           <div class="cmp-summary" id="compare-summary"></div>
           <div class="cmp-buttons"><button class="primary-btn" type="button" id="compare-to-report">ใช้คู่วันที่นี้สร้าง Report</button><button class="ghost-btn" type="button" id="compare-export-csv">ส่งออกข้อมูลเปรียบเทียบ CSV</button></div>
