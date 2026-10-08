@@ -44,8 +44,8 @@ function pick(p,d,mode){
  const v=available(p,d,mode);
  if(v)return {plot:p.plot,date:d,mode,url:compactToImage(v),bounds:v.bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds,source:v.source||"Sentinel-2",previewResolution:v.size?"24×24 quicklook":null};
  if(mode==="true"){
-  const row=satelliteRowForMap(p.plot,d),bounds=satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
-  if(row?.web_preview_url&&bounds)return {plot:p.plot,date:d,mode,url:row.web_preview_url,bounds,source:"Sentinel-2"};
+  const row=satelliteRowForMap(p.plot,d),bounds=row?.preview_bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
+  if(row?.web_preview_url&&bounds)return {plot:p.plot,date:d,mode,url:row.web_preview_url,bounds,source:"Sentinel-2",previewResolution:row.preview_native_size?row.preview_native_size.join("×")+" px":null};
  }
  return null;
 }
