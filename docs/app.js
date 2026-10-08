@@ -8,7 +8,7 @@ const VEG = {
   STRESS_SIGNAL:'มีสัญญาณพืชเครียดจากสภาพเปียก/น้ำขัง', WATCH:'ควรติดตามพืช', STABLE:'ยังไม่พบสัญญาณเสื่อมชัด', NO_DATA:'ไม่มีข้อมูลพืช'
 };
 let dataset=null, plots=[], selected=null, overviewMap=null, fullMap=null, chart=null, activeStatus='ALL';
-let satelliteFiles=[], satellitePartsMeta=null;
+let satelliteFiles=[], satellitePartsMeta=null, jpgPreviewMap={};
 let boundaryFC=null, boundaryByPlot=new Map();
 let newWaterFC=null, newWaterByPlot=new Map();
 const mapLayers={overview:new Map(),full:new Map()};
@@ -78,6 +78,7 @@ async function loadSatelliteLibrary(){
     const r=await fetch('data/satellite_parts.json',{cache:'no-store'});
     if(!r.ok)throw new Error(`satellite_parts.json HTTP ${r.status}`);
     satellitePartsMeta=await r.json();
+    let pr=null;try{pr=await fetch('data/jpg_previews.json',{cache:'no-store'});if(pr.ok)jpgPreviewMap=await pr.json()}catch(_){jpgPreviewMap={}}
     const chunks=await Promise.all(satellitePartsMeta.parts.map(async part=>{
       const rr=await fetch('data/'+part.file,{cache:'no-store'});
       if(!rr.ok)throw new Error(`${part.file} HTTP ${rr.status}`);
@@ -85,7 +86,7 @@ async function loadSatelliteLibrary(){
     }));
     const byId=new Map();
     chunks.flat().forEach(x=>byId.set(x.id,x));
-    satelliteFiles=[...byId.values()].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(a.plot||'').localeCompare(String(b.plot||''))||String(a.resolution||'').localeCompare(String(b.resolution||'')));
+    satelliteFiles=[...byId.values()].map(x=>Object.assign({},x,jpgPreviewMap[x.id]||{})).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(a.plot||'').localeCompare(String(b.plot||''))||String(a.resolution||'').localeCompare(String(b.resolution||'')));
     const src=document.getElementById('satellite-source-folder'); if(src)src.href=satellitePartsMeta.source_root?.url||'#';
     if(status)status.textContent=`ซิงก์จาก Google Drive • ${satelliteFiles.length} ไฟล์ • อัปเดตรายการ ${new Date(satellitePartsMeta.updated_at).toLocaleString('th-TH')}`;
     populateSatelliteFilters();
