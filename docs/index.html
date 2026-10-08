@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="ระบบติดตามสถานการณ์น้ำท่วมและผลกระทบสิ่งแวดล้อมจาก Sentinel-2 สำหรับแปลงโครงการจังหวัดระยอง" />
+  <title>Rayong Flood & Environmental Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">≈</div>
+      <div><h1>Flood & Environmental Monitoring</h1><p>ระบบติดตามสถานการณ์น้ำท่วมและผลกระทบสิ่งแวดล้อม • จังหวัดระยอง</p></div>
+    </div>
+    <div class="top-actions">
+      <span class="update-pill" id="updated-pill">กำลังโหลด...</span>
+      <a class="ghost-btn" id="verified-folder" target="_blank" rel="noopener">Verified Reports</a>
+      <button class="primary-btn" onclick="openReportCenter()">สร้าง Report</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="eyebrow">RAYONG PROJECTS</div>
+        <h2>เลือกแปลง</h2>
+        <div class="search"><span>⌕</span><input id="search-input" placeholder="ค้นหา 13-STC, VSD..." /></div>
+        <div class="filter-row" id="status-filters">
+          <button class="filter active" data-status="ALL">ทั้งหมด</button>
+          <button class="filter" data-status="HIGH">สูง</button>
+          <button class="filter" data-status="WATCH">เฝ้าระวัง</button>
+          <button class="filter" data-status="NORMAL">ปกติ</button>
+        </div>
+      </div>
+      <div id="plot-list" class="plot-list"></div>
+    </aside>
+
+    <main class="main">
+      <nav class="tabs">
+        <button class="tab active" data-tab="overview">ภาพรวม</button>
+        <button class="tab" data-tab="map">แผนที่</button>
+        <button class="tab" data-tab="impact">Impact Matrix</button>
+        <button class="tab" data-tab="report">Report Center</button>
+      </nav>
+
+      <section class="tab-panel active" id="tab-overview">
+        <div class="kpi-grid">
+          <div class="kpi"><span>แปลงทั้งหมด</span><strong id="kpi-total">—</strong><small>จังหวัดระยอง</small></div>
+          <div class="kpi danger"><span>สัญญาณน้ำสูง</span><strong id="kpi-high">—</strong><small>ควรตรวจสอบก่อน</small></div>
+          <div class="kpi warning"><span>เฝ้าระวัง</span><strong id="kpi-watch">—</strong><small>ติดตามรอบถัดไป</small></div>
+          <div class="kpi muted"><span>ข้อมูลไม่เพียงพอ</span><strong id="kpi-nodata">—</strong><small>เมฆ/ไม่มี valid pixels</small></div>
+        </div>
+
+        <div class="overview-grid">
+          <section class="card map-card">
+            <div class="card-head"><div><div class="eyebrow">SITUATION MAP</div><h3>สถานการณ์ล่าสุด</h3></div><div class="legend"><span><i class="dot high"></i>สูง</span><span><i class="dot watch"></i>เฝ้าระวัง</span><span><i class="dot normal"></i>ปกติ</span><span><i class="dot nodata"></i>ไม่มีข้อมูล</span></div></div>
+            <div id="overview-map" class="map"></div>
+          </section>
+
+          <section class="card detail-card">
+            <div class="card-head"><div><div class="eyebrow">SELECTED PLOT</div><h3 id="detail-title">—</h3></div><span id="detail-status" class="status-pill">—</span></div>
+            <div class="plot-meta"><span id="detail-area">—</span><span id="detail-dates">—</span></div>
+            <div class="headline" id="plain-summary">เลือกแปลงเพื่อดูสรุป</div>
+            <div class="metric-stack">
+              <div class="metric-row"><div><span>พื้นที่น้ำ</span><small>MNDWI (ดัชนีน้ำเปิด)</small></div><div class="metric-value"><b id="water-values">—</b><em id="water-delta">—</em></div></div>
+              <div class="metric-row"><div><span>NDVI</span><small>ความเขียวพืช • stable land</small></div><div class="metric-value"><b id="ndvi-values">—</b><em id="ndvi-delta">—</em></div></div>
+              <div class="metric-row"><div><span>NDRE</span><small>สุขภาพใบพืช • stable land</small></div><div class="metric-value"><b id="ndre-values">—</b><em id="ndre-delta">—</em></div></div>
+              <div class="metric-row"><div><span>NDMI</span><small>ความชื้นพืช/พื้นที่ • stable land</small></div><div class="metric-value"><b id="ndmi-values">—</b><em id="ndmi-delta">—</em></div></div>
+            </div>
+            <button class="wide-btn" onclick="showSelectedReport()">เปิด Report Preview</button>
+          </section>
+        </div>
+
+        <div class="lower-grid">
+          <section class="card"><div class="card-head"><div><div class="eyebrow">CHANGE PROFILE</div><h3>ก่อน → ปัจจุบัน</h3></div></div><div class="chart-wrap"><canvas id="change-chart"></canvas></div></section>
+          <section class="card"><div class="card-head"><div><div class="eyebrow">PRIORITY</div><h3>แปลงที่ควรดูเป็นอันดับแรก</h3></div></div><div id="priority-list" class="priority-list"></div></section>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-map">
+        <section class="card full-card"><div class="card-head"><div><div class="eyebrow">GIS VIEW</div><h3>แผนที่แปลงระยอง</h3></div><p>คลิกจุดแปลงเพื่อเปิดรายละเอียด</p></div><div id="full-map" class="map full-map"></div><div class="prototype-note">Prototype: รอบนี้ใช้ตำแหน่งกึ่งกลางแปลงจาก raster footprint; เวอร์ชัน production จะเปลี่ยนเป็น polygon UTM จริงทุกแปลง</div></section>
+      </section>
+
+      <section class="tab-panel" id="tab-impact">
+        <section class="card full-card"><div class="card-head"><div><div class="eyebrow">IMPACT MATRIX</div><h3>เปรียบเทียบทุกแปลงในหน้าเดียว</h3></div><p>คลิกแถวเพื่อเปิดรายละเอียด</p></div><div class="table-scroll"><table><thead><tr><th>แปลง</th><th>สถานะน้ำ</th><th>น้ำเดิม</th><th>น้ำล่าสุด</th><th>น้ำใหม่</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>สภาพพืช</th></tr></thead><tbody id="impact-body"></tbody></table></div></section>
+      </section>
+
+      <section class="tab-panel" id="tab-report">
+        <div class="report-layout">
+          <section class="card report-controls">
+            <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3>
+            <label>เลือกแปลง<select id="report-plot"></select></label>
+            <label>รูปแบบ<select id="report-type"><option value="quick">Quick Report — 1 หน้า</option><option value="full">Full Report — Preview สรุป</option></select></label>
+            <div class="check-grid"><label><input type="checkbox" checked> สถานะน้ำ</label><label><input type="checkbox" checked> ดัชนีพืช</label><label><input type="checkbox" checked> Stable land</label><label><input type="checkbox" checked> QA / วันที่</label></div>
+            <button class="primary-btn wide" onclick="renderReportPreview()">Preview Report</button>
+            <button class="ghost-btn wide" onclick="printReport()">Export PDF / Print</button>
+            <a class="ghost-btn wide" id="verified-folder-2" target="_blank" rel="noopener">เปิด Verified PDF ใน Google Drive</a>
+          </section>
+          <section class="report-paper" id="report-paper"></section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
