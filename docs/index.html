@@ -87,7 +87,22 @@
       </section>
 
       <section class="tab-panel" id="tab-map">
-        <section class="card full-card"><div class="card-head"><div><div class="eyebrow">GIS VIEW</div><h3>แผนที่แปลงระยอง</h3></div><p>คลิกจุดแปลงเพื่อเปิดรายละเอียด</p></div><div id="full-map" class="map full-map"></div><div class="prototype-note">แผนที่ใช้ขอบเขตจากพิกัด UTM ที่ตรวจสอบแล้วครบ 19 แปลง • เมื่อเลือกแปลง จะแสดงพื้นที่น้ำใหม่จากการเปรียบเทียบ Sentinel-2 เป็นสีฟ้า</div></section>
+        <section class="card full-card">
+          <div class="card-head map-view-head">
+            <div><div class="eyebrow">GIS + SATELLITE VIEW</div><h3>แผนที่แปลงระยอง</h3><p id="map-sat-status">เลือกแปลงเพื่อแสดงภาพดาวเทียมบนแผนที่</p></div>
+            <div class="map-sat-controls">
+              <label>วันที่ภาพ
+                <select id="map-sat-date"></select>
+              </label>
+              <label class="toggle-line"><input id="map-sat-visible" type="checkbox" checked> แสดงภาพดาวเทียม</label>
+              <label>ความโปร่งใส
+                <input id="map-sat-opacity" type="range" min="20" max="100" value="82">
+              </label>
+            </div>
+          </div>
+          <div id="full-map" class="map full-map"></div>
+          <div class="prototype-note">ภาพสีจริง 10 m จะแสดงเป็น JPG ที่แปลงจาก GeoTIFF แล้ววางตามพิกัดจริง • เส้นแดง = ขอบเขตแปลง • สีฟ้า = พื้นที่น้ำใหม่</div>
+        </section>
       </section>
 
       <section class="tab-panel" id="tab-impact">
