@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
   <link rel="stylesheet" href="styles.css?v=20261008-monitor1" />
 </head>
 <body>
@@ -189,7 +190,7 @@
             <div class="cmp-map-panel"><div id="compare-map-b" class="cmp-map"></div><span id="compare-qa-b" class="cmp-map-label">วันที่ B</span></div>
           </div>
           <div class="cmp-slider"><label>เส้นเปรียบเทียบ <strong id="compare-split-value">50%</strong></label><input id="compare-split" type="range" min="5" max="95" value="50"></div>
-          <div class="cmp-options cmp-legend"><span><i style="background:#fa7064"></i> ขอบแปลง</span><span><i style="background:#23cbf0"></i> ขอบน้ำรายวัน</span><span><i style="background:#b2df52"></i> น้ำใหม่ Verified</span><span><i style="background:#42b971"></i> พืช</span><span><i style="background:#c49c61"></i> ดินเปิด</span></div>
+          <div class="cmp-options cmp-legend"><span><i style="background:#fa7064"></i> ขอบแปลง</span><span><i style="background:#23cbf0"></i> ขอบน้ำรายวัน</span><span><i style="background:#b2df52"></i> น้ำใหม่ Verified</span><span><i style="background:#42b971"></i> พืช</span><span><i style="background:#c49c61"></i> ดินเปิด</span><span><i style="background:#e69d43"></i> น้ำลด</span></div>
           <p class="cmp-note" id="compare-note"></p>
           <div class="cmp-summary" id="compare-summary"></div>
           <div class="cmp-buttons"><button class="primary-btn" type="button" id="compare-to-report">ใช้คู่วันที่นี้สร้าง Report</button><button class="ghost-btn" type="button" id="compare-export-csv">ส่งออกข้อมูลเปรียบเทียบ CSV</button></div>
