@@ -103,6 +103,7 @@ async function loadSatelliteLibrary(){
     renderSatelliteGallery();
     populateMapSatelliteDates(selected);
     updateMapSatelliteOverlay(selected);
+    window.MapStudio?.refresh?.();
   }catch(e){
     console.error(e);
     if(status)status.textContent='โหลดรายการภาพจาก Google Drive ไม่สำเร็จ';
@@ -212,6 +213,7 @@ function removeMapSatelliteLayers(){
   });
 }
 function updateMapSatelliteOverlay(p){
+  if(window.MapStudio?.render)return window.MapStudio.render(p);
   const status=document.getElementById('map-sat-status');
   if(!p){removeMapSatelliteLayers();return}
   if(!mapSatelliteVisible){
@@ -240,6 +242,7 @@ function updateMapSatelliteOverlay(p){
   if(status)status.textContent=`${p.plot} • ${datePretty(date)} • True Color 10 m • JPG Preview`;
   updateMapHighlight();
   updateNewWaterOverlay(p);
+  window.MapStudio?.applyVisibility?.();
 }
 function updateChart(p){const labels=['น้ำ (%)','NDVI ×100','NDRE ×100','NDMI ×100'];const before=[p.water_before_pct,p.ndvi_before==null?null:p.ndvi_before*100,p.ndre_before==null?null:p.ndre_before*100,p.ndmi_before==null?null:p.ndmi_before*100];const current=[p.water_current_pct,p.ndvi_current==null?null:p.ndvi_current*100,p.ndre_current==null?null:p.ndre_current*100,p.ndmi_current==null?null:p.ndmi_current*100];if(chart)chart.destroy();chart=new Chart(document.getElementById('change-chart'),{type:'bar',data:{labels,datasets:[{label:'เดิม',data:before,backgroundColor:'rgba(56,189,248,.45)',borderColor:'#38bdf8',borderWidth:1},{label:'ปัจจุบัน',data:current,backgroundColor:'rgba(245,158,11,.55)',borderColor:'#f59e0b',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9cb4c7',boxWidth:10}}},scales:{x:{ticks:{color:'#9cb4c7'},grid:{display:false}},y:{ticks:{color:'#7792a7'},grid:{color:'rgba(255,255,255,.06)'}}}}})}
 function popupHtml(p){
@@ -299,7 +302,7 @@ function updateNewWaterOverlay(p){
       map.removeLayer(newWaterLayers[key]);
       newWaterLayers[key]=null;
     }
-    if(!feature)return;
+    if(!feature||window.MapStudio?.state?.water===false)return;
     const layer=L.geoJSON(feature,{
       style:{
         color:'#38bdf8',
@@ -396,6 +399,8 @@ function renderReportPreview(){
     <div class="report-block"><b>ภาพล่าสุดที่ตรวจ QA</b><p>2 ต.ค. 2026 usable pixels ${fmt(p.latest_valid_pct)}% • วันที่ที่ใช้สรุปผลคือ ${dateTH(p.current)}</p></div>
   </div></div>
   <div class="report-footer">Quick Report สร้างจากข้อมูล Verified • ใช้เพื่อ screening / monitoring • รายงานฉบับเต็มเปิดจาก Verified PDF</div>`;
+  const studioImage=window.MapStudio?.reportMarkup?.(p)||'';
+  if(studioImage)paper.insertAdjacentHTML('beforeend',studioImage);
 }
 function printReport(){if(document.getElementById('report-type').value==='verified'){const p=plots.find(x=>x.plot===document.getElementById('report-plot').value);if(p?.report_url)window.open(p.report_url,'_blank','noopener');return}renderReportPreview();window.print()}
 init().catch(err=>{console.error(err);document.body.insertAdjacentHTML('beforeend',`<div style="position:fixed;bottom:12px;right:12px;background:#7f1d1d;color:white;padding:10px;border-radius:8px;z-index:9999">โหลดข้อมูลไม่สำเร็จ: ${err.message}</div>`)})
