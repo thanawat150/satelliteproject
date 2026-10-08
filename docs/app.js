@@ -196,10 +196,11 @@ function mapSatelliteCandidates(plot){
 }
 function populateMapSatelliteDates(p){
   const sel=document.getElementById('map-sat-date'); if(!sel||!p)return;
-  const rows=mapSatelliteCandidates(p.plot);
-  const dates=[...new Set(rows.map(x=>x.date).filter(Boolean))];
+  const from10m=mapSatelliteCandidates(p.plot).map(x=>x.date);
+  const fromVisual=window.MapStudio?.entries?.()?.filter(x=>x.plot===p.plot).map(x=>x.date)||[];
+  const dates=[...new Set([...from10m,...fromVisual].filter(Boolean))].sort().reverse();
   const current=mapSatelliteDate && dates.includes(mapSatelliteDate) ? mapSatelliteDate : (dates[0]||'');
-  sel.innerHTML=dates.length?dates.map(d=>`<option value="${d}">${datePretty(d)}</option>`).join(''):'<option value="">ไม่มีภาพ 10 m</option>';
+  sel.innerHTML=dates.length?dates.map(d=>`<option value="${d}">${datePretty(d)}</option>`).join(''):'<option value="">ไม่มีภาพ</option>';
   sel.value=current; mapSatelliteDate=current||null;
 }
 function satelliteRowForMap(plot,date){
