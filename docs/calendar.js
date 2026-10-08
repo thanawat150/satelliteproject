@@ -64,7 +64,7 @@ function renderDetail(){
    const files=s.files.filter(x=>x.plot===p),a=(state.analysis[p]||[]).find(x=>x.date===date),[q,label]=quality(a);
    const resolutions=[...new Set(files.map(x=>x.resolution).filter(Boolean))].sort((a,b)=>parseInt(a)-parseInt(b));
    const coverage=a&&a.valid_pct!=null?' • usable '+Number(a.valid_pct).toLocaleString('th-TH',{maximumFractionDigits:1})+'%':'';
-   return '<article class="cal-file-row"><div class="cal-file-info"><strong>'+esc(p)+'</strong><span>'+files.length+' ไฟล์ • '+esc(resolutions.join(', '))+'</span><small class="cal-quality cal-quality-'+q+'">'+label+esc(coverage)+'</small></div><div class="cal-file-actions"><button type="button" class="ghost-btn" data-action="image" data-plot="'+esc(p)+'" data-date="'+date+'">ดูภาพ</button><button type="button" class="ghost-btn" data-action="report" data-plot="'+esc(p)+'">Report</button></div></article>';
+   return '<article class="cal-file-row"><div class="cal-file-info"><strong>'+esc(p)+'</strong><span>'+files.length+' ไฟล์ • '+esc(resolutions.join(', '))+'</span><small class="cal-quality cal-quality-'+q+'">'+label+esc(coverage)+'</small></div><div class="cal-file-actions"><button type="button" class="ghost-btn" data-action="image" data-plot="'+esc(p)+'" data-date="'+date+'">ดูภาพ</button><button type="button" class="ghost-btn" data-action="report" data-plot="'+esc(p)+'" data-date="'+date+'">Compare Report</button></div></article>';
  }).join('')+'</div>';
  el.innerHTML=html;
 }
@@ -76,8 +76,10 @@ function jumpImage(p,date){
  if(typeof switchTab==='function')switchTab('satellite');
  if(typeof renderSatelliteGallery==='function')renderSatelliteGallery();
 }
-function jumpReport(p){
+function jumpReport(p,date){
  const sel=document.getElementById('report-plot');if(sel)sel.value=p;
+ if(typeof window.MonitoringStudio?.setComparison==='function')window.MonitoringStudio.setComparison(null,date,p);
+ const mode=document.getElementById('report-type');if(mode)mode.value='compare';
  if(typeof switchTab==='function')switchTab('report');
  if(typeof renderReportPreview==='function')renderReportPreview();
 }
@@ -88,7 +90,7 @@ root.addEventListener('click',e=>{
  else{state.month=new Date(state.month.getFullYear(),state.month.getMonth()+Number(btn.dataset.nav),1);state.date=null}
  render();return}
  if(btn.dataset.action==='image')jumpImage(btn.dataset.plot,btn.dataset.date);
- if(btn.dataset.action==='report')jumpReport(btn.dataset.plot);
+ if(btn.dataset.action==='report')jumpReport(btn.dataset.plot,btn.dataset.date);
 });
 root.addEventListener('change',e=>{
  if(e.target.id==='cal-plot'){state.plot=e.target.value;if(typeof updateQuery==='function')updateQuery({cal_plot:state.plot==='ALL'?null:state.plot});render()}
