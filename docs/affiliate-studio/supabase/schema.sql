@@ -46,3 +46,21 @@ drop policy if exists "Users delete their own character images" on storage.objec
 create policy "Users delete their own character images" on storage.objects
  for delete to authenticated
  using (bucket_id='character-assets' and (storage.foldername(name))[1] = (select auth.uid())::text);
+
+-- AI usage log. No generic access and no client-side deletion to bypass per-user quota.
+create table if not exists public.ai_usage_events (
+ id bigint generated always as identity primary key,
+ user_id uuid not null references auth.users(id) on delete cascade,
+ mode text not null check (mode in ('campaign','character','ideas')),
+ created_at timestamptz not null default now()
+);
+alter table public.ai_usage_events enable row level security;
+revoke all on public.ai_usage_events from anon;
+grant select, insert on public.ai_usage_events to authenticated;
+drop policy if exists "Users view their AI request count" on public.ai_usage_events;
+create policy "Users view their AI request count" on public.ai_usage_events
+ for select to authenticated using ((select auth.uid()) = user_id);
+drop policy if exists "Users record AI usage" on public.ai_usage_events;
+create policy "Users record AI usage" on public.ai_usage_events
+ for insert to authenticated with check ((select auth.uid()) = user_id);
+create index if not exists ai_usage_events_user_day_idx on public.ai_usage_events(user_id,created_at desc);
