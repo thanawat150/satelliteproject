@@ -53,6 +53,7 @@
         <button class="tab" data-tab="calendar">ปฏิทิน</button>
         <button class="tab" data-tab="compare">เปรียบเทียบ 2 วัน</button>
         <button class="tab" data-tab="hotspots">พื้นที่เฝ้าระวัง</button>
+        <button class="tab" data-tab="alerts">แจ้งเตือนแปลงผิดปกติ</button>
         <button class="tab" data-tab="report">Report Center</button>
       </nav>
 
@@ -181,11 +182,12 @@
           <div class="cmp-options">
             <label><input id="compare-boundary" type="checkbox" checked> ขอบเขตแปลง</label>
             <label><input id="compare-water" type="checkbox" checked> ขอบเขตน้ำตามวันที่ (ถ้ามี)</label>
-            <label><input id="compare-newwater" type="checkbox" checked> น้ำใหม่รอบ Verified</label>
-            <label><input id="compare-vegetation" type="checkbox" checked> ขอบเขตพืช (เมื่อมีผลวิเคราะห์)</label>
-            <label><input id="compare-soil" type="checkbox" checked> ขอบเขตดิน (เมื่อมีผลวิเคราะห์)</label>
+            <label class="cmp-layer-label"><input id="compare-newwater" type="checkbox" checked> น้ำใหม่รอบ Verified <small id="compare-newwater-status">ตรวจสอบ Polygon...</small></label>
+            <label class="cmp-layer-label"><input id="compare-vegetation" type="checkbox" checked> ขอบเขตพืช <small id="compare-vegetation-status">กำลังตรวจผลวิเคราะห์...</small></label>
+            <label class="cmp-layer-label"><input id="compare-soil" type="checkbox" checked> ขอบเขตดิน <small id="compare-soil-status">กำลังตรวจผลวิเคราะห์...</small></label>
           </div>
           <div id="compare-map-wrap" class="cmp-map-wrap">
+            <div id="compare-divider" class="cmp-swipe-divider" aria-hidden="true"><span>⇆</span></div>
             <div class="cmp-map-panel"><div id="compare-map-a" class="cmp-map"></div><span id="compare-qa-a" class="cmp-map-label">วันที่ A</span></div>
             <div class="cmp-map-panel"><div id="compare-map-b" class="cmp-map"></div><span id="compare-qa-b" class="cmp-map-label">วันที่ B</span></div>
           </div>
@@ -203,6 +205,33 @@
           <div class="cmp-toolbar"><label>เลือกแปลง<select id="hotspot-plot"></select></label><button class="ghost-btn" type="button" id="hotspot-open-compare">เปิดเปรียบเทียบภาพ</button></div>
           <div class="cmp-hotspot-layout"><div id="hotspot-map" class="cmp-hotspot-map"></div><div id="hotspot-results" class="cmp-hotspot-results"></div></div>
           <p class="cmp-note">Monitoring Hotspots คือข้อบ่งชี้สำหรับตรวจภาพเพิ่มเติม ไม่ใช่หลักฐานยืนยันสาเหตุของน้ำท่วม พืชตาย หรือการบุกรุก ต้องพิจารณาเมฆและน้ำขึ้นน้ำลงประกอบ</p>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="tab-alerts">
+        <section class="card full-card">
+          <div class="card-head">
+            <div><div class="eyebrow">OFFICE ENVIRONMENTAL ALERT CENTER</div><h3>แจ้งเตือนแปลงที่ควรเปิดภาพตรวจสอบ</h3><p>อ่านผลวิเคราะห์จากประวัติจริง • สัญญาณผิดปกติไม่ใช่คำยืนยันว่าเกิดน้ำท่วม พืชตาย หรือบุกรุก</p></div>
+          </div>
+          <div id="alert-status" class="cmp-note">กำลังโหลดข้อมูลแปลงและผล QA...</div>
+          <div id="alert-kpis" class="alert-kpis"></div>
+          <div class="alert-filters">
+            <label>ระดับ<select id="alert-priority"><option value="ALL">ทุกระดับ</option><option value="P1">P1 ตรวจภาพก่อน</option><option value="P2">P2 เฝ้าระวัง</option><option value="P3">P3 ตรวจคุณภาพข้อมูล</option></select></label>
+            <label>ประเภท<select id="alert-type"><option value="ALL">ทุกประเภท</option><option value="water">น้ำเปลี่ยนแปลง</option><option value="vegetation">สัญญาณพืช</option><option value="qa">ข้อมูล/เมฆ</option></select></label>
+            <label>แปลง<select id="alert-plot"><option value="ALL">ทุกแปลง</option></select></label>
+            <button id="alert-export" type="button" class="ghost-btn">ส่งออกรายการ CSV</button>
+            <button id="alert-reload" type="button" class="ghost-btn">ตรวจข้อมูลบนเว็บอีกครั้ง</button>
+          </div>
+          <div class="alert-layout">
+            <div>
+              <div class="alert-list" id="alert-list"><p class="cal-loading">กำลังประเมินข้อมูล...</p></div>
+            </div>
+            <div>
+              <div class="alert-map-title">แผนที่แปลงที่มีสัญญาณ <small>ตำแหน่งแปลง ไม่ใช่พิกัดจุดผิดปกติภายในแปลง</small></div>
+              <div id="alert-map" class="alert-map"></div>
+              <p class="cmp-note">P1/P2 เป็นลำดับสำหรับการตรวจภาพจากออฟฟิศ ไม่ใช่ระดับความเสียหายจริง • พิจารณาน้ำขึ้นน้ำลงและขอบเขตที่ผ่าน QA ร่วมด้วย</p>
+            </div>
+          </div>
         </section>
       </section>
 
@@ -278,7 +307,10 @@
   <script src="trend-report.js?v=20261008-livereport3"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
   <script src="app.js?v=20261008-livereport4"></script>
-  <script src="monitoring-studio.js?v=20261008-monitor2"></script>
+  <script src="monitoring-qa.js?v=20261008-fixcompare1"></script>
+  <script src="alert-engine.js?v=20261008-fixcompare1"></script>
+  <script src="alert-center.js?v=20261008-fixcompare1"></script>
+  <script src="monitoring-studio.js?v=20261008-fixcompare1"></script>
   <script src="calendar.js?v=20261008-monitor2"></script>
 </body>
 </html>
