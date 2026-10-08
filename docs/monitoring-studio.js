@@ -7,7 +7,7 @@ const valid=r=>r&&["VERIFIED","AUTO_VALID"].includes(r.analysis_status)&&(r.vali
 const colors={water:"#248ac1",ndvi:"#3c9b59",ndre:"#7a6cbb",ndmi:"#3397a2",mndwi:"#2875ad",bsi:"#a77d41",valid_pct:"#56879b"};
 const lab={water:"พื้นที่น้ำ (ไร่)",ndvi:"NDVI",ndre:"NDRE",ndmi:"NDMI",mndwi:"MNDWI",bsi:"BSI",valid_pct:"พื้นที่ใช้ได้ (%)"};
 const palettes={ndvi:["#965032","#d8bb70","#e5dea8","#77b96b","#116b38"],ndre:["#8e4738","#d1b671","#e6e8bd","#85b895","#2c7155"],ndmi:["#995037","#e3ae68","#efe2b8","#69afc7","#125b92"],mndwi:["#916533","#d4b882","#faf2ca","#73b9d1","#095ba3"],bsi:["#2b7152","#86a86f","#e9dfac","#d9a36e","#975534"]};
-const ms={ready:false,rows:[],previews:new Map(),visual:new Map(),full:new Map(),bounds:new Map(),history:{},water:[],newwater:[],landcover:[],spatialHotspots:[],boundaries:new Map(),plots:[],dates:[],plot:null,A:null,B:null,layer:"true",display:"side",sync:false,showBoundary:true,showWater:true,showNew:true,showVegetation:true,showSoil:true,reportMetrics:["water","ndvi","ndre","ndmi"],maps:[],mapLayers:[],charts:[],hotmap:null,hotLayers:[]};
+const ms={ready:false,rows:[],previews:new Map(),visual:new Map(),full:new Map(),bounds:new Map(),history:{},water:[],newwater:[],landcover:[],spatialHotspots:[],boundaries:new Map(),plots:[],dates:[],plot:null,A:null,B:null,layer:"true",display:"side",sync:false,showBoundary:true,showWater:true,showNew:true,showVegetation:true,showSoil:true,reportMetrics:["water","ndvi","ndre","ndmi"],maps:[],mapLayers:[],charts:[],hotmap:null,hotLayers:[],swipeTop:null,swipeMissing:false};
 const log=e=>console.warn("Monitoring Studio:",e);
 function eltxt(id,s){let e=$(id);if(e)e.textContent=s}
 function selectVal(id,v){const e=$(id);if(e&&[...e.options].some(o=>o.value===v))e.value=v}
@@ -51,9 +51,29 @@ function mapInit(){
  const m=L.map(e,{zoomControl:id==="compare-map-a",attributionControl:false,preferCanvas:true});
  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19}).addTo(m);
  ms.maps.push(m)}
- ms.maps.forEach((m,i)=>m.on("moveend zoomend",()=>{if(ms.sync)return;ms.sync=true;const other=ms.maps[1-i];other.setView(m.getCenter(),m.getZoom(),{animate:false});ms.sync=false}));
+ ms.maps.forEach((m,i)=>{
+  m.on("moveend zoomend",()=>{if(ms.display==="swipe"){requestAnimationFrame(setSplit);return}if(ms.sync)return;ms.sync=true;const other=ms.maps[1-i];other.setView(m.getCenter(),m.getZoom(),{animate:false});ms.sync=false});
+  m.on("move zoom resize",()=>{if(ms.display==="swipe")requestAnimationFrame(setSplit)});
+ });
 }
 function footprint(p,d){return ms.water.find(x=>x.properties?.plot===p&&x.properties?.date===d)}
+function verifiedOverlay(p,a=ms.A,b=ms.B){
+ const info=plotInfo(p),geom=ms.newwater.find(x=>x.properties?.plot===p);
+ return window.MonitoringQA?.verifyPair?.(info,a,b,ms.history[p]||[],geom)||
+ {ok:false,reason:"ระบบตรวจสอบคุณภาพ Polygon ยังไม่พร้อม"};
+}
+function setLayerAvailability(){
+ const p=ms.plot,v=verifiedOverlay(p);
+ const newbox=$("compare-newwater"),newstate=$("compare-newwater-status");
+ if(newbox){newbox.disabled=!v.ok;newbox.checked=v.ok&&ms.showNew;newbox.title=v.ok?"Polygon ผ่านการตรวจสอบคู่วันที่และพื้นที่":"ไม่แสดง: "+v.reason}
+ if(newstate){newstate.textContent=v.ok?"พร้อมแสดง • "+fmt(v.polygon_rai)+" ไร่ (พื้นที่ Polygon)":"ไม่พร้อมแสดง • "+v.reason+(v.polygon_rai!=null?" (รูปทรง "+fmt(v.polygon_rai)+" ไร่ / รายงาน "+fmt(v.reported_rai)+" ไร่)":"");newstate.classList.toggle("cmp-layer-warning",!v.ok)}
+ for(const [id,cls,key] of [["compare-vegetation","vegetation","showVegetation"],["compare-soil","bare_soil","showSoil"]]){
+  const box=$(id),info=$(id+"-status");
+  const days=[ms.A,ms.B].filter(d=>ms.landcover.some(f=>f.properties?.plot===p&&f.properties?.date===d&&(f.properties?.class||f.properties?.landcover_class)===cls));
+  if(box){box.disabled=days.length===0;box.checked=days.length>0&&ms[key]}
+  if(info){info.textContent=days.length?"พร้อมแสดง "+days.length+"/2 วัน":"ยังไม่มีผลวิเคราะห์พิกเซลสำหรับคู่วันนี้";info.classList.toggle("cmp-layer-warning",days.length===0)}
+ }
+}
 function layerAdd(m,l){l.addTo(m);return l}
 function chooseCenter(p){const b=ms.boundaries.get(p);if(!b)return null;const l=L.geoJSON(b);return l.getBounds().isValid()?l.getBounds():null}
 function compareWaterMasks(p,a,b){
@@ -66,55 +86,111 @@ function compareWaterMasks(p,a,b){
 }
 function redrawMap(){
  if(!ms.ready||!$("compare-map-a"))return;
+ setLayerAvailability();
+ const wrapper=$("compare-map-wrap");
+ if(wrapper){
+  wrapper.classList.toggle("compare-swipe",ms.display==="swipe");
+  wrapper.classList.toggle("compare-change",ms.display==="change");
+ }
+ if(!document.getElementById("tab-compare")?.classList.contains("active"))return;
  mapInit();if(ms.maps.length!==2)return;
- const p=ms.plot;
+ ms.swipeTop=null;ms.swipeMissing=false;
+ const p=ms.plot,swipe=ms.display==="swipe";
  ms.maps.forEach((m,i)=>{
   (ms.mapLayers[i]||[]).forEach(l=>{try{m.removeLayer(l)}catch(_){}});
   ms.mapLayers[i]=[];
-  const date=i===0?ms.A:ms.B,img=findImage(p,date,ms.layer),status=$("compare-qa-"+(i===0?"a":"b"));
-  if(status){status.textContent=dth(date)+" • "+qaText(p,date);status.style.borderLeftColor=stableColor(p,date)}
-  if(img?.url&&img?.bounds)ms.mapLayers[i].push(layerAdd(m,L.imageOverlay(img.url,img.bounds,{opacity:.9,interactive:false})));
-  const bound=ms.boundaries.get(p);if(ms.showBoundary&&bound)ms.mapLayers[i].push(layerAdd(m,L.geoJSON(bound,{style:{color:"#fa7064",weight:2.3,fill:false}})));
-  const water=ms.showWater?footprint(p,date):null;
-  if(water)ms.mapLayers[i].push(layerAdd(m,L.geoJSON(water,{style:{color:"#23cbf0",weight:2,fillColor:"#1f9acf",fillOpacity:.24,dashArray:"5,4"}})));
-  for(const f of ms.landcover.filter(x=>x.properties?.plot===p&&x.properties?.date===date)){
+  if(swipe&&i===0)return; // One full-size Leaflet map in swipe mode; map A is not separately rendered.
+  const d=i===0?ms.A:ms.B,img=findImage(p,d,ms.layer);
+  const status=$("compare-qa-"+(i===0?"a":"b"));
+  if(status){status.textContent=dth(d)+" • "+qaText(p,d);status.style.borderLeftColor=stableColor(p,d)}
+  if(swipe&&i===1){
+   const before=findImage(p,ms.A,ms.layer);
+   if(before?.url&&before.bounds){
+    const under=layerAdd(m,L.imageOverlay(before.url,before.bounds,{opacity:1,interactive:false,zIndex:10}));
+    ms.mapLayers[i].push(under);
+   }else ms.swipeMissing=true;
+   if(img?.url&&img.bounds){
+    const top=layerAdd(m,L.imageOverlay(img.url,img.bounds,{opacity:1,interactive:false,zIndex:20}));
+    ms.mapLayers[i].push(top);ms.swipeTop=top;
+    top.on("load",()=>requestAnimationFrame(setSplit));
+   }else ms.swipeMissing=true;
+  }else if(img?.url&&img.bounds){
+   ms.mapLayers[i].push(layerAdd(m,L.imageOverlay(img.url,img.bounds,{opacity:1,interactive:false})));
+  }
+  const boundary=ms.boundaries.get(p);
+  if(ms.showBoundary&&boundary)ms.mapLayers[i].push(layerAdd(m,L.geoJSON(boundary,{style:{color:"#fa7064",weight:2.4,fill:false}})));
+  if(ms.showWater){
+   // In swipe mode show both footprints as dated outlines, never arbitrary geometry.
+   if(swipe&&i===1){
+    for(const [dd,color] of [[ms.A,"#ffd060"],[ms.B,"#23cbf0"]]){
+     const feature=footprint(p,dd);
+     if(feature)ms.mapLayers[i].push(layerAdd(m,L.geoJSON(feature,{style:{color,weight:2.2,fill:false,dashArray:dd===ms.A?"6,4":null}})));
+    }
+   }else{
+    const f=footprint(p,d);
+    if(f)ms.mapLayers[i].push(layerAdd(m,L.geoJSON(f,{style:{color:"#23cbf0",weight:2,fillColor:"#1f9acf",fillOpacity:.24,dashArray:"5,4"}})));
+   }
+  }
+  for(const f of ms.landcover.filter(x=>x.properties?.plot===p&&x.properties?.date===d)){
    const cls=f.properties.class||f.properties.landcover_class;
    if(cls==="vegetation"&&!ms.showVegetation||cls==="bare_soil"&&!ms.showSoil)continue;
    const color=cls==="vegetation"?"#42b971":cls==="bare_soil"?"#c49c61":null;
-   if(!color)continue;
-   ms.mapLayers[i].push(layerAdd(m,L.geoJSON(f,{style:{color,weight:1.2,fillColor:color,fillOpacity:.18}})));
+   if(color)ms.mapLayers[i].push(layerAdd(m,L.geoJSON(f,{style:{color,weight:1.2,fillColor:color,fillOpacity:.18}})));
   }
  });
- const b=chooseCenter(p);
- if(b){ms.sync=true;ms.maps.forEach(m=>m.fitBounds(b,{padding:[15,15],maxZoom:16,animate:false}));ms.sync=false}
- const aWater=footprint(p,ms.A),bWater=footprint(p,ms.B),canNew=isVerifiedPair(p,ms.A,ms.B);
+ const bounds=chooseCenter(p);
+ const activeMaps=swipe?[ms.maps[1]]:ms.display==="change"?[ms.maps[1]]:ms.maps;
+ requestAnimationFrame(()=>{
+  for(const m of activeMaps)m.invalidateSize({pan:false});
+  if(bounds){
+   ms.sync=true;
+   for(const m of activeMaps)m.fitBounds(bounds,{padding:[15,15],maxZoom:16,animate:false});
+   ms.sync=false;
+  }
+  requestAnimationFrame(setSplit);
+ });
+ const aWater=footprint(p,ms.A),bWater=footprint(p,ms.B),vg=verifiedOverlay(p);
  const cm=ms.display==="change"&&ms.showWater?compareWaterMasks(p,ms.A,ms.B):null;
- if(cm&&ms.display==="change"){
+ if(cm){
   for(const [f,color,op] of [[cm.stable,"#2367b5",.30],[cm.fresh,"#17bddc",.52],[cm.receded,"#efaa4b",.52]]){
-   if(!f)continue;
-   ms.mapLayers[1].push(layerAdd(ms.maps[1],L.geoJSON(f,{style:{color,weight:1.8,fillColor:color,fillOpacity:op}})));
+   if(f)ms.mapLayers[1].push(layerAdd(ms.maps[1],L.geoJSON(f,{style:{color,weight:1.8,fillColor:color,fillOpacity:op}})));
   }
  }
- if(ms.showNew&&canNew&&!cm){const newF=ms.newwater.find(x=>x.properties.plot===p);if(newF){const layer=layerAdd(ms.maps[1],L.geoJSON(newF,{style:{color:"#e6fc79",weight:1.6,fillColor:"#00cbeb",fillOpacity:.33}}));ms.mapLayers[1].push(layer)}}
- let note="ภาพคู่ใช้ภาพที่บันทึกแต่ละวันจริง และจัดตำแหน่งตามพิกัด GeoTIFF";
- if(ms.display==="change"){
+ if(ms.showNew&&vg.ok&&!cm&&!swipe){
+  const f=ms.newwater.find(x=>x.properties?.plot===p);
+  if(f)ms.mapLayers[1].push(layerAdd(ms.maps[1],L.geoJSON(f,{style:{color:"#a7e55b",weight:2,fillColor:"#00cbeb",fillOpacity:.22}})));
+ }
+ let note="ภาพจาก TIFF จริง • สีจริงจาก B4/B3/B2 • แสดงตามพิกัดและวันที่ของภาพ";
+ if(swipe){
+  note=ms.swipeMissing?"ภาพอย่างน้อยหนึ่งวันไม่มี Preview • แสดงฐานแผนที่แทนในส่วนที่ขาด":"เลื่อนแถบเพื่อเทียบภาพ A (ฝั่งซ้าย) กับภาพ B (ฝั่งขวา) บนแผนที่ Leaflet เดียวกัน";
+ }else if(ms.display==="change"){
   if(cm){
-   const ra=f=>f&&typeof turf!=="undefined"?fmt(turf.area(f)/1600):"0";
-   note="พื้นที่น้ำใหม่ "+ra(cm.fresh)+" ไร่ • น้ำลด "+ra(cm.receded)+" ไร่ • น้ำคงเดิม "+ra(cm.stable)+" ไร่ (ประมาณจาก Polygon ที่ผ่าน QA ทั้งสองวัน ไม่แทนค่ารายงาน Raster)";
-  }else note=canNew&&ms.newwater.some(x=>x.properties.plot===p)?"แสดงพื้นที่น้ำใหม่จากผล Verified ของคู่วัน Baseline → Current เท่านั้น • ยังไม่มีขอบน้ำเต็มรายวันสองชุดที่เปรียบเทียบได้":"คู่วันที่เลือกยังไม่มี Water Footprint ที่ผ่าน QA ทั้งสองวัน จึงไม่สามารถคำนวณน้ำใหม่/น้ำลด/น้ำคงเดิมเชิงพื้นที่";
-  if(!cm&&ms.showWater&&aWater){const l=layerAdd(ms.maps[1],L.geoJSON(aWater,{style:{color:"#ffd56a",weight:3,dashArray:"7,4",fill:false}}));ms.mapLayers[1].push(l)}
+   const rai=f=>f?fmt(turf.area(f)/1600):"0";
+   note="น้ำใหม่ "+rai(cm.fresh)+" ไร่ • น้ำลด "+rai(cm.receded)+" ไร่ • น้ำคงเดิม "+rai(cm.stable)+" ไร่ • ค่าประมาณจาก polygon ที่ผ่าน QA (ไม่แทนค่ารายงาน Raster)";
+  }else note="ไม่มี Water Footprint สองวันที่ผ่าน QA พอให้หาผลต่างเชิงพื้นที่ • "+(vg.ok?"แสดง Polygon น้ำใหม่รอบ Verified ได้":"ไม่แสดง Polygon น้ำใหม่ที่ยังไม่ผ่านตรวจสอบ");
  }else if(!aWater||!bWater)note+=" • ยังไม่มีขอบน้ำรายวันที่ยืนยันครบทั้งสองวัน";
  if(ms.layer!=="true"){
- const aa=findImage(p,ms.A,ms.layer),bb=findImage(p,ms.B,ms.layer);
- note+=" • "+(aa?.lowres||bb?.lowres?"มีภาพย่อ 48×48 เป็นแหล่งสำรองในอย่างน้อยหนึ่งวัน":"ใช้ภาพแสดงผลที่ความละเอียดกริดเดิมของข้อมูล");
- note+=" (ค่ารายงานยังอ้างอิงผลที่ผ่าน QA)";
-}
+  const aa=findImage(p,ms.A,ms.layer),bb=findImage(p,ms.B,ms.layer);
+  note+=" • "+(aa?.lowres||bb?.lowres?"บางวันเป็นภาพย่อสำรอง 48×48":"ใช้ภาพดัชนีตามกริดเดิมของข้อมูล");
+ }
+ if(!vg.ok&&isVerifiedPair(p,ms.A,ms.B))note+=" • น้ำใหม่ Verified: "+vg.reason;
  eltxt("compare-note",note);
- const wrapper=$("compare-map-wrap");
- wrapper?.classList.toggle("compare-swipe",ms.display==="swipe");wrapper?.classList.toggle("compare-change",ms.display==="change");
- setSplit();setTimeout(()=>ms.maps.forEach(m=>m.invalidateSize()),80);
+ setSplit();
+ setTimeout(()=>{activeMaps.forEach(m=>m.invalidateSize({pan:false}));setSplit()},140);
 }
-function setSplit(){const v=Number($("compare-split")?.value||50);if($("compare-map-b"))$("compare-map-b").style.clipPath=ms.display==="swipe"?"inset(0 0 0 "+v+"%)":"";eltxt("compare-split-value",v+"%")}
+function setSplit(){
+ const value=Number($("compare-split")?.value??50);
+ eltxt("compare-split-value",value+"%");
+ const divider=$("compare-divider");
+ if(divider){divider.style.left=value+"%";divider.style.display=ms.display==="swipe"?"block":"none"}
+ const layer=ms.swipeTop?.getElement?.(),map=ms.maps[1];
+ if(ms.display!=="swipe"||!layer||!map)return;
+ const imageBox=layer.getBoundingClientRect(),mapBox=map.getContainer().getBoundingClientRect();
+ if(imageBox.width<1||mapBox.width<1)return;
+ const cut=mapBox.left+mapBox.width*value/100;
+ const local=Math.max(0,Math.min(layer.offsetWidth,(cut-imageBox.left)*(layer.offsetWidth/imageBox.width)));
+ layer.style.clipPath="inset(0 0 0 "+local+"px)";
+}
 function refreshInputs(){
  const plotsList=[...new Set(ms.rows.map(x=>x.plot))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
  const plotsSel=$("compare-plot"),hsSel=$("hotspot-plot");
@@ -132,7 +208,7 @@ function renderSummary(){
  if(!x)return;
  const can=valid(a)&&valid(b),source=isVerifiedPair(p,ms.A,ms.B);
  const delta=can&&a.water_rai!=null&&b.water_rai!=null?b.water_rai-a.water_rai:null;
- const cards=[["วัน A",can?fmt(a.water_rai)+" ไร่":"ไม่ผ่าน QA"],["วัน B",can?fmt(b.water_rai)+" ไร่":"ไม่ผ่าน QA"],["น้ำเปลี่ยนสุทธิ",delta==null?"—":(delta>=0?"+":"")+fmt(delta)+" ไร่"],["น้ำใหม่",can&&source?fmt(plotInfo(p).new_water_rai)+" ไร่":"ไม่มีผลยืนยันสำหรับคู่นี้"]];
+ const cards=[["วัน A",can?fmt(a.water_rai)+" ไร่":"ไม่ผ่าน QA"],["วัน B",can?fmt(b.water_rai)+" ไร่":"ไม่ผ่าน QA"],["น้ำเปลี่ยนสุทธิ",delta==null?"—":(delta>=0?"+":"")+fmt(delta)+" ไร่"],["น้ำใหม่ (ค่ารายงาน)",can&&source?fmt(plotInfo(p).new_water_rai)+" ไร่":"ไม่มีผลยืนยันสำหรับคู่นี้"]];
  x.innerHTML=cards.map(([k,v])=>'<div class="cmp-stat"><span>'+k+'</span><strong>'+v+'</strong></div>').join("");
  if(!can)x.innerHTML+='<p class="cmp-qa-warning">อย่างน้อยหนึ่งวันที่เลือกยังไม่ผ่าน QA — แสดงภาพได้ แต่ยังไม่สรุปการเปลี่ยนแปลงเชิงปริมาณ</p>';
 }
@@ -176,7 +252,9 @@ function drawHotspots(){
  const {feat,info,a,b,stress}=hotspots(),p=ms.plot;
  const boundary=ms.boundaries.get(p);
  if(boundary)ms.hotLayers.push(layerAdd(ms.hotmap,L.geoJSON(boundary,{style:{color:"#ff7265",weight:2,fill:false}})));
- if(feat)ms.hotLayers.push(layerAdd(ms.hotmap,L.geoJSON(feat,{style:{color:"#22a6d5",weight:2,fillColor:"#2fb2e5",fillOpacity:.35}})));
+ const verifiedInfo=plotInfo(p),baseline=String(verifiedInfo?.baseline||"").replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3"),current=String(verifiedInfo?.current||"").replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
+ const geoStatus=verifiedOverlay(p,baseline,current);
+ if(feat&&geoStatus.ok)ms.hotLayers.push(layerAdd(ms.hotmap,L.geoJSON(feat,{style:{color:"#22a6d5",weight:2,fillColor:"#2fb2e5",fillOpacity:.30}})));
  const actualHotspots=ms.spatialHotspots.filter(f=>f.properties?.plot===p);
  for(const f of actualHotspots){
   const color=f.properties?.priority==="P1"?"#ed6758":f.properties?.priority==="P2"?"#e8a83c":"#e8cc67";
@@ -186,7 +264,8 @@ function drawHotspots(){
  const content=$("hotspot-results");
  if(content){
   let html="";
-  if(feat&&info){html+='<article class="monitor-event"><span class="monitor-severity">ตรวจสอบภาพก่อน</span><h4>น้ำรุกพื้นที่ใหม่</h4><p>ตรวจพบพื้นที่น้ำใหม่ '+fmt(info.new_water_rai)+' ไร่ ตามผลรอบ '+dth(String(info.baseline).replace(/(\d{4})(\d{2})(\d{2})/,"$1-$2-$3"))+' → '+dth(String(info.current).replace(/(\d{4})(\d{2})(\d{2})/,"$1-$2-$3"))+'</p><small>สีฟ้าบนแผนที่ = ขอบเขตพื้นที่น้ำใหม่ที่มี geometry อ้างอิง • ไม่ใช่การยืนยันว่าเกิดน้ำท่วมผิดปกติ</small></article>'}
+  if(feat&&info&&geoStatus.ok){html+='<article class="monitor-event"><span class="monitor-severity">ตรวจสอบภาพก่อน</span><h4>น้ำรุกพื้นที่ใหม่</h4><p>ตรวจพบพื้นที่น้ำใหม่ '+fmt(info.new_water_rai)+' ไร่ ตามผลรอบ '+dth(String(info.baseline).replace(/(\d{4})(\d{2})(\d{2})/,"$1-$2-$3"))+' → '+dth(String(info.current).replace(/(\d{4})(\d{2})(\d{2})/,"$1-$2-$3"))+'</p><small>สีฟ้าบนแผนที่ = ขอบเขตพื้นที่น้ำใหม่ที่มี geometry อ้างอิง • ไม่ใช่การยืนยันว่าเกิดน้ำท่วมผิดปกติ</small></article>'}
+  if(feat&&!geoStatus.ok)html+='<article class="monitor-event"><span class="monitor-severity">Polygon รอตรวจสอบ</span><h4>น้ำใหม่จากรายงานยังมีข้อมูลเชิงพื้นที่ไม่สอดคล้อง</h4><p>แปลง '+p+' • ค่ารายงาน '+fmt(info?.new_water_rai)+' ไร่</p><small>'+geoStatus.reason+' — ไม่วาด Polygon ที่อาจทำให้ตีความผิด</small></article>';
   for(const f of actualHotspots){
    const p=f.properties||{};
    html+='<article class="monitor-event"><span class="monitor-severity">'+String(p.priority||"สัญญาณเฝ้าระวัง")+'</span><h4>'+String(p.event_type||p.rule||"ตรวจพบพื้นที่ผิดปกติ")+'</h4><p>วันที่ '+dth(p.date||p.date_b)+' • พื้นที่ '+fmt(p.area_rai)+' ไร่</p><small>'+String(p.reason_th||"สร้างจากผลวิเคราะห์ Raster พร้อมตรวจ QA")+'</small></article>';
