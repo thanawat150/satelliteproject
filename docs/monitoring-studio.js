@@ -7,7 +7,7 @@ const valid=r=>r&&["VERIFIED","AUTO_VALID"].includes(r.analysis_status)&&(r.vali
 const colors={water:"#248ac1",ndvi:"#3c9b59",ndre:"#7a6cbb",ndmi:"#3397a2",mndwi:"#2875ad",bsi:"#a77d41",valid_pct:"#56879b"};
 const lab={water:"พื้นที่น้ำ (ไร่)",ndvi:"NDVI",ndre:"NDRE",ndmi:"NDMI",mndwi:"MNDWI",bsi:"BSI",valid_pct:"พื้นที่ใช้ได้ (%)"};
 const palettes={ndvi:["#965032","#d8bb70","#e5dea8","#77b96b","#116b38"],ndre:["#8e4738","#d1b671","#e6e8bd","#85b895","#2c7155"],ndmi:["#995037","#e3ae68","#efe2b8","#69afc7","#125b92"],mndwi:["#916533","#d4b882","#faf2ca","#73b9d1","#095ba3"],bsi:["#2b7152","#86a86f","#e9dfac","#d9a36e","#975534"]};
-const ms={ready:false,rows:[],previews:new Map(),visual:new Map(),bounds:new Map(),history:{},water:[],newwater:[],boundaries:new Map(),plots:[],dates:[],plot:null,A:null,B:null,layer:"true",display:"side",sync:false,showBoundary:true,showWater:true,showNew:true,reportMetrics:["water","ndvi","ndre","ndmi"],maps:[],mapLayers:[],charts:[],hotmap:null,hotLayers:[]};
+const ms={ready:false,rows:[],previews:new Map(),visual:new Map(),full:new Map(),bounds:new Map(),history:{},water:[],newwater:[],boundaries:new Map(),plots:[],dates:[],plot:null,A:null,B:null,layer:"true",display:"side",sync:false,showBoundary:true,showWater:true,showNew:true,reportMetrics:["water","ndvi","ndre","ndmi"],maps:[],mapLayers:[],charts:[],hotmap:null,hotLayers:[]};
 const log=e=>console.warn("Monitoring Studio:",e);
 function eltxt(id,s){let e=$(id);if(e)e.textContent=s}
 function selectVal(id,v){const e=$(id);if(e&&[...e.options].some(o=>o.value===v))e.value=v}
@@ -27,9 +27,11 @@ function findImage(p,d,mode){
  const c=candidates.find(x=>x.title===pref)||candidates.sort((a,b)=>String(b.modified_time).localeCompare(String(a.modified_time)))[0];
  if(!c)return null;
  if(mode==="true"){const v=ms.previews.get(c.title);return {url:v.src,bounds:v.bounds,source:c,description:"สีจริง (GeoTIFF 10 m)"}}
+ const full=ms.full.get(p+"|"+d+"|"+mode);
+ if(full?.src)return {url:full.src,bounds:full.bounds,source:c,description:"ภาพแสดงผลเต็มความละเอียดกริดต้นฉบับ "+full.width+"×"+full.height+" px",lowres:false};
  const v=ms.visual.get(p+"|"+d+"|"+mode);
  if(!v)return null;
- return {url:visualImage(v),bounds:v.bounds,source:c,description:"ภาพดัชนี/สีเท็จ 48×48 จากแบนด์จริง (เพื่อดูแนวโน้ม)"};
+ return {url:visualImage(v),bounds:v.bounds,source:c,description:"ภาพแสดงผลสำรอง 48×48 จากแบนด์จริง (เพื่อดูแนวโน้ม)",lowres:true};
 }
 function visualImage(v){
  if(v.url)return v.url;
@@ -77,7 +79,11 @@ function redrawMap(){
   note=aWater&&bWater?"มีขอบน้ำจาก MNDWI ทั้งสองวัน • ตรวจการเปลี่ยนแปลงด้วยเส้นขอบแต่ละวัน":canNew&&ms.newwater.some(x=>x.properties.plot===p)?"พื้นที่น้ำใหม่มาจากผล Verified ของคู่วัน Baseline → Current; ยังไม่มีขอบน้ำเต็มรายวันทั้งสองฝั่ง":"ยังไม่มี Water Footprint ที่ผ่านการวิเคราะห์สำหรับคู่วันนี้ จึงไม่วาดพื้นที่เปลี่ยนแปลง";
   if(ms.showWater&&aWater){const l=layerAdd(ms.maps[1],L.geoJSON(aWater,{style:{color:"#ffd56a",weight:3,dashArray:"7,4",fill:false}}));ms.mapLayers[1].push(l)}
  }else if(!aWater||!bWater)note+=" • ยังไม่มีขอบน้ำรายวันที่ยืนยันครบทั้งสองวัน";
- if(ms.layer!=="true")note+=" • โหมดดัชนีเป็นภาพย่อ 48×48 ไม่ใช้แทนค่าที่คำนวณจาก raster เต็มความละเอียด";
+ if(ms.layer!=="true"){
+ const aa=findImage(p,ms.A,ms.layer),bb=findImage(p,ms.B,ms.layer);
+ note+=" • "+(aa?.lowres||bb?.lowres?"มีภาพย่อ 48×48 เป็นแหล่งสำรองในอย่างน้อยหนึ่งวัน":"ใช้ภาพแสดงผลที่ความละเอียดกริดเดิมของข้อมูล");
+ note+=" (ค่ารายงานยังอ้างอิงผลที่ผ่าน QA)";
+}
  eltxt("compare-note",note);
  const wrapper=$("compare-map-wrap");
  wrapper?.classList.toggle("compare-swipe",ms.display==="swipe");wrapper?.classList.toggle("compare-change",ms.display==="change");
@@ -203,12 +209,13 @@ async function init(){
  bind();
  try{
   const [parts,history,water,newwater,boundaries,bounds,plots,visual]=await Promise.all([json("satellite_parts.json"),json("analysis_history.json"),json("water_history.geojson"),json("new_water.geojson"),json("boundaries.geojson"),json("satellite_bounds.json"),json("plots.json"),json("visual_layers.json")]);
-  const files=await Promise.all(parts.parts.map(p=>json(p.file))),previews=await Promise.all(parts.parts.map((p,i)=>json("existing_display_part_"+(i+1)+".json")));
+  const files=await Promise.all(parts.parts.map(p=>json(p.file))),previews=await Promise.all(parts.parts.map((p,i)=>json("existing_display_part_"+(i+1)+".json"))),fulls=await Promise.all(parts.parts.map((p,i)=>json("full_preview_part_"+(i+1)+".json").catch(()=>({layers:[]}))));
   ms.rows=[...new Map(files.flat().map(x=>[x.id,x])).values()];
   ms.history=history.plots||{};ms.water=water.features||[];ms.newwater=newwater.features||[];ms.boundaries=new Map((boundaries.features||[]).map(f=>[f.properties.plot,f]));
   ms.bounds=new Map((bounds.overlays||[]).map(x=>[x.plot+"|"+x.date,x]));
   ms.plots=plots.plots||[];ms.previews=new Map(previews.flatMap(x=>Object.entries(x.files||{})));
   ms.visual=new Map((visual.layers||[]).map(x=>[x.plot+"|"+x.date+"|"+x.mode,x]));
+  ms.full=new Map(fulls.flatMap(x=>x.layers||[]).map(x=>[x.plot+"|"+x.date+"|"+(x.mode==="false_color"?"false":x.mode==="true_color"?"true":x.mode),x]));
   ms.plot=ms.plots.some(p=>p.plot==="13-STC")?"13-STC":ms.plots[0]?.plot;ms.ready=true;
   refreshInputs();updateCenter();renderSummary();redrawMap();
   eltxt("compare-loading",ms.rows.length+" ไฟล์ • "+ms.water.length+" ขอบน้ำรายวัน • "+ms.newwater.length+" พื้นที่น้ำใหม่ (รอบ Verified)");
