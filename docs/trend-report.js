@@ -4,7 +4,7 @@
 let history=null,waterFC=null,loading=null,charts=[],miniMap=null,miniLayers=[];
 const fmt=n=>n==null||Number.isNaN(Number(n))?"—":Number(n).toLocaleString("th-TH",{maximumFractionDigits:2});
 const dth=d=>{if(!d)return"—";const [y,m,dd]=d.split("-");return `${dd}/${m}/${y}`};
-const trusted=x=>x&&x.analysis_status==="VERIFIED"&&(x.valid_pct==null||x.valid_pct>=70);
+const trusted=x=>x&&["VERIFIED","AUTO_VALID"].includes(x.analysis_status)&&(x.valid_pct==null||x.valid_pct>=70);
 async function load(){
  if(history)return history;
  if(loading)return loading;
@@ -67,7 +67,7 @@ function renderCharts(plot,root){
 function tableRows(plot){
  return rows(plot).map(x=>{
    const change=x.change_water_rai!=null?x.change_water_rai:null;
-   const status=x.analysis_status==="VERIFIED"?"ผ่าน QA":x.analysis_status==="PARTIAL"?"ข้อมูลบางส่วน":"ไม่ใช้วิเคราะห์";
+   const status=x.analysis_status==="VERIFIED"?"Verified":x.analysis_status==="AUTO_VALID"?"Auto QA ผ่าน":x.analysis_status==="PARTIAL"?"ข้อมูลบางส่วน":"ไม่ใช้วิเคราะห์";
    const water=x.water_rai!=null?fmt(x.water_rai):(x.observed_water_rai!=null?fmt(x.observed_water_rai)+"*":"—");
    return `<tr><td>${dth(x.date)}</td><td><span class="live-status live-${x.analysis_status.toLowerCase()}">${status}</span></td><td>${fmt(x.valid_pct)}%</td><td>${water}</td><td>${x.water_pct==null?"—":fmt(x.water_pct)+"%"}</td><td>${change==null?"—":(change>=0?"+":"")+fmt(change)}</td><td>${fmt(x.ndvi)}</td><td>${fmt(x.ndre)}</td><td>${fmt(x.ndmi)}</td><td>${fmt(x.mndwi)}</td><td>${fmt(x.bsi)}</td></tr>`;
  }).join("");
