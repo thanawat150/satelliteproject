@@ -16,11 +16,33 @@ const $=id=>document.getElementById(id);
 const notify=s=>{if(typeof showToast==="function")showToast(s);else console.info(s)};
 const safe=s=>String(s).replace(/[^A-Za-z0-9._-]/g,"_");
 const nice=d=>d?d.split("-").reverse().join("/"):"—";
+
+function compactToImage(v){
+ if(v.url)return v.url;
+ if(!v.pixels||!Array.isArray(v.size))return null;
+ const w=v.size[0],h=v.size[1],c=document.createElement("canvas");c.width=w;c.height=h;
+ const ctx=c.getContext("2d"),buf=ctx.createImageData(w,h),raw=buf.data,p=v.pixels;
+ const toRGB=str=>[parseInt(str.slice(1,3),16),parseInt(str.slice(3,5),16),parseInt(str.slice(5,7),16)];
+ const interpolate=(colors,t)=>{
+  const z=Math.max(0,Math.min(colors.length-1,t*(colors.length-1))),a=Math.floor(z),b=Math.min(colors.length-1,a+1),f=z-a;
+  const x=toRGB(colors[a]),y=toRGB(colors[b]);return x.map((v,i)=>Math.round(v*(1-f)+y[i]*f));
+ };
+ const isRGB=v.mode==="false";
+ for(let i=0;i<w*h;i++){
+  const off=i*(isRGB?3:1),src=p.slice(off,off+(isRGB?3:1));
+  if(src.includes("x"))continue;
+  let rgb;
+  if(isRGB)rgb=[parseInt(src[0],16)*17,parseInt(src[1],16)*17,parseInt(src[2],16)*17];
+  else rgb=interpolate(MODES[v.mode].colors,parseInt(src[0],16)/15);
+  const k=i*4;raw[k]=rgb[0];raw[k+1]=rgb[1];raw[k+2]=rgb[2];raw[k+3]=255;
+ }
+ ctx.putImageData(buf,0,0);v.url=c.toDataURL("image/png");return v.url;
+}
 function available(p,d,mode){return entries.find(v=>v.plot===p?.plot&&v.date===d&&v.mode===mode)||null;}
 function date(){return mapSatelliteDate||(selected&&mapSatelliteCandidates(selected.plot)[0]?.date)||null;}
 function pick(p,d,mode){
  const v=available(p,d,mode);
- if(v)return {plot:p.plot,date:d,mode,url:v.url,bounds:v.bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds,source:v.source||"Sentinel-2"};
+ if(v)return {plot:p.plot,date:d,mode,url:compactToImage(v),bounds:v.bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds,source:v.source||"Sentinel-2",previewResolution:v.size?"24×24 quicklook":null};
  if(mode==="true"){
   const row=satelliteRowForMap(p.plot,d),bounds=satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
   if(row?.web_preview_url&&bounds)return {plot:p.plot,date:d,mode,url:row.web_preview_url,bounds,source:"Sentinel-2"};
@@ -70,21 +92,21 @@ function render(p){
   satelliteImageLayers[k].on("load",applyColor);
   satelliteImageLayers[k].on("error",()=>status("เปิดภาพไม่สำเร็จ ตรวจสอบสิทธิ์ของ Google Drive JPG"));
  });
- applyColor();applyVisibility();status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+" • ปรับสีได้");
+ applyColor();applyVisibility();status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+(layer.previewResolution?" • "+layer.previewResolution:"")+" • ปรับสีได้");
 }
 function status(s){if($("map-sat-status"))$("map-sat-status").textContent=s;if($("studio-data-status"))$("studio-data-status").textContent=s}
 function applyColor(){
  const cm=$("studio-color-matrix"),gamma=$("studio-gamma");
  if(cm)cm.setAttribute("values",[state.r/100,0,0,0,0,0,state.g/100,0,0,0,0,0,state.b/100,0,0,0,0,0,1,0].join(" "));
  if(gamma)[...gamma.children].forEach(x=>x.setAttribute("exponent",(100/state.gamma).toFixed(3)));
- const css="url(#studio-color-filter) brightness("+state.brightness+"%) contrast("+state.contrast+"%) saturate("+state.saturation+"%)";
+ const svgNeeded=(state.r!==100||state.g!==100||state.b!==100||state.gamma!==100);const css=(svgNeeded?"url(#studio-color-filter) ":"")+"brightness("+state.brightness+"%) contrast("+state.contrast+"%) saturate("+state.saturation+"%)";
  Object.values(satelliteImageLayers).forEach(l=>{const e=l?.getElement();if(e)e.style.filter=css});
 }
 function applyVisibility(){
  for(const [map,store] of [[overviewMap,mapLayers.overview],[fullMap,mapLayers.full]]){
   if(!map)continue;
   store.forEach((l,name)=>{
-   if(l.setStyle)l.setStyle({opacity:state.boundary?1:0,weight:state.boundary?(selected?.plot===name?3:1.5):0,fillOpacity:state.boundary?(selected?.plot===name?.15:.025):0});
+   if(l.setStyle)l.setStyle({opacity:state.boundary?1:0,weight:state.boundary?(selected?.plot===name?3:1.5):0,fillOpacity:state.boundary?(selected?.plot===name?0.15:0.025):0});
    if(l.getTooltip?.())l.unbindTooltip();
    if(state.labels&&name===selected?.plot)l.bindTooltip(name,{permanent:true,direction:"center",className:"studio-map-label"}).openTooltip();
   });
