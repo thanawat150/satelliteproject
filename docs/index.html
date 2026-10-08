@@ -74,7 +74,7 @@
               <div class="metric-row"><div><span>NDRE</span><small>สุขภาพใบพืช • stable land</small></div><div class="metric-value"><b id="ndre-values">—</b><em id="ndre-delta">—</em></div></div>
               <div class="metric-row"><div><span>NDMI</span><small>ความชื้นพืช/พื้นที่ • stable land</small></div><div class="metric-value"><b id="ndmi-values">—</b><em id="ndmi-delta">—</em></div></div>
             </div>
-            <button class="wide-btn" onclick="showSelectedReport()">เปิด Report Preview</button>
+            <button class="wide-btn" onclick="showSelectedReport()">เปิด Report Preview</button><button class="wide-btn verified-action" onclick="openVerifiedReport()">เปิด Verified PDF</button>
           </section>
         </div>
 
@@ -85,7 +85,7 @@
       </section>
 
       <section class="tab-panel" id="tab-map">
-        <section class="card full-card"><div class="card-head"><div><div class="eyebrow">GIS VIEW</div><h3>แผนที่แปลงระยอง</h3></div><p>คลิกจุดแปลงเพื่อเปิดรายละเอียด</p></div><div id="full-map" class="map full-map"></div><div class="prototype-note">Prototype: รอบนี้ใช้ตำแหน่งกึ่งกลางแปลงจาก raster footprint; เวอร์ชัน production จะเปลี่ยนเป็น polygon UTM จริงทุกแปลง</div></section>
+        <section class="card full-card"><div class="card-head"><div><div class="eyebrow">GIS VIEW</div><h3>แผนที่แปลงระยอง</h3></div><p>คลิกจุดแปลงเพื่อเปิดรายละเอียด</p></div><div id="full-map" class="map full-map"></div><div class="prototype-note">แผนที่ใช้ขอบเขตจากพิกัด UTM ที่ตรวจสอบแล้วสำหรับ 18 แปลง • 21-STC แสดงตำแหน่งแปลงชั่วคราวระหว่างตรวจ topology ของขอบเขต</div></section>
       </section>
 
       <section class="tab-panel" id="tab-impact">
@@ -101,7 +101,7 @@
             <div class="check-grid"><label><input type="checkbox" checked> สถานะน้ำ</label><label><input type="checkbox" checked> ดัชนีพืช</label><label><input type="checkbox" checked> Stable land</label><label><input type="checkbox" checked> QA / วันที่</label></div>
             <button class="primary-btn wide" onclick="renderReportPreview()">Preview Report</button>
             <button class="ghost-btn wide" onclick="printReport()">Export PDF / Print</button>
-            <a class="ghost-btn wide" id="verified-folder-2" target="_blank" rel="noopener">เปิด Verified PDF ใน Google Drive</a>
+            <a class="ghost-btn wide" id="verified-folder-2" target="_blank" rel="noopener">เปิด Verified PDF ของแปลงนี้</a>
           </section>
           <section class="report-paper" id="report-paper"></section>
         </div>
