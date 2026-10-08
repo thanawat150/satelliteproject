@@ -103,7 +103,7 @@ function render(p){
 }
 function status(s){if($("map-sat-status"))$("map-sat-status").textContent=s;if($("studio-data-status"))$("studio-data-status").textContent=s}
 function applyColor(){
- const cm=$("studio-color-matrix"),gamma=$("studio-gamma");
+ const cm=$("studio-color-matrix"),gamma=$("studio-gamma-transfer");
  if(cm)cm.setAttribute("values",[state.r/100,0,0,0,0,0,state.g/100,0,0,0,0,0,state.b/100,0,0,0,0,0,1,0].join(" "));
  if(gamma)[...gamma.children].forEach(x=>x.setAttribute("exponent",(100/state.gamma).toFixed(3)));
  const svgNeeded=(state.r!==100||state.g!==100||state.b!==100||state.gamma!==100);const css=(svgNeeded?"url(#studio-color-filter) ":"")+"brightness("+state.brightness+"%) contrast("+state.contrast+"%) saturate("+state.saturation+"%)";
