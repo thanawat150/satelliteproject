@@ -1,0 +1,30 @@
+name: Monitor UI Browser Smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/test_monitoring_ui.cjs"
+      - ".github/workflows/test_monitor_ui.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright browser
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Start portal web server
+        run: |
+          python -m http.server 8877 --bind 127.0.0.1 --directory docs > /tmp/monitor-site.log 2>&1 &
+      - name: Smoke test actual Leaflet browser
+        run: node scripts/test_monitoring_ui.cjs
