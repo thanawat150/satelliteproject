@@ -36,3 +36,6 @@
 .google-primary{margin-top:22px;padding:17px;font-size:17px;background:#e9faf7!important;color:#102d34!important;font-weight:800}
 .ai-control{margin-top:17px}.ai-control textarea{width:100%;min-height:110px;border:1px solid var(--border,#31465d);border-radius:12px;padding:12px;background:var(--surface,#142438);color:inherit;resize:vertical}
 @media(max-width:680px){.google-primary{font-size:16px}.ai-control .grid.g2{grid-template-columns:1fr}}
+
+/* Connection onboarding: always offer an actionable path instead of a dead disabled button. */
+.setup-steps{display:grid;gap:14px;margin:18px 0}.setup-step{display:flex;align-items:flex-start;gap:14px;padding:16px;border-radius:14px;border:1px solid rgba(117,193,215,.22);background:rgba(13,36,55,.48)}.setup-number{display:grid;place-items:center;min-width:30px;height:30px;border-radius:999px;background:#237c7b;color:white;font-weight:800}.setup-step strong{display:block;margin-bottom:5px}.setup-step a{display:inline-block;margin-top:7px;color:#70e6cd;text-decoration:underline;text-underline-offset:3px}.setup-focus{outline:2px solid #70e6cd;outline-offset:4px}.actions a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
