@@ -61,6 +61,10 @@ with tempfile.TemporaryDirectory(prefix="monitor_test_") as td:
     first=mod.analyze("13-STC","2026-11-01",ten_path,twenty_path)
     assert first["status"]=="AUTO_VALID" and first["valid_pct"]>=99, first
     assert first["water_rai"]>0,first
+    water_history=mod.read_json("water_history.geojson", {"features":[]})
+    actual=next(f for f in water_history["features"] if f["properties"]["plot"]=="13-STC" and f["properties"]["date"]=="2026-11-01")
+    clipped=transform(proj.transform, shape(actual["geometry"]))
+    assert clipped.difference(boundary).area < 0.1, "Water footprint extends outside the verified plot"
     skipped=mod.analyze("13-STC","2026-11-01",ten_path,twenty_path)
     assert skipped["status"]=="SKIPPED_UNCHANGED",skipped
     write_twenty(1)
