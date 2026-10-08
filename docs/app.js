@@ -218,7 +218,7 @@ function closeSatelliteViewer(){
 function mapSatelliteCandidates(plot){
   return satelliteFiles
     .filter(x=>x.plot===plot && x.sensor==='Sentinel-2' && x.resolution==='10m')
-    .filter(x=>satelliteBoundsByKey.has(`${x.plot}|${x.date}`))
+    .filter(x=>x.web_preview_url && (x.preview_bounds || satelliteBoundsByKey.has(`${x.plot}|${x.date}`)))
     .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
 }
 function populateMapSatelliteDates(p){
@@ -251,9 +251,10 @@ function updateMapSatelliteOverlay(p){
   }
   const date=mapSatelliteDate || mapSatelliteCandidates(p.plot)[0]?.date;
   const row=satelliteRowForMap(p.plot,date);
-  const geo=satelliteBoundsByKey.get(`${p.plot}|${date}`);
+  const oldGeo=satelliteBoundsByKey.get(`${p.plot}|${date}`);
+  const imageBounds=row?.preview_bounds || oldGeo?.bounds || null;
   removeMapSatelliteLayers();
-  if(!row||!geo){
+  if(!row||!imageBounds){
     if(status)status.textContent=`${p.plot} • ยังไม่มีภาพ 10 m ที่ผูกพิกัดสำหรับวันที่เลือก`;
     return;
   }
@@ -261,7 +262,7 @@ function updateMapSatelliteOverlay(p){
     if(status)status.textContent=`${p.plot} • ${datePretty(date)} • กำลังรอ JPG Preview จาก GeoTIFF`;
     return;
   }
-  const bounds=L.latLngBounds(geo.bounds[0],geo.bounds[1]);
+  const bounds=L.latLngBounds(imageBounds[0],imageBounds[1]);
   [[overviewMap,'overview'],[fullMap,'full']].forEach(([map,key])=>{
     if(!map)return;
     const layer=L.imageOverlay(row.web_preview_url,bounds,{opacity:mapSatelliteOpacity,pane:'satellitePane',interactive:false,crossOrigin:false}).addTo(map);
