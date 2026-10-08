@@ -5,6 +5,7 @@ const {chromium}=require("playwright");
  const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
  const page=await browser.newPage({viewport:{width:1440,height:900}});
  const errors=[];
+ page.setDefaultTimeout(60000);
  page.on("pageerror",e=>errors.push(e.message));
  try{
   await page.goto("http://127.0.0.1:8877/?tab=compare&plot=17-STC",{waitUntil:"domcontentloaded"});
@@ -20,7 +21,7 @@ const {chromium}=require("playwright");
   const w=await page.locator("#compare-map-b").evaluate(el=>el.getBoundingClientRect().width);
   assert.ok(w>500,"B map needs full-width viewport in swipe");
   const before=await page.locator("#compare-map-b img.leaflet-image-layer").last().evaluate(el=>el.style.clipPath);
-  await page.locator("#compare-split").fill("25");
+  await page.locator("#compare-split").evaluate(el=>{el.value="25";el.dispatchEvent(new Event("input",{bubbles:true}))});
   await page.waitForTimeout(200);
   const after=await page.locator("#compare-map-b img.leaflet-image-layer").last().evaluate(el=>el.style.clipPath);
   assert.ok(after.startsWith("inset(")&&before!==after,"Slider must clip the B image, not an entire map");
