@@ -233,3 +233,16 @@
  .cmp-report-controls{display:none!important}
  .cmp-report-graphs article{break-inside:avoid}
 }
+
+
+/* Dynamic Live Report — explicit QA freshness, no stale static summary */
+.live-report-alert,.live-report-ok{margin:12px 0 16px;padding:13px 16px;border-radius:9px;line-height:1.6;break-inside:avoid}
+.live-report-alert{background:#fff6e9;border:1px solid #ecd5a9;border-left:4px solid #c98a28;color:#805620}
+.live-report-ok{background:#f0f8f2;border:1px solid #cfe7d5;border-left:4px solid #369463;color:#36694d}
+.live-report-alert strong,.live-report-ok strong{font-size:11px;font-weight:700}
+.live-report-alert p,.live-report-ok p{font-size:10px;margin:5px 0 0;color:inherit}
+.live-report-alert small{font-size:9px}
+.live-report-loading{padding:30px 18px;color:#587284;font-size:11px;text-align:center}
+.report-kpi small{display:block;font-size:8px;color:#657989;margin-top:7px;font-weight:500}
+.live-report-note{font-size:9px;color:#647989;line-height:1.7;margin:8px 0 0}
+@media print{.live-report-alert,.live-report-ok,.report-kpis{break-inside:avoid}}
