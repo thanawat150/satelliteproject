@@ -56,6 +56,14 @@ function mapInit(){
 function footprint(p,d){return ms.water.find(x=>x.properties?.plot===p&&x.properties?.date===d)}
 function layerAdd(m,l){l.addTo(m);return l}
 function chooseCenter(p){const b=ms.boundaries.get(p);if(!b)return null;const l=L.geoJSON(b);return l.getBounds().isValid()?l.getBounds():null}
+function compareWaterMasks(p,a,b){
+ const fa=footprint(p,a),fb=footprint(p,b);
+ if(!fa||!fb||!valid(observation(p,a))||!valid(observation(p,b))||typeof turf==="undefined")return null;
+ try{
+  const fresh=turf.difference(fb,fa),receded=turf.difference(fa,fb),stable=turf.intersect(fa,fb);
+  return {fresh,receded,stable};
+ }catch(e){log("Water polygon difference not available: "+e.message);return null}
+}
 function redrawMap(){
  if(!ms.ready||!$("compare-map-a"))return;
  mapInit();if(ms.maps.length!==2)return;
@@ -80,11 +88,21 @@ function redrawMap(){
  const b=chooseCenter(p);
  if(b){ms.sync=true;ms.maps.forEach(m=>m.fitBounds(b,{padding:[15,15],maxZoom:16,animate:false}));ms.sync=false}
  const aWater=footprint(p,ms.A),bWater=footprint(p,ms.B),canNew=isVerifiedPair(p,ms.A,ms.B);
- if(ms.showNew&&canNew){const newF=ms.newwater.find(x=>x.properties.plot===p);if(newF){const layer=layerAdd(ms.maps[1],L.geoJSON(newF,{style:{color:"#e6fc79",weight:1.6,fillColor:"#00cbeb",fillOpacity:.33}}));ms.mapLayers[1].push(layer)}}
+ const cm=ms.display==="change"&&ms.showWater?compareWaterMasks(p,ms.A,ms.B):null;
+ if(cm&&ms.display==="change"){
+  for(const [f,color,op] of [[cm.stable,"#2367b5",.30],[cm.fresh,"#17bddc",.52],[cm.receded,"#efaa4b",.52]]){
+   if(!f)continue;
+   ms.mapLayers[1].push(layerAdd(ms.maps[1],L.geoJSON(f,{style:{color,weight:1.8,fillColor:color,fillOpacity:op}})));
+  }
+ }
+ if(ms.showNew&&canNew&&!cm){const newF=ms.newwater.find(x=>x.properties.plot===p);if(newF){const layer=layerAdd(ms.maps[1],L.geoJSON(newF,{style:{color:"#e6fc79",weight:1.6,fillColor:"#00cbeb",fillOpacity:.33}}));ms.mapLayers[1].push(layer)}}
  let note="ภาพคู่ใช้ภาพที่บันทึกแต่ละวันจริง และจัดตำแหน่งตามพิกัด GeoTIFF";
  if(ms.display==="change"){
-  note=aWater&&bWater?"มีขอบน้ำจาก MNDWI ทั้งสองวัน • ตรวจการเปลี่ยนแปลงด้วยเส้นขอบแต่ละวัน":canNew&&ms.newwater.some(x=>x.properties.plot===p)?"พื้นที่น้ำใหม่มาจากผล Verified ของคู่วัน Baseline → Current; ยังไม่มีขอบน้ำเต็มรายวันทั้งสองฝั่ง":"ยังไม่มี Water Footprint ที่ผ่านการวิเคราะห์สำหรับคู่วันนี้ จึงไม่วาดพื้นที่เปลี่ยนแปลง";
-  if(ms.showWater&&aWater){const l=layerAdd(ms.maps[1],L.geoJSON(aWater,{style:{color:"#ffd56a",weight:3,dashArray:"7,4",fill:false}}));ms.mapLayers[1].push(l)}
+  if(cm){
+   const ra=f=>f&&typeof turf!=="undefined"?fmt(turf.area(f)/1600):"0";
+   note="พื้นที่น้ำใหม่ "+ra(cm.fresh)+" ไร่ • น้ำลด "+ra(cm.receded)+" ไร่ • น้ำคงเดิม "+ra(cm.stable)+" ไร่ (ประมาณจาก Polygon ที่ผ่าน QA ทั้งสองวัน ไม่แทนค่ารายงาน Raster)";
+  }else note=canNew&&ms.newwater.some(x=>x.properties.plot===p)?"แสดงพื้นที่น้ำใหม่จากผล Verified ของคู่วัน Baseline → Current เท่านั้น • ยังไม่มีขอบน้ำเต็มรายวันสองชุดที่เปรียบเทียบได้":"คู่วันที่เลือกยังไม่มี Water Footprint ที่ผ่าน QA ทั้งสองวัน จึงไม่สามารถคำนวณน้ำใหม่/น้ำลด/น้ำคงเดิมเชิงพื้นที่";
+  if(!cm&&ms.showWater&&aWater){const l=layerAdd(ms.maps[1],L.geoJSON(aWater,{style:{color:"#ffd56a",weight:3,dashArray:"7,4",fill:false}}));ms.mapLayers[1].push(l)}
  }else if(!aWater||!bWater)note+=" • ยังไม่มีขอบน้ำรายวันที่ยืนยันครบทั้งสองวัน";
  if(ms.layer!=="true"){
  const aa=findImage(p,ms.A,ms.layer),bb=findImage(p,ms.B,ms.layer);
