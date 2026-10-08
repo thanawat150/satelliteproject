@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 const root=document.getElementById('calendar-root'); if(!root)return;
-const state={month:new Date(),date:null,plot:'ALL',files:[],analysis:{},loaded:false,error:null};
+const state={month:new Date(),date:null,plot:'ALL',files:[],analysis:{},alerts:[],loaded:false,error:null};
 state.month.setDate(1);
 const pad=n=>String(n).padStart(2,'0');
 const iso=d=>[d.getFullYear(),pad(d.getMonth()+1),pad(d.getDate())].join('-');
@@ -19,7 +19,7 @@ function schedule(s){
 const rows=()=>state.files.filter(x=>state.plot==='ALL'||x.plot===state.plot);
 function summary(date){
  const files=rows().filter(x=>x.date===date),plots=[...new Set(files.map(x=>x.plot))];
- return {files,plots,qa:plots.map(p=>(state.analysis[p]||[]).find(x=>x.date===date)).filter(Boolean),schedule:schedule(date)};
+ return {files,plots,qa:plots.map(p=>(state.analysis[p]||[]).find(x=>x.date===date)).filter(Boolean),alerts:state.alerts.filter(a=>a.date===date&&(state.plot==='ALL'||a.plot===state.plot)),schedule:schedule(date)};
 }
 function quality(x){
  if(!x)return ['pending','ยังไม่มีผลวิเคราะห์'];
@@ -43,13 +43,14 @@ function render(){
    if(good)markers+='<i class="cal-dot cal-qa-ok"></i>';
    else if(caution)markers+='<i class="cal-dot cal-qa-warn"></i>';
    if(s.schedule.has)markers+='<i class="cal-dot cal-planned"></i>';
+   if(s.alerts.length)markers+='<i class="cal-dot cal-alert-dot"></i>';
    const classes='cal-cell'+(date===iso(new Date())?' cal-today':'')+(date===state.date?' cal-selected':'')+(s.files.length?' cal-has-images':'');
    cells+='<button type="button" class="'+classes+'" data-date="'+date+'" aria-label="'+esc(labelDate(date))+'"><span class="cal-day">'+n+'</span><span class="cal-cell-markers">'+markers+'</span></button>';
  }
  root.innerHTML='<div class="cal-controls"><div class="cal-month-tools"><button type="button" data-nav="-1" class="ghost-btn" aria-label="เดือนก่อน">‹</button><h3>'+esc(labelMonth(first))+'</h3><button type="button" data-nav="1" class="ghost-btn" aria-label="เดือนถัดไป">›</button><button type="button" data-nav="today" class="ghost-btn">เดือนนี้</button></div><label>เลือกแปลง <select id="cal-plot">'+options+'</select></label></div>'+
  '<div class="cal-kpis"><div><strong>'+uniqueDates.size+'</strong><span>วันที่มีภาพในเดือนนี้</span></div><div><strong>'+currentRows.length+'</strong><span>ไฟล์ภาพในเดือนนี้</span></div><div><strong>'+uniquePlots.size+'</strong><span>แปลงที่มีภาพ</span></div></div>'+
  '<div class="cal-weekdays">'+['อา','จ','อ','พ','พฤ','ศ','ส'].map(x=>'<span>'+x+'</span>').join('')+'</div><div class="cal-grid">'+cells+'</div>'+
- '<div class="cal-legend"><span><i class="cal-legend-square"></i> มีภาพ</span><span><i class="cal-dot cal-qa-ok"></i> ผ่าน QA</span><span><i class="cal-dot cal-qa-warn"></i> QA จำกัด</span><span><i class="cal-dot cal-planned"></i> รอบตรวจตามแผน</span></div><div id="cal-detail" class="cal-detail"></div>';
+ '<div class="cal-legend"><span><i class="cal-legend-square"></i> มีภาพ</span><span><i class="cal-dot cal-qa-ok"></i> ผ่าน QA</span><span><i class="cal-dot cal-qa-warn"></i> QA จำกัด</span><span><i class="cal-dot cal-planned"></i> รอบตรวจตามแผน</span><span><i class="cal-dot cal-alert-dot"></i> มีสัญญาณเฝ้าระวัง</span></div><div id="cal-detail" class="cal-detail"></div>';
  renderDetail();
 }
 function renderDetail(){
@@ -59,6 +60,7 @@ function renderDetail(){
  if(s.schedule.monday)plans.push('รอบวันจันทร์');
  let html='<div class="cal-detail-head"><div><div class="eyebrow">SELECTED DATE</div><h3>'+esc(labelDate(date))+'</h3></div><span class="cal-count">'+s.plots.length+' แปลง • '+s.files.length+' ไฟล์</span></div>';
  if(plans.length)html+='<div class="cal-schedule-note">กำหนดตรวจ Google Drive: '+esc(plans.join(' + '))+'<small>กำหนดการ ไม่ใช่หลักฐานว่าตรวจสำเร็จแล้ว</small></div>';
+ if(s.alerts.length)html+='<div class="cal-schedule-note"><strong>มีสัญญาณเฝ้าระวัง '+s.alerts.length+' รายการ</strong><small>'+esc([...new Set(s.alerts.map(a=>a.plot))].join(', '))+' • สัญญาณจากภาพที่บันทึกวันดังกล่าว ไม่ใช่การยืนยันผลกระทบ</small><button type="button" class="ghost-btn" data-action="alerts">เปิด Alert Center</button></div>';
  if(!s.files.length)html+='<p class="cal-no-images">ไม่มีภาพดาวเทียมในรายการของวันที่เลือก'+(state.plot!=='ALL'?' สำหรับแปลง '+esc(state.plot):'')+'</p>';
  else html+='<div class="cal-detail-list">'+s.plots.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})).map(p=>{
    const files=s.files.filter(x=>x.plot===p),a=(state.analysis[p]||[]).find(x=>x.date===date),[q,label]=quality(a);
@@ -91,17 +93,19 @@ root.addEventListener('click',e=>{
  render();return}
  if(btn.dataset.action==='image')jumpImage(btn.dataset.plot,btn.dataset.date);
  if(btn.dataset.action==='report')jumpReport(btn.dataset.plot,btn.dataset.date);
+ if(btn.dataset.action==='alerts'&&typeof switchTab==='function')switchTab('alerts');
 });
 root.addEventListener('change',e=>{
  if(e.target.id==='cal-plot'){state.plot=e.target.value;if(typeof updateQuery==='function')updateQuery({cal_plot:state.plot==='ALL'?null:state.plot});render()}
 });
 async function load(){
  try{
-  const [partRes,historyRes]=await Promise.all([fetch('data/satellite_parts.json',{cache:'no-store'}),fetch('data/analysis_history.json',{cache:'no-store'})]);
+  const [partRes,historyRes,plotsRes]=await Promise.all([fetch('data/satellite_parts.json',{cache:'no-store'}),fetch('data/analysis_history.json',{cache:'no-store'}),fetch('data/plots.json',{cache:'no-store'})]);
   if(!partRes.ok)throw Error('satellite_parts.json HTTP '+partRes.status);
   const meta=await partRes.json(),chunks=await Promise.all(meta.parts.map(async x=>{const r=await fetch('data/'+x.file,{cache:'no-store'});if(!r.ok)throw Error(x.file+' HTTP '+r.status);return r.json()}));
   state.files=[...new Map(chunks.flat().filter(x=>x.id&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)).map(x=>[x.id,x])).values()];
   if(historyRes.ok)state.analysis=(await historyRes.json()).plots||{};
+  if(plotsRes.ok&&window.MonitoringAlerts?.build)state.alerts=window.MonitoringAlerts.build({history:state.analysis,plots:(await plotsRes.json()).plots||[],images:state.files});
   state.loaded=true;
   const p=new URLSearchParams(location.search),date=p.get('cal_date'),plot=p.get('cal_plot');
   if(plot&&state.files.some(x=>x.plot===plot))state.plot=plot;
