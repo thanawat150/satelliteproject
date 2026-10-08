@@ -101,3 +101,5 @@
 .live-footnote{font-size:8px;color:#7c8d98;margin-top:7px}
 @media(max-width:760px){.live-kpis{grid-template-columns:1fr 1fr}.live-grid{grid-template-columns:1fr}.live-grid .live-wide{grid-column:auto}.live-title-row,.live-water-map-head{flex-direction:column;align-items:flex-start}.live-water-meta{text-align:left}.live-chart{height:190px}}
 @media print{.live-grid{grid-template-columns:1fr 1fr}.live-chart{height:145px}.live-water-map{height:190px}.live-table-wrap{overflow:visible}.live-table{font-size:7px}.live-title-row{break-after:avoid}.live-grid article,.live-water-map-wrap,.live-table-wrap{break-inside:avoid}}
+
+.live-auto_valid{background:#e3f1fb;color:#24698e}
