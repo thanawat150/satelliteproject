@@ -140,7 +140,7 @@ function renderSatelliteGallery(){
   if(!rows.length){gallery.innerHTML='<div class="sat-empty">ไม่พบภาพตามตัวกรองนี้</div>';return}
   gallery.innerHTML=rows.map(x=>`<article class="sat-card" onclick="openSatelliteViewer('${x.id}')">
     <div class="sat-thumb">
-      <img loading="lazy" src="${x.thumbnail_url}" alt="${x.plot} ${x.date}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <img loading="lazy" src="${x.web_preview_url||x.thumbnail_url||''}" alt="${x.plot} ${x.date}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
       <div class="sat-thumb-fallback"><span>TIFF</span><small>กดเพื่อเปิด Preview</small></div>
       <div class="sat-resolution">${x.resolution||'—'}</div>
     </div>
@@ -155,16 +155,24 @@ function renderSatelliteGallery(){
 function openSatelliteViewer(id){
   const x=satelliteFiles.find(f=>f.id===id); if(!x)return;
   const modal=document.getElementById('satellite-modal');
+  const img=document.getElementById('sat-modal-image');
+  const waiting=document.getElementById('sat-modal-waiting');
   document.getElementById('sat-modal-title').textContent=`${x.plot} • ${datePretty(x.date)}`;
-  document.getElementById('sat-modal-meta').textContent=`${x.sensor} • ${x.resolution||'ไม่ระบุ resolution'} • ${x.title}`;
+  document.getElementById('sat-modal-meta').textContent=`${x.sensor} • ${x.resolution||'ไม่ระบุ resolution'} • ${x.preview_kind||'GeoTIFF'} • ${x.title}`;
   document.getElementById('sat-modal-drive').href=x.url;
-  document.getElementById('sat-modal-frame').src=x.preview_url;
+  document.getElementById('sat-modal-original').href=x.url;
+  if(x.web_preview_url){
+    img.src=x.web_preview_url; img.style.display='block'; waiting.style.display='none';
+    img.onerror=()=>{img.style.display='none';waiting.style.display='grid'};
+  }else{
+    img.removeAttribute('src'); img.style.display='none'; waiting.style.display='grid';
+  }
   modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
 }
 function closeSatelliteViewer(){
   const modal=document.getElementById('satellite-modal'); if(!modal)return;
   modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
-  document.getElementById('sat-modal-frame').src='about:blank';
+  const img=document.getElementById('sat-modal-image'); if(img){img.removeAttribute('src');img.style.display='none'}
 }
 function updateChart(p){const labels=['น้ำ (%)','NDVI ×100','NDRE ×100','NDMI ×100'];const before=[p.water_before_pct,p.ndvi_before==null?null:p.ndvi_before*100,p.ndre_before==null?null:p.ndre_before*100,p.ndmi_before==null?null:p.ndmi_before*100];const current=[p.water_current_pct,p.ndvi_current==null?null:p.ndvi_current*100,p.ndre_current==null?null:p.ndre_current*100,p.ndmi_current==null?null:p.ndmi_current*100];if(chart)chart.destroy();chart=new Chart(document.getElementById('change-chart'),{type:'bar',data:{labels,datasets:[{label:'เดิม',data:before,backgroundColor:'rgba(56,189,248,.45)',borderColor:'#38bdf8',borderWidth:1},{label:'ปัจจุบัน',data:current,backgroundColor:'rgba(245,158,11,.55)',borderColor:'#f59e0b',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9cb4c7',boxWidth:10}}},scales:{x:{ticks:{color:'#9cb4c7'},grid:{display:false}},y:{ticks:{color:'#7792a7'},grid:{color:'rgba(255,255,255,.06)'}}}}})}
 function popupHtml(p){
