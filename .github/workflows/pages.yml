@@ -34,6 +34,8 @@ jobs:
           node --check docs/map-studio.js
           node --check docs/trend-report.js
           node --check docs/monitoring-studio.js
+          node --check docs/live-report-model.js
+          node scripts/test_live_report.cjs
           python -m py_compile scripts/derive_daily_monitoring.py
 
       - name: Prepare static site
