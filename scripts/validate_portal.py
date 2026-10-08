@@ -92,9 +92,37 @@ for row in sat_files:
     if not row.get("url") or not row.get("preview_url"):
         errors.append(f"{row.get('plot')}: satellite row missing Drive URL")
 
+# Map Studio: compact real-raster spectral views
+studio=json.loads((ROOT/"docs/data/visual_layers.json").read_text(encoding="utf-8"))
+map_modes={"false","ndvi","ndre","ndmi","mndwi","bsi"}
+view_ids=set()
+for v in studio.get("layers",[]):
+    name=v.get("plot")
+    if name not in known:
+        errors.append(f"Map Studio: unknown plot {name}")
+    if v.get("mode") not in map_modes:
+        errors.append(f"Map Studio: invalid mode {v.get('mode')}")
+    ident=(name,v.get("date"),v.get("mode"))
+    if ident in view_ids:
+        errors.append(f"Map Studio: duplicate scene {ident}")
+    view_ids.add(ident)
+    size=v.get("size",[])
+    p=v.get("pixels","")
+    expected=(3 if v.get("mode")=="false" else 1)
+    if len(size)!=2 or not all(isinstance(n,int) and 1<=n<=512 for n in size):
+        errors.append(f"Map Studio: invalid size {ident}")
+        continue
+    if len(p)!=size[0]*size[1]*expected:
+        errors.append(f"Map Studio: pixel length invalid {ident}")
+    if not all(c in "0123456789abcdefx" for c in p):
+        errors.append(f"Map Studio: invalid quantized pixels {ident}")
+    bounds=v.get("bounds")
+    if not (isinstance(bounds,list) and len(bounds)==2 and all(len(x)==2 for x in bounds)):
+        errors.append(f"Map Studio: missing georeference {ident}")
+
 if errors:
     print("PORTAL VALIDATION FAILED")
     for e in errors: print(" -",e)
     sys.exit(1)
 
-print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays, {len(sat_files)} satellite files")
+print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays, {len(sat_files)} satellite files, {len(view_ids)} map studio spectral layers")
