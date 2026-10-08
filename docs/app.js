@@ -49,7 +49,7 @@ async function init(){
   selectPlot(initial,false);
   await loadSatelliteLibrary();
   const requestedTab=params.get('tab');
-  if(['overview','map','impact','satellite','report'].includes(requestedTab)) switchTab(requestedTab,false);
+  if(['overview','map','impact','satellite','calendar','report'].includes(requestedTab)) switchTab(requestedTab,false);
   if(params.get('report')==='verified'){
     document.getElementById('report-type').value='verified';
     switchTab('report',false);
