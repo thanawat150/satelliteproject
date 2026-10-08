@@ -7,7 +7,7 @@ const valid=r=>r&&["VERIFIED","AUTO_VALID"].includes(r.analysis_status)&&(r.vali
 const colors={water:"#248ac1",ndvi:"#3c9b59",ndre:"#7a6cbb",ndmi:"#3397a2",mndwi:"#2875ad",bsi:"#a77d41",valid_pct:"#56879b"};
 const lab={water:"พื้นที่น้ำ (ไร่)",ndvi:"NDVI",ndre:"NDRE",ndmi:"NDMI",mndwi:"MNDWI",bsi:"BSI",valid_pct:"พื้นที่ใช้ได้ (%)"};
 const palettes={ndvi:["#965032","#d8bb70","#e5dea8","#77b96b","#116b38"],ndre:["#8e4738","#d1b671","#e6e8bd","#85b895","#2c7155"],ndmi:["#995037","#e3ae68","#efe2b8","#69afc7","#125b92"],mndwi:["#916533","#d4b882","#faf2ca","#73b9d1","#095ba3"],bsi:["#2b7152","#86a86f","#e9dfac","#d9a36e","#975534"]};
-const ms={ready:false,rows:[],previews:new Map(),visual:new Map(),full:new Map(),bounds:new Map(),history:{},water:[],newwater:[],boundaries:new Map(),plots:[],dates:[],plot:null,A:null,B:null,layer:"true",display:"side",sync:false,showBoundary:true,showWater:true,showNew:true,reportMetrics:["water","ndvi","ndre","ndmi"],maps:[],mapLayers:[],charts:[],hotmap:null,hotLayers:[]};
+const ms={ready:false,rows:[],previews:new Map(),visual:new Map(),full:new Map(),bounds:new Map(),history:{},water:[],newwater:[],landcover:[],spatialHotspots:[],boundaries:new Map(),plots:[],dates:[],plot:null,A:null,B:null,layer:"true",display:"side",sync:false,showBoundary:true,showWater:true,showNew:true,showVegetation:true,showSoil:true,reportMetrics:["water","ndvi","ndre","ndmi"],maps:[],mapLayers:[],charts:[],hotmap:null,hotLayers:[]};
 const log=e=>console.warn("Monitoring Studio:",e);
 function eltxt(id,s){let e=$(id);if(e)e.textContent=s}
 function selectVal(id,v){const e=$(id);if(e&&[...e.options].some(o=>o.value===v))e.value=v}
@@ -69,6 +69,13 @@ function redrawMap(){
   const bound=ms.boundaries.get(p);if(ms.showBoundary&&bound)ms.mapLayers[i].push(layerAdd(m,L.geoJSON(bound,{style:{color:"#fa7064",weight:2.3,fill:false}})));
   const water=ms.showWater?footprint(p,date):null;
   if(water)ms.mapLayers[i].push(layerAdd(m,L.geoJSON(water,{style:{color:"#23cbf0",weight:2,fillColor:"#1f9acf",fillOpacity:.24,dashArray:"5,4"}})));
+  for(const f of ms.landcover.filter(x=>x.properties?.plot===p&&x.properties?.date===date)){
+   const cls=f.properties.class||f.properties.landcover_class;
+   if(cls==="vegetation"&&!ms.showVegetation||cls==="bare_soil"&&!ms.showSoil)continue;
+   const color=cls==="vegetation"?"#42b971":cls==="bare_soil"?"#c49c61":null;
+   if(!color)continue;
+   ms.mapLayers[i].push(layerAdd(m,L.geoJSON(f,{style:{color,weight:1.2,fillColor:color,fillOpacity:.18}})));
+  }
  });
  const b=chooseCenter(p);
  if(b){ms.sync=true;ms.maps.forEach(m=>m.fitBounds(b,{padding:[15,15],maxZoom:16,animate:false}));ms.sync=false}
@@ -152,11 +159,20 @@ function drawHotspots(){
  const boundary=ms.boundaries.get(p);
  if(boundary)ms.hotLayers.push(layerAdd(ms.hotmap,L.geoJSON(boundary,{style:{color:"#ff7265",weight:2,fill:false}})));
  if(feat)ms.hotLayers.push(layerAdd(ms.hotmap,L.geoJSON(feat,{style:{color:"#22a6d5",weight:2,fillColor:"#2fb2e5",fillOpacity:.35}})));
+ const actualHotspots=ms.spatialHotspots.filter(f=>f.properties?.plot===p);
+ for(const f of actualHotspots){
+  const color=f.properties?.priority==="P1"?"#ed6758":f.properties?.priority==="P2"?"#e8a83c":"#e8cc67";
+  ms.hotLayers.push(layerAdd(ms.hotmap,L.geoJSON(f,{style:{color,weight:2,fillColor:color,fillOpacity:.33}})));
+ }
  const bnds=chooseCenter(p);if(bnds)ms.hotmap.fitBounds(bnds,{padding:[20,20],maxZoom:16});
  const content=$("hotspot-results");
  if(content){
   let html="";
   if(feat&&info){html+='<article class="monitor-event"><span class="monitor-severity">ตรวจสอบภาพก่อน</span><h4>น้ำรุกพื้นที่ใหม่</h4><p>ตรวจพบพื้นที่น้ำใหม่ '+fmt(info.new_water_rai)+' ไร่ ตามผลรอบ '+dth(String(info.baseline).replace(/(\d{4})(\d{2})(\d{2})/,"$1-$2-$3"))+' → '+dth(String(info.current).replace(/(\d{4})(\d{2})(\d{2})/,"$1-$2-$3"))+'</p><small>สีฟ้าบนแผนที่ = ขอบเขตพื้นที่น้ำใหม่ที่มี geometry อ้างอิง • ไม่ใช่การยืนยันว่าเกิดน้ำท่วมผิดปกติ</small></article>'}
+  for(const f of actualHotspots){
+   const p=f.properties||{};
+   html+='<article class="monitor-event"><span class="monitor-severity">'+String(p.priority||"สัญญาณเฝ้าระวัง")+'</span><h4>'+String(p.event_type||p.rule||"ตรวจพบพื้นที่ผิดปกติ")+'</h4><p>วันที่ '+dth(p.date||p.date_b)+' • พื้นที่ '+fmt(p.area_rai)+' ไร่</p><small>'+String(p.reason_th||"สร้างจากผลวิเคราะห์ Raster พร้อมตรวจ QA")+'</small></article>';
+  }
   if(stress){html+='<article class="monitor-event"><span class="monitor-severity">เฝ้าระวังระดับแปลง</span><h4>NDRE ลด และ NDMI เพิ่ม</h4><p>NDRE '+fmt(a.ndre)+' → '+fmt(b.ndre)+'; NDMI '+fmt(a.ndmi)+' → '+fmt(b.ndmi)+'</p><small>เป็นสัญญาณรวมระดับแปลง ยังไม่มี Raster Stress Mask ที่ระบุตำแหน่งได้ จึงไม่วาดจุดสมมติบนแผนที่</small></article>'}
   html||='<p class="cmp-qa-warning">ยังไม่พบขอบเขตน้ำใหม่หรือสัญญาณที่ผ่านเงื่อนไขสำหรับแปลงนี้จากชุดข้อมูลที่มี</p>';
   content.innerHTML=html;
@@ -183,7 +199,7 @@ function bind(){
  $("compare-layer")?.addEventListener("change",e=>{ms.layer=e.target.value;redrawMap()});
  $("compare-mode")?.addEventListener("change",e=>{ms.display=e.target.value;redrawMap()});
  $("compare-split")?.addEventListener("input",setSplit);
- for(const [id,key] of [["compare-boundary","showBoundary"],["compare-water","showWater"],["compare-newwater","showNew"]])$(id)?.addEventListener("change",e=>{ms[key]=e.target.checked;redrawMap()});
+ for(const [id,key] of [["compare-boundary","showBoundary"],["compare-water","showWater"],["compare-newwater","showNew"],["compare-vegetation","showVegetation"],["compare-soil","showSoil"]])$(id)?.addEventListener("change",e=>{ms[key]=e.target.checked;redrawMap()});
  for(const id of ["report-date-a","report-date-b"])$(id)?.addEventListener("change",reportDateChange);
  $("report-plot")?.addEventListener("change",e=>{if(ms.ready)changePlot(e.target.value)});
  $("report-type")?.addEventListener("change",()=>{if(ms.ready&&$("report-type").value==="compare")renderReport()});
@@ -208,10 +224,10 @@ function showTab(tab){
 async function init(){
  bind();
  try{
-  const [parts,history,water,newwater,boundaries,bounds,plots,visual]=await Promise.all([json("satellite_parts.json"),json("analysis_history.json"),json("water_history.geojson"),json("new_water.geojson"),json("boundaries.geojson"),json("satellite_bounds.json"),json("plots.json"),json("visual_layers.json")]);
+  const [parts,history,water,newwater,boundaries,bounds,plots,visual,landcover,spatialHotspots]=await Promise.all([json("satellite_parts.json"),json("analysis_history.json"),json("water_history.geojson"),json("new_water.geojson"),json("boundaries.geojson"),json("satellite_bounds.json"),json("plots.json"),json("visual_layers.json"),json("landcover_history.geojson").catch(()=>({features:[]})),json("monitoring_hotspots.geojson").catch(()=>({features:[]}))]);
   const files=await Promise.all(parts.parts.map(p=>json(p.file))),previews=await Promise.all(parts.parts.map((p,i)=>json("existing_display_part_"+(i+1)+".json"))),fulls=await Promise.all(parts.parts.map((p,i)=>json("full_preview_part_"+(i+1)+".json").catch(()=>({layers:[]}))));
   ms.rows=[...new Map(files.flat().map(x=>[x.id,x])).values()];
-  ms.history=history.plots||{};ms.water=water.features||[];ms.newwater=newwater.features||[];ms.boundaries=new Map((boundaries.features||[]).map(f=>[f.properties.plot,f]));
+  ms.history=history.plots||{};ms.water=water.features||[];ms.newwater=newwater.features||[];ms.landcover=landcover.features||[];ms.spatialHotspots=spatialHotspots.features||[];ms.boundaries=new Map((boundaries.features||[]).map(f=>[f.properties.plot,f]));
   ms.bounds=new Map((bounds.overlays||[]).map(x=>[x.plot+"|"+x.date,x]));
   ms.plots=plots.plots||[];ms.previews=new Map(previews.flatMap(x=>Object.entries(x.files||{})));
   ms.visual=new Map((visual.layers||[]).map(x=>[x.plot+"|"+x.date+"|"+x.mode,x]));
