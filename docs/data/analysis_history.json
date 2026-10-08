@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-08T09:27:53.384Z",
+  "generated_at": "2026-10-08T09:31:03.445Z",
   "province": "ระยอง",
   "description": "Time-series metrics used by the live report. Existing rows are seeded only from verified report values; future valid observations may be appended by the analysis pipeline.",
   "update_policy": {
@@ -45,6 +45,49 @@
         "new_water_rai": 194.91,
         "lost_water_rai": null,
         "source": "verified_report"
+      },
+      {
+        "date": "2026-10-02",
+        "role": "qa_only",
+        "analysis_status": "NO_DATA",
+        "water_rai": null,
+        "water_pct": null,
+        "ndvi": null,
+        "ndre": null,
+        "ndmi": null,
+        "mndwi": null,
+        "bsi": null,
+        "valid_pct": 0,
+        "change_water_rai": null,
+        "change_water_pp": null,
+        "new_water_rai": null,
+        "lost_water_rai": null,
+        "source": "satellite_qa",
+        "note_th": "เมฆ/ข้อมูลที่ใช้ได้ไม่เพียงพอ จึงไม่ใช้แทน Current"
+      },
+      {
+        "date": "2026-10-07",
+        "role": "qa_partial",
+        "analysis_status": "PARTIAL",
+        "water_rai": null,
+        "water_pct": null,
+        "ndvi": null,
+        "ndre": null,
+        "ndmi": null,
+        "mndwi": null,
+        "bsi": null,
+        "valid_pct": 44.7,
+        "change_water_rai": null,
+        "change_water_pp": null,
+        "new_water_rai": null,
+        "lost_water_rai": null,
+        "observed_water_rai": 44.5,
+        "observed_water_pct_of_valid": 38.4,
+        "observed_ndre": 0.204,
+        "observed_ndmi": 0.326,
+        "observed_mndwi": -0.037,
+        "source": "satellite_partial_analysis",
+        "note_th": "ตรวจได้เพียงพื้นที่ที่ผ่าน QA 44.7% จึงแสดงเป็นค่าบางส่วนและไม่ใช้แทนค่าปัจจุบัน"
       }
     ],
     "14(1)-STC": [
