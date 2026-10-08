@@ -38,11 +38,16 @@ function compactToImage(v){
  }
  ctx.putImageData(buf,0,0);v.url=c.toDataURL("image/png");return v.url;
 }
-function available(p,d,mode){return entries.find(v=>v.plot===p?.plot&&v.date===d&&v.mode===mode)||null;}
+function available(p,d,mode){
+ const priority={DIRECT:0,LATEST_RECT:1,NO_CLOUD_FILTER:2,HIST_CLEAR_RECT_SCL0:3};
+ return entries
+   .filter(v=>v.plot===p?.plot&&v.date===d&&v.mode===mode)
+   .sort((a,b)=>(priority[a.source_suffix]??9)-(priority[b.source_suffix]??9))[0]||null;
+}
 function date(){return mapSatelliteDate||(selected&&mapSatelliteCandidates(selected.plot)[0]?.date)||null;}
 function pick(p,d,mode){
  const v=available(p,d,mode);
- if(v)return {plot:p.plot,date:d,mode,url:compactToImage(v),bounds:v.bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds,source:v.source||"Sentinel-2",previewResolution:v.size?"24×24 quicklook":null};
+ if(v)return {plot:p.plot,date:d,mode,url:v.src||compactToImage(v),bounds:v.bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds,source:"Sentinel-2 GeoTIFF",previewResolution:(v.width&&v.height)?v.width+"×"+v.height+" px":null,sourceSuffix:v.source_suffix,resolution_m:v.resolution_m};
  if(mode==="true"){
   const row=satelliteRowForMap(p.plot,d),bounds=row?.preview_bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
   if(row?.web_preview_url&&bounds)return {plot:p.plot,date:d,mode,url:row.web_preview_url,bounds,source:"Sentinel-2",previewResolution:row.preview_native_size?row.preview_native_size.join("×")+" px":null};
@@ -51,8 +56,13 @@ function pick(p,d,mode){
 }
 async function init(){
  if(initialized)return;initialized=true;
- try{const r=await fetch("data/visual_layers.json",{cache:"no-store"});if(r.ok){const j=await r.json();entries=Array.isArray(j.layers)?j.layers:[];}}
- catch(e){console.warn("No visualization layer manifest yet",e)}
+ try{
+   const parts=await Promise.all(Array.from({length:10},(_,i)=>fetch("data/full_preview_part_"+(i+1)+".json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("full preview part "+(i+1)+" HTTP "+r.status);return r.json()})));
+   entries=parts.flatMap(x=>Array.isArray(x.layers)?x.layers:[]);
+ }catch(e){
+   console.warn("Full preview layers unavailable, falling back to compact quicklooks",e);
+   try{const r=await fetch("data/visual_layers.json",{cache:"no-store"});if(r.ok){const j=await r.json();entries=Array.isArray(j.layers)?j.layers:[];}}catch(_){}
+ }
  ["boundary","water","labels"].forEach(k=>{const e=$("studio-"+k);if(e)e.addEventListener("change",()=>{state[k]=e.checked;applyVisibility();})});
  $("studio-mode")?.addEventListener("change",e=>{state.mode=e.target.value;render(selected)});
  $("studio-preset")?.addEventListener("change",e=>preset(e.target.value));
@@ -99,7 +109,7 @@ function render(p){
   satelliteImageLayers[k].on("load",applyColor);
   satelliteImageLayers[k].on("error",()=>status("เปิดภาพไม่สำเร็จ ตรวจสอบสิทธิ์ของ Google Drive JPG"));
  });
- applyColor();applyVisibility();status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+(layer.previewResolution?" • "+layer.previewResolution:"")+" • ปรับสีได้");
+ applyColor();applyVisibility();status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+(layer.previewResolution?" • "+layer.previewResolution:"")+(layer.resolution_m?" • "+layer.resolution_m+" m":"")+" • สร้างจาก GeoTIFF จริง");
 }
 function status(s){if($("map-sat-status"))$("map-sat-status").textContent=s;if($("studio-data-status"))$("studio-data-status").textContent=s}
 function applyColor(){
