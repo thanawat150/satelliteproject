@@ -1,41 +1,47 @@
-name: Deploy Flood Monitoring Portal to GitHub Pages
+name: Publish Flood Monitoring Portal
 
 on:
   push:
     branches: ["main"]
     paths:
       - "docs/**"
+      - "scripts/validate_portal.py"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: "pages"
+  group: "publish-gh-pages"
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+
       - name: Validate portal data
         run: python scripts/validate_portal.py
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./docs
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+
+      - name: Prepare static site
+        run: |
+          rm -rf /tmp/flood-site
+          mkdir -p /tmp/flood-site
+          cp -a docs/. /tmp/flood-site/
+
+      - name: Publish to gh-pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages || true
+          git checkout --orphan _publish
+          git rm -rf .
+          cp -a /tmp/flood-site/. .
+          git add -A
+          git commit -m "Publish portal from ${GITHUB_SHA}"
+          git push --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:gh-pages
