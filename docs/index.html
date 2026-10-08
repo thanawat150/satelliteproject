@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261008-gallery4" />
+  <link rel="stylesheet" href="styles.css?v=20261008-live1" />
 </head>
 <body>
   <header class="topbar">
@@ -198,7 +198,7 @@
           <section class="card report-controls">
             <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3>
             <label>เลือกแปลง<select id="report-plot"></select></label>
-            <label>รูปแบบ<select id="report-type"><option value="quick">Quick Report — 1 หน้า</option><option value="verified">Verified Report — 6 หน้า</option></select></label>
+            <label>รูปแบบ<select id="report-type"><option value="quick">Live Report — อัปเดตตามประวัติข้อมูล</option><option value="verified">Verified Report — 6 หน้า</option></select></label>
             <div class="check-grid"><label><input type="checkbox" checked> สถานะน้ำ</label><label><input type="checkbox" checked> ดัชนีพืช</label><label><input type="checkbox" checked> Stable land</label><label><input type="checkbox" checked> QA / วันที่</label></div>
             <button class="primary-btn wide" onclick="renderReportPreview()">Preview Report</button>
             <button class="ghost-btn wide" id="print-report-btn" onclick="printReport()">Export Quick Report เป็น PDF</button>
@@ -211,6 +211,7 @@
   </div>
 
   <script src="map-studio.js?v=20261008-studio3"></script>
-  <script src="app.js?v=20261008-gallery4"></script>
+  <script src="trend-report.js?v=20261008-live1"></script>
+  <script src="app.js?v=20261008-live1"></script>
 </body>
 </html>
