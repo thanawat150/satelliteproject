@@ -94,11 +94,31 @@ async function loadSatelliteLibrary(){
       if(!rr.ok)throw new Error(`${part.file} HTTP ${rr.status}`);
       return rr.json();
     }));
-    const byId=new Map();
-    chunks.flat().forEach(x=>byId.set(x.id,x));
-    satelliteFiles=[...byId.values()].map(x=>Object.assign({},x,jpgPreviewMap[x.id]||{})).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(a.plot||'').localeCompare(String(b.plot||''))||String(a.resolution||'').localeCompare(String(b.resolution||'')));
+    // Each source GeoTIFF has a separate browser-renderable image built from its real raster bands.
+    // Keep the original Drive link as a download source and never ask browsers to preview a TIFF.
+    const displayChunks=await Promise.all(satellitePartsMeta.parts.map(async (_,i)=>{
+      const resp=await fetch('data/existing_display_part_'+(i+1)+'.json',{cache:'no-store'});
+      if(!resp.ok)throw new Error('display previews part '+(i+1)+' HTTP '+resp.status);
+      return resp.json();
+    }));
+    const previews=new Map(displayChunks.flatMap(c=>Object.entries(c.files||{})));
+    const byId=new Map();chunks.flat().forEach(x=>byId.set(x.id,x));
+    satelliteFiles=[...byId.values()].map(x=>{
+      const d=previews.get(x.title);
+      const result=Object.assign({},x,jpgPreviewMap[x.id]||{});
+      if(d&&d.src){
+        result.web_preview_url=d.src;
+        result.preview_kind=d.kind;
+        result.preview_bounds=d.bounds;
+        result.preview_native_size=[d.width,d.height];
+        result.preview_display_size=[d.display_width,d.display_height];
+        result.preview_ready=true;
+      }else result.preview_ready=false;
+      return result;
+    }).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(a.plot||'').localeCompare(String(b.plot||''))||String(a.resolution||'').localeCompare(String(b.resolution||'')));
+    const ready=satelliteFiles.filter(x=>x.preview_ready).length;
     const src=document.getElementById('satellite-source-folder'); if(src)src.href=satellitePartsMeta.source_root?.url||'#';
-    if(status)status.textContent=`ซิงก์จาก Google Drive • ${satelliteFiles.length} ไฟล์ • อัปเดตรายการ ${new Date(satellitePartsMeta.updated_at).toLocaleString('th-TH')}`;
+    if(status)status.textContent=`ภาพพร้อมแสดง ${ready}/${satelliteFiles.length} ไฟล์ • TIFF ต้นฉบับอยู่ใน Google Drive • อัปเดตรายการ ${new Date(satellitePartsMeta.updated_at).toLocaleString('th-TH')}`;
     populateSatelliteFilters();
     renderSatelliteGallery();
     populateMapSatelliteDates(selected);
@@ -154,17 +174,24 @@ function renderSatelliteGallery(){
   if(!rows.length){gallery.innerHTML='<div class="sat-empty">ไม่พบภาพตามตัวกรองนี้</div>';return}
   gallery.innerHTML=rows.map(x=>`<article class="sat-card" onclick="openSatelliteViewer('${x.id}')">
     <div class="sat-thumb">
-      <img loading="lazy" src="${x.web_preview_url||x.thumbnail_url||''}" alt="${x.plot} ${x.date}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-      <div class="sat-thumb-fallback"><span>TIFF</span><small>กดเพื่อเปิด Preview</small></div>
+      <img class="sat-gallery-img" data-file-id="${x.id}" loading="lazy" alt="${x.plot} ${x.date}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <div class="sat-thumb-fallback"><span>ยังไม่มีภาพ</span><small>กดเปิดไฟล์ต้นฉบับใน Drive</small></div>
       <div class="sat-resolution">${x.resolution||'—'}</div>
     </div>
     <div class="sat-card-body">
       <div class="sat-card-top"><strong>${x.plot}</strong><span>${x.sensor}</span></div>
       <h4>${datePretty(x.date)}</h4>
       <p>${x.title}</p>
-      <div class="sat-card-meta"><span>${fileSizePretty(x.size)}</span><span>Google Drive</span></div>
+      <div class="sat-card-meta"><span>${x.preview_kind==='true_color'?'สีจริง':x.preview_kind==='ndmi'?'ดัชนีความชื้น':x.preview_kind?.includes('grayscale')?'ภาพระดับเทา':x.preview_kind==='no_valid_pixels'?'ไม่มีพิกเซลที่ใช้ได้':'ภาพแสดงผล'}</span><span>${fileSizePretty(x.size)}</span></div>
     </div>
   </article>`).join('');
+  // Assign image sources as DOM properties, not strings in innerHTML (large data URLs).
+  const dict=new Map(rows.map(x=>[x.id,x]));
+  gallery.querySelectorAll('img[data-file-id]').forEach(im=>{
+    const x=dict.get(im.dataset.fileId);
+    if(x?.web_preview_url)im.src=x.web_preview_url;
+    else{im.style.display='none';im.nextElementSibling.style.display='grid'}
+  });
 }
 function openSatelliteViewer(id){
   const x=satelliteFiles.find(f=>f.id===id); if(!x)return;
