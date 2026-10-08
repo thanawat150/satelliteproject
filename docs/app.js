@@ -38,7 +38,18 @@ async function init(){
   const sbData=await sb.json(); satelliteBounds=sbData.overlays||[];
   satelliteBoundsByKey=new Map(satelliteBounds.map(x=>[`${x.plot}|${x.date}`,x]));
   boundaryByPlot=new Map(boundaryFC.features.map(f=>[f.properties.plot,f]));
-  newWaterByPlot=new Map(newWaterFC.features.map(f=>[f.properties.plot,f]));
+  // Report area alone does not verify the footprint geometry. Suppress discrepant polygons globally.
+  let historyForGeometry=null;
+  try{historyForGeometry=await window.TrendReport?.load?.()}catch(e){console.warn("QA history unavailable for overlay safety",e)}
+  newWaterByPlot=new Map(newWaterFC.features.filter(f=>{
+    const info=plots.find(x=>x.plot===f.properties?.plot);
+    if(!info||!window.MonitoringQA?.verifyPair||!historyForGeometry)return false;
+    const a=String(info.baseline).replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
+    const b=String(info.current).replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
+    const quality=window.MonitoringQA.verifyPair(info,a,b,historyForGeometry.plots?.[info.plot]||[],f);
+    if(!quality.ok)console.warn("Skipping inconsistent water polygon:",info.plot,quality.reason);
+    return quality.ok;
+  }).map(f=>[f.properties.plot,f]));
   document.getElementById('updated-pill').textContent=`อัปเดต ${dataset.updated}`;
   ['verified-folder','verified-folder-2'].forEach(id=>{const el=document.getElementById(id);el.href=dataset.report_folder});
   bindUI(); renderKPIs(); renderSidebar(); renderPriority(); renderMatrix(); initMaps(); populateReportSelect();
