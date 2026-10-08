@@ -1,2 +1,2 @@
-// Public browser configuration only. NEVER place API secrets, service_role or social tokens here.
-window.KEN_CONFIG = { supabaseUrl:'', supabasePublishableKey:'' };
+// Public browser configuration only. Never put Gemini key or service secrets here.
+window.KEN_CONFIG = { supabaseUrl:'', supabasePublishableKey:'', googleClientId:'' };
