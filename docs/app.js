@@ -426,9 +426,10 @@ function renderReportPreview(){
     <div class="report-block"><b>Stable land check</b><p>พื้นที่ที่ยังเป็น land ทั้งสองวัน ${fmt(p.stable_land_rai)} ไร่ ใช้แยกผลของน้ำออกจากการเปลี่ยนแปลงของพืช</p></div>
     <div class="report-block"><b>ภาพล่าสุดที่ตรวจ QA</b><p>2 ต.ค. 2026 usable pixels ${fmt(p.latest_valid_pct)}% • วันที่ที่ใช้สรุปผลคือ ${dateTH(p.current)}</p></div>
   </div></div>
-  <div class="report-footer">Quick Report สร้างจากข้อมูล Verified • ใช้เพื่อ screening / monitoring • รายงานฉบับเต็มเปิดจาก Verified PDF</div>`;
+  <div class="report-footer">Live Report อ่านค่าจากประวัติการวิเคราะห์ • วันที่คุณภาพต่ำจะไม่แทน Current อัตโนมัติ • รายงาน Verified PDF ยังคงเป็นฉบับอ้างอิง</div>`;
   const studioImage=window.MapStudio?.reportMarkup?.(p)||'';
   if(studioImage)paper.insertAdjacentHTML('beforeend',studioImage);
+  window.TrendReport?.render?.(p.plot,paper).catch?.(err=>console.warn('Live report trend unavailable',err));
 }
 function printReport(){if(document.getElementById('report-type').value==='verified'){const p=plots.find(x=>x.plot===document.getElementById('report-plot').value);if(p?.report_url)window.open(p.report_url,'_blank','noopener');return}renderReportPreview();window.print()}
 init().catch(err=>{console.error(err);document.body.insertAdjacentHTML('beforeend',`<div style="position:fixed;bottom:12px;right:12px;background:#7f1d1d;color:white;padding:10px;border-radius:8px;z-index:9999">โหลดข้อมูลไม่สำเร็จ: ${err.message}</div>`)})
