@@ -113,6 +113,26 @@ for i, part in enumerate(sat_parts.get("parts",[]), start=1):
         else:
             display_ready+=1
 
+# Full-resolution display layers generated from source GeoTIFFs.
+full_layers=[]
+for i in range(1,11):
+    pth=ROOT/"docs/data"/f"full_preview_part_{i}.json"
+    if not pth.exists():
+        errors.append(f"Missing full preview layer part {i}")
+        continue
+    block=json.loads(pth.read_text(encoding="utf-8"))
+    full_layers.extend(block.get("layers",[]))
+full_modes={}
+for row in full_layers:
+    full_modes[row.get("mode")]=full_modes.get(row.get("mode"),0)+1
+    if row.get("plot") not in set(names):
+        errors.append(f"Full preview references unknown plot: {row.get('plot')}")
+    if not row.get("src","").startswith(("data:image/jpeg;base64,","data:image/png;base64,")):
+        errors.append(f"Full preview has invalid image data: {row.get('plot')} {row.get('date')} {row.get('mode')}")
+for mode in ("true_color","false_color","ndvi","ndre","ndmi","mndwi","bsi"):
+    if full_modes.get(mode,0) < 66:
+        errors.append(f"Full preview mode {mode} incomplete: {full_modes.get(mode,0)}/66")
+
 # Map Studio: compact real-raster spectral views
 studio=json.loads((ROOT/"docs/data/visual_layers.json").read_text(encoding="utf-8"))
 map_modes={"false","ndvi","ndre","ndmi","mndwi","bsi"}
@@ -146,4 +166,4 @@ if errors:
     for e in errors: print(" -",e)
     sys.exit(1)
 
-print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays, {len(sat_files)} satellite files, {display_ready} ready web previews, {len(view_ids)} map studio spectral layers")
+print(f"PORTAL VALIDATION OK: {len(items)} plots, {len(features)} verified boundaries, {len(nw_features)} new-water overlays, {len(sat_files)} satellite files, {display_ready} ready web previews, {len(full_layers)} full spectral previews, {len(view_ids)} map studio spectral layers")
