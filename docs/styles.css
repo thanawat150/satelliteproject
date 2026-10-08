@@ -63,3 +63,41 @@
 .sat-thumb img{width:100%;height:100%;object-fit:contain;object-position:center}
 .satellite-modal-content{background:repeating-conic-gradient(#08151f 0% 25%,#0b1d28 0% 50%) 50% / 28px 28px}
 .satellite-modal-image{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;object-position:center}
+
+
+/* Live report time series */
+.live-trend-section{margin-top:18px}
+.live-title-row{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #d8e2e8;padding-bottom:9px;margin-bottom:10px}
+.live-title-row h4{margin:0 0 3px;color:#173347;font-size:13px}
+.live-title-row p{margin:0;color:#5d7180;font-size:9px;line-height:1.55;max-width:620px}
+.live-update{font-size:8px;color:#718595;text-align:right;max-width:220px}
+.live-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0 12px}
+.live-kpis>div{border:1px solid #dce5ea;background:#f7fafb;border-radius:8px;padding:8px 9px}
+.live-kpis span{display:block;font-size:8px;color:#718392}
+.live-kpis strong{display:block;font:700 13px Inter;color:#17394f;margin-top:3px}
+.live-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.live-grid article{border:1px solid #dce5ea;border-radius:8px;padding:8px;background:#fff;min-width:0}
+.live-grid h5{margin:0 0 5px;color:#314b5d;font-size:9px}
+.live-grid .live-wide{grid-column:1/-1}
+.live-chart{height:170px;position:relative}
+.live-chart-short{height:125px}
+.live-water-map-wrap{margin-top:10px;border:1px solid #dce5ea;border-radius:8px;overflow:hidden;background:#fff}
+.live-water-map-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;background:#f7fafb;border-bottom:1px solid #dce5ea;font-size:8px;color:#617483}
+.live-water-map-head label{display:flex;align-items:center;gap:6px}
+.live-water-map-head select{border:1px solid #cbd8df;border-radius:5px;background:#fff;padding:4px 6px;font:600 9px 'IBM Plex Sans Thai';color:#284152}
+.live-water-map{height:245px}
+.live-water-meta{font-size:8px;color:#587284;text-align:right}
+.live-empty{padding:12px;color:#778a97;font-size:9px}
+.live-table-wrap{overflow:auto;margin-top:10px;border:1px solid #dce5ea;border-radius:8px}
+.live-table{width:100%;border-collapse:collapse;font-size:8px;white-space:nowrap}
+.live-table th{background:#f3f7f9;color:#526b7a;text-align:right;padding:6px;border-bottom:1px solid #dce5ea;position:sticky;top:0}
+.live-table th:first-child,.live-table th:nth-child(2){text-align:left}
+.live-table td{padding:6px;border-bottom:1px solid #edf2f5;text-align:right;color:#425a69}
+.live-table td:first-child,.live-table td:nth-child(2){text-align:left}
+.live-status{display:inline-block;border-radius:999px;padding:2px 6px;font-size:7px;font-weight:700}
+.live-verified{background:#e4f5ec;color:#23704a}
+.live-partial{background:#fff1d7;color:#8a5b13}
+.live-no_data{background:#f0f2f4;color:#687781}
+.live-footnote{font-size:8px;color:#7c8d98;margin-top:7px}
+@media(max-width:760px){.live-kpis{grid-template-columns:1fr 1fr}.live-grid{grid-template-columns:1fr}.live-grid .live-wide{grid-column:auto}.live-title-row,.live-water-map-head{flex-direction:column;align-items:flex-start}.live-water-meta{text-align:left}.live-chart{height:190px}}
+@media print{.live-grid{grid-template-columns:1fr 1fr}.live-chart{height:145px}.live-water-map{height:190px}.live-table-wrap{overflow:visible}.live-table{font-size:7px}.live-title-row{break-after:avoid}.live-grid article,.live-water-map-wrap,.live-table-wrap{break-inside:avoid}}
