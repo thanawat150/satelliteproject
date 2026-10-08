@@ -20,15 +20,26 @@ async function init(){
     fetch('data/plots.json',{cache:'no-store'}),
     fetch('data/boundaries.geojson',{cache:'no-store'})
   ]);
+  if(!r.ok) throw new Error(`plots.json HTTP ${r.status}`);
+  if(!b.ok) throw new Error(`boundaries.geojson HTTP ${b.status}`);
   dataset=await r.json(); plots=dataset.plots;
-  if(b.ok){
-    boundaryFC=await b.json();
-    boundaryByPlot=new Map(boundaryFC.features.map(f=>[f.properties.plot,f]));
-  }
+  boundaryFC=await b.json();
+  boundaryByPlot=new Map(boundaryFC.features.map(f=>[f.properties.plot,f]));
   document.getElementById('updated-pill').textContent=`อัปเดต ${dataset.updated}`;
   ['verified-folder','verified-folder-2'].forEach(id=>{const el=document.getElementById(id);el.href=dataset.report_folder});
   bindUI(); renderKPIs(); renderSidebar(); renderPriority(); renderMatrix(); initMaps(); populateReportSelect();
-  selectPlot(plots.find(p=>p.plot==='13-STC')||plots[0]); renderReportPreview();
+
+  const params=new URLSearchParams(location.search);
+  const requestedPlot=params.get('plot');
+  const initial=plots.find(p=>p.plot===requestedPlot)||plots.find(p=>p.plot==='13-STC')||plots[0];
+  selectPlot(initial,false);
+  const requestedTab=params.get('tab');
+  if(['overview','map','impact','report'].includes(requestedTab)) switchTab(requestedTab,false);
+  if(params.get('report')==='verified'){
+    document.getElementById('report-type').value='verified';
+    switchTab('report',false);
+  }
+  renderReportPreview();
 }
 function bindUI(){
   document.getElementById('search-input').addEventListener('input',renderSidebar);
@@ -37,13 +48,13 @@ function bindUI(){
   document.getElementById('report-plot').addEventListener('change',renderReportPreview);
   document.getElementById('report-type').addEventListener('change',renderReportPreview);
 }
-function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));setTimeout(()=>{if(tab==='map'&&fullMap)fullMap.invalidateSize();if(tab==='overview'&&overviewMap)overviewMap.invalidateSize()},120)}
+function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap)fullMap.invalidateSize();if(tab==='overview'&&overviewMap)overviewMap.invalidateSize()},120)}
 function openReportCenter(){switchTab('report');renderReportPreview()}
 function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};plots.forEach(p=>c[p.status]++);document.getElementById('kpi-total').textContent=plots.length;document.getElementById('kpi-high').textContent=c.HIGH;document.getElementById('kpi-watch').textContent=c.WATCH;document.getElementById('kpi-nodata').textContent=c.NO_DATA}
 function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div><div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.onclick=()=>selectPlot(p);list.appendChild(d)})}
 function renderPriority(){const el=document.getElementById('priority-list');el.innerHTML='';const sorted=plots.filter(p=>p.status!=='NO_DATA').sort((a,b)=>(b.water_change_pp??-999)-(a.water_change_pp??-999)).slice(0,7);sorted.forEach((p,i)=>{const d=document.createElement('div');d.className='priority-item';d.innerHTML=`<div class="priority-rank">${i+1}</div><div><strong>${p.plot}</strong><small>${STATUS[p.status].label} • น้ำล่าสุด ${fmt(p.water_current_pct)}%</small></div><div class="priority-value">${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} pp</div>`;d.onclick=()=>selectPlot(p);el.appendChild(d)})}
 function summaryText(p){if(p.status==='NO_DATA')return 'ภาพปัจจุบันไม่มี valid pixels เพียงพอ จึงยังไม่ควรสรุปผลกระทบของแปลงนี้';const veg=VEG[p.vegetation_status];if(p.status==='HIGH')return `พบสัญญาณน้ำเพิ่มขึ้นอย่างชัดเจนภายในแปลง โดยมีพื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;if(p.status==='WATCH')return `พบการเปลี่ยนแปลงของน้ำที่ควรติดตามต่อ พื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;return `ไม่พบสัญญาณน้ำเพิ่มสูงในรอบเปรียบเทียบนี้ • ${veg}`}
-function selectPlot(p){selected=p;renderSidebar();document.getElementById('detail-title').textContent=p.plot;const st=document.getElementById('detail-status');st.textContent=STATUS[p.status].label;st.className=`status-pill status-${p.status}`;document.getElementById('detail-area').textContent=`พื้นที่ ${fmt(p.area_rai)} ไร่`;document.getElementById('detail-dates').textContent=`${dateTH(p.baseline)} → ${dateTH(p.current)}`;document.getElementById('plain-summary').textContent=summaryText(p);document.getElementById('water-values').textContent=`${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่`;document.getElementById('water-delta').textContent=p.water_change_pp==null?'N/A':`${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} จุดเปอร์เซ็นต์`;document.getElementById('ndvi-values').textContent=`${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}`;document.getElementById('ndvi-delta').textContent=delta(p.ndvi_before,p.ndvi_current);document.getElementById('ndre-values').textContent=`${idx(p.ndre_before)} → ${idx(p.ndre_current)}`;document.getElementById('ndre-delta').textContent=delta(p.ndre_before,p.ndre_current);document.getElementById('ndmi-values').textContent=`${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}`;document.getElementById('ndmi-delta').textContent=delta(p.ndmi_before,p.ndmi_current);updateChart(p);focusMaps(p);document.getElementById('report-plot').value=p.plot;updateMapHighlight()}
+function selectPlot(p,updateUrl=true){selected=p;renderSidebar();document.getElementById('detail-title').textContent=p.plot;const st=document.getElementById('detail-status');st.textContent=STATUS[p.status].label;st.className=`status-pill status-${p.status}`;document.getElementById('detail-area').textContent=`พื้นที่ ${fmt(p.area_rai)} ไร่`;document.getElementById('detail-dates').textContent=`${dateTH(p.baseline)} → ${dateTH(p.current)}`;document.getElementById('plain-summary').textContent=summaryText(p);document.getElementById('water-values').textContent=`${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่`;document.getElementById('water-delta').textContent=p.water_change_pp==null?'N/A':`${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} จุดเปอร์เซ็นต์`;document.getElementById('ndvi-values').textContent=`${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}`;document.getElementById('ndvi-delta').textContent=delta(p.ndvi_before,p.ndvi_current);document.getElementById('ndre-values').textContent=`${idx(p.ndre_before)} → ${idx(p.ndre_current)}`;document.getElementById('ndre-delta').textContent=delta(p.ndre_before,p.ndre_current);document.getElementById('ndmi-values').textContent=`${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}`;document.getElementById('ndmi-delta').textContent=delta(p.ndmi_before,p.ndmi_current);updateChart(p);focusMaps(p);document.getElementById('report-plot').value=p.plot;updateMapHighlight();if(updateUrl)updateQuery({plot:p.plot})}
 function updateChart(p){const labels=['น้ำ (%)','NDVI ×100','NDRE ×100','NDMI ×100'];const before=[p.water_before_pct,p.ndvi_before==null?null:p.ndvi_before*100,p.ndre_before==null?null:p.ndre_before*100,p.ndmi_before==null?null:p.ndmi_before*100];const current=[p.water_current_pct,p.ndvi_current==null?null:p.ndvi_current*100,p.ndre_current==null?null:p.ndre_current*100,p.ndmi_current==null?null:p.ndmi_current*100];if(chart)chart.destroy();chart=new Chart(document.getElementById('change-chart'),{type:'bar',data:{labels,datasets:[{label:'เดิม',data:before,backgroundColor:'rgba(56,189,248,.45)',borderColor:'#38bdf8',borderWidth:1},{label:'ปัจจุบัน',data:current,backgroundColor:'rgba(245,158,11,.55)',borderColor:'#f59e0b',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9cb4c7',boxWidth:10}}},scales:{x:{ticks:{color:'#9cb4c7'},grid:{display:false}},y:{ticks:{color:'#7792a7'},grid:{color:'rgba(255,255,255,.06)'}}}}})}
 function popupHtml(p){
   const q=boundaryByPlot.get(p.plot)?.properties?.boundary_quality;
@@ -101,10 +112,77 @@ function focusMaps(p){
   updateMapHighlight();
 }
 function openVerifiedReport(){if(selected?.report_url)window.open(selected.report_url,'_blank','noopener')}
+function updateQuery(values){
+  const u=new URL(location.href);
+  Object.entries(values).forEach(([k,v])=>v==null?u.searchParams.delete(k):u.searchParams.set(k,v));
+  history.replaceState({},'',u);
+}
+function showToast(message){
+  let t=document.getElementById('portal-toast');
+  if(!t){t=document.createElement('div');t.id='portal-toast';t.className='toast';document.body.appendChild(t)}
+  t.textContent=message;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+async function copyShareLink(){
+  const u=new URL(location.href);u.searchParams.set('plot',selected?.plot||plots[0]?.plot||'13-STC');
+  try{await navigator.clipboard.writeText(u.toString());showToast('คัดลอกลิงก์แล้ว')}catch(e){prompt('คัดลอกลิงก์นี้',u.toString())}
+}
+function downloadCSV(){
+  const headers=['plot','status','area_rai','baseline','current','water_before_rai','water_before_pct','water_current_rai','water_current_pct','water_change_pp','new_water_rai','stable_land_rai','ndvi_before','ndvi_current','ndre_before','ndre_current','ndmi_before','ndmi_current','latest_valid_pct'];
+  const esc=v=>v==null?'':`"${String(v).replaceAll('"','""')}"`;
+  const rows=[headers.join(','),...plots.map(p=>headers.map(h=>esc(p[h])).join(','))];
+  const blob=new Blob(['\ufeff'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Rayong_Flood_Monitoring_${dataset.updated}.csv`;a.click();URL.revokeObjectURL(a.href);showToast('ดาวน์โหลด CSV แล้ว');
+}
+function drivePreviewUrl(url){
+  const m=String(url||'').match(/\/file\/d\/([^/]+)/);
+  return m?`https://drive.google.com/file/d/${m[1]}/preview`:url;
+}
 function badge(status){return `<span class="matrix-badge status-${status}">${STATUS[status].label}</span>`}
 function renderMatrix(){const body=document.getElementById('impact-body');body.innerHTML='';plots.forEach(p=>{const tr=document.createElement('tr');tr.innerHTML=`<td><b>${p.plot}</b></td><td>${badge(p.status)}</td><td>${fmt(p.water_before_pct)}%</td><td>${fmt(p.water_current_pct)}%</td><td>${fmt(p.new_water_rai)} ไร่</td><td>${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}</td><td>${idx(p.ndre_before)} → ${idx(p.ndre_current)}</td><td>${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}</td><td>${VEG[p.vegetation_status]}</td>`;tr.onclick=()=>{selectPlot(p);switchTab('overview')};body.appendChild(tr)})}
 function populateReportSelect(){const s=document.getElementById('report-plot');s.innerHTML=plots.map(p=>`<option>${p.plot}</option>`).join('')}
 function showSelectedReport(){document.getElementById('report-plot').value=selected.plot;switchTab('report');renderReportPreview()}
-function renderReportPreview(){const name=document.getElementById('report-plot').value||selected?.plot;const p=plots.find(x=>x.plot===name)||plots[0];const type=document.getElementById('report-type').value;const verifiedLink=document.getElementById('verified-folder-2');if(verifiedLink)verifiedLink.href=p.report_url||dataset.report_folder;const paper=document.getElementById('report-paper');paper.innerHTML=`<div class="report-title">รายงานติดตามน้ำท่วมและผลกระทบสิ่งแวดล้อม</div><div class="report-sub">${p.plot} • จังหวัดระยอง • Sentinel-2 L2A • ${dateTH(p.baseline)} → ${dateTH(p.current)}</div><div class="report-rule"></div><div class="report-kpis"><div class="report-kpi"><span>พื้นที่โครงการ</span><strong>${fmt(p.area_rai)} ไร่</strong></div><div class="report-kpi"><span>น้ำล่าสุด</span><strong>${fmt(p.water_current_pct)}%</strong></div><div class="report-kpi"><span>พื้นที่น้ำใหม่</span><strong>${fmt(p.new_water_rai)} ไร่</strong></div></div><div class="report-section"><h4>ข้อสรุปการเปลี่ยนแปลง</h4><div class="report-summary">${summaryText(p)}</div></div><div class="report-section"><h4>ค่าดัชนีที่ใช้ติดตาม</h4><div class="report-grid"><div class="report-block"><b>MNDWI (ดัชนีน้ำเปิด)</b><p>พื้นที่น้ำ: ${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่<br>สัดส่วน: ${fmt(p.water_before_pct)}% → ${fmt(p.water_current_pct)}%</p></div><div class="report-block"><b>NDVI (ความเขียวพืช)</b><p>Stable land: ${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}<br>เปลี่ยนแปลง ${delta(p.ndvi_before,p.ndvi_current)}</p></div><div class="report-block"><b>NDRE (สุขภาพใบพืช)</b><p>Stable land: ${idx(p.ndre_before)} → ${idx(p.ndre_current)}<br>เปลี่ยนแปลง ${delta(p.ndre_before,p.ndre_current)}</p></div><div class="report-block"><b>NDMI (ความชื้นพืช/พื้นที่)</b><p>Stable land: ${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}<br>เปลี่ยนแปลง ${delta(p.ndmi_before,p.ndmi_current)}</p></div></div></div>${type==='full'?`<div class="report-section"><h4>QA / การตีความ</h4><div class="report-grid"><div class="report-block"><b>Stable land check</b><p>พื้นที่ที่ยังเป็น land ทั้งสองวัน ${fmt(p.stable_land_rai)} ไร่ ใช้สำหรับแยกผลกระทบพืชออกจากการที่พื้นที่กลายเป็นน้ำ</p></div><div class="report-block"><b>ภาพล่าสุด 2 ต.ค. 2026</b><p>Valid pixels ประมาณ ${fmt(p.latest_valid_pct)}% จึงใช้วันที่ ${dateTH(p.current)} เป็นภาพหลักในการวิเคราะห์รอบนี้</p></div></div></div>`:''}<div class="report-footer">Prototype report generated in browser • ใช้เพื่อ screening / monitoring • Verified PDF อยู่ใน Google Drive</div>`}
-function printReport(){renderReportPreview();window.print()}
+function renderReportPreview(){
+  const name=document.getElementById('report-plot').value||selected?.plot;
+  const p=plots.find(x=>x.plot===name)||plots[0];
+  const type=document.getElementById('report-type').value;
+  const verifiedLink=document.getElementById('verified-folder-2');
+  const paper=document.getElementById('report-paper');
+  const frame=document.getElementById('verified-pdf-frame');
+  const printBtn=document.getElementById('print-report-btn');
+  if(verifiedLink) verifiedLink.href=p.report_url||dataset.report_folder;
+  updateQuery({plot:p.plot,tab:'report',report:type==='verified'?'verified':null});
+
+  if(type==='verified'){
+    paper.style.display='none';
+    frame.style.display='block';
+    frame.src=drivePreviewUrl(p.report_url||dataset.report_folder);
+    if(printBtn) printBtn.style.display='none';
+    return;
+  }
+
+  frame.style.display='none'; frame.src='about:blank';
+  paper.style.display='block';
+  if(printBtn) printBtn.style.display='block';
+  paper.innerHTML=`<div class="report-title">รายงานติดตามน้ำท่วมและผลกระทบสิ่งแวดล้อม</div>
+  <div class="report-sub">${p.plot} • จังหวัดระยอง • Sentinel-2 L2A • ${dateTH(p.baseline)} → ${dateTH(p.current)}</div>
+  <div class="report-rule"></div>
+  <div class="report-kpis">
+    <div class="report-kpi"><span>พื้นที่โครงการ</span><strong>${fmt(p.area_rai)} ไร่</strong></div>
+    <div class="report-kpi"><span>น้ำล่าสุด</span><strong>${fmt(p.water_current_pct)}%</strong></div>
+    <div class="report-kpi"><span>พื้นที่น้ำใหม่</span><strong>${fmt(p.new_water_rai)} ไร่</strong></div>
+  </div>
+  <div class="report-section"><h4>ข้อสรุปการเปลี่ยนแปลง</h4><div class="report-summary">${summaryText(p)}</div></div>
+  <div class="report-section"><h4>ค่าดัชนีที่ใช้ติดตาม</h4><div class="report-grid">
+    <div class="report-block"><b>MNDWI (ดัชนีน้ำเปิด)</b><p>พื้นที่น้ำ: ${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่<br>สัดส่วน: ${fmt(p.water_before_pct)}% → ${fmt(p.water_current_pct)}%</p></div>
+    <div class="report-block"><b>NDVI (ความเขียวพืช)</b><p>Stable land: ${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}<br>เปลี่ยนแปลง ${delta(p.ndvi_before,p.ndvi_current)}</p></div>
+    <div class="report-block"><b>NDRE (สุขภาพใบพืช)</b><p>Stable land: ${idx(p.ndre_before)} → ${idx(p.ndre_current)}<br>เปลี่ยนแปลง ${delta(p.ndre_before,p.ndre_current)}</p></div>
+    <div class="report-block"><b>NDMI (ความชื้นพืช/พื้นที่)</b><p>Stable land: ${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}<br>เปลี่ยนแปลง ${delta(p.ndmi_before,p.ndmi_current)}</p></div>
+  </div></div>
+  <div class="report-section"><h4>QA / การตีความ</h4><div class="report-grid">
+    <div class="report-block"><b>Stable land check</b><p>พื้นที่ที่ยังเป็น land ทั้งสองวัน ${fmt(p.stable_land_rai)} ไร่ ใช้แยกผลของน้ำออกจากการเปลี่ยนแปลงของพืช</p></div>
+    <div class="report-block"><b>ภาพล่าสุดที่ตรวจ QA</b><p>2 ต.ค. 2026 usable pixels ${fmt(p.latest_valid_pct)}% • วันที่ที่ใช้สรุปผลคือ ${dateTH(p.current)}</p></div>
+  </div></div>
+  <div class="report-footer">Quick Report สร้างจากข้อมูล Verified • ใช้เพื่อ screening / monitoring • รายงานฉบับเต็มเปิดจาก Verified PDF</div>`;
+}
+function printReport(){if(document.getElementById('report-type').value==='verified'){const p=plots.find(x=>x.plot===document.getElementById('report-plot').value);if(p?.report_url)window.open(p.report_url,'_blank','noopener');return}renderReportPreview();window.print()}
 init().catch(err=>{console.error(err);document.body.insertAdjacentHTML('beforeend',`<div style="position:fixed;bottom:12px;right:12px;background:#7f1d1d;color:white;padding:10px;border-radius:8px;z-index:9999">โหลดข้อมูลไม่สำเร็จ: ${err.message}</div>`)})
