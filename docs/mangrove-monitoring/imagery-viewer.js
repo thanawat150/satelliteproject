@@ -140,7 +140,7 @@ function groupMarkup(items,byDate){const target=items.find(x=>x.date===active.da
 const a=byDate.get(active.date)||{},b=byDate.get(active.before)||{};
 const sourceRows=active.rows.filter(x=>x.date===active.date);
 const srcMeta=sourceRows[0];
-const nav=items.length?'<label>วันภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label><label>ภาพดัชนี / สี<select id="image-mode">'+modeOptions(active.mode)+'</select></label><label>Opacity ภาพ<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label><label class="img-boundary-control"><input type="checkbox" id="image-boundary-toggle" '+(active.boundaryVisible?'checked':'')+'> ขอบเขตแปลง</label>':'';
+const nav=items.length?'<label>วันภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label><label>ภาพดัชนี / สี<select id="image-mode">'+modeOptions(active.mode)+'</select></label><label>Opacity ภาพ<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label><label class="img-boundary-control"><input type="checkbox" id="image-boundary-toggle" '+(active.boundaryVisible?'checked':'')+'> ขอบเขตแปลง</label><a class="img-history-link" href="#img-all-dates">ดูภาพทุกวัน + ทุกดัชนี ↓</a>':'';
 const validQaRows=active.rows.filter(x=>x.analysis_status==='AUTO_VALID');
 const previewDates=new Set(items.filter(x=>x.source!=='missing').map(x=>x.date));
 const missingQa=validQaRows.filter(x=>!previewDates.has(x.date));
