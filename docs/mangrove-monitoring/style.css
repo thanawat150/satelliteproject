@@ -67,3 +67,20 @@ select,input[type="search"],input[type="number"],input[type="date"]{background:#
 /* Missing-source preview is explicit and offers an older verified raster date. */
 .img-fallback-btn{display:inline-flex;align-items:center;justify-content:center;margin:8px 0 0 10px;padding:7px 11px;border:1px solid #4a9b75;background:#184d38;color:#d6ffe7;border-radius:6px;font-size:11px;font-weight:700;vertical-align:middle}
 .img-fallback-btn:hover{background:#25734c}
+
+/* Complete plot history: every date and every mode, including QA status. */
+.img-history{margin-top:26px;padding-top:19px;border-top:1px solid var(--border)}
+.img-history-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.img-history-heading h3{font-size:17px;margin-bottom:5px}
+.img-history-date-card{border:1px solid var(--border);border-radius:12px;background:var(--panel-alt);padding:15px;margin:13px 0 18px;break-inside:avoid-page}
+.img-history-meta{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+.img-history-date{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.img-history-date b{font-size:15px}
+.img-history-count{font-size:11px;color:var(--muted)}
+.img-history-select{background:#1f4436;color:#d3f9de;border:1px solid #498f6e;padding:6px 10px;font-size:11px;border-radius:7px}
+.img-history-select:hover{background:#2b6949;color:#fff}
+.img-history-gallery{margin:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.img-history-qa-caution{margin:0 0 9px;font-size:11px;color:var(--warn)}
+@media(max-width:1100px){.img-history-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:550px){.img-history-date-card{padding:9px}.img-history-gallery{gap:6px}.img-history-gallery .img-frame{height:115px}.img-history-gallery .img-title{font-size:10px}}
+@media print{.img-history-select{display:none!important}.img-history-date-card{background:white!important}.img-history-gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important}.img-history-date-card .img-frame{height:180px!important}}
