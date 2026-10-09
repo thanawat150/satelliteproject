@@ -195,12 +195,14 @@ function selectedRate(){
  return fetched||referenceFuelPrices[code]||null;
 }
 function applySelectedFuel(){
- var rate=selectedRate();
- if(rate!==null)nodes.price.value=rate.toFixed(2);
- var sourceDate=fuelCatalog?fuelCatalog.asOf:fallbackDate;
- var live=fuelCatalog&&fuelCatalog.updateStatus==='live';
- fuelStatus.textContent=(live?'ราคาอ้างอิง API บางจาก':'ราคาสำรองจากกระทรวงพลังงาน')+' · วันที่ '+showFuelDate(sourceDate);
- var dataSource=fuelCatalog&&fuelCatalog.source;
+ var code=fuelSelect.value;
+ var liveRate=fuelCatalog&&fuelCatalog.updateStatus==='live'&&fuelCatalog.prices?validFuelRate(fuelCatalog.prices[code]):null;
+ var hasLiveRate=liveRate!==null;
+ var rate=hasLiveRate?liveRate:referenceFuelPrices[code];
+ if(rate!==null&&rate!==undefined)nodes.price.value=rate.toFixed(2);
+ var sourceDate=hasLiveRate?fuelCatalog.asOf:fallbackDate;
+ fuelStatus.textContent=(hasLiveRate?'ราคาอ้างอิง API บางจาก':'ราคาสำรองจากกระทรวงพลังงาน')+' · วันที่ '+showFuelDate(sourceDate);
+ var dataSource=hasLiveRate?fuelCatalog.source:'https://www.energy.go.th/moen/';
  fuelSource.href=dataSource&&/^https:\/\//.test(dataSource)?dataSource:'https://www.energy.go.th/moen/';
  updateBudget();
 }
