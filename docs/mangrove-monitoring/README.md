@@ -72,6 +72,42 @@ Run Playwright smoke locally with:
 
 Tests exercise 160 public-registry placeholders, QA coverage, charts, source links, unconnected modules and mobile menu. Passing the test does not mean all 26 modules are complete.
 
+## Portfolio-wide RGB display repair and audit (2026-10-10)
+
+The old 24-VSD RGB of 2026-09-05 appeared almost solid white despite a scene
+QA status of AUTO_VALID (59/59 SCL-accepted analysis pixels). The original
+B4/B3/B2 TIFF values are consistent with a vegetated image; independent
+per-band p2-p98 display stretches had made the published RGB falsely white.
+The preview was a visualization fault, **not evidence that the forest was white**.
+
+The renderer now applies one **fixed reflectance range (0.01–0.30, gamma 0.9)**
+to all three channels with original 10 m RGB pixels. Invalid source band pixels
+and SCL-rejected pixels are transparent instead of black, and the interface
+uses a patterned background to reveal gaps rather than hide them. Spectral
+indices remain derived from their proper 20 m grid; the source TIFFs and
+original analytical results are not overwritten.
+
+All **241 QA-valid plot/date pairs** in the current 136-plot PDD analysis were
+re-rendered with the audited `mmc-rgb-fixed-reflectance-v2` method. Actual
+preview RGB images, not just metadata, were inspected for 24-VSD and 30-STC.
+The 24-VSD 2026-09-05 preview now renders 21 × 29 true 10 m pixels with
+0% near-white on the fixed display. The initial portfolio review flagged
+25 plot-date images for further inspection because of excess NoData or
+SCL-class-7 (unclassified) content, even though 0 exceeded the new
+near-white warning threshold.
+
+The Data QA screen includes a **Raster Visual QA** table and CSV export:
+actual RGB dimensions, NoData/SCL fraction, SCL 7 fraction, whiteness and
+renderer version. The machine-readable whole-portfolio report, when the
+publish/audit workflow completes, is
+`docs/mangrove-monitoring/rgb_quality_audit.json`.
+
+**Interpretation and limitation:** SCL AUTO_VALID is not a certificate of
+cloud-free imagery, and no rendering algorithm can recover pixels genuinely
+obscured by clouds or unavailable from a source scene. NO_DATA scenes or plots
+without suitable TIFF pairs remain labeled as such. Do not imply independent
+radiometric validation or cloud correction without follow-up data.
+
 ## 30-STC native-resolution RGB and quality review (2026-10-09)
 
 For the 30-STC screenshot (Phang Nga, 2026-09-30), the published prior
