@@ -40,14 +40,25 @@ def index(x,y):
         return np.divide(x-y,z,out=np.full_like(x,np.nan,dtype=np.float32),where=np.isfinite(z)&(np.abs(z)>1.e-8))
 
 def stretched_rgb(channels,valid_mask):
-    out=[]
-    for x in channels:
-        values=x[np.isfinite(x)&valid_mask]
-        if values.size<16:values=x[np.isfinite(x)]
-        if values.size<16:raise ValueError("Image bands contain insufficient real pixels")
-        lo,hi=np.percentile(values,[2,98]);hi=max(lo+1e-5,hi)
-        out.append(np.clip((x-lo)/(hi-lo)*255,0,255).astype(np.uint8))
-    return Image.fromarray(np.stack(out,axis=2),'RGB')
+    """Reproducible natural-color RGB; never stretch each small band to 0..255.
+
+    Input Sentinel-2 SR reflectance is scaled x10000 in source TIFFs.
+    Per-scene p2/p98 made flat/dark vegetation appear as white noise on
+    tiny rectangles and let -9999/0 NoData become black or white stripes.
+    Use one fixed physical reflectance display interval for all R/G/B,
+    and retain invalid pixels as transparent (not manufactured imagery).
+    """
+    mask=np.asarray(valid_mask,dtype=bool)
+    rgb=np.zeros((*mask.shape,4),dtype=np.uint8)
+    for i,raw in enumerate(channels):
+        x=np.asarray(raw,dtype=np.float32)/10000.0
+        # 0.01..0.30 reflectance; single range preserves channel balance.
+        scaled=np.clip((x-0.01)/(0.30-0.01),0,1)
+        # Subtle shared gamma, never histogram-equalize each band.
+        with np.errstate(invalid="ignore"):
+            rgb[...,i]=(255*np.power(scaled,0.9)).astype(np.uint8)
+    rgb[...,3]=np.where(mask,255,0).astype(np.uint8)
+    return Image.fromarray(rgb,"RGBA")
 
 def colorize(x,mask,mode):
     # Fixed scientific display stretches; color scale shown in associated metadata.
@@ -80,18 +91,18 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         def read10_to20(name,i):
             with WarpedVRT(ds10,crs=ds20.crs,transform=grid20,width=w,height=h,
                            resampling=Resampling.bilinear) as vt:
-                return vt.read(bands(ds10,name,i),masked=False).astype(np.float32)
+                return vt.read(bands(ds10,name,i),masked=True).astype(np.float32).filled(np.nan)
 
         def read20(name,i,how=Resampling.bilinear):
             return ds20.read(bands(ds20,name,i),out_shape=(h,w),
-                             resampling=how).astype(np.float32)
+                             resampling=how,masked=True).astype(np.float32).filled(np.nan)
 
         b2,b3,b4,b8=(read10_to20("B2",1),read10_to20("B3",2),
                      read10_to20("B4",3),read10_to20("B8",4))
         b5,b8a,b11=(read20("B5",1),read20("B8A",4),read20("B11",5))
         scl=read20("SCL",7,Resampling.nearest)
         if not np.isfinite(scl).any():raise ValueError("SCL has no finite pixels")
-        good=np.isfinite(scl)&np.isin(scl,SCL_GOOD)&np.isfinite(b2)&np.isfinite(b3)&np.isfinite(b4)&np.isfinite(b8)&np.isfinite(b11)
+        good=np.isfinite(scl)&np.isin(scl,SCL_GOOD)&np.isfinite(b2)&np.isfinite(b3)&np.isfinite(b4)&np.isfinite(b8)&np.isfinite(b11)&(b2>0)&(b3>0)&(b4>0)&(b8>0)&(b11>0)
         valid_pixels=int(good.sum())
         if valid_pixels<2:raise ValueError("No SCL-valid pixels available")
 
@@ -102,14 +113,15 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         grid10=ds10.transform*Affine.scale(ds10.width/w10,ds10.height/h10)
         def read10_native(name,i):
             return ds10.read(bands(ds10,name,i),out_shape=(h10,w10),
-                             resampling=Resampling.bilinear).astype(np.float32)
+                             resampling=Resampling.bilinear,masked=True).astype(np.float32).filled(np.nan)
         n2,n3,n4,n8=(read10_native("B2",1),read10_native("B3",2),
                      read10_native("B4",3),read10_native("B8",4))
         with WarpedVRT(ds20,crs=ds10.crs,transform=grid10,width=w10,height=h10,
                        resampling=Resampling.nearest) as qa10:
-            scl10=qa10.read(bands(ds20,"SCL",7),masked=False)
+            scl10=qa10.read(bands(ds20,"SCL",7),masked=True).astype(np.float32).filled(np.nan)
         usable10=(np.isfinite(n2)&np.isfinite(n3)&np.isfinite(n4)&
-                  np.isfinite(n8)&np.isin(scl10,SCL_GOOD))
+                  np.isfinite(n8)&np.isin(scl10,SCL_GOOD)&
+                  (n2>0)&(n3>0)&(n4>0)&(n8>0))
         native_valid=int(usable10.sum())
         if native_valid<2:
             raise ValueError("Native 10m RGB has no SCL-valid source pixels")
@@ -132,7 +144,7 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
                 print("RGB_PLOT_MASK_WARNING",plot,date,str(ex)[:150],flush=True)
         sample=usable10&plotmask
         rgb_np=np.asarray(true_image)
-        near_white=(np.min(rgb_np,axis=2)>=235)&sample
+        near_white=(np.min(rgb_np[...,:3],axis=2)>=235)&sample
         n_sample=int(sample.sum())
         white_pct=round(100*int(near_white.sum())/n_sample,1) if n_sample else None
         mode_images={
@@ -157,7 +169,17 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         left10,bottom10,right10,top10=transform_bounds(ds10.crs,"EPSG:4326",*ds10.bounds,densify_pts=21)
         bounds20=[[bottom,left],[top,right]]
         bounds10=[[bottom10,left10],[top10,right10]]
-        rgb_warning=bool(white_pct is not None and white_pct>=65)
+        # This is *not* proof of cloud: flags a suspiciously white visual result.
+        rgb_warning=bool(white_pct is not None and white_pct>=30)
+        alpha_pct=round(100*(1-n_sample/max(1,int(plotmask.sum()))),1)
+        unclassified_n=int(np.count_nonzero((scl10==7)&sample))
+        unclassified_pct=round(100*unclassified_n/n_sample,1) if n_sample else None
+        raw_rgb_stats={
+            name:{"p02":round(float(np.percentile(arr[sample],[2])[0]),1),
+                  "median":round(float(np.median(arr[sample])),1),
+                  "p98":round(float(np.percentile(arr[sample],[98])[0]),1)}
+            for name,arr in [("B4",n4),("B3",n3),("B2",n2)] if n_sample
+        }
         return {
             "plot":plot,"date":date,"source":"generated","modes":list(assets),
             "assets":assets,"bounds":bounds20,
@@ -167,15 +189,18 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
             "source_bands":"Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
             "display_grid":"RGB = 10m native source grid; indices = 20m grid, not higher-resolution spectral measurements",
             "source_resolution_m":{"rgb":10,"spectral_index_20m":20},
-            "scaling":{"rgb":"per-scene p2-p98 on SCL-valid native 10m bands",
+            "scaling":{"rgb":"fixed 0.01-0.30 reflectance, gamma 0.9, identical across R/G/B; invalid alpha=0",
                        "index":"fixed ramps in code, full -1 to +1 range"},
             "qa_note":"SCL QA from previous PDD analysis; RGB radiometric QC is a separate warning, not a cloud classification",
             "valid_preview_pixels":valid_pixels,"width":w,"height":h,
             "rgb_native_width":w10,"rgb_native_height":h10,
             "rgb_plot_sample_pixels":n_sample,"rgb_quality_scope":mask_scope,
-            "rgb_near_white_pct":white_pct,
+            "rgb_near_white_pct":white_pct,"rgb_invalid_pct":alpha_pct,
+            "rgb_unclassified_scl_pct":unclassified_pct,
+            "rgb_raw_dn_stats":raw_rgb_stats,
             "rgb_display_warning":rgb_warning,
-            "rgb_quality_note":"Near-white is a radiometric/display screening signal, not proof of cloud or a corrected SCL class"
+            "rgb_renderer_version":"mmc-rgb-fixed-reflectance-v2",
+            "rgb_quality_note":"Fixed cross-band reflectance display with source-nodata transparency. White or SCL-unclassified areas warrant review, not automatic cloud removal."
         }
 
 
