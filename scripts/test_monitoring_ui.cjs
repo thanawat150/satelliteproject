@@ -50,6 +50,15 @@ const {chromium}=require("playwright");
   await page.waitForFunction(()=>!!document.querySelector('.live-grid [data-chart="ndre"]')&&!document.querySelector('.live-grid [data-chart="ndvi"]'),{timeout:25000});
   assert.equal(await page.locator('.live-grid [data-chart="ndvi"]').count(),0,"Unchecked NDVI graph hidden");
   assert.ok(await page.locator('.live-grid [data-chart="ndre"]').count()>0,"Other checked graphs stay visible");
+  // BSI must be backed by actual numeric GeoTIFF results, not the raster preview.
+  await page.waitForFunction(()=>{
+    const canvas=document.querySelector('.live-grid canvas[data-chart="bsi"]');
+    const chart=canvas&&window.Chart?.getChart?.(canvas);
+    return !!chart&&chart.data.datasets.some(s=>s.data.filter(x=>x!==null&&Number.isFinite(Number(x))).length>=2);
+  },{timeout:25000});
+  const bsiValues=await page.locator('.live-grid canvas[data-chart="bsi"]').evaluate(el=>window.Chart.getChart(el).data.datasets[0].data.filter(x=>x!==null));
+  assert.ok(bsiValues.length>=2,"BSI graph must show at least two real observations");
+
   await page.locator('input[name="report-period-mode"][value="annual"]').check();
   await page.waitForFunction(()=>document.querySelector('#report-scope-caption')?.textContent?.includes('ปีละหนึ่งวัน')&&document.querySelector('.report-imagery-grid'),{timeout:25000});
   const perYear=await page.locator('.report-imagery-item').count();
@@ -64,6 +73,6 @@ const {chromium}=require("playwright");
     await page.waitForFunction(()=>document.querySelectorAll('#report-paper .report-imagery-item').length<document.querySelectorAll('#report-date-checkboxes input[data-report-date]').length,{timeout:25000});
   }
   assert.deepEqual(errors,[],"Unhandled browser runtime errors: "+errors.join(" | "));
-  console.log("BROWSER SMOKE PASS: compare map, alert list, calendar, report multi-date, annual images and chart checkboxes");
+  console.log("BROWSER SMOKE PASS: compare map, alert list, calendar, report multi-date, annual images, graph checkboxes and real BSI values");
  }finally{await browser.close()}
 })().catch(err=>{console.error(err);process.exit(1)});
