@@ -32,6 +32,15 @@ await page.locator('#image-date').selectOption('2026-09-29');
 await page.locator('#image-mode').selectOption('ndvi');
 await page.waitForFunction(()=>document.querySelectorAll('#imagery-explorer .img-gallery img').length>=5,{timeout:15000});
 assert.ok(await page.locator('#mmc-geo-map .leaflet-image-layer').count()>=1,'Georeferenced satellite layer should overlay Leaflet map');
+await page.waitForFunction(()=>[...document.querySelectorAll('#imagery-explorer .img-boundary-overlay')].some(x=>x.style.visibility==='visible'),{timeout:15000});
+const boundary=await page.locator('#imagery-explorer').evaluate(el=>{
+ const svgs=[...el.querySelectorAll('.img-boundary-overlay')];
+ const main=el.querySelector('.img-large .img-boundary-overlay');
+ const path=main?.querySelector('.img-boundary-line')?.getAttribute('d')||'';
+ const box=main?.getBoundingClientRect(),frame=main?.closest('.img-frame')?.getBoundingClientRect();
+ return {count:svgs.length,main:path.length>20,bounds:box&&frame&&box.width>0&&box.height>0&&box.left>=frame.left-2&&box.right<=frame.right+2};
+});
+assert.ok(boundary.count>=8&&boundary.main&&boundary.bounds,'Actual polygon must overlay RGB/index thumbnails without distortion');
 const imageStatus=await page.locator('#imagery-explorer').evaluate(el=>({
   realImages:[...el.querySelectorAll('img[src^="data:image/"]')].length,
   validLoaded:[...el.querySelectorAll('img[src^="data:image/"]')].filter(x=>x.complete&&x.naturalWidth>0).length,
@@ -48,6 +57,12 @@ await page.locator('#image-mode').selectOption('ndmi');
 await page.waitForFunction(()=>document.querySelectorAll('#imagery-explorer .img-tile img[src^="./imagery/"]').length>=6,{timeout:20000});
 const generated=await page.locator('#imagery-explorer').evaluate(el=>({images:[...el.querySelectorAll('.img-tile img')].filter(x=>x.complete&&x.naturalWidth>0).length,legend:!!el.querySelector('.img-legend-ramp'),geo:!!el.querySelector('.leaflet-image-layer')}));
 assert.ok(generated.images>=6&&generated.legend&&generated.geo,'Generated true/false and index PNGs must be visible with georeferencing and numeric legend');
+assert.ok(await page.locator('#imagery-explorer .img-tile .img-boundary-overlay').count()>=6,'Generated index gallery must include geometry overlay');
+await page.locator('#image-boundary-toggle').uncheck();
+assert.ok(await page.locator('#imagery-explorer').evaluate(el=>el.classList.contains('boundary-hidden')),'User can toggle boundary overlays off');
+assert.equal(await page.locator('#mmc-geo-map .leaflet-overlay-pane path').count(),0,'Boundary toggle must also hide polygon on the map');
+await page.locator('#image-boundary-toggle').check();
+assert.ok(await page.locator('#mmc-geo-map .leaflet-overlay-pane path').count()>0,'Boundary toggle restores polygon on map');
 
 
 // Regression: 15-STC has QA-valid 2026-10-07 without a corresponding rendered Raster Preview.
@@ -66,6 +81,8 @@ await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2
 assert.ok((await page.locator('#view-root').innerText()).includes('ภาพดาวเทียม / ภาพดัชนีประกอบรายงาน'),'Reports must include real satellite and index viewer');
 await page.locator('#image-date').selectOption('2026-08-03');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-08-03'&&document.querySelectorAll('#imagery-explorer .img-gallery img').length>=4,{timeout:20000});
+assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'15-STC has an actual polygon outline in report imagery');
+assert.ok(await page.locator('.img-compare-grid .img-boundary-line').count()>=1,'Before/After images retain per-date geographic boundary');
 await page.locator('[data-view="qa"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('QA / Raster Preview Integrity'),'QA view must expose missing image pairs');
 assert.ok(await page.locator('[data-action="exportgaps"]').count()===1,'Gap CSV must be available');
@@ -88,6 +105,16 @@ await mobile.goto('http://127.0.0.1:8877/mangrove-monitoring/',{waitUntil:'domco
 await mobile.waitForFunction(()=>document.getElementById('updated')?.textContent?.includes('ข้อมูลดาวเทียม'),{timeout:60000});
 await mobile.locator('#menu-btn').click();
 assert.ok(await mobile.locator('#sidebar').evaluate(el=>el.classList.contains('open')),'Mobile nav must open');
+await mobile.locator('[data-view="satellite"]').click();
+await mobile.locator('#plot-select').selectOption('15-STC');
+await mobile.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
+await mobile.locator('#image-date').selectOption('2026-08-03');
+await mobile.waitForFunction(()=>document.querySelector('.img-large .img-boundary-overlay')?.style.visibility==='visible',{timeout:20000});
+const alignedMobile=await mobile.locator('.img-large').evaluate(el=>{
+ const img=el.querySelector('img'),overlay=el.querySelector('.img-boundary-overlay'),r=overlay.getBoundingClientRect(),frame=el.querySelector('.img-frame').getBoundingClientRect();
+ return img.naturalWidth>0&&r.width>0&&r.left>=frame.left-2&&r.right<=frame.right+2&&r.bottom<=frame.bottom+2;
+});
+assert.ok(alignedMobile,'Polygon overlay must fit contained satellite bitmap on mobile');
 assert.deepEqual(errors,[],'Desktop JS errors: '+errors.join(' | '));assert.deepEqual(mobileErrors,[],'Mobile JS errors: '+mobileErrors.join(' | '));
 console.log('MMC_PREVIEW_PASS registry=160 qa=126 pdd=136 chart sources=actual plot 13-STC modules=26 mobile=390');
 await mobile.close();
