@@ -1,0 +1,100 @@
+name: MMC Build True Satellite RGB and Index Maps
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/mmc_render_imagery.py"
+      - ".github/workflows/mmc-build-imagery.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: mmc-render-original-s2
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        shard: [0,1,2,3,4,5,6,7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install raster and Drive image dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install rasterio numpy pillow "gdown==6.4.2"
+      - name: Generate georeferenced RGB and spectral indices
+        run: |
+          python scripts/mmc_render_imagery.py render \
+            --shard "\${{ matrix.shard }}" --shards 8 \
+            --out "work/shard-\${{ matrix.shard }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mmc-render-shard-\${{ matrix.shard }}
+          path: work/shard-\${{ matrix.shard }}/
+          if-no-files-found: error
+          retention-days: 5
+  publish:
+    needs: [render]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mmc-render-shard-*
+          path: work/parts
+      - name: Normalize artifact names
+        run: |
+          for i in {0..7}; do
+            test -f "work/parts/mmc-render-shard-\${i}/generated_shard.json"
+            mv "work/parts/mmc-render-shard-\${i}" "work/parts/shard-\${i}"
+          done
+      - name: Merge image products and source metadata
+        run: |
+          python scripts/mmc_render_imagery.py merge \
+            --parts work/parts --shards 8
+      - name: Validate image index, asset size and source integrity
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          home=Path('docs/mangrove-monitoring')
+          m=json.loads((home/'imagery_manifest.json').read_text())
+          new=m.get('generated_items',[])
+          assert len(m['items'])>=65
+          assert len(new)>=1
+          for item in new:
+              assert item['source']=='generated'
+              assert item['algorithm']
+              for mode,url in item['assets'].items():
+                  f=home / url.replace('./','')
+                  assert f.exists() and f.stat().st_size>200,(item['plot'],item['date'],mode)
+          print('RASTER_ASSETS_VERIFIED',len(new),'dates')
+          PY
+      - name: Commit new imagery previews and provenance to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/mangrove-monitoring/imagery/ \
+            docs/mangrove-monitoring/imagery_manifest.json \
+            docs/mangrove-monitoring/imagery_render_errors.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish raster-derived Sentinel-2 color and spectral index layers"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
