@@ -11,7 +11,7 @@ let dataset=null, plots=[], selected=null, overviewMap=null, fullMap=null, chart
 let satelliteFiles=[], satellitePartsMeta=null, jpgPreviewMap={};
 let satelliteBounds=[], satelliteBoundsByKey=new Map();
 const satelliteImageLayers={overview:null,full:null};
-let mapSatelliteDate=null, mapSatelliteOpacity=.82, mapSatelliteVisible=true;
+let mapSatelliteDate=null, mapSatelliteOpacity=.65, mapSatelliteVisible=true;
 let boundaryFC=null, boundaryByPlot=new Map();
 let newWaterFC=null, newWaterByPlot=new Map();
 const mapLayers={overview:new Map(),full:new Map()};
