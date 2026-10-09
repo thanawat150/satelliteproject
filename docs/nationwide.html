@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#091824;--pane:#112b3d;--border:#24495c;--muted:#9cbbcb;--text:#e4f2f8;--accent:#3ec1e9}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Sarabun,system-ui,sans-serif;color:var(--text)}header{padding:17px clamp(12px,3vw,30px);border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center;background:#0c2231}header h1{margin:2px 0;font-size:22px}header p{margin:4px 0;color:var(--muted);font-size:12px}a{color:#89ddf9;text-decoration:none}.nav{display:flex;gap:14px;align-items:center}.app{display:grid;grid-template-columns:minmax(250px,320px) minmax(0,1fr);gap:16px;padding:16px;max-width:1660px;margin:auto}aside{display:flex;flex-direction:column;gap:13px}section.panel,main .panel{background:var(--pane);border:1px solid var(--border);border-radius:14px;padding:16px;min-width:0}h2,h3,h4{margin:0 0 10px}h2{font-size:17px}h3{font-size:14px}p{line-height:1.65}.muted{color:var(--muted);font-size:12px}label{display:block;font-size:12px;margin-bottom:7px}select,button{font:inherit}select{width:100%;padding:10px;border:1px solid #42617a;color:#e0f6fe;background:#0d2638;border-radius:9px;margin-top:5px}button{border:1px solid #40677a;background:#15374d;color:#dff6ff;border-radius:9px;padding:8px 12px;cursor:pointer}button:hover{background:#1c526c}.checkgrid{display:flex;gap:6px;flex-wrap:wrap;max-height:200px;overflow-y:auto}.checkgrid label{display:flex;gap:6px;align-items:center;margin:0;padding:6px 8px;border:1px solid #3d6174;border-radius:8px;cursor:pointer}.checkgrid label:has(input:checked){background:#16516b;border-color:#57c4e5}.checkgrid input{accent-color:#3ec1e9}.controlHead{display:flex;gap:6px;justify-content:space-between;align-items:center;margin-bottom:8px}.controlHead h3{margin:0}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:13px}.kpi{background:#112f44;border:1px solid #2b526a;border-radius:12px;padding:14px}.kpi span{display:block;color:var(--muted);font-size:11px}.kpi strong{font-size:22px;display:block;margin:7px 0 0}.notice{background:#413316;border:1px solid #80692e;border-radius:10px;padding:11px 13px;color:#ffe0a0;font-size:12px;margin-bottom:15px}.mutedline{font-size:12px;color:#b7d7e5}.maps{display:grid;grid-template-columns:1.2fr 1fr;gap:13px}.mapWrap{min-height:340px;position:relative}#map{height:330px;border-radius:10px;background:#0a2333}.imagery{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px}.scene{border:1px solid #37586a;border-radius:10px;overflow:hidden;margin:0}.scene img{width:100%;height:150px;object-fit:contain;background:#082234;display:block}.scene figcaption{font-size:11px;color:#cae2ec;padding:8px}.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:12px}.chart{border:1px solid #315267;border-radius:12px;background:#0e2a3e;padding:12px}.chart canvas{width:100%;height:220px;max-height:220px}.summary{background:#0e3b4b;border:1px solid #2e7081;border-radius:10px;padding:13px;margin:15px 0}.summary p{margin:6px 0;font-size:12px}.resultTable{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:840px;font-size:11px}td,th{padding:8px 9px;border-bottom:1px solid #345267;text-align:right}th:first-child,td:first-child{text-align:left}th{white-space:nowrap;color:#b9dce9}td{font-variant-numeric:tabular-nums}.qa{color:#ffd793}.subheader{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:0 0 11px;flex-wrap:wrap}.legend{font-size:10px;color:#b7d6e6} .progress{margin-bottom:15px}.bar{height:10px;border-radius:7px;background:#264557;overflow:hidden}.bar i{display:block;background:#36b8dc;height:100%;width:7.35%}@media(max-width:950px){.app{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.maps{grid-template-columns:1fr}.mapWrap{min-height:300px}#map{height:300px}}@media print{header .nav,aside{display:none}.app{grid-template-columns:1fr}body{color:#162d39;background:white}.panel,.chart,.kpi,.summary{color:#18354a!important;background:white!important;border-color:#b2cddc!important}.muted,th,td{color:#264c5d!important}button{display:none}.charts{grid-template-columns:repeat(2,1fr)}.notice{color:#8d681e!important;background:white!important}}
-</style></head><body>
+</style><link rel="stylesheet" href="nationwide-catalog.css?v=20261009-full1"></head><body>
 <header><div><div class="muted">KEN MONITORING · PDD NATIONAL EXPANSION</div><h1>รายงานติดตามแปลง PDD ทุกจังหวัด</h1><p>GeoTIFF Sentinel-2 · Water / Vegetation / Soil / Moisture · PDD MultiPolygon</p></div><div class="nav"><a href="./?tab=report">← กลับรายงานระยอง</a><button id="print">พิมพ์ / บันทึก PDF</button><button id="csv">ส่งออก CSV</button></div></header>
 <div class="app"><aside>
 <section class="panel"><h2>เลือกข้อมูล</h2><label>จังหวัด<select id="province"></select></label><label>แปลง<select id="plot"></select></label><div id="plotmeta" class="muted"></div></section>
@@ -14,10 +14,49 @@
 <div class="notice" id="scope">กำลังโหลดรายการแปลงและผลวิเคราะห์...</div>
 <div class="kpis" id="kpis"></div>
 <section class="panel progress"><h3>ความคืบหน้าการประมวลผล</h3><div class="bar"><i id="progressbar"></i></div><p class="muted" id="progress">กำลังโหลด...</p></section>
-<div class="maps"><section class="panel mapWrap"><div class="subheader"><h3>แผนที่ PDD และขอบเขตน้ำรายวัน</h3><span class="legend">เส้นแดง: ขอบเขต PDD</span></div><div id="map"></div><div id="maplegend" class="checkgrid" style="margin-top:10px"></div></section><section class="panel"><h3>ภาพจริงจาก Sentinel-2 ตามวัน</h3><div id="images" class="imagery"></div></section></div>
+<div class="maps"><section class="panel mapWrap"><div class="subheader"><h3>แผนที่ PDD และขอบเขตน้ำรายวัน</h3><span class="legend">เส้นแดง: ขอบเขต PDD</span></div><div id="map"></div><div id="maplegend" class="checkgrid" style="margin-top:10px"></div></section><section class="panel"><h3>ภาพ Sentinel-2 และไฟล์ต้นฉบับตามวัน</h3><div id="images" class="imagery"></div></section></div>
 <section class="panel" style="margin-top:13px"><h3>แนวโน้มตามวัน</h3><div id="charts" class="charts"></div></section>
 <div class="summary" id="summary"></div>
 <section class="panel"><h3>ข้อมูลรายวัน / QA</h3><div class="resultTable"><table><thead id="tablehead"></thead><tbody id="tablebody"></tbody></table></div></section>
 </main></div>
+
+<section id="national-library">
+ <section class="nat-panel nat-headline">
+  <div><div class="muted">ARCHIVE • TRUE/FALSE IMAGE ASSETS • ALL 136 PDD PLOTS</div><h2>คลังภาพดาวเทียมทุกแปลง ทุกปี (ไม่ตัดภาพ)</h2><p class="muted" id="national-status">กำลังเชื่อมข้อมูลภาพต้นฉบับจาก Google Drive...</p></div>
+  <div class="nat-badges"><div class="nat-badge"><small>ไฟล์ตามตัวกรอง</small><strong id="national-total">—</strong></div><div class="nat-badge"><small>แปลง</small><strong id="national-plots-count">—</strong></div><div class="nat-badge"><small>ปีข้อมูล</small><strong id="national-years-count">—</strong></div></div>
+ </section>
+ <div class="nat-layout">
+  <aside>
+   <section class="nat-panel">
+    <h3>เลือกแปลง • จังหวัด • ปี</h3>
+    <div class="nat-filter-grid"><label>จังหวัด<select id="national-province"></select></label><label>แปลง PDD<select id="national-plot"></select></label><label>ค้นหาไฟล์<input id="national-search" type="search" placeholder="เช่น 13-STC, S2, 2026"></label></div>
+    <div class="nat-actions"><button id="national-all-years" type="button">ทุกปี 2020–2026</button><button id="national-reset" type="button">ค่าเริ่มต้น</button></div>
+    <h4>เลือกปี (ติ๊กได้หลายปี)</h4><div class="nat-checks" id="national-year-checks"></div>
+    <h4>เลือกเซนเซอร์</h4><div class="nat-checks" id="national-sensor-checks"></div>
+    <h4>ประเภทชุดภาพ</h4><div class="nat-checks" id="national-kind-checks"></div>
+    <label><input id="national-one-year" type="checkbox"> ปีละ 1 ภาพตัวแทนต่อแปลง</label>
+   </section>
+   <section class="nat-panel">
+    <h3>ขอบเขตหลัก PDD (MultiPolygon)</h3>
+    <div id="national-boundary-map" class="nat-map" role="region" aria-label="PDD polygon reference map"></div>
+    <p class="muted">เส้นแดงเป็นขอบเขต PDD แยกต่างหาก ภาพ TIFF ในคลังแสดงเต็มสี่เหลี่ยม ไม่ตัดตาม Polygon</p>
+   </section>
+   <section class="nat-panel"><h3>ผลวิเคราะห์ที่ผ่าน QA</h3><div class="nat-analysis" id="national-analysis">กรุณาเลือกแปลง</div></section>
+  </aside>
+  <div class="nat-gallery-pane">
+    <section class="nat-panel"><h3>ไฟล์ภาพต้นฉบับทุกชุด</h3>
+     <p class="muted" id="national-preview-note">ภาพเต็มจากไฟล์ต้นทาง • ไม่ตัดตามขอบเขต</p>
+     <div class="nat-nav"><span id="national-visible"></span><span>กดรูปเพื่อดูภาพใหญ่ หรือเปิด GeoTIFF ใน Google Drive</span></div>
+     <div class="nat-grid" id="national-gallery"></div>
+     <button id="national-more" type="button" style="margin-top:13px" hidden>แสดงไฟล์ถัดไปอีก 36 รายการ</button>
+    </section>
+  </div>
+ </div>
+</section>
+<div class="nat-image-modal" id="national-preview" hidden role="dialog" aria-modal="true">
+ <div class="nat-image-dialog"><div class="nat-image-dialog-head"><div><h3 id="national-modal-title">ภาพดาวเทียม</h3><p class="muted" id="national-modal-details"></p></div><div><a id="national-original" target="_blank" rel="noopener">เปิด GeoTIFF ต้นฉบับ ↗</a> <button id="national-preview-close" type="button">ปิด</button></div></div>
+ <figure><img id="national-modal-img" alt="ภาพดาวเทียมเต็มกรอบโดยไม่ตัดตาม PDD"><p id="national-modal-fallback" hidden>Google Drive ไม่ส่งภาพตัวอย่าง TIFF นี้ โปรดกดเปิดไฟล์ต้นฉบับ</p></figure></div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-<script src="nationwide.js?v=20261009-batch01"></script></body></html>
+<script src="nationwide.js?v=20261009-full1"></script><script src="nationwide-catalog.js?v=20261009-full1"></script><script>window.NationwideCatalog.show();</script></body></html>
