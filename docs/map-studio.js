@@ -120,8 +120,8 @@ function clipPlotImage(p,layer){
     const top=merc(north),bottom=merc(south);
     if(!(east>west&&top>bottom)){resolve(layer.url);return}
     const polys=geom.type==="Polygon"?[geom.coordinates]:geom.type==="MultiPolygon"?geom.coordinates:[];
+    ctx.beginPath();
     for(const rings of polys){
-     ctx.beginPath();
      for(const ring of rings){
       ring.forEach((pt,i)=>{
        const x=(+pt[0]-west)/(east-west)*w,y=(top-merc(+pt[1]))/(top-bottom)*h;
@@ -129,8 +129,8 @@ function clipPlotImage(p,layer){
       });
       ctx.closePath();
      }
-     ctx.fill("evenodd");
     }
+    ctx.fill("evenodd");
     const out=canvas.toDataURL("image/png");clippedImages.set(key,out);resolve(out);
    }catch(e){console.warn("PDD clipping unavailable",e);resolve(layer.url)}
   };
