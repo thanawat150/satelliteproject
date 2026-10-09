@@ -1,0 +1,72 @@
+name: MMC Publish Verified Raster Preview Artifacts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/mmc-publish-imagery-assets.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: mmc-raster-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install merge dependencies
+        run: python -m pip install numpy pillow rasterio
+      - name: Download completed raster-processing artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 37913880782
+          github-token: ${{ github.token }}
+          pattern: mmc-render-shard-*
+          path: work/parts
+      - name: Normalize original output folders
+        run: |
+          for i in {0..7}; do
+            test -f "work/parts/mmc-render-shard-${i}/generated_shard.json"
+            mv "work/parts/mmc-render-shard-${i}" "work/parts/shard-${i}"
+          done
+      - name: Merge actual TIFF-derived map products
+        run: python scripts/mmc_render_imagery.py merge --parts work/parts --shards 8
+      - name: Confirm imagery bytes and provenance
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          home=Path('docs/mangrove-monitoring')
+          m=json.loads((home/'imagery_manifest.json').read_text())
+          assert m.get('generated_items')
+          for item in m['generated_items']:
+              assert item['source']=='generated'
+              assert item.get('qa_valid_pct',0)>=70
+              assert {'true_color','false_color','ndvi','ndmi','mndwi','bsi'}.issubset(item['assets'])
+              for mode,url in item['assets'].items():
+                  file=home/url.removeprefix('./')
+                  assert file.is_file() and file.stat().st_size>200,(item['plot'],mode)
+          print('MMC_IMAGE_PUBLISH_QA_PASS',len(m['generated_items']))
+          PY
+      - name: Commit image assets and index to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/mangrove-monitoring/imagery/ \
+                  docs/mangrove-monitoring/imagery_manifest.json \
+                  docs/mangrove-monitoring/imagery_render_errors.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish original S2 RGB and index imagery for national monitoring"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
