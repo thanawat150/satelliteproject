@@ -23,13 +23,14 @@ const modeOptions=(m)=>Object.entries(MODE).map(([k,v])=>'<option value="'+k+'" 
 function available(item){return item?.modes||[]}
 function srcOK(x){return typeof x==='string'&&(/^data:image\/(?:png|jpeg|webp);base64,/i.test(x)||/^\.\/imagery\/[a-z0-9_()\/.\-]+$/i.test(x));}
 function previewSrc(row){return srcOK(row?.src)?row.src:null}
-async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261009-v2',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
-async function getProduct(item){if(!item)return null;if(item.source==='generated'){return {layers:Object.entries(item.assets||{}).map(([mode,u])=>({plot:item.plot,date:item.date,mode,src:u,bounds:item.bounds,resolution_m:mode==='true_color'||mode==='false_color'?10:20}))};}
+async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261009-v3',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
+async function getProduct(item){if(!item||item.source==='missing')return null;if(item.source==='generated'){return {layers:Object.entries(item.assets||{}).map(([mode,u])=>({plot:item.plot,date:item.date,mode,src:u,bounds:item.bounds,resolution_m:mode==='true_color'||mode==='false_color'?10:20}))};}
 const key='part-'+item.part;if(!files.has(key)){const url='../data/full_preview_part_'+item.part+'.json';const response=await fetch(url);if(!response.ok)throw Error('Image product HTTP '+response.status);files.set(key,await response.json());}return files.get(key);}
 function imageryItems(){const orig=(index?.items||[]).filter(x=>x.plot===active.plot);const extra=(index?.generated_items||[]).filter(x=>x.plot===active.plot);const map=new Map();for(const x of [...orig,...extra]){let k=x.date;const old=map.get(k);if(!old)map.set(k,x);else if(x.source==='generated'){// generated preview can supply modes not available in older preview
  map.set(k,{...x,fallback:old});}}
+for(const row of active.rows){if(row.date&&!map.has(row.date))map.set(row.date,{plot:active.plot,date:row.date,source:'missing',modes:[]});}
 return [...map.values()].sort((a,b)=>a.date.localeCompare(b.date));}
-function dateChoices(items,selected){return items.map(x=>'<option value="'+esc(x.date)+'" '+(selected===x.date?'selected':'')+'>'+esc(x.date)+(x.source==='generated'?' · Processed':' · Preview')+'</option>').join('');}
+function dateChoices(items,selected){return items.map(x=>'<option value="'+esc(x.date)+'" '+(selected===x.date?'selected':'')+'>'+esc(x.date)+(x.source==='missing'?' · ไม่มี Raster Preview':x.source==='generated'?' · Rendered Raster':' · Raster Preview')+' · '+qa(x.date).label+'</option>').join('');}
 function rastersFor(item,product){if(!item)return {};const rasters={};for(const x of product?.layers||[]){if(x.plot!==item.plot||x.date!==item.date)continue;if(available(item).includes(x.mode)&&previewSrc(x))rasters[x.mode]=x;}
 return rasters;}
 function localBounds(image,item){let b=image?.bounds||item?.bounds;return Array.isArray(b)&&b.length===2&&b[0].length===2&&b[1].length===2?b:null;}
@@ -50,9 +51,16 @@ const a=byDate.get(active.date)||{},b=byDate.get(active.before)||{};
 const sourceRows=active.rows.filter(x=>x.date===active.date);
 const srcMeta=sourceRows[0];
 const nav=items.length?'<label>วันภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label><label>ภาพดัชนี / สี<select id="image-mode">'+modeOptions(active.mode)+'</select></label><label>Opacity ภาพ<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label>':'';
-const head='<div class="panel-header"><div><h2>Satellite & Index Map · '+esc(active.plot)+'</h2><p class="muted tiny">ภาพจริงจาก GeoTIFF / บางแปลงยังไม่มี Preview • เลือกวันและชนิดดัชนีได้</p></div><span class="img-data-tag">ACTUAL RASTER ONLY</span></div>';
+const validQaRows=active.rows.filter(x=>x.analysis_status==='AUTO_VALID');
+const previewDates=new Set(items.filter(x=>x.source!=='missing').map(x=>x.date));
+const missingQa=validQaRows.filter(x=>!previewDates.has(x.date));
+const latestQa=validQaRows.at(-1);
+const head='<div class="panel-header"><div><h2>Satellite & Index Map · '+esc(active.plot)+'</h2><p class="muted tiny">วันวิเคราะห์และวันมี Raster Preview แยกกัน • ไม่ใช้ภาพ NO_DATA แทนภาพล่าสุดที่ผ่าน QA</p></div><span class="img-data-tag">ACTUAL RASTER ONLY</span></div>'+
+'<div class="img-data-integrity"><div><b>QA ล่าสุด</b><span>'+esc(latestQa?.date||'ยังไม่มี QA ผ่าน')+'</span></div><div><b>วันที่มี Raster Preview</b><span>'+items.filter(x=>x.source!=='missing').length+' / '+items.length+'</span></div><div><b>QA ผ่านแต่ภาพยังไม่พร้อม</b><span>'+missingQa.length+' วัน</span></div></div>';
 if(!items.length)return head+'<div class="notice">ยังไม่มี Preview แบบแผนที่สำหรับแปลง '+esc(active.plot)+' • ข้อมูลดัชนีแบบตัวเลขอาจมีอยู่ แต่แผนที่ Raster ยังไม่ได้สร้างจากไฟล์ TIFF</div><p class="muted tiny">เปิดไฟล์ TIFF ตามวันที่จากตารางด้านล่าง หรือรอการประมวลผลชุดภาพเพิ่ม ระบบไม่แสดงภาพดาวเทียมสมมุติ</p>';
-const main='<div class="img-controls">'+nav+'</div>'+
+const noPreview=target?.source==='missing'?'<div class="notice img-missing"><b>ภาพวันที่ '+esc(active.date)+' ยังไม่มี Raster Preview</b> แม้มีข้อมูลวันที่นี้ในผลวิเคราะห์ ('+esc(qa(active.date).label)+') โปรดตรวจ GeoTIFF ต้นฉบับก่อนใช้งานแผนที่หรือรายงาน ระบบไม่ทดแทนด้วยภาพจากวันอื่น</div>':'';
+const smallWarning=active.rows.find(x=>x.date===active.date)?.total_pixels<30?'<div class="notice img-missing">แปลงมีพิกเซลสำหรับ QA น้อยกว่า 30 พิกเซลบนกริดวิเคราะห์ ควรใช้ภาพ Drone/ข้อมูลภาคสนามตรวจทานก่อนสรุปสภาพป่าหรือน้ำท่วม</div>':'';
+const main='<div class="img-controls">'+nav+'</div>'+noPreview+smallWarning+
  '<div class="img-preview-grid"><div class="img-large"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.mode],active.mode,active.date)+'</div><div class="img-foot">ความละเอียด: '+esc(String(a[active.mode]?.resolution_m||'—'))+' m · ภาพเต็มสี่เหลี่ยม (ไม่ clip เฉพาะ Polygon)</div></div>'+
  '<div class="img-map-panel"><div class="img-title">แสดง Raster ซ้อนแผนที่พร้อมขอบเขต PDD</div><div class="img-geo-map" id="mmc-geo-map"></div><div class="img-foot">ขอบเขต PDD เส้นแดง · ภาพอ้างอิงพิกัดตาม bounds ของ Raster จริง</div>'
 +legend(target,active.mode)
@@ -63,7 +71,8 @@ const compare='<div class="img-compare-wrap"><div class="img-compare-head"><h3>�
 const modes=['true_color','false_color','ndvi','ndre','ndmi','mndwi','bsi','ndwi'];
 const gallery='<h3 class="img-gallery-title">ภาพสีจริง / สีเท็จ / ดัชนีในวันที่เลือก</h3><div class="img-gallery">'+modes.map(mode=>'<div class="img-tile"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(a[mode],mode,active.date)+'</div><small>'+esc(MODE[mode][1])+'</small></div>').join('')+'</div>';
 const source=srcMeta?'<div class="img-source"><b>Traceability</b> · Plot '+esc(active.plot)+' • วันที่ภาพ '+esc(active.date)+' • '+esc(srcMeta.algorithm||'Preview จาก TIFF')+' • QA '+esc(srcMeta.analysis_status||'ยังไม่ประมวลผล')+
- '<br><small>Original TIFF: '+esc(srcMeta.original_tif10||'รอต้นฉบับ')+' / '+esc(srcMeta.original_tif20||'รอต้นฉบับ')+'</small></div>':'<div class="img-source">ภาพนี้มี Raster Preview แต่ยังไม่มีผล QA ที่จับคู่กับชุดวิเคราะห์ PDD เดิม จึงไม่ใช้สรุปผลกระทบ</div>';
+ '<br><small>Original TIFF: '+esc(srcMeta.original_tif10||'รอต้นฉบับ')+' / '+esc(srcMeta.original_tif20||'รอต้นฉบับ')+'</small>'+
+'<br>'+[['10 m TIFF',srcMeta.original_tif10_file_id],['20 m TIFF / SCL',srcMeta.original_tif20_file_id]].filter(x=>x[1]).map(x=>'<a href="https://drive.google.com/file/d/'+encodeURIComponent(x[1])+'/view" target="_blank" rel="noopener noreferrer">'+esc(x[0])+' ↗</a>').join(' · ')+'</div>':'<div class="img-source">ภาพนี้มี Raster Preview แต่ยังไม่มีผล QA ที่จับคู่กับชุดวิเคราะห์ PDD เดิม จึงไม่ใช้สรุปผลกระทบ</div>';
 return head+main+compare+gallery+source;
 }
 function destroyMap(){if(map){try{map.remove()}catch(e){}map=null;}}
@@ -76,7 +85,9 @@ if(bounds)map.fitBounds(bounds,{padding:[20,20]});else map.setView([10.4,100.8],
 setTimeout(()=>{try{map.invalidateSize()}catch(e){}},100);
 }
 async function renderAsync(){const id=++epoch;destroyMap();const hold=active.holder;if(!hold)return;hold.innerHTML='<div class="img-load">กำลังอ่าน Raster Preview และ metadata…</div>';
-try{await getIndex();const items=imageryItems();if(!items.some(x=>x.date===active.date))active.date=items.at(-1)?.date||'';if(!items.some(x=>x.date===active.before))active.before=items[0]?.date||active.date;
+try{await getIndex();const items=imageryItems();
+if(!items.some(x=>x.date===active.date)){const v=[...items].reverse().find(x=>qa(x.date).kind==='AUTO_VALID');active.date=v?.date||items.at(-1)?.date||'';}
+if(!items.some(x=>x.date===active.before)){const before=[...items].reverse().find(x=>x.date<active.date&&qa(x.date).kind==='AUTO_VALID');active.before=before?.date||items.find(x=>x.date!==active.date)?.date||active.date;}
 const cur=items.find(x=>x.date===active.date),bef=items.find(x=>x.date===active.before);
 const [cp,bp]=await Promise.all([getProduct(cur),cur?.part===bef?.part&&cur?.source===bef?.source?getProduct(cur):getProduct(bef)]);
 if(id!==epoch)return;const byDate=new Map();if(cur)byDate.set(cur.date,rastersFor(cur,cp));if(bef)byDate.set(bef.date,rastersFor(bef,bp));
@@ -91,7 +102,7 @@ if(t.id==='image-opacity'){active.alpha=Number(t.value)/100;if(map){map.eachLaye
 };
 for(const sel of ['image-date','image-before','image-mode','image-compare-mode','image-opacity']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
 }catch(e){console.error('MMC imagery',e);if(id===epoch)showError(e.message||e)}}
-function mount(o){if(!o?.plot||!o?.container)return;active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
+function mount(o){if(!o?.plot||!o?.container)return;if(active.plot!==o.plot){active.date='';active.before='';active.mode='true_color';active.compareMode='true_color';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
 function clear(){epoch++;destroyMap();active.holder=null;}
 window.MMCImagery={mount,clear,get coverage(){return index?{plots:index.plot_count,dates:index.image_dates}:null}};
 })();
