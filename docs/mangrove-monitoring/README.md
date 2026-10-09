@@ -72,6 +72,14 @@ Run Playwright smoke locally with:
 
 Tests exercise 160 public-registry placeholders, QA coverage, charts, source links, unconnected modules and mobile menu. Passing the test does not mean all 26 modules are complete.
 
+## Raster boundary overlays (2026-10-09)
+
+- Satellite Catalog, Environmental Analytics, Plot Intelligence and Report Center now draw the selected **published plot polygon as a red outline on top of each real raster image** — main scene, before/after comparisons, and all index/RGB thumbnails.
+- The outline follows Polygon/MultiPolygon geometry including holes from the existing GeoJSON, transformed into the raster's geographic bounds with Web Mercator scaling to match the Leaflet overlay. It is not a rectangular bounding box.
+- Red outlines are positioned to match `object-fit: contain` on desktop, mobile and print. The **ขอบเขตแปลง** control toggles them in all raster images and the georeferenced Leaflet map.
+- Boundary source is labeled PDD or MOC 3 according to the available geometry, **not asserted as department-confirmed or certified legal boundary**. Missing geometries and imagery are left missing, never invented.
+- GeoTIFFs remain unchanged; the overlay is rendered in the web browser and is not burned into the raw raster.
+
 ## Latest generated raster coverage (2026-10-09)
 
 - 125 of the 136 canonical PDD plots have at least one true-color/false-color or spectral-index Raster Preview, including 19 existing preview plots.
