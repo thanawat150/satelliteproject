@@ -72,6 +72,41 @@ Run Playwright smoke locally with:
 
 Tests exercise 160 public-registry placeholders, QA coverage, charts, source links, unconnected modules and mobile menu. Passing the test does not mean all 26 modules are complete.
 
+## Spectral index source verification (2026-10-10)
+
+Index QA was performed independently against **the original paired Sentinel-2
+10m/20m GeoTIFFs** instead of inferring numbers from the index PNG palette.
+A plot-specific 20m PDD mask, SCL mask and finite-band intersection are used
+for each index. Means, ranges, samples, formulas and deviation from published
+legacy series are attached to every generated scene in
+`imagery_manifest.json` under `index_stats` / `index_parity`.
+`index_renderer_version` is `mmc-index-source-verified-v1`.
+The Satellite Explorer and Index QA screen display these side-by-side;
+`index_quality_audit.json` is an independently generated all-scene report.
+
+| Index | Exact formula with source bands | Notes |
+| --- | --- | --- |
+| NDVI | (B8-B4)/(B8+B4) | Vegetation greenness |
+| NDRE | (B8A-B5)/(B8A+B5) | Red-edge variant; source TIFF NDRE agrees |
+| NDMI | (B8A-B11)/(B8A+B11) | **B8A variant** used by source embedded NDMI; not the distinct B8 variant |
+| NDWI | (B3-B8)/(B3+B8) | McFeeters surface-water index; negative over healthy trees is normal |
+| MNDWI | (B3-B11)/(B3+B11) | Sensitive to resampling between 10m/20m and to tidal mangroves |
+| BSI | ((B11+B4)-(B8+B2))/((B11+B4)+(B8+B2)) | Bare-soil indicator, not definitive exposed soil extent |
+
+On **24-VSD 2026-09-05**, the legacy NDVI 0.71736 compared with independently
+calculated 0.71758 within the PDD; NDRE/NDMI matched precomputed TIFF bands
+at pixel level. The legend uses breakpoints at their actual values rather than
+uniformly distributing palette stops. Means are confined to the PDD polygon,
+while full-rectangle index previews show surrounding context.
+
+Across **241 PDD plot-date records**, no published numeric index mean differed
+from source recomputation by more than 0.03. Three MNDWI pixel-wise parity
+screens (66-STC twice, 70-STC once) exceeded a provisional RMSE screening
+threshold of 0.03 relative to the *embedded TIFF MNDWI raster*, although
+their plot means matched the legacy report. This is flagged for resampling /
+pixel-grid review, not silently adjusted and not claimed to be vegetation or
+flooding evidence.
+
 ## Portfolio-wide RGB display repair and audit (2026-10-10)
 
 The old 24-VSD RGB of 2026-09-05 appeared almost solid white despite a scene
