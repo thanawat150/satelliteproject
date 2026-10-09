@@ -1,0 +1,30 @@
+name: Mangrove Monitoring Preview Smoke Test
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/mangrove-monitoring/**"
+      - "scripts/test_mmc_preview.cjs"
+      - ".github/workflows/mmc-preview-smoke.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Validate JavaScript syntax
+        run: node --check docs/mangrove-monitoring/app.js
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Start static web server
+        run: python -m http.server 8877 --bind 127.0.0.1 --directory docs > /tmp/mmc-web.log 2>&1 &
+      - name: Test nationwide map registry, QA, navigation and mobile
+        run: node scripts/test_mmc_preview.cjs
