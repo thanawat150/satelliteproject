@@ -247,6 +247,10 @@ def run_shard(args):
     previous=json_read(BASE/"docs"/"mangrove-monitoring"/"imagery_manifest.json")
     existing_dates={(entry["plot"],entry["date"]) for entry in
                     previous.get("items",[])+previous.get("generated_items",[])}
+    previous_generated={(entry["plot"],entry["date"]):entry for entry in previous.get("generated_items",[])}
+    # Existing v1 previews are NOT adequate: some were rendered using
+    # per-channel p2/p98, causing white and black artifacts on small rasters.
+    renderer_version="mmc-rgb-fixed-reflectance-v2"
     refresh_plots={x.strip() for x in (args.refresh_plots or "").split(",") if x.strip()}
     # Important: plots with old archive previews can have newer QA-valid scene dates.
     # Only skip a *plot-date* that already has an image, not the entire plot.
@@ -256,8 +260,12 @@ def run_shard(args):
     for plot in assigned:
         for scene in candidates_from_result(data,plot):
             date=scene["date"]
-            force=plot in refresh_plots
-            if (plot,date) in existing_dates and not force:continue
+            force=plot in refresh_plots or "ALL" in refresh_plots
+            old=previous_generated.get((plot,date))
+            # Upgrade every QA-valid scene exactly once to the audited renderer.
+            # Even archive-backed dates need new proper RGB and alpha masks.
+            already_current=bool(old and old.get("rgb_renderer_version")==renderer_version)
+            if already_current and not force:continue
             local=out/"tmp"/plot/date
             local.mkdir(parents=True,exist_ok=True)
             try:
