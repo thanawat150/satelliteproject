@@ -20,13 +20,17 @@
         "ndre": 0.359,
         "ndmi": 0.204,
         "mndwi": -0.199,
-        "bsi": null,
+        "bsi": -0.01514,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 1036,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -38,13 +42,17 @@
         "ndre": 0.393,
         "ndmi": 0.425,
         "mndwi": 0.369,
-        "bsi": null,
+        "bsi": -0.12451,
         "valid_pct": 100,
         "change_water_rai": 194.92,
         "change_water_pp": 74.8,
         "new_water_rai": 194.91,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 1036,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-10-02",
@@ -101,13 +109,17 @@
         "ndre": 0.3,
         "ndmi": 0.222,
         "mndwi": -0.166,
-        "bsi": null,
+        "bsi": -0.02999,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 52,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -125,7 +137,9 @@
         "change_water_pp": 80,
         "new_water_rai": 2.2,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 21.15,
+        "bsi_issue": "BSI ไม่ผ่าน SCL+spectral pixel coverage ≥70%; ไม่รายงานค่าแทนทั้งแปลง"
       }
     ],
     "14-STC": [
@@ -139,13 +153,17 @@
         "ndre": 0.391,
         "ndmi": 0.252,
         "mndwi": -0.286,
-        "bsi": null,
+        "bsi": -0.11829,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 17,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -157,13 +175,17 @@
         "ndre": 0.374,
         "ndmi": 0.405,
         "mndwi": 0.084,
-        "bsi": null,
+        "bsi": -0.23051,
         "valid_pct": 100,
         "change_water_rai": 2.77,
         "change_water_pp": 61.7,
         "new_water_rai": 2.77,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 17,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "14-VSD": [
@@ -177,13 +199,17 @@
         "ndre": 0.383,
         "ndmi": 0.224,
         "mndwi": -0.181,
-        "bsi": null,
+        "bsi": -0.00488,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 154,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -195,13 +221,17 @@
         "ndre": 0.313,
         "ndmi": 0.358,
         "mndwi": 0.426,
-        "bsi": null,
+        "bsi": -0.01943,
         "valid_pct": 100,
         "change_water_rai": 29.57,
         "change_water_pp": 76,
         "new_water_rai": 29.57,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 154,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "15-STC": [
@@ -215,13 +245,17 @@
         "ndre": null,
         "ndmi": null,
         "mndwi": 0.032,
-        "bsi": null,
+        "bsi": -0.17349,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 19,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -239,7 +273,9 @@
         "change_water_pp": null,
         "new_water_rai": 0,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 0,
+        "bsi_issue": "BSI ไม่ผ่าน SCL+spectral pixel coverage ≥70%; ไม่รายงานค่าแทนทั้งแปลง"
       }
     ],
     "15-VSD": [
@@ -253,13 +289,17 @@
         "ndre": 0.403,
         "ndmi": 0.187,
         "mndwi": -0.276,
-        "bsi": null,
+        "bsi": 0.01822,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 185,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -271,13 +311,17 @@
         "ndre": 0.42,
         "ndmi": 0.44,
         "mndwi": 0.309,
-        "bsi": null,
+        "bsi": -0.08503,
         "valid_pct": 100,
         "change_water_rai": 36.87,
         "change_water_pp": 79.5,
         "new_water_rai": 36.87,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 185,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "16-STC": [
@@ -291,13 +335,17 @@
         "ndre": 0.448,
         "ndmi": 0.307,
         "mndwi": -0.208,
-        "bsi": null,
+        "bsi": -0.08539,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 108,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -309,13 +357,17 @@
         "ndre": 0.389,
         "ndmi": 0.367,
         "mndwi": 0.401,
-        "bsi": null,
+        "bsi": -0.08074,
         "valid_pct": 100,
         "change_water_rai": 23.72,
         "change_water_pp": 87.7,
         "new_water_rai": 23.72,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 108,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "16-VSD": [
@@ -329,13 +381,17 @@
         "ndre": 0.479,
         "ndmi": 0.33,
         "mndwi": -0.256,
-        "bsi": null,
+        "bsi": -0.04323,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 48,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -347,13 +403,17 @@
         "ndre": 0.262,
         "ndmi": 0.341,
         "mndwi": 0.315,
-        "bsi": null,
+        "bsi": -0.04226,
         "valid_pct": 100,
         "change_water_rai": 10.22,
         "change_water_pp": 85.1,
         "new_water_rai": 10.22,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 48,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "17-STC": [
@@ -367,13 +427,17 @@
         "ndre": 0.374,
         "ndmi": 0.144,
         "mndwi": -0.291,
-        "bsi": null,
+        "bsi": -0.03276,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 1103,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -385,13 +449,17 @@
         "ndre": 0.313,
         "ndmi": 0.362,
         "mndwi": 0.157,
-        "bsi": null,
+        "bsi": -0.13567,
         "valid_pct": 100,
         "change_water_rai": 236,
         "change_water_pp": 85.7,
         "new_water_rai": 235.99,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 1103,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "17-VSD": [
@@ -405,13 +473,17 @@
         "ndre": 0.424,
         "ndmi": 0.287,
         "mndwi": -0.105,
-        "bsi": null,
+        "bsi": -0.06768,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 97,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -423,13 +495,17 @@
         "ndre": 0.308,
         "ndmi": 0.397,
         "mndwi": 0.498,
-        "bsi": null,
+        "bsi": -0.01842,
         "valid_pct": 100,
         "change_water_rai": 20.44,
         "change_water_pp": 83.8,
         "new_water_rai": 20.44,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 97,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "18(1)-STC": [
@@ -443,13 +519,17 @@
         "ndre": 0.521,
         "ndmi": 0.416,
         "mndwi": -0.261,
-        "bsi": null,
+        "bsi": -0.20176,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 85,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -461,13 +541,17 @@
         "ndre": 0.375,
         "ndmi": 0.426,
         "mndwi": 0.134,
-        "bsi": null,
+        "bsi": -0.16811,
         "valid_pct": 100,
         "change_water_rai": 16.01,
         "change_water_pp": 76.2,
         "new_water_rai": 16.01,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 85,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "18-STC": [
@@ -481,13 +565,17 @@
         "ndre": 0.311,
         "ndmi": 0.092,
         "mndwi": -0.283,
-        "bsi": null,
+        "bsi": 0.02739,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 122,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -499,13 +587,17 @@
         "ndre": 0.384,
         "ndmi": 0.396,
         "mndwi": 0.234,
-        "bsi": null,
+        "bsi": -0.09265,
         "valid_pct": 100,
         "change_water_rai": 25.44,
         "change_water_pp": 80.2,
         "new_water_rai": 25.45,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 122,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "19-STC": [
@@ -519,13 +611,17 @@
         "ndre": 0.41,
         "ndmi": 0.318,
         "mndwi": -0.073,
-        "bsi": null,
+        "bsi": -0.10453,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 59,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -537,13 +633,17 @@
         "ndre": 0.26,
         "ndmi": 0.331,
         "mndwi": 0.326,
-        "bsi": null,
+        "bsi": -0.03272,
         "valid_pct": 100,
         "change_water_rai": 9.11,
         "change_water_pp": 59.7,
         "new_water_rai": 9.11,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 59,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "20-STC": [
@@ -557,13 +657,17 @@
         "ndre": 0.308,
         "ndmi": 0.109,
         "mndwi": -0.21,
-        "bsi": null,
+        "bsi": 0.01612,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 116,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -575,13 +679,17 @@
         "ndre": 0.296,
         "ndmi": 0.367,
         "mndwi": 0.471,
-        "bsi": null,
+        "bsi": -0.05099,
         "valid_pct": 100,
         "change_water_rai": 22.95,
         "change_water_pp": 80,
         "new_water_rai": 22.95,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 116,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "21-STC": [
@@ -595,13 +703,17 @@
         "ndre": 0.242,
         "ndmi": 0.144,
         "mndwi": -0.061,
-        "bsi": null,
+        "bsi": -0.05426,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 594,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -613,13 +725,17 @@
         "ndre": 0.379,
         "ndmi": 0.357,
         "mndwi": 0.083,
-        "bsi": null,
+        "bsi": -0.15386,
         "valid_pct": 100,
         "change_water_rai": 20.05,
         "change_water_pp": 15.2,
         "new_water_rai": 24.07,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 97.14,
+        "bsi_valid_pixels": 577,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "22(1)-STC": [
@@ -633,13 +749,17 @@
         "ndre": 0.44,
         "ndmi": 0.331,
         "mndwi": -0.024,
-        "bsi": null,
+        "bsi": -0.16062,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 54,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -651,13 +771,17 @@
         "ndre": 0.547,
         "ndmi": 0.496,
         "mndwi": 0.127,
-        "bsi": null,
+        "bsi": -0.22459,
         "valid_pct": 100,
         "change_water_rai": 1.52,
         "change_water_pp": 11.2,
         "new_water_rai": 1.61,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 54,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "22-STC": [
@@ -671,13 +795,17 @@
         "ndre": 0.422,
         "ndmi": 0.303,
         "mndwi": -0.151,
-        "bsi": null,
+        "bsi": -0.17411,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 106,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -689,13 +817,17 @@
         "ndre": 0.348,
         "ndmi": 0.304,
         "mndwi": -0.106,
-        "bsi": null,
+        "bsi": -0.15242,
         "valid_pct": 100,
         "change_water_rai": -5.74,
         "change_water_pp": -21.2,
         "new_water_rai": 0.38,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 91.51,
+        "bsi_valid_pixels": 97,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ],
     "23(1)-STC": [
@@ -709,13 +841,17 @@
         "ndre": null,
         "ndmi": null,
         "mndwi": -0.151,
-        "bsi": null,
+        "bsi": -0.01669,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 29,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -733,7 +869,9 @@
         "change_water_pp": null,
         "new_water_rai": 0,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 0,
+        "bsi_issue": "BSI ไม่ผ่าน SCL+spectral pixel coverage ≥70%; ไม่รายงานค่าแทนทั้งแปลง"
       }
     ],
     "23-STC": [
@@ -747,13 +885,17 @@
         "ndre": 0.318,
         "ndmi": 0.235,
         "mndwi": -0.184,
-        "bsi": null,
+        "bsi": -0.05892,
         "valid_pct": 100,
         "change_water_rai": null,
         "change_water_pp": null,
         "new_water_rai": null,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 179,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       },
       {
         "date": "2026-09-29",
@@ -765,14 +907,34 @@
         "ndre": 0.303,
         "ndmi": 0.325,
         "mndwi": -0.014,
-        "bsi": null,
+        "bsi": -0.10545,
         "valid_pct": 100,
         "change_water_rai": 16.26,
         "change_water_pp": 38,
         "new_water_rai": 16.77,
         "lost_water_rai": null,
-        "source": "verified_report"
+        "source": "verified_report",
+        "bsi_valid_pct": 100,
+        "bsi_valid_pixels": 179,
+        "bsi_method": "Sentinel-2 L2A BSI=(B11+B4-B8-B2)/(B11+B4+B8+B2); B2/B4/B8 bilinear-aligned to 20 m B11; PDD plot geometry mask; SCL clear 2,4,5,6,7; mean of valid pixels",
+        "bsi_source": "GeoTIFF original, Rayong satellite archive 2026-10-07; calculated 2026-10-09"
       }
     ]
+  },
+  "bsi_backfill": {
+    "date": "2026-10-09",
+    "records_added": 35,
+    "qa_excluded": 3,
+    "original_values_unchanged": [
+      "ndvi",
+      "ndre",
+      "ndmi",
+      "mndwi",
+      "water_rai",
+      "water_pct",
+      "analysis_status"
+    ],
+    "pdd_source": "MOC.zip native PDD geometry",
+    "source": "Rayong TIFF source archive"
   }
 }
