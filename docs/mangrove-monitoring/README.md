@@ -59,7 +59,10 @@ Tests exercise 160 public-registry placeholders, QA coverage, charts, source lin
 
 ## Latest generated raster coverage (2026-10-09)
 
-- 19 plots / 65 plot-date image records already supplied by existing GeoTIFF preview layers.
-- 85 additional plots / 128 plot-date images newly rendered from matched original Sentinel-2 TIFF pairs.
-- Combined unique plot coverage: 104. Imagery remains a preview and does not imply forest health or field verification.
-- Some original TIFF pairs remain inaccessible or SCL-invalid; consult imagery_render_errors.json. Do not fabricate missing NDVI or flood status.
+- 125 of the 136 canonical PDD plots have at least one true-color/false-color or spectral-index Raster Preview, including 19 existing preview plots.
+- 234 unique plot-date image sets: 65 from the prior archive and 169 generated via original 10m+20m TIFF processing.
+- Generated images contain actual Sentinel-2 RGB and NDVI/NDRE/NDMI/NDWI/MNDWI/BSI pixel values; generated indices are SCL masked, never simulated.
+- Source analysis contains 126 plot codes with at least one QA-valid scene; one of them (69-VSD) still has no imagery preview because Drive download failed.
+- Ten canonical PDD plots do not have a QA-valid observation. The system must not imply they are healthy or damaged.
+- Three source plot-date image pairs were unavailable to gdown: 94-VSD, 69-VSD, 78-STC (see imagery_render_errors.json); some of these plots have images for other dates.
+- This is a display and monitoring preview, NOT an approved audit/MRV report or a model validated against independent ground truth.
