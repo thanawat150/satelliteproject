@@ -9,7 +9,8 @@ const bdate=d=>{if(!d)return '—';const [y,m,dd]=d.split('-');return `${dd}/${m
 const trusted=r=>r.analysis_status==='AUTO_VALID'||r.analysis_status==='VERIFIED';
 const color=['#35addc','#e9b24a','#b267d8','#4bb688','#ec7992','#bedb59','#63bacc'];
 async function load(){try{
- const [b,r,f,p]=await Promise.all(['boundaries_pdd_136.geojson','batch_01_results.json','batch_01_features.geojson','batch_01_previews.json'].map(file=>fetch(base+file).then(x=>{if(!x.ok)throw Error(file+': '+x.status);return x.json()})));
+ const get=async(file,fallback)=>{let x=await fetch(base+file);if(!x.ok&&fallback)x=await fetch(base+fallback);if(!x.ok)throw Error(file+': '+x.status);return x.json()};
+ const [b,r,f,p]=await Promise.all([get('boundaries_pdd_136.geojson'),get('nationwide_results.json','batch_01_results.json'),get('nationwide_features.geojson','batch_01_features.geojson'),get('batch_01_previews.json')]);
  boundary=b;batch=r;water=f;previews=p;plots=b.features.map(f=>f.properties.plot).sort((a,b)=>a.localeCompare(b,'en',{numeric:true}));
  init();
  }catch(e){$('scope').textContent='ไม่สามารถโหลดผลการประมวลผล: '+e.message;console.error(e)}}
@@ -26,9 +27,9 @@ function renderControls(){
  $('metrics').onchange=e=>{const v=e.target.dataset.metric;if(!v)return;e.target.checked?selectedMetrics.add(v):selectedMetrics.delete(v);render()};
 }
 function populatePlots(preferred){const province=$('province').value;const codes=plots.filter(p=>getPlotMeta(p).province===province);$('plot').innerHTML=codes.map(c=>`<option value="${c}">${c}</option>`).join('');plot=preferred&&codes.includes(preferred)?preferred:codes[0];$('plot').value=plot;render()}
-function init(){renderControls();const n=batch.totals||{};$('progress').textContent=`ชุดแรก ${n.plots_with_source_scenes||0}/10 แปลง • ${n.processed_dates||0} วันภาพ • ผ่าน QA ${n.qa_valid_dates||0} / ไม่ผ่าน ${n.no_data_dates||0} วันภาพ • การเปรียบเทียบที่มีภาพใช้ได้ ${n.date_changes||0} คู่ • ไม่เปลี่ยนค่ารายงาน Verified เดิม`;
+function init(){renderControls();const n=batch.totals||{};$('progress').textContent=`ประมวลผลแล้ว ${n.plots_with_source_scenes||0}/136 แปลง • ${n.processed_dates||0} วันภาพ • ผ่าน QA ${n.qa_valid_dates||0} / ไม่มีข้อมูล ${n.no_data_dates||0} วันภาพ • เปรียบเทียบผ่าน QA ${n.date_changes||0} คู่ • รักษาผล Verified เดิม`;
  $('progressbar').style.width=`${(n.plots_with_source_scenes||0)/136*100}%`;
- $('scope').textContent='ขอบเขตงานที่ยืนยัน 136 แปลง • ชุด PDD ตาม MOC 1 + MOC 2 + Standard ยืนยันครบ 136 แปลงแล้ว (MOC 3 อีก 23 แปลงแยกออก) • สถานะชุดแรกประมวลผล 10/136 แปลง ที่เหลือแสดง PDD และรอรัน TIFF';}
+ $('scope').textContent=`ขอบเขต PDD ยืนยัน 136 แปลง (MOC 1 + MOC 2 + Standard; MOC 3 แยกต่างหาก) • มีผล TIFF ${n.plots_with_source_scenes||0}/136 แปลง • อีก ${136-(n.plots_with_source_scenes||0)} แปลงยังไม่มีฉากภาพที่ประมวลผลสำเร็จ • ค่าที่ไม่ผ่าน QA จะไม่ถูกแทนเป็นศูนย์`;}
 function render(){if(!plot)return;const all=dataRows(),days=selectedDays.get(plot),rows=current();const info=getPlotMeta(plot);
  $('plotmeta').textContent=`PDD MultiPolygon ${(info.pdd_geometry_parts||info.geometry_parts||1)} ส่วน • พื้นที่คำนวณ ${format((info.pdd_area_rai||info.geometry_area_rai))} ไร่`;
  $('dates').innerHTML=all.map(r=>`<label><input type="checkbox" data-day="${r.date}" ${days.has(r.date)?'checked':''}> ${bdate(r.date)} ${r.status==='AUTO_VALID'?'✓':'⚠'}</label>`).join('');
