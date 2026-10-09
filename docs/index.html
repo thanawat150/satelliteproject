@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261008-alertfix3" />
+  <link rel="stylesheet" href="styles.css?v=20261009-multidate2" />
 </head>
 <body>
   <header class="topbar">
@@ -24,6 +24,7 @@
       <span class="update-pill" id="updated-pill">กำลังโหลด...</span>
       <button class="ghost-btn" onclick="copyShareLink()">คัดลอกลิงก์</button>
       <a class="ghost-btn" id="verified-folder" target="_blank" rel="noopener">Verified Reports</a>
+      <button class="ghost-btn header-calendar-btn" type="button" onclick="switchTab('calendar')">📅 ปฏิทินภาพ</button>
       <button class="primary-btn" onclick="openReportCenter()">สร้าง Report</button>
     </div>
   </header>
@@ -51,7 +52,6 @@
         <button class="tab" data-tab="map">แผนที่</button>
         <button class="tab" data-tab="impact">Impact Matrix</button>
         <button class="tab" data-tab="satellite">ภาพดาวเทียม</button>
-        <button class="tab" data-tab="calendar">ปฏิทิน</button>
         <button class="tab" data-tab="compare">เปรียบเทียบ 2 วัน</button>
         <button class="tab" data-tab="hotspots">พื้นที่เฝ้าระวัง</button>
         <button class="tab" data-tab="alerts">แจ้งเตือนแปลงผิดปกติ<span id="nav-alert-count"></span></button>
@@ -260,6 +260,7 @@
             <label>ดาวเทียม<select id="sat-filter-sensor"><option value="ALL">ทุกดาวเทียม</option></select></label>
             <label>ความละเอียด<select id="sat-filter-resolution"><option value="ALL">ทุกความละเอียด</option></select></label>
           </div>
+          <div class="sat-date-panel"><div class="sat-date-panel-head"><strong>เลือกวันถ่ายภาพที่ต้องการแสดง (เลือกได้หลายวัน)</strong><button id="sat-date-all" class="ghost-btn" type="button">แสดงทุกวัน</button></div><div id="sat-date-checkboxes" class="sat-date-checkboxes"></div></div>
           <div class="satellite-summary">
             <div><strong id="sat-count-files">—</strong><span>ไฟล์ที่แสดง</span></div>
             <div><strong id="sat-count-dates">—</strong><span>วันถ่ายภาพ</span></div>
@@ -294,6 +295,7 @@
  <label><input data-monitor-metric type="checkbox" value="mndwi"> MNDWI</label>
  <label><input data-monitor-metric type="checkbox" value="bsi"> BSI</label>
  <label><input data-monitor-metric type="checkbox" value="valid_pct"> คุณภาพภาพ (QA)</label></div></div>
+            <div class="report-date-select" id="report-date-select"><strong>เลือกวันที่สำหรับกราฟและสรุป (เลือกหลายวันได้)</strong><div id="report-date-checkboxes" class="report-date-checkboxes">กำลังโหลดประวัติภาพ...</div></div>
             <div class="check-grid"><label><input type="checkbox" checked> สถานะน้ำ</label><label><input type="checkbox" checked> ดัชนีพืช</label><label><input type="checkbox" checked> Stable land</label><label><input type="checkbox" checked> QA / วันที่</label></div>
             <button class="primary-btn wide" onclick="renderReportPreview()">Preview Report</button>
             <button class="ghost-btn wide" id="print-report-btn" onclick="printReport()">Export Quick Report เป็น PDF</button>
@@ -305,10 +307,10 @@
     </main>
   </div>
 
-  <script src="map-studio.js?v=20261009-colorfix1"></script>
-  <script src="trend-report.js?v=20261008-livereport3"></script>
+  <script src="map-studio.js?v=20261009-multidate2"></script>
+  <script src="trend-report.js?v=20261009-multidate2"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261008-alertfix3"></script>
+  <script src="app.js?v=20261009-multidate2"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
