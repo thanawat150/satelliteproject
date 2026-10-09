@@ -14,21 +14,9 @@ async function load(force=false){
  ]).then(([h,w])=>{history=h;waterFC=w;return h}).finally(()=>{loading=null});
  return loading;
 }
-const chosenDays=new Map();
 function allRows(plot){return [...(history?.plots?.[plot]||[])].sort((a,b)=>a.date.localeCompare(b.date))}
-function rows(plot){const all=allRows(plot),chosen=chosenDays.get(plot);return chosen?all.filter(x=>chosen.has(x.date)):all}
-function chooseReportDates(plot){
- const host=document.getElementById("report-date-checkboxes");if(!host)return;
- const all=allRows(plot);if(!chosenDays.has(plot))chosenDays.set(plot,new Set(all.map(x=>x.date)));
- const selected=chosenDays.get(plot);
- host.innerHTML=all.map(x=>'<label class="report-date-chip"><input type="checkbox" data-report-day="'+x.date+'" '+(selected.has(x.date)?'checked':'')+'><span>'+dth(x.date)+'</span><small>'+(x.analysis_status==="VERIFIED"?"ตรวจยืนยัน":x.analysis_status==="AUTO_VALID"?"ผ่าน QA":x.analysis_status==="PARTIAL"?"บางส่วน":"ข้อมูลไม่พอ")+'</small></label>').join("");
- if(!all.length)host.textContent="ยังไม่มีข้อมูลที่วิเคราะห์ได้";
- host.onchange=e=>{const input=e.target;if(!input.matches("input[data-report-day]"))return;
-  if(input.checked)selected.add(input.dataset.reportDay);else selected.delete(input.dataset.reportDay);
-  if(!selected.size){selected.add(input.dataset.reportDay);input.checked=true;return;}
-  if(typeof renderReportPreview==="function")renderReportPreview();
- };
-}
+function selection(plot){return window.ReportSelector?.view(plot,history,typeof satelliteFiles==="undefined"?[]:satelliteFiles)||{dates:allRows(plot).map(x=>x.date),graphKeys:["water","water-change","ndvi","ndre","ndmi","mndwi","bsi","qa"],mode:"dates",scenes:[]}}
+function rows(plot){const chosen=new Set(selection(plot).dates);return allRows(plot).filter(x=>chosen.has(x.date))}
 function imageDates(plot){
   try{
     if(typeof satelliteFiles==='undefined')return[];
@@ -37,7 +25,7 @@ function imageDates(plot){
 }
 function pendingIndexDates(plot){
   const analyzed=new Set(allRows(plot).filter(x=>["VERIFIED","AUTO_VALID","PARTIAL"].includes(x.analysis_status)).map(x=>x.date));
-  return imageDates(plot).filter(d=>!analyzed.has(d));
+  return imageDates(plot).filter(d=>new Set(selection(plot).dates).has(d)&&!analyzed.has(d));
 }
 function latestTrusted(plot){return rows(plot).filter(trusted).at(-1)||null}
 function previousTrusted(plot){const a=rows(plot).filter(trusted);return a.length>1?a.at(-2):null}
@@ -171,7 +159,7 @@ async function render(plot,paper){
  if(!paper||!history?.plots?.[plot])return;
  // Report headline is rendered from this same history by LiveReportModel.
  const old=paper.querySelector(".live-trend-section");if(old)old.remove();
- chooseReportDates(plot);
+ window.ReportSelector?.renderControls(plot,history,typeof satelliteFiles==="undefined"?[]:satelliteFiles);
  const snap=liveSnapshot(plot),all=rows(plot);
  const root=document.createElement("section");root.className="report-section live-trend-section";
  const imgDates=imageDates(plot),pending=pendingIndexDates(plot),latestImage=imgDates.at(-1)||null;
