@@ -68,15 +68,13 @@ assert.equal(await page.locator('#mmc-geo-map').getAttribute('data-boundary-visi
 // Regression: 15-STC has QA-valid 2026-10-07 without a corresponding rendered Raster Preview.
 await page.locator('#plot-select').selectOption('15-STC');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
+const latestImage=await page.locator('.img-large img').first();
+await page.waitForFunction(()=>{const im=document.querySelector('.img-large img');return im?.complete&&im.naturalWidth>0;},{timeout:20000});
+assert.ok((await latestImage.getAttribute('src')).includes('/15-STC/2026-10-07/true_color.webp'),'15-STC QA-valid 2026-10-07 must now have a real RGB raster');
+assert.ok(await page.locator('#mmc-geo-map .leaflet-image-layer').count()>=1,'Latest QA-valid scene overlays raster on GIS map');
+assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'Latest QA-valid scene must display actual red polygon boundary');
 const missingImage=await page.locator('#imagery-explorer').innerText();
-const missingRaster=missingImage.includes('ยังไม่มี Raster Preview');
-if(missingRaster){
- assert.ok(missingImage.includes('ภาพพื้นหลัง Esri')&&missingImage.includes('ไม่ใช่ภาพ Sentinel-2'),'Missing raster must be clearly labeled as Esri basemap rather than S2');
- assert.ok(await page.locator('#image-open-available').count()===1,'Missing raster must offer last QA-valid preview');
-}else{
- await page.waitForFunction(()=>document.querySelector('#mmc-geo-map .leaflet-image-layer')!==null,{timeout:15000});
- assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'Latest QA-valid scene must display a real raster with plot polygon');
-}
+assert.ok(!missingImage.includes('ยังไม่มี Raster Preview'),'15-STC 2026-10-07 preview is published and must not display missing notice');
 assert.equal(await page.locator('#image-before').inputValue(),'2026-08-03','Before defaults to an earlier QA-valid available raster, never NO_DATA');
 assert.ok(missingImage.includes('น้อยกว่า 30 พิกเซล'),'Small plot accuracy warning should be visible');
 await page.locator('#image-before').selectOption('2026-10-02');
