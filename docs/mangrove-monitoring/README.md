@@ -72,6 +72,34 @@ Run Playwright smoke locally with:
 
 Tests exercise 160 public-registry placeholders, QA coverage, charts, source links, unconnected modules and mobile menu. Passing the test does not mean all 26 modules are complete.
 
+## 30-STC native-resolution RGB and quality review (2026-10-09)
+
+For the 30-STC screenshot (Phang Nga, 2026-09-30), the published prior
+true-color JPEG/WebP raster was displayed on a **5 × 7 pixel 20 m grid**,
+even though its source TIFF RGB channels are 10 m. The UI's AUTO_VALID
+100% was simply **5 SCL-accepted 20 m pixels out of 5** for the polygon,
+not a guarantee of zero clouds, accurate tree counting or good RGB color.
+
+- Regenerated actual B4/B3/B2 and B8/B4/B3 at **native 9 × 13 RGB pixels**
+  for 2026-09-22 and 2026-09-30 (10 m source). The eight spectral mode
+  images remain available; spectral indices use original **20 m band
+  information**, never synthetic 10 m index resolution.
+- Per-image geographic bounds are stored separately for 10 m RGB and
+  20 m indices, so the red polygon follows the correct raster extent.
+- Native RGB brightness/near-white fraction is checked separately **within
+  the PDD polygon** and clearly labeled as a *display/radiometric
+  screening signal*, not a verified cloud or land-cover classification.
+  The current 30-STC 2026-09-30 preview has 19 SCL-valid sampled 10 m
+  RGB pixels and 21.1% rendered near-white pixels. The broader
+  classification still has only 5 sample pixels on its 20 m grid.
+- The UI now labels SCL QA and its pixel denominator, native RGB dimensions
+  and white-pixel checks, and uses pixelated display rather than implying
+  that the blurred upscale resolves individual trees.
+- The generator supports an optional manual `refresh_plots` workflow
+  input; normal incremental builds are idempotent when previews already
+  exist. These corrections don't retroactively change original TIFFs or
+  assert a new cloud-free result.
+
 ## Full satellite history for each plot (2026-10-09)
 
 - The Satellite Explorer and printable Report Center display **all available dates** for the selected plot, with all **8 raster modes** (true color RGB, false color, NDVI, NDRE, NDMI, NDWI, MNDWI, BSI) in a dated grid and a real polygon outline for each image.
