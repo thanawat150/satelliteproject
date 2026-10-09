@@ -301,3 +301,36 @@
 .cal-alert-dot{background:#e06b54!important}
 .alert-plot-only{display:block;width:100%;border:1px solid #cadde7;background:#f5fafd;color:#2d607f;border-radius:8px;padding:8px 10px;margin-top:10px;font:600 12px 'IBM Plex Sans Thai',sans-serif;cursor:pointer}
 .alert-plot-only.is-active{background:#d8edf7;border-color:#8eb8cc;color:#124761}
+
+/* October 2026: date-group gallery and report interpretations */
+.header-calendar-btn{white-space:nowrap}
+.sat-date-panel{margin:0 14px 14px;padding:12px;background:#0b2639;border:1px solid #25465c;border-radius:12px}
+.sat-date-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;margin-bottom:10px}
+.sat-date-checkboxes{display:flex;flex-wrap:wrap;gap:7px;max-height:120px;overflow-y:auto}
+.sat-date-chip{display:flex;align-items:center;gap:5px;color:#c9dfea;border:1px solid #355369;background:#123347;border-radius:8px;padding:5px 9px;font-size:11px;cursor:pointer}
+.sat-date-chip:has(input:checked){background:#125c7e;border-color:#45b7e2;color:white}
+.sat-date-chip input{accent-color:#38bdf8}
+.sat-day-group{grid-column:1/-1;min-width:0;display:block;margin:6px 0 2px}
+.sat-day-head{border-bottom:1px solid #2b485b;margin:10px 0;padding:9px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sat-day-head strong{font-size:15px;color:#cfefff}
+.sat-day-head small{color:#97b3c4;font-size:10px}
+.sat-day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.report-date-select{margin-top:15px;padding:12px;background:#12334b;border:1px solid #28516b;border-radius:10px}
+.report-date-select strong{font-size:11px}
+.report-date-checkboxes{display:flex;flex-direction:column;gap:5px;margin-top:8px;max-height:220px;overflow-y:auto}
+.report-date-chip{display:flex;align-items:flex-start;gap:7px;font-size:11px;color:#d6e9f5;cursor:pointer;padding:6px;border:1px solid #26465e;border-radius:6px}
+.report-date-chip input{accent-color:#38bdf8;margin-top:2px}
+.report-date-chip small{display:block;color:#a5bfcc;font-size:9px;margin-left:auto}
+.report-date-chip:has(input:checked){background:#16415c}
+.report-date-chip.is-no-data{opacity:.75}
+.live-explanation{background:#f1f7f9;border-left:3px solid #5b9cb7;border-radius:5px;padding:8px 10px;margin-top:8px;font-size:10px;color:#345266;line-height:1.7}
+.live-explanation strong{color:#163e57}
+.live-interpretations{background:#f6faf8;border:1px solid #d7e7df;padding:12px 16px;border-radius:9px;margin:16px 0;color:#2e4c42;font-size:11px;line-height:1.75}
+.live-interpretations h4{margin:0 0 9px;font-size:13px;color:#174b3b}
+.live-interpretations p{margin:5px 0}
+.live-interpretations .disclaimer{color:#697c77;font-size:9px;margin-top:10px}
+.map-view-head{display:flex;align-items:flex-start;justify-content:space-between}
+.map-sat-controls{margin-left:auto;justify-content:flex-end}
+.map-sat-controls #map-sat-date{min-width:170px}
+@media(max-width:700px){.sat-day-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.sat-date-panel-head{align-items:flex-start;flex-direction:column}.top-actions{gap:5px}.header-calendar-btn{padding:7px}}
+@media print{.sat-date-panel,.report-date-select,.header-calendar-btn{display:none!important}.live-explanation,.live-interpretations{break-inside:avoid!important}}
