@@ -95,6 +95,22 @@ function integrityTable(){
  gaps.slice(0,100).map(x=>'<tr><td>'+btn(x.plot,'plot',x.plot,'mini')+'</td><td>'+html(x.date)+'</td><td>'+fmt(x.qa_valid_pct,0)+'%</td><td>'+assetLink(x.original_tif10,x.original_tif10_file_id)+'</td></tr>').join('')+
  '</tbody></table></div><p class="muted">แสดง '+Math.min(gaps.length,100)+' จาก '+gaps.length+' รายการ ดาวน์โหลด CSV เพื่อดูทั้งหมด</p></div>';
 }
+function displayQualityIssues(){
+ const rows=cache.imagery?.generated_items||[];
+ return rows.filter(x=>x.rgb_display_warning||Number(x.rgb_invalid_pct)>=30||Number(x.rgb_unclassified_scl_pct)>=20||!x.rgb_renderer_version);
+}
+function displayQualityTable(){
+ if(!cache.imagery)return message('ยังไม่พบ Raster Manifest จึงตรวจคุณภาพภาพทั้งหมดไม่ได้');
+ const imgs=cache.imagery.generated_items||[],issues=displayQualityIssues();
+ const fixed=imgs.filter(x=>x.rgb_renderer_version==='mmc-rgb-fixed-reflectance-v2');
+ return '<section class="panel"><div class="panel-header"><div><h2>Raster Visual QA • ทุกภาพทุกแปลง</h2><p class="muted">ตรวจคุณภาพการแสดงภาพแยกจากเกณฑ์ SCL และแยกจากการตรวจสอบภาคสนาม</p></div>'+btn('Export Visual QA CSV','exportvisualqa','','primary')+'</div>'+
+ '<div class="grid half">'+kpi('ภาพจาก renderer ใหม่',fixed.length+' / '+imgs.length,'สีจริงใช้ช่วง reflectance เดียวกัน · NoData โปร่งใส')+
+ kpi('ภาพรอตรวจด้วยสายตา',issues.length,'เกือบขาว ≥30% / NoData ≥30% / SCL 7 ≥20% หรือ renderer เก่า')+'</div>'+
+ '<p class="muted tiny">ค่าเหล่านี้เป็นเกณฑ์คัดกรองคุณภาพการแสดงผล ไม่ใช่หลักฐานยืนยันว่าเมฆปกคลุมหรือป่าเสื่อมโทรม</p>'+
+ '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันภาพ</th><th>เกือบขาว</th><th>NoData/SCL</th><th>SCL 7</th><th>เปิดภาพ</th></tr></thead><tbody>'+
+ issues.slice(0,100).map(x=>'<tr><td>'+html(x.plot)+'</td><td>'+html(x.date)+'</td><td>'+fmt(x.rgb_near_white_pct,1)+'%</td><td>'+fmt(x.rgb_invalid_pct,1)+'%</td><td>'+fmt(x.rgb_unclassified_scl_pct,1)+'%</td><td>'+btn('ตรวจ','insight',x.plot,'mini')+'</td></tr>').join('')+
+ '</tbody></table></div><p class="muted">แสดง '+Math.min(100,issues.length)+' จาก '+issues.length+' วันที่ควรตรวจเพิ่ม • กดเปิดแปลงเพื่อดู Raster และผล QA</p></section>';
+}
 function overview(){const p=filtered(),qa= p.filter(x=>plotStatus(x.code)==='VALID').length;
  const companies={STC:p.filter(x=>x.company==='STC').length,VSD:p.filter(x=>x.company==='VSD').length,EVR:p.filter(x=>x.company==='EVR').length};
  const byProv={};p.forEach(x=>byProv[x.province]=(byProv[x.province]||0)+1);
@@ -187,7 +203,7 @@ function qaPage(){const registry=filtered(),notValid=registry.filter(x=>plotStat
  '<div class="grid kpis">'+kpi('ทั้งหมดในตัวกรอง',String(registry.length),'STC/VSD / Polygon candidate')+kpi('ไม่มี Geometry',String(missing.length),'ต้องตรวจข้อมูลต้นทาง')+kpi('ไม่มีวันผ่าน QA',String(notValid.length),'มีภาพแต่ยังใช้สรุปไม่ได้')+kpi('ยังไม่ประมวลผล',String(unprocessed.length),'ส่วนใหญ่เป็น MOC 3 หรือรหัสขอบเขตไม่ครบ')+'</div>'+
  '<div class="grid half"><div class="panel"><h2>Boundary Review Queue</h2>'+issues.map(x=>'<div class="issue"><div class="issue-icon">!</div><div><b>'+html(x[0])+'</b><small>'+html(x[1])+'</small></div></div>').join('')+'</div><div class="panel"><h2>Satellite QA Backlog</h2><p class="muted">แปลงที่มีภาพประมวลผล แต่ยังไม่มีวันผ่านเกณฑ์ QA ≥70%</p>'+ (notValid.length?'<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>จังหวัด</th><th>จำนวนภาพ</th><th>เปิด</th></tr></thead><tbody>'+notValid.map(x=>'<tr><td>'+html(x.code)+'</td><td>'+html(x.province)+'</td><td>'+plotScenes(x.code).length+'</td><td>'+btn('ตรวจ','plot',x.code,'mini')+'</td></tr>').join('')+'</tbody></table></div>':empty('ไม่มีแปลงในเงื่อนไขนี้','เปลี่ยนตัวกรองเพื่อดูจังหวัดอื่น'))+'</div></div>'+
  '<div class="panel"><h3>การตรวจสอบที่ต้องมีสำหรับข้อมูลทุกชุด</h3><p class="muted">Geometry ST_IsValid, พื้นที่เป็นศูนย์, MultiPolygon และ holes, CRS 32647/32648, datum, เวอร์ชัน PDD, file hash, band order, Sentinel-2 SCL 2/4/5/6/7, unique scene ID, วันที่ภาพ, ข้อมูลซ้ำ, สิทธิ์ข้อมูลและประวัติการตรวจรับ</p></div>';
- root.insertAdjacentHTML('beforeend',integrityTable());
+ root.insertAdjacentHTML('beforeend',integrityTable()+displayQualityTable());
 }
 function fieldPage(){root.innerHTML=commonHead('Field Operations & Forest Growth','งานปลูก การรอดตาย ความโตของต้นไม้ โดรน และหลักฐานจากภาคสนาม')+
  message('<b>ยังไม่เชื่อมข้อมูลส่วนตัวเข้าหน้าเว็บสาธารณะ:</b> ฐานข้อมูลโครงการมีวันปลูก พันธุ์ไม้ อัตรารอดตาย และบันทึกการสำรวจ แต่ต้องนำเข้าผ่านระบบที่มีการยืนยันตัวตนและตรวจรหัสแปลงก่อน','blue')+
@@ -247,6 +263,10 @@ function csvDownload(filename,headers,rows){const safe=x=>{let s=String(x??'');i
 function download(name,content,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);}
 function doAction(action,value){if(action==='setview'){setView(value);return;}if(action==='plot'){setView('plots',value);return;}if(action==='analyse'){setView('analysis',value);return;}if(action==='insight'){setView('insights',value);return;}if(action==='print'){window.print();return;}if(action==='external'){window.open(new URL(value,location.href).href,'_blank','noopener');return;}
  if(action==='exportgeo'){const arr=value==='filter'?filtered().filter(x=>x.geometry):[plotOf(value)].filter(x=>x&&x.geometry);if(!arr.length){toast('แปลงนี้ไม่มี Boundary ที่สามารถส่งออกได้');return;}download(value==='filter'?'mmc_filtered_plots.geojson':value+'_boundary.geojson',JSON.stringify({type:'FeatureCollection',features:arr.map(x=>({type:'Feature',properties:{plot:x.code,province:x.province,boundary_source:x.group},geometry:x.geometry}))}),'application/geo+json');return;}
+ if(action==='exportvisualqa'){
+ const rows=(cache.imagery?.generated_items||[]).map(x=>[x.plot,x.date,x.qa_valid_pct,x.rgb_native_width,x.rgb_native_height,x.rgb_near_white_pct,x.rgb_invalid_pct,x.rgb_unclassified_scl_pct,x.rgb_renderer_version||'legacy',x.rgb_display_warning]);
+ csvDownload('mmc_raster_visual_qa.csv',['plot','date','scl_qa_pct','rgb_w','rgb_h','near_white_pct','nodata_pct','scl7_pct','renderer','display_warning'],rows);return;
+ }
  if(action==='exportgaps'){csvDownload('mmc_qa_preview_gaps.csv',['plot','date','qa','qa_valid_pct','usable_pixels','total_pixels','original_tif10','original_tif10_file_id'],missingQaRecords().map(x=>[x.plot,x.date,x.analysis_status,x.qa_valid_pct,x.usable_pixels,x.total_pixels,x.original_tif10||'',x.original_tif10_file_id||'']));return;}
  if(action==='exportplots'){const p=filtered();csvDownload('mmc_public_plot_registry.csv',['plot_code','company','province','boundary_group','geometry_rai','monitoring_state'],p.map(x=>[x.code,x.company,x.province,x.group,x.area??'',plotStatus(x.code)]));return;}
  if(action==='exportscenes'){const p=value||state.plot;csvDownload(p+'_satellite_qa.csv',['plot','date','status','qa_valid_pct','ndvi','ndre','ndmi','mndwi','bsi','water_rai','vegetation_rai','bare_soil_rai','original_tif10','original_tif20'],plotScenes(p).map(x=>[x.plot,x.date,x.analysis_status,x.qa_valid_pct,...['ndvi','ndre','ndmi','mndwi','bsi','water_rai','vegetation_rai','bare_soil_rai'].map(k=>qaOk(x)?x[k]??'':''),x.original_tif10||'',x.original_tif20||'']));return;}
