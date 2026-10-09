@@ -29,7 +29,7 @@ async function init(){
   const [s,g,b,z]=await Promise.allSettled([
     fetch("data/nationwide/pdd_scope_136.json").then(r=>r.json()),
     fetch("data/nationwide/boundaries_pdd_136.geojson").then(r=>r.json()),
-    fetch("data/nationwide/batch_01_results.json").then(r=>r.json()),
+    fetch("data/nationwide/nationwide_results.json").then(r=>r.ok?r.json():fetch("data/nationwide/batch_01_results.json").then(x=>x.json())),
     fetch("data/nationwide/batch_status.json").then(r=>r.json())
   ]);
   scope=s.status==="fulfilled"?s.value.plots||[]:[];
