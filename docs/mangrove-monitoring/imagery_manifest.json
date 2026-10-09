@@ -11224,10 +11224,1123 @@
       "algorithm": "pdd-full-monitor-v1.0",
       "original_tif10_file_id": "1GFOFImRSMHzBFsRT_36z3ku3A9Ko_HUK",
       "original_tif20_file_id": "1oeRDPK1ZnexD8YoDOh4Rof9dNIyQ-6rJ"
+    },
+    {
+      "plot": "31-STC",
+      "date": "2026-09-30",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/31-STC/2026-09-30/true_color.webp",
+        "false_color": "./imagery/31-STC/2026-09-30/false_color.webp",
+        "ndvi": "./imagery/31-STC/2026-09-30/ndvi.png",
+        "ndre": "./imagery/31-STC/2026-09-30/ndre.png",
+        "ndmi": "./imagery/31-STC/2026-09-30/ndmi.png",
+        "ndwi": "./imagery/31-STC/2026-09-30/ndwi.png",
+        "mndwi": "./imagery/31-STC/2026-09-30/mndwi.png",
+        "bsi": "./imagery/31-STC/2026-09-30/bsi.png"
+      },
+      "bounds": [
+        [
+          8.200413991598758,
+          98.30637676357527
+        ],
+        [
+          8.204217485165533,
+          98.30910683910665
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 305,
+      "width": 15,
+      "height": 21,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "122f4eSq2oOGV118XkMaDss53HwbiBE8C",
+      "original_tif20_file_id": "1VPfVkhqD2bvdtw1_6dS1EIU4vLpS8oj7"
+    },
+    {
+      "plot": "94-STC",
+      "date": "2026-10-02",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/94-STC/2026-10-02/true_color.webp",
+        "false_color": "./imagery/94-STC/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/94-STC/2026-10-02/ndvi.png",
+        "ndre": "./imagery/94-STC/2026-10-02/ndre.png",
+        "ndmi": "./imagery/94-STC/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/94-STC/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/94-STC/2026-10-02/mndwi.png",
+        "bsi": "./imagery/94-STC/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          13.321317809683775,
+          99.97871850509011
+        ],
+        [
+          13.323504809864712,
+          99.98315874025079
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 242,
+      "width": 24,
+      "height": 12,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1jb6MlUDgDEBuLovWfxWHLECNvhrb2uRl",
+      "original_tif20_file_id": "1c2w0F1uOg5c3wc6sNHMralNbj9pDOgBf"
+    },
+    {
+      "plot": "98-STC",
+      "date": "2026-10-02",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/98-STC/2026-10-02/true_color.webp",
+        "false_color": "./imagery/98-STC/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/98-STC/2026-10-02/ndvi.png",
+        "ndre": "./imagery/98-STC/2026-10-02/ndre.png",
+        "ndmi": "./imagery/98-STC/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/98-STC/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/98-STC/2026-10-02/mndwi.png",
+        "bsi": "./imagery/98-STC/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          13.324548230522286,
+          99.98722535439157
+        ],
+        [
+          13.326184262457062,
+          99.9894477304372
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 104,
+      "width": 12,
+      "height": 9,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1oxVL3K0wXYATOUqVIui1fVlMJroIewUJ",
+      "original_tif20_file_id": "1Tn3aTRHToy_N_GDKwZQs90UM8kIfAI2f"
+    },
+    {
+      "plot": "28-STC",
+      "date": "2026-09-29",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/28-STC/2026-09-29/true_color.webp",
+        "false_color": "./imagery/28-STC/2026-09-29/false_color.webp",
+        "ndvi": "./imagery/28-STC/2026-09-29/ndvi.png",
+        "ndre": "./imagery/28-STC/2026-09-29/ndre.png",
+        "ndmi": "./imagery/28-STC/2026-09-29/ndmi.png",
+        "ndwi": "./imagery/28-STC/2026-09-29/ndwi.png",
+        "mndwi": "./imagery/28-STC/2026-09-29/mndwi.png",
+        "bsi": "./imagery/28-STC/2026-09-29/bsi.png"
+      },
+      "bounds": [
+        [
+          6.85194758054266,
+          101.07819849937015
+        ],
+        [
+          6.8530386483838,
+          101.07965039677626
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 48,
+      "width": 8,
+      "height": 6,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1Zf3y_kdOWBFH1G-odC9jQdPHzg-uJrmu",
+      "original_tif20_file_id": "1qQroS0qzlhGMXjvY47eDi1Uo6LrCUtew"
+    },
+    {
+      "plot": "69-STC",
+      "date": "2026-09-30",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/69-STC/2026-09-30/true_color.webp",
+        "false_color": "./imagery/69-STC/2026-09-30/false_color.webp",
+        "ndvi": "./imagery/69-STC/2026-09-30/ndvi.png",
+        "ndre": "./imagery/69-STC/2026-09-30/ndre.png",
+        "ndmi": "./imagery/69-STC/2026-09-30/ndmi.png",
+        "ndwi": "./imagery/69-STC/2026-09-30/ndwi.png",
+        "mndwi": "./imagery/69-STC/2026-09-30/mndwi.png",
+        "bsi": "./imagery/69-STC/2026-09-30/bsi.png"
+      },
+      "bounds": [
+        [
+          8.190491545201718,
+          98.32218512618151
+        ],
+        [
+          8.197193535079663,
+          98.32746175528055
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 974,
+      "width": 29,
+      "height": 37,
+      "qa_valid_pct": 87.5,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1cC2M08nul34NJy6vBTsDVR3ArtcbS-9Z",
+      "original_tif20_file_id": "146mHPnp6ZiunnCplaCvheD2zmPTjPo0A"
+    },
+    {
+      "plot": "77-STC",
+      "date": "2026-09-30",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/77-STC/2026-09-30/true_color.webp",
+        "false_color": "./imagery/77-STC/2026-09-30/false_color.webp",
+        "ndvi": "./imagery/77-STC/2026-09-30/ndvi.png",
+        "ndre": "./imagery/77-STC/2026-09-30/ndre.png",
+        "ndmi": "./imagery/77-STC/2026-09-30/ndmi.png",
+        "ndwi": "./imagery/77-STC/2026-09-30/ndwi.png",
+        "mndwi": "./imagery/77-STC/2026-09-30/mndwi.png",
+        "bsi": "./imagery/77-STC/2026-09-30/bsi.png"
+      },
+      "bounds": [
+        [
+          8.97035115833048,
+          98.33717786814864
+        ],
+        [
+          8.974880890743108,
+          98.3413705452876
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 503,
+      "width": 23,
+      "height": 25,
+      "qa_valid_pct": 92.86,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1J4oT0nZlVwLTM9OLEm8mdJFtM88BoHKn",
+      "original_tif20_file_id": "1hwZPOkBx6hP4WL4qmsPInSDyp0rs47p3"
+    },
+    {
+      "plot": "92-VSD",
+      "date": "2026-09-29",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/92-VSD/2026-09-29/true_color.webp",
+        "false_color": "./imagery/92-VSD/2026-09-29/false_color.webp",
+        "ndvi": "./imagery/92-VSD/2026-09-29/ndvi.png",
+        "ndre": "./imagery/92-VSD/2026-09-29/ndre.png",
+        "ndmi": "./imagery/92-VSD/2026-09-29/ndmi.png",
+        "ndwi": "./imagery/92-VSD/2026-09-29/ndwi.png",
+        "mndwi": "./imagery/92-VSD/2026-09-29/mndwi.png",
+        "bsi": "./imagery/92-VSD/2026-09-29/bsi.png"
+      },
+      "bounds": [
+        [
+          6.856365039096906,
+          101.14298012934063
+        ],
+        [
+          6.858900988292469,
+          101.14407681112583
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 84,
+      "width": 6,
+      "height": 14,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "14ZGg0VGysnZZFeDDR079ftkyUHhDkaL1",
+      "original_tif20_file_id": "1HSwOnGXZ-O1iZS_Xviiiac-I2OSMRy3M"
+    },
+    {
+      "plot": "29-VSD",
+      "date": "2026-09-30",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/29-VSD/2026-09-30/true_color.webp",
+        "false_color": "./imagery/29-VSD/2026-09-30/false_color.webp",
+        "ndvi": "./imagery/29-VSD/2026-09-30/ndvi.png",
+        "ndre": "./imagery/29-VSD/2026-09-30/ndre.png",
+        "ndmi": "./imagery/29-VSD/2026-09-30/ndmi.png",
+        "ndwi": "./imagery/29-VSD/2026-09-30/ndwi.png",
+        "mndwi": "./imagery/29-VSD/2026-09-30/mndwi.png",
+        "bsi": "./imagery/29-VSD/2026-09-30/bsi.png"
+      },
+      "bounds": [
+        [
+          9.269241596139919,
+          98.37141025303967
+        ],
+        [
+          9.27069157520877,
+          98.37305160247023
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 72,
+      "width": 9,
+      "height": 8,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1ZduYtol1c9L42h8EWua94OSYJmvEp-IT",
+      "original_tif20_file_id": "1ZREZLHFtaSRBaYaIRj8kVC_JoPfkkG8A"
+    },
+    {
+      "plot": "92-STC",
+      "date": "2026-09-29",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/92-STC/2026-09-29/true_color.webp",
+        "false_color": "./imagery/92-STC/2026-09-29/false_color.webp",
+        "ndvi": "./imagery/92-STC/2026-09-29/ndvi.png",
+        "ndre": "./imagery/92-STC/2026-09-29/ndre.png",
+        "ndmi": "./imagery/92-STC/2026-09-29/ndmi.png",
+        "ndwi": "./imagery/92-STC/2026-09-29/ndwi.png",
+        "mndwi": "./imagery/92-STC/2026-09-29/mndwi.png",
+        "bsi": "./imagery/92-STC/2026-09-29/bsi.png"
+      },
+      "bounds": [
+        [
+          13.3126696094301,
+          99.96594356456546
+        ],
+        [
+          13.3165014752202,
+          99.97500606009169
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 1029,
+      "width": 49,
+      "height": 21,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "10d61Gp1W7WCXrbZL1J5CaqYa95fc3pxG",
+      "original_tif20_file_id": "1aHWRsIY1hVTTUpSc_cRzZpAo5XkxU-wt"
+    },
+    {
+      "plot": "92-STC",
+      "date": "2026-10-02",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/92-STC/2026-10-02/true_color.webp",
+        "false_color": "./imagery/92-STC/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/92-STC/2026-10-02/ndvi.png",
+        "ndre": "./imagery/92-STC/2026-10-02/ndre.png",
+        "ndmi": "./imagery/92-STC/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/92-STC/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/92-STC/2026-10-02/mndwi.png",
+        "bsi": "./imagery/92-STC/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          13.3126696094301,
+          99.96594356456546
+        ],
+        [
+          13.3165014752202,
+          99.97500606009169
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 1023,
+      "width": 49,
+      "height": 21,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1NPPlUEeXMm-wpNXhvkayux_GFZw3PANe",
+      "original_tif20_file_id": "1G6lyZEMhk4a3qo5WYOPtVzyIPbG8C7pl"
+    },
+    {
+      "plot": "96-STC",
+      "date": "2026-10-02",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/96-STC/2026-10-02/true_color.webp",
+        "false_color": "./imagery/96-STC/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/96-STC/2026-10-02/ndvi.png",
+        "ndre": "./imagery/96-STC/2026-10-02/ndre.png",
+        "ndmi": "./imagery/96-STC/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/96-STC/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/96-STC/2026-10-02/mndwi.png",
+        "bsi": "./imagery/96-STC/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          13.322571395464736,
+          99.98463225326488
+        ],
+        [
+          13.32420525241444,
+          99.98630065494937
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 57,
+      "width": 9,
+      "height": 9,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1r_NlPVkGZYVAt2mdb8LOlLlWkcp_5O18",
+      "original_tif20_file_id": "1SwdUycvmLLm9okAHNruFDngCY1ZGMBL6"
+    },
+    {
+      "plot": "95-VSD",
+      "date": "2026-09-29",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/95-VSD/2026-09-29/true_color.webp",
+        "false_color": "./imagery/95-VSD/2026-09-29/false_color.webp",
+        "ndvi": "./imagery/95-VSD/2026-09-29/ndvi.png",
+        "ndre": "./imagery/95-VSD/2026-09-29/ndre.png",
+        "ndmi": "./imagery/95-VSD/2026-09-29/ndmi.png",
+        "ndwi": "./imagery/95-VSD/2026-09-29/ndwi.png",
+        "mndwi": "./imagery/95-VSD/2026-09-29/mndwi.png",
+        "bsi": "./imagery/95-VSD/2026-09-29/bsi.png"
+      },
+      "bounds": [
+        [
+          6.867666724950816,
+          101.38089752798302
+        ],
+        [
+          6.876217538157008,
+          101.39197291412033
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 1609,
+      "width": 61,
+      "height": 47,
+      "qa_valid_pct": 77.74,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1EUFD5upq6_V1E59tg5xjdibDk2pznib1",
+      "original_tif20_file_id": "1KhRWEv3lPK9WWgXX4StpOqq4Mg6dBCj7"
+    },
+    {
+      "plot": "39-VSD",
+      "date": "2026-09-30",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/39-VSD/2026-09-30/true_color.webp",
+        "false_color": "./imagery/39-VSD/2026-09-30/false_color.webp",
+        "ndvi": "./imagery/39-VSD/2026-09-30/ndvi.png",
+        "ndre": "./imagery/39-VSD/2026-09-30/ndre.png",
+        "ndmi": "./imagery/39-VSD/2026-09-30/ndmi.png",
+        "ndwi": "./imagery/39-VSD/2026-09-30/ndwi.png",
+        "mndwi": "./imagery/39-VSD/2026-09-30/mndwi.png",
+        "bsi": "./imagery/39-VSD/2026-09-30/bsi.png"
+      },
+      "bounds": [
+        [
+          8.201691457613208,
+          98.3129153786948
+        ],
+        [
+          8.202960513460008,
+          98.31455165441001
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 63,
+      "width": 9,
+      "height": 7,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1-MGm5hXvvf3PBcRUARjHtEmkGZhGlZ6L",
+      "original_tif20_file_id": "1mZ6oyxtWdhFjO4k1MJZhZKaeGfl_LJXK"
+    },
+    {
+      "plot": "89-VSD",
+      "date": "2026-09-29",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/89-VSD/2026-09-29/true_color.webp",
+        "false_color": "./imagery/89-VSD/2026-09-29/false_color.webp",
+        "ndvi": "./imagery/89-VSD/2026-09-29/ndvi.png",
+        "ndre": "./imagery/89-VSD/2026-09-29/ndre.png",
+        "ndmi": "./imagery/89-VSD/2026-09-29/ndmi.png",
+        "ndwi": "./imagery/89-VSD/2026-09-29/ndwi.png",
+        "mndwi": "./imagery/89-VSD/2026-09-29/mndwi.png",
+        "bsi": "./imagery/89-VSD/2026-09-29/bsi.png"
+      },
+      "bounds": [
+        [
+          6.867576805544909,
+          101.37131059793492
+        ],
+        [
+          6.870661441422098,
+          101.37367713891356
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 189,
+      "width": 13,
+      "height": 17,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1iA7r7PDC6nHWCOHVsglxjZ4wtUiQfDR4",
+      "original_tif20_file_id": "1uKSLMjpQlHuxIE7dIGtSOo_f8wMpIic0"
+    },
+    {
+      "plot": "93-STC",
+      "date": "2026-09-29",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/93-STC/2026-09-29/true_color.webp",
+        "false_color": "./imagery/93-STC/2026-09-29/false_color.webp",
+        "ndvi": "./imagery/93-STC/2026-09-29/ndvi.png",
+        "ndre": "./imagery/93-STC/2026-09-29/ndre.png",
+        "ndmi": "./imagery/93-STC/2026-09-29/ndmi.png",
+        "ndwi": "./imagery/93-STC/2026-09-29/ndwi.png",
+        "mndwi": "./imagery/93-STC/2026-09-29/mndwi.png",
+        "bsi": "./imagery/93-STC/2026-09-29/bsi.png"
+      },
+      "bounds": [
+        [
+          13.314635921353217,
+          99.97426026279328
+        ],
+        [
+          13.319724562754912,
+          99.98092768681059
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 927,
+      "width": 36,
+      "height": 28,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1hTGugYPuL7fsgUY1DfKuYfdjAa8xBstu",
+      "original_tif20_file_id": "1mCuqyi5kXwEm3M7eG0bQoP0lZXaBl3SB"
+    },
+    {
+      "plot": "93-STC",
+      "date": "2026-10-02",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/93-STC/2026-10-02/true_color.webp",
+        "false_color": "./imagery/93-STC/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/93-STC/2026-10-02/ndvi.png",
+        "ndre": "./imagery/93-STC/2026-10-02/ndre.png",
+        "ndmi": "./imagery/93-STC/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/93-STC/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/93-STC/2026-10-02/mndwi.png",
+        "bsi": "./imagery/93-STC/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          13.314635921353217,
+          99.97426026279328
+        ],
+        [
+          13.319724562754912,
+          99.98092768681059
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 923,
+      "width": 36,
+      "height": 28,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1ri10-BjFkH1sP0RrLHoTIHQVVQi-NSs4",
+      "original_tif20_file_id": "1St2CrxSceybIeyTny3rXDGkZPyP-fJhb"
+    },
+    {
+      "plot": "97-STC",
+      "date": "2026-10-02",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/97-STC/2026-10-02/true_color.webp",
+        "false_color": "./imagery/97-STC/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/97-STC/2026-10-02/ndvi.png",
+        "ndre": "./imagery/97-STC/2026-10-02/ndre.png",
+        "ndmi": "./imagery/97-STC/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/97-STC/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/97-STC/2026-10-02/mndwi.png",
+        "bsi": "./imagery/97-STC/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          13.323287506299671,
+          99.98555840834213
+        ],
+        [
+          13.325467429590306,
+          99.98815225844864
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 147,
+      "width": 14,
+      "height": 12,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1SDllsEwXD3hySGVhuntotvZSgfSmy_AQ",
+      "original_tif20_file_id": "1bMBnk-GjCOYcXPU-hsR6zQwhZ9Q7tVnl"
+    },
+    {
+      "plot": "25-VSD",
+      "date": "2026-09-30",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/25-VSD/2026-09-30/true_color.webp",
+        "false_color": "./imagery/25-VSD/2026-09-30/false_color.webp",
+        "ndvi": "./imagery/25-VSD/2026-09-30/ndvi.png",
+        "ndre": "./imagery/25-VSD/2026-09-30/ndre.png",
+        "ndmi": "./imagery/25-VSD/2026-09-30/ndmi.png",
+        "ndwi": "./imagery/25-VSD/2026-09-30/ndwi.png",
+        "mndwi": "./imagery/25-VSD/2026-09-30/mndwi.png",
+        "bsi": "./imagery/25-VSD/2026-09-30/bsi.png"
+      },
+      "bounds": [
+        [
+          8.906437497159208,
+          98.30473572411601
+        ],
+        [
+          8.909338169300685,
+          98.3081973035362
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 301,
+      "width": 19,
+      "height": 16,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1KVvKW04pprPuxlOKZzfAW91bzcSTbLiE",
+      "original_tif20_file_id": "1W-VUL5pJLRDX2hpAdBFn6RzTooyQEPJB"
+    },
+    {
+      "plot": "36-STC",
+      "date": "2026-09-29",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/36-STC/2026-09-29/true_color.webp",
+        "false_color": "./imagery/36-STC/2026-09-29/false_color.webp",
+        "ndvi": "./imagery/36-STC/2026-09-29/ndvi.png",
+        "ndre": "./imagery/36-STC/2026-09-29/ndre.png",
+        "ndmi": "./imagery/36-STC/2026-09-29/ndmi.png",
+        "ndwi": "./imagery/36-STC/2026-09-29/ndwi.png",
+        "mndwi": "./imagery/36-STC/2026-09-29/mndwi.png",
+        "bsi": "./imagery/36-STC/2026-09-29/bsi.png"
+      },
+      "bounds": [
+        [
+          13.463313460173929,
+          100.9409693005853
+        ],
+        [
+          13.471974739335998,
+          100.96246057150394
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 4408,
+      "width": 116,
+      "height": 47,
+      "qa_valid_pct": 88.35,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1GpZt0SF88litY65lRgd9J-UZyXnOj8ma",
+      "original_tif20_file_id": "1NA8s-jlzHy9K5xrQI9nlQ7NWqEwOuvaJ"
+    },
+    {
+      "plot": "71-STC",
+      "date": "2026-09-30",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/71-STC/2026-09-30/true_color.webp",
+        "false_color": "./imagery/71-STC/2026-09-30/false_color.webp",
+        "ndvi": "./imagery/71-STC/2026-09-30/ndvi.png",
+        "ndre": "./imagery/71-STC/2026-09-30/ndre.png",
+        "ndmi": "./imagery/71-STC/2026-09-30/ndmi.png",
+        "ndwi": "./imagery/71-STC/2026-09-30/ndwi.png",
+        "mndwi": "./imagery/71-STC/2026-09-30/mndwi.png",
+        "bsi": "./imagery/71-STC/2026-09-30/bsi.png"
+      },
+      "bounds": [
+        [
+          8.434005299352345,
+          98.60773571010041
+        ],
+        [
+          8.439255821560254,
+          98.61210138563585
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 344,
+      "width": 24,
+      "height": 29,
+      "qa_valid_pct": 87.2,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1sT3bT2GAFMXdMHxeMfS1FF_1tZrbyoOz",
+      "original_tif20_file_id": "1PwQbudZoML77vkIJd5megOTGUuWNDJpO"
+    },
+    {
+      "plot": "95-STC",
+      "date": "2026-10-02",
+      "source": "generated",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/95-STC/2026-10-02/true_color.webp",
+        "false_color": "./imagery/95-STC/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/95-STC/2026-10-02/ndvi.png",
+        "ndre": "./imagery/95-STC/2026-10-02/ndre.png",
+        "ndmi": "./imagery/95-STC/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/95-STC/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/95-STC/2026-10-02/mndwi.png",
+        "bsi": "./imagery/95-STC/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          13.321489326393927,
+          99.9822274846324
+        ],
+        [
+          13.323491259779422,
+          99.98555914034783
+        ]
+      ],
+      "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
+      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_index_20m": 20
+      },
+      "scaling": {
+        "rgb": "per-scene p2–p98 on valid pixel mask",
+        "index": "fixed ramps in code; full -1 to +1 range"
+      },
+      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "valid_preview_pixels": 198,
+      "width": 18,
+      "height": 11,
+      "qa_valid_pct": 100.0,
+      "algorithm": "pdd-full-monitor-v1.0",
+      "original_tif10_file_id": "1EkSr-J4iJ8IwnZy-eI21JJsGWRHZUdhS",
+      "original_tif20_file_id": "12uZqFhUoqWK3tsgkNMwXPwI2WyYSa9FE"
     }
   ],
   "render_status": {
-    "rendered_image_dates": 12,
+    "rendered_image_dates": 21,
     "generated_plot_count": 117,
     "new_errors": 0,
     "preserved_existing_19_plots": true,
