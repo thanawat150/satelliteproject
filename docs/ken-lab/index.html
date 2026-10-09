@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#101a2a">
   <meta name="description" content="KEN LAB — Content Factory, Auto Video Studio and GIS tools in one workspace">
-  <title>KEN LAB · Creative & Geo Studio</title>
-  <link rel="stylesheet" href="./styles.css?v=2">
+  <title>KEN LAB v2 · Creative & Geo Studio</title>
+  <link rel="stylesheet" href="./styles.css?v=3">
+  <link rel="stylesheet" href="./geo-tools.css?v=3">
 </head>
 <body>
   <div class="shell">
@@ -20,23 +21,24 @@
       </nav>
       <div class="menu-label extra-space">GEO TOOLS</div>
       <nav id="nav-geo" aria-label="เครื่องมือภูมิสารสนเทศ">
-        <button data-nav="maps" class="nav-item"><span class="nav-symbol">◇</span>GIS Auto Map</button>
-        <button data-nav="field" class="nav-item"><span class="nav-symbol">▤</span>Field Report</button>
-        <button data-nav="satellite" class="nav-item"><span class="nav-symbol">◎</span>Satellite Intelligence</button>
+        <button data-nav="maps" class="nav-item"><span class="nav-symbol">◇</span>GIS Auto Map <span class="nav-pill">LIVE</span></button>
+        <button data-nav="field" class="nav-item"><span class="nav-symbol">▤</span>Field Report <span class="nav-pill">LIVE</span></button>
+        <button data-nav="satellite" class="nav-item"><span class="nav-symbol">◎</span>Satellite Intelligence <span class="nav-pill">LIVE</span></button>
         <button data-nav="learning" class="nav-item"><span class="nav-symbol">✦</span>GeoAI Learning Lab</button>
       </nav>
-      <div class="sidebar-foot"><div class="online-dot"></div><span>Local-first · ไม่ต้องล็อกอิน</span><small>KEN LAB · v1.0</small></div>
+      <div class="sidebar-foot"><div class="online-dot"></div><span>Local-first · ไม่ต้องล็อกอิน</span><small>KEN LAB · v2.0</small></div>
     </aside>
     <div class="mobilebar"><button id="menuToggle" class="icon-btn" aria-label="เปิดเมนู">☰</button><strong>KEN <span>LAB</span></strong><button id="mobileCreate" class="mini-create">+ สร้างคลิป</button></div>
     <div id="navOverlay" class="nav-overlay" hidden></div>
     <main class="main">
-      <header class="topbar"><div><div class="breadcrumb">KEN LAB / <span id="breadcrumbCurrent">OVERVIEW</span></div><h1 id="pageTitle">ศูนย์รวมเครื่องมือของคุณ</h1><p id="pageSubtitle">จากไอเดียสู่ผลงาน — ในที่เดียว</p></div><div class="top-actions"><div id="saveIndicator" class="saved-indicator"><span class="tiny-dot"></span>บันทึกในเครื่อง</div><button class="btn btn-ghost small" id="backupBtn" title="สำรองข้อมูลเป็นไฟล์ JSON">↧ สำรองข้อมูล</button></div></header>
+      <header class="topbar"><div><div class="breadcrumb">KEN LAB / <span id="breadcrumbCurrent">OVERVIEW</span></div><h1 id="pageTitle">ศูนย์รวมเครื่องมือของคุณ</h1><p id="pageSubtitle">จากไอเดียสู่ผลงาน — ในที่เดียว</p></div><div class="top-actions"><div id="saveIndicator" class="saved-indicator"><span class="tiny-dot"></span>บันทึกในเครื่อง</div><button class="btn btn-ghost small" id="restoreBtn" title="นำข้อมูลสำรองกลับเข้าเว็บ">↥ กู้คืน</button><button class="btn btn-ghost small" id="backupBtn" title="สำรองข้อมูลเป็นไฟล์ JSON">↧ สำรองข้อมูล</button></div></header>
       <section id="app" aria-live="polite"></section>
       <footer class="footer">KEN LAB · ไม่สร้างข้อมูลภูมิสารสนเทศหรือสถิติจริงขึ้นมาเอง · เนื้อหาอัตโนมัติเป็นโครงร่างที่แก้ไขได้</footer>
     </main>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <input type="file" id="restoreFile" accept=".json,application/json" hidden>
-  <script type="module" src="./app.js?v=2"></script>
+  <script src="./geo-tools.js?v=3"></script>
+  <script type="module" src="./app.js?v=3"></script>
 </body>
 </html>
