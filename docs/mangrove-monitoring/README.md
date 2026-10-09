@@ -56,3 +56,10 @@ Run Playwright smoke locally with:
     node scripts/test_mmc_preview.cjs
 
 Tests exercise 160 public-registry placeholders, QA coverage, charts, source links, unconnected modules and mobile menu. Passing the test does not mean all 26 modules are complete.
+
+## Latest generated raster coverage (2026-10-09)
+
+- 19 plots / 65 plot-date image records already supplied by existing GeoTIFF preview layers.
+- 85 additional plots / 128 plot-date images newly rendered from matched original Sentinel-2 TIFF pairs.
+- Combined unique plot coverage: 104. Imagery remains a preview and does not imply forest health or field verification.
+- Some original TIFF pairs remain inaccessible or SCL-invalid; consult imagery_render_errors.json. Do not fabricate missing NDVI or flood status.
