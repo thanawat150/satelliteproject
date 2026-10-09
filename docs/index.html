@@ -104,7 +104,7 @@
               </label>
               <label class="toggle-line"><input id="map-sat-visible" type="checkbox" checked> แสดงภาพดาวเทียม</label>
               <label>ความโปร่งใส
-                <input id="map-sat-opacity" type="range" min="20" max="100" value="82">
+                <input id="map-sat-opacity" type="range" min="20" max="100" value="65">
               </label>
             </div>
           </div>
@@ -153,7 +153,7 @@
           </div>
           <p id="studio-saved-note" class="studio-saved-note"></p>
           <div id="full-map" class="map full-map"></div>
-          <div class="prototype-note">ภาพสีจริง 10 m จะแสดงเป็น JPG ที่แปลงจาก GeoTIFF แล้ววางตามพิกัดจริง • เส้นแดง = ขอบเขตแปลง • สีฟ้า = พื้นที่น้ำใหม่</div>
+          <div class="prototype-note">ภาพฐาน Esri มีรายละเอียดสูงกว่า Sentinel-2 (10 เมตร/พิกเซล) มาก ภาพที่ทับอยู่จะแสดงเฉพาะภายในขอบเขต PDD ของแปลงที่เลือก • ภาพวันมีเมฆอาจดูฟุ้งหรือซีด • ปรับความโปร่งใสหรือปิดภาพได้</div>
         </section>
       </section>
 
@@ -307,10 +307,10 @@
     </main>
   </div>
 
-  <script src="map-studio.js?v=20261009-multidate2"></script>
+  <script src="map-studio.js?v=20261009-pddclip1"></script>
   <script src="trend-report.js?v=20261009-multidate2"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261009-pdd1"></script>
+  <script src="app.js?v=20261009-pddclip1"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
