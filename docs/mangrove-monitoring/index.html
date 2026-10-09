@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Mangrove Monitoring Center — GIS, forest and satellite monitoring for STC, VSD and EVR plots">
+<title>Mangrove Monitoring Center | Ken Monitoring</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="./style.css?v=20261009-1">
+</head>
+<body>
+<div class="shell">
+  <aside class="side" id="sidebar">
+    <div class="brand">
+      <span class="brand-icon">◈</span>
+      <span><b>MANGROVE</b><small>MONITORING CENTER</small></span>
+    </div>
+    <div class="nav-scroll">
+      <div class="nav-label">MONITORING WORKSPACE</div>
+      <nav aria-label="หน้าระบบ">
+        <button class="navitem active" data-view="overview">⌂ <span>ภาพรวมทั่วประเทศ</span></button>
+        <button class="navitem" data-view="map">⌖ <span>GIS Map Center</span></button>
+        <button class="navitem" data-view="plots">▤ <span>ทะเบียนแปลง</span></button>
+        <button class="navitem" data-view="analysis">〽 <span>ดัชนีและแนวโน้ม</span></button>
+        <button class="navitem" data-view="change">⇄ <span>Change Detection</span></button>
+        <button class="navitem" data-view="satellite">◉ <span>Satellite Catalog</span></button>
+        <button class="navitem" data-view="alerts">⚑ <span>Early Warning</span></button>
+      </nav>
+      <div class="nav-label">FORESTRY & OPERATIONS</div>
+      <nav>
+        <button class="navitem" data-view="field">♧ <span>งานภาคสนาม / การปลูก</span></button>
+        <button class="navitem" data-view="carbon">❖ <span>Carbon & MRV</span></button>
+        <button class="navitem" data-view="qa">✓ <span>QA/QC & Boundary</span></button>
+        <button class="navitem" data-view="reports">▣ <span>Report Center</span></button>
+        <button class="navitem" data-view="modules">⊞ <span>All Modules (26)</span></button>
+      </nav>
+    </div>
+    <div class="side-foot">
+      <div class="live-dot"></div><div><b>Read-only Preview</b><small>เชื่อมข้อมูลจริงที่เผยแพร่แล้ว</small></div>
+    </div>
+  </aside>
+  <div class="main-area">
+    <header class="top">
+      <div class="head-left">
+        <button class="hamburger" id="menu-btn" title="เมนู" aria-label="เปิดปิดเมนู">☰</button>
+        <div><div class="crumb">KEN MONITORING <span> / </span> <span id="crumb-now">NATIONWIDE OVERVIEW</span></div><h1 id="screen-title">Nationwide Overview</h1></div>
+      </div>
+      <div class="top-actions">
+        <label class="compact-filter">บริษัท<select id="company"><option value="ALL">ทั้งหมด</option><option value="STC">STC</option><option value="VSD">VSD</option><option value="EVR">EVR</option></select></label>
+        <label class="compact-filter">จังหวัด<select id="province"><option value="ALL">ทุกจังหวัด</option></select></label>
+        <button id="refresh" class="icon-button" title="รีเฟรชข้อมูล" aria-label="รีเฟรชข้อมูล">↻</button>
+      </div>
+    </header>
+    <main id="view-root" aria-live="polite">
+      <div class="loading"><span class="spinner"></span><h2>กำลังเชื่อมข้อมูลกลาง…</h2><p>อ่านขอบเขต GeoJSON และผลวิเคราะห์ Sentinel-2 จาก SatelliteProject</p></div>
+    </main>
+    <footer class="app-footer"><span>Mangrove Monitoring Center · V1 Read-only</span><span id="updated">กำลังตรวจสอบชุดข้อมูล…</span></footer>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="./app.js?v=20261009-1" defer></script>
+</body>
+</html>
