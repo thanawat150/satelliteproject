@@ -1,0 +1,69 @@
+name: Publish recovered PDD results from validated artifacts
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/nationwide-publish-retry.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: nationwide-retry-publish
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download successful TIFF processing artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 37906615116
+          github-token: ${{ github.token }}
+          pattern: retry-shard-*
+          path: work/parts
+      - name: Normalize artifact folder names
+        run: |
+          for i in {0..7}; do
+            test -f "work/parts/retry-shard-${i}/results.json"
+            mv "work/parts/retry-shard-${i}" "work/parts/shard-${i}"
+          done
+      - name: Merge and validate prior QA is preserved
+        run: |
+          python scripts/nationwide_retry.py merge \
+            --parts work/parts --shards 8 \
+            --out docs/data/nationwide
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=Path('docs/data/nationwide')
+          s=json.loads((d/'nationwide_run_status.json').read_text())
+          r=json.loads((d/'nationwide_results.json').read_text())
+          assert len(r['plots'])==136
+          assert len({(x['plot'],x['date']) for x in r['scenes']})==len(r['scenes'])
+          assert s['processed_plots']>=67
+          assert s['totals']['qa_valid_dates']>=95
+          assert s['last_retry']['new_scenes']>0
+          print('COMPLETE_NATIONWIDE',json.dumps(s,ensure_ascii=False))
+          PY
+      - name: Commit merged audited results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/nationwide/nationwide_results.json \
+            docs/data/nationwide/nationwide_features.geojson \
+            docs/data/nationwide/nationwide_run_status.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish recovered national PDD scenes from exact Drive TIFF IDs"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
