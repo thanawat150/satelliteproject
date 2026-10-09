@@ -97,8 +97,48 @@ function syncModes(p){
  legend.hidden=!isIndex;
  if(isIndex){$("studio-legend-label").textContent=MODES[state.mode].name+" • ค่าประมาณ −1 ถึง +1";$("studio-ramp").style.background="linear-gradient(to right,"+MODES[state.mode].colors.join(",")+")";}
 }
+/* Display raster imagery only inside the selected PDD polygon; preserve interior holes. */
+const clippedImages=new Map();
+let renderSerial=0;
+function clipPlotImage(p,layer){
+ const geom=boundaryByPlot?.get(p.plot)?.geometry;
+ const bounds=layer.bounds;
+ if(!geom||!bounds||!layer.url?.startsWith("data:image/"))return Promise.resolve(layer.url);
+ const key=[p.plot,layer.date,layer.mode,layer.sourceSuffix||"base"].join("|");
+ if(clippedImages.has(key))return Promise.resolve(clippedImages.get(key));
+ return new Promise(resolve=>{
+  const im=new Image();
+  im.onload=()=>{
+   try{
+    const w=im.naturalWidth,h=im.naturalHeight;
+    if(!w||!h||w*h>16000000){resolve(layer.url);return}
+    const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    const ctx=canvas.getContext("2d");ctx.drawImage(im,0,0);
+    ctx.globalCompositeOperation="destination-in";ctx.fillStyle="#fff";
+    const south=+bounds[0][0],west=+bounds[0][1],north=+bounds[1][0],east=+bounds[1][1];
+    const merc=lat=>Math.log(Math.tan(Math.PI/4+Math.max(-85,Math.min(85,lat))*Math.PI/360));
+    const top=merc(north),bottom=merc(south);
+    if(!(east>west&&top>bottom)){resolve(layer.url);return}
+    const polys=geom.type==="Polygon"?[geom.coordinates]:geom.type==="MultiPolygon"?geom.coordinates:[];
+    for(const rings of polys){
+     ctx.beginPath();
+     for(const ring of rings){
+      ring.forEach((pt,i)=>{
+       const x=(+pt[0]-west)/(east-west)*w,y=(top-merc(+pt[1]))/(top-bottom)*h;
+       if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      });
+      ctx.closePath();
+     }
+     ctx.fill("evenodd");
+    }
+    const out=canvas.toDataURL("image/png");clippedImages.set(key,out);resolve(out);
+   }catch(e){console.warn("PDD clipping unavailable",e);resolve(layer.url)}
+  };
+  im.onerror=()=>resolve(layer.url);im.src=layer.url;
+ });
+}
 function render(p){
- if(!p)return;syncModes(p);current=null;removeMapSatelliteLayers();
+ if(!p)return;const callId=++renderSerial;syncModes(p);current=null;removeMapSatelliteLayers();
  if(!mapSatelliteVisible){status("ภาพดาวเทียมถูกซ่อน");applyVisibility();return}
  let d=date(),layer=pick(p,d,state.mode);
  if(!layer){
@@ -112,13 +152,22 @@ function render(p){
  }
  if(!layer?.bounds||!layer.url){status(p.plot+" • "+nice(d)+" • ยังไม่มีภาพ "+MODES[state.mode].name+" ที่พร้อมแสดง");applyVisibility();return}
  const b=L.latLngBounds(layer.bounds[0],layer.bounds[1]);current=layer;
- [[overviewMap,"overview"],[fullMap,"full"]].forEach(([map,k])=>{
-  if(!map)return;
-  satelliteImageLayers[k]=L.imageOverlay(layer.url,b,{pane:"satellitePane",opacity:mapSatelliteOpacity,interactive:false}).addTo(map);
-  satelliteImageLayers[k].on("load",applyColor);
-  satelliteImageLayers[k].on("error",()=>status("เปิดภาพไม่สำเร็จ ตรวจสอบสิทธิ์ของ Google Drive JPG"));
- });
- applyColor();applyVisibility();status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+(layer.previewResolution?" • "+layer.previewResolution:"")+(layer.resolution_m?" • "+layer.resolution_m+" m":"")+" • สร้างจาก GeoTIFF จริง");
+ status("กำลังจัดภาพ "+p.plot+" • "+nice(d)+" ให้ตรงขอบเขต PDD...");
+ clipPlotImage(p,layer).then(url=>{
+  if(callId!==renderSerial)return;
+  [[overviewMap,"overview"],[fullMap,"full"]].forEach(([map,k])=>{
+   if(!map)return;
+   satelliteImageLayers[k]=L.imageOverlay(url,b,{pane:"satellitePane",opacity:mapSatelliteOpacity,interactive:false}).addTo(map);
+   satelliteImageLayers[k].on("load",applyColor);
+   satelliteImageLayers[k].on("error",()=>status("เปิดชั้นภาพนี้ไม่สำเร็จ ลองเลือกวันอื่น"));
+  });
+  applyColor();applyVisibility();
+  const size=(layer.previewResolution||"").split("×").map(Number);
+  const small=size.length===2&&Math.min(...size)<80;
+  status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+(layer.previewResolution?" • "+layer.previewResolution:"")+
+    (layer.resolution_m?" • "+layer.resolution_m+" m":"")+
+    (small?" • ⚠ มีพิกเซลน้อย ภาพ Sentinel-2 จึงหยาบกว่าภาพฐาน":"")+" • ภาพตัดตามขอบเขต PDD");
+ }).catch(e=>status("แสดงภาพไม่สำเร็จ: "+e.message));
 }
 function status(s){if($("map-sat-status"))$("map-sat-status").textContent=s;if($("studio-data-status"))$("studio-data-status").textContent=s}
 function applyColor(){
@@ -132,7 +181,7 @@ function applyVisibility(){
  for(const [map,store] of [[overviewMap,mapLayers.overview],[fullMap,mapLayers.full]]){
   if(!map)continue;
   store.forEach((l,name)=>{
-   if(l.setStyle)l.setStyle({opacity:state.boundary?1:0,weight:state.boundary?(selected?.plot===name?3:1.5):0,fillOpacity:state.boundary?(selected?.plot===name?0.15:0.025):0});
+   if(l.setStyle)l.setStyle({opacity:state.boundary?(selected?.plot===name?1:0.16):0,weight:state.boundary?(selected?.plot===name?2.8:0.7):0,fillOpacity:state.boundary?(selected?.plot===name?0.045:0):0,color:selected?.plot===name?"#ff5e58":"#c3cdd2"});
    if(l.getTooltip?.())l.unbindTooltip();
    if(state.labels&&name===selected?.plot)l.bindTooltip(name,{permanent:true,direction:"center",className:"studio-map-label"}).openTooltip();
   });
