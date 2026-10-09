@@ -12,10 +12,10 @@ assert.ok((await page.locator('#view-root').innerText()).includes('126 / 136'),'
 assert.ok((await page.locator('#view-root').innerText()).includes('160'),'Must show 160-register total');
 await page.locator('[data-view="plots"]').click();
 await page.waitForFunction(()=>document.querySelector('#plot-search')&&document.querySelectorAll('.tbl tbody tr').length>100);
-assert.ok((await page.locator('.tbl tbody tr').count())>=160,'All registry plots must remain visible, including newly added external plots');
+assert.ok((await page.locator('.tbl tbody').first().locator('tr').count())>=160,'All registry plots must remain visible, including newly added external plots');
 await page.locator('#plot-search').fill('66(1)-STC');
-assert.equal(await page.locator('.tbl tbody tr').count(),1,'Missing geometry entry remains visible');
-assert.ok((await page.locator('.tbl tbody tr').first().innerText()).includes('ต้องจับคู่'),'No invented geometry');
+assert.equal(await page.locator('.tbl tbody').first().locator('tr').count(),1,'Missing geometry entry remains visible');
+assert.ok((await page.locator('.tbl tbody').first().locator('tr').first().innerText()).includes('ต้องจับคู่'),'No invented geometry');
 await page.locator('[data-view="analysis"]').click();
 await page.waitForFunction(()=>!!document.querySelector('#metric-select'));
 await page.locator('#plot-select').selectOption('13-STC');
