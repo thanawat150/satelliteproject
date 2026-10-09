@@ -79,8 +79,8 @@ def generate(ten,twenty,output,plot,date):
         b2,b3,b4,b8=(read10("B2",1),read10("B3",2),read10("B4",3),read10("B8",4))
         b5,b8a,b11=(read20("B5",1),read20("B8A",4),read20("B11",5))
         scl=read20("SCL",7,Resampling.nearest)
-        if not np.all(np.isfinite(scl)):raise ValueError("SCL contains nonfinite pixels")
-        good=np.isin(scl,SCL_GOOD)&np.isfinite(b2)&np.isfinite(b3)&np.isfinite(b4)&np.isfinite(b8)&np.isfinite(b11)
+        if not np.isfinite(scl).any():raise ValueError("SCL has no finite pixels")
+        good=np.isfinite(scl)&np.isin(scl,SCL_GOOD)&np.isfinite(b2)&np.isfinite(b3)&np.isfinite(b4)&np.isfinite(b8)&np.isfinite(b11)
         valid_pixels=int(good.sum())
         if valid_pixels<2:raise ValueError("No SCL-valid pixels available")
         mode_images={
