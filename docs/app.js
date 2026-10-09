@@ -424,6 +424,7 @@ async function renderReportPreview(){
   const p=plots.find(x=>x.plot===name)||plots[0];
   if(!p)return;
   const type=document.getElementById('report-type').value;
+  const selectorPanel=document.getElementById('report-selection-panel');if(selectorPanel)selectorPanel.hidden=type==='verified';
   const verifiedLink=document.getElementById('verified-folder-2');
   const paper=document.getElementById('report-paper');
   const frame=document.getElementById('verified-pdf-frame');
@@ -512,5 +513,14 @@ async function renderReportPreview(){
     if(request===liveReportRequest)paper.innerHTML='<div class="live-report-alert"><strong>โหลดผลวิเคราะห์ล่าสุดไม่สำเร็จ</strong><p>ไม่แสดงตัวเลขเก่าจาก plots.json แทนโดยไม่แจ้ง • กรุณากด Preview Report เพื่อลองใหม่</p><small></small></div>';
   }
 }
-async function printReport(){if(document.getElementById('report-type').value==='verified'){const p=plots.find(x=>x.plot===document.getElementById('report-plot').value);if(p?.report_url)window.open(p.report_url,'_blank','noopener');return}await renderReportPreview();window.print()}
+async function printReport(){
+ if(document.getElementById('report-type').value==='verified'){
+  const p=plots.find(x=>x.plot===document.getElementById('report-plot').value);
+  if(p?.report_url)window.open(p.report_url,'_blank','noopener');return;
+ }
+ await renderReportPreview();
+ const imgs=[...document.querySelectorAll('#report-paper .report-imagery-item img')];
+ await Promise.all(imgs.map(im=>im.decode?im.decode().catch(()=>{}):Promise.resolve()));
+ window.print();
+}
 init().catch(err=>{console.error(err);document.body.insertAdjacentHTML('beforeend',`<div style="position:fixed;bottom:12px;right:12px;background:#7f1d1d;color:white;padding:10px;border-radius:8px;z-index:9999">โหลดข้อมูลไม่สำเร็จ: ${err.message}</div>`)})
