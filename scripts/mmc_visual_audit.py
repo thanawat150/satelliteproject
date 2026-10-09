@@ -89,6 +89,67 @@ def audit():
     out=HOME/"rgb_quality_audit.json"
     out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
     print("MMC_RGB_VISUAL_AUDIT",json.dumps(report["summary"],ensure_ascii=False),flush=True)
+    # Independent spectral-index audit: compare the 20m PDD pixel means
+    # behind rendered PNGs to published nationwide metrics, plus cross-check
+    # NDRE/NDMI/MNDWI against the TIFF's own embedded index bands.
+    index_modes=("ndvi","ndre","ndmi","mndwi","ndwi","bsi")
+    index_entries=[];flagged=[];mode_counter=Counter()
+    old_rows={(x["plot"],x["date"]):x for x in results.get("scenes",[])}
+    for (plot,date),item in sorted(generated.items()):
+        all_stats=item.get("index_stats") or {}
+        parity=item.get("index_parity") or {}
+        failures=[]
+        for mode in index_modes:
+            stat=all_stats.get(mode)
+            if stat is None:
+                failures.append(mode+":NO_SOURCE_VALIDATION")
+                mode_counter[mode+":NO_SOURCE_VALIDATION"]+=1
+                continue
+            mn=stat.get("plot_mean")
+            legacy=old_rows.get((plot,date),{}).get(mode)
+            if mn is None:
+                failures.append(mode+":NO_VALID_PIXELS")
+                mode_counter[mode+":NO_VALID_PIXELS"]+=1
+            if mn is not None and legacy is not None and abs(mn-legacy)>0.03:
+                failures.append(mode+":PUBLISHED_MEAN_MISMATCH")
+                mode_counter[mode+":PUBLISHED_MEAN_MISMATCH"]+=1
+            if stat.get("embedded_tif_match") is False:
+                failures.append(mode+":EMBEDDED_TIFF_MISMATCH")
+                mode_counter[mode+":EMBEDDED_TIFF_MISMATCH"]+=1
+            if (stat.get("plot_min") is not None and stat.get("plot_max") is not None
+               and (stat["plot_min"] < -1.01 or stat["plot_max"] > 1.01)):
+                failures.append(mode+":OUTSIDE_RANGE")
+                mode_counter[mode+":OUTSIDE_RANGE"]+=1
+        row={
+            "plot":plot,"date":date,"index_renderer_version":item.get("index_renderer_version"),
+            "index_values":{m:{"computed":all_stats.get(m,{}).get("plot_mean"),
+                               "published":old_rows.get((plot,date),{}).get(m),
+                               "samples":all_stats.get(m,{}).get("sample_pixels"),
+                               "tif_rmse":all_stats.get(m,{}).get("source_band_rmse"),
+                               "formula":all_stats.get(m,{}).get("formula")} for m in index_modes},
+            "issues":failures
+        }
+        index_entries.append(row)
+        if failures:flagged.append(row)
+    index_report={
+      "report_type":"MMC_ORIGINAL_TIFF_INDEX_PARITY_NOT_ECOLOGICAL_CERTIFICATION",
+      "method":"Original 10m/20m TIFF bands, same 20m PDD mask; legacy chart may use different border/nodata treatment",
+      "note":"NDMI uses B8A/B11 variant matching TIFF precomputed NDMI; McFeeters NDWI uses B3/B8; no vegetation-loss inference from negative NDWI",
+      "summary":{
+        "qa_valid_dates":len(valid),
+        "checked_generated_dates":len(index_entries),
+        "with_index_stats":sum(bool(x.get("index_stats")) for x in generated.values()),
+        "index_flagged_plot_dates":len(flagged),
+        "index_issue_counts":dict(mode_counter)
+      },
+      "flagged_plot_dates":flagged,
+      "items":index_entries,
+      "limitations":["Original TIFF index bands are not necessarily resampled with the same border rules as preview indices",
+                     "PDD pixel averages are not evidence of flood, vegetation growth, erosion or site quality",
+                     "NDMI B8A variant is retained to match source metadata and numerical time series"]
+    }
+    (HOME/"index_quality_audit.json").write_text(json.dumps(index_report,ensure_ascii=False,indent=2),encoding="utf-8")
+    print("MMC_INDEX_SOURCE_AUDIT",json.dumps(index_report["summary"],ensure_ascii=False),flush=True)
     if bad_files:raise RuntimeError(f"{len(bad_files)} corrupted or missing published preview assets")
     return report
 
