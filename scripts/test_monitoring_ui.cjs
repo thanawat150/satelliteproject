@@ -35,9 +35,35 @@ const {chromium}=require("playwright");
   const has17=await page.locator("#alert-list").innerText();
   assert.ok(has17.includes("17-STC"),"Derived alerts should include 17-STC");
   await page.locator("#alert-export").click();
-  await page.locator('button[data-tab="calendar"]').click();
+  await page.locator(".header-calendar-btn").click();
+  await page.waitForFunction(()=>document.querySelectorAll("#calendar-root .cal-alert-dot").length>0,{timeout:15000});
   assert.ok(await page.locator("#calendar-root .cal-alert-dot").count()>0,"Calendar should show alerts from actual dates");
+  // New report selection must use checkboxes for multiple dates, years, and each graph.
+  await page.locator('button[data-tab="report"]').click();
+  await page.selectOption("#report-plot","13-STC");
+  await page.selectOption("#report-type","quick");
+  await page.waitForFunction(()=>document.querySelectorAll("#report-date-checkboxes input[data-report-date]").length>=2,{timeout:30000});
+  assert.equal(await page.locator("#report-date-a").count(),0,"No Report A/B date dropdown should remain");
+  const available=await page.locator('#report-date-checkboxes input[data-report-date]').count();
+  assert.ok(available>=2,"At least 2 selectable actual plot dates");
+  await page.locator('input[data-report-graph="ndvi"]').uncheck();
+  await page.waitForFunction(()=>!document.querySelector('.live-grid [data-chart="ndvi"]'),{timeout:25000});
+  assert.equal(await page.locator('.live-grid [data-chart="ndvi"]').count(),0,"Unchecked NDVI graph hidden");
+  assert.ok(await page.locator('.live-grid [data-chart="ndre"]').count()>0,"Other checked graphs stay visible");
+  await page.locator('input[name="report-period-mode"][value="annual"]').check();
+  await page.waitForFunction(()=>document.querySelector('#report-scope-caption')?.textContent?.includes('ปีละหนึ่งวัน')&&document.querySelector('.report-imagery-grid'),{timeout:25000});
+  const perYear=await page.locator('.report-imagery-item').count();
+  const yearCount=await page.locator('#report-year-checkboxes input:checked').count();
+  assert.equal(perYear,yearCount,"Exactly one real scene per checked year");
+  const noDateDropdowns=await page.locator('#report-paper select.live-water-date').count();
+  assert.equal(noDateDropdowns,0,"Water footprint date dropdown removed in favor of multi-date");
+  await page.locator('input[name="report-period-mode"][value="dates"]').check();
+  const choices=page.locator('#report-date-checkboxes input[data-report-date]');
+  if(available>2){
+    await choices.nth(0).uncheck();
+    await page.waitForFunction(()=>document.querySelectorAll('#report-paper .report-imagery-item').length<document.querySelectorAll('#report-date-checkboxes input[data-report-date]').length,{timeout:25000});
+  }
   assert.deepEqual(errors,[],"Unhandled browser runtime errors: "+errors.join(" | "));
-  console.log("BROWSER SMOKE PASS: date pairing, layer disabled states, single-map swipe with 2 loaded images, alert listing, calendar");
+  console.log("BROWSER SMOKE PASS: compare map, alert list, calendar, report multi-date, annual images and chart checkboxes");
  }finally{await browser.close()}
 })().catch(err=>{console.error(err);process.exit(1)});
