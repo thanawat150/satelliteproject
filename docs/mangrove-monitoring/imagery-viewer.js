@@ -34,6 +34,13 @@ function rastersFor(item,product){if(!item)return {};const rasters={};for(const 
 return rasters;}
 function localBounds(image,item){let b=image?.bounds||item?.bounds;return Array.isArray(b)&&b.length===2&&b[0].length===2&&b[1].length===2?b:null;}
 function showError(s){if(!active.holder)return;active.holder.innerHTML='<div class="notice">ไม่สามารถโหลดภาพจริง: '+esc(s)+'</div>';}
+function legend(item,mode){
+if(mode==='true_color'||mode==='false_color'||mode==='generic_preview')return '';
+if(item?.source!=='generated')return '<div class="img-legend-note">ดัชนีจากชุดภาพต้นฉบับ · ตรวจช่วงสีที่ใช้แสดงผลกับไฟล์ที่สร้างภาพ เพราะแต่ละชุดอาจใช้ช่วงสีต่างกัน</div>';
+const water=(mode==='mndwi'||mode==='ndwi'),soil=mode==='bsi';
+const grad=water?'linear-gradient(90deg,#9d5c35,#e4bc67,#eadfbd,#6fc2c4,#2880bb,#0e2e75)':soil?'linear-gradient(90deg,#1e664b,#51a053,#e0cd80,#b97e4d,#763d25)':'linear-gradient(90deg,#844934,#c27a46,#f5dc80,#9bc460,#2d8655,#074935)';
+return '<div class="img-legend"><div class="img-legend-head">ช่วงสีแสดงดัชนี · '+esc(mode.toUpperCase())+' (ค่าทั่วไป −1 ถึง +1)</div><div class="img-legend-ramp" style="background:'+grad+'"></div><div class="img-legend-ticks"><span>−1</span><span>0</span><span>+1</span></div><div class="img-legend-note">ค่านี้เป็นสเกลแสดงผล ไม่ใช่เกณฑ์วินิจฉัยป่าหรือรับรองน้ำท่วม</div></div>';
+}
 function statusPill(date){let x=qa(date);let info=x.percent!=null?' · '+x.percent+'%':'';
 return '<span class="img-status '+(x.kind==='AUTO_VALID'?'ok':'warn')+'">'+esc(x.label+info)+'</span>';}
 function thumb(layer,mode,date){if(!layer)return '<div class="mmc-img-empty">ยังไม่มีภาพ '+esc(MODE[mode]?.[0]||mode)+' ของวันที่เลือก</div>';
@@ -47,7 +54,9 @@ const head='<div class="panel-header"><div><h2>Satellite & Index Map · '+esc(ac
 if(!items.length)return head+'<div class="notice">ยังไม่มี Preview แบบแผนที่สำหรับแปลง '+esc(active.plot)+' • ข้อมูลดัชนีแบบตัวเลขอาจมีอยู่ แต่แผนที่ Raster ยังไม่ได้สร้างจากไฟล์ TIFF</div><p class="muted tiny">เปิดไฟล์ TIFF ตามวันที่จากตารางด้านล่าง หรือรอการประมวลผลชุดภาพเพิ่ม ระบบไม่แสดงภาพดาวเทียมสมมุติ</p>';
 const main='<div class="img-controls">'+nav+'</div>'+
  '<div class="img-preview-grid"><div class="img-large"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.mode],active.mode,active.date)+'</div><div class="img-foot">ความละเอียด: '+esc(String(a[active.mode]?.resolution_m||'—'))+' m · ภาพเต็มสี่เหลี่ยม (ไม่ clip เฉพาะ Polygon)</div></div>'+
- '<div class="img-map-panel"><div class="img-title">แสดง Raster ซ้อนแผนที่พร้อมขอบเขต PDD</div><div class="img-geo-map" id="mmc-geo-map"></div><div class="img-foot">ขอบเขต PDD เส้นแดง · ภาพอ้างอิงพิกัดตาม bounds ของ Raster จริง</div></div></div>';
+ '<div class="img-map-panel"><div class="img-title">แสดง Raster ซ้อนแผนที่พร้อมขอบเขต PDD</div><div class="img-geo-map" id="mmc-geo-map"></div><div class="img-foot">ขอบเขต PDD เส้นแดง · ภาพอ้างอิงพิกัดตาม bounds ของ Raster จริง</div>'
++legend(target,active.mode)
++'</div></div>';
 const compare='<div class="img-compare-wrap"><div class="img-compare-head"><h3>เปรียบเทียบ Before / After</h3><label>Before<select id="image-before">'+dateChoices(items,active.before)+'</select></label><label>ชนิด<select id="image-compare-mode">'+modeOptions(active.compareMode)+'</select></label></div>'+
  '<div class="img-compare-grid"><figure><div class="img-title">BEFORE · '+esc(active.before)+' '+statusPill(active.before)+'</div><div class="img-frame">'+thumb(b[active.compareMode],active.compareMode,active.before)+'</div></figure><figure><div class="img-title">AFTER · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.compareMode],active.compareMode,active.date)+'</div></figure></div>'+
  '<p class="muted tiny">แสดงภาพจากสองวันที่เลือกจริง แต่ยังไม่ใช่ผล Change Detection ที่ยืนยันแล้ว เพราะต้องตรวจ QA, พิกเซลใช้ได้ร่วมกัน และน้ำขึ้นน้ำลงก่อนตีความ</p></div>';
