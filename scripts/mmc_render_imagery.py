@@ -147,16 +147,65 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         near_white=(np.min(rgb_np[...,:3],axis=2)>=235)&sample
         n_sample=int(sample.sum())
         white_pct=round(100*int(near_white.sum())/n_sample,1) if n_sample else None
-        mode_images={
-            "true_color":true_image,
-            "false_color":false_image,
-            "ndvi":colorize(index(b8,b4),good,"ndvi"),
-            "ndre":colorize(index(b8a,b5),good,"ndre"),
-            "ndmi":colorize(index(b8a,b11),good,"ndmi"),
-            "ndwi":colorize(index(b3,b8),good,"ndwi"),
-            "mndwi":colorize(index(b3,b11),good,"mndwi"),
-            "bsi":colorize(index(b11+b4,b8+b2),good,"bsi")
+        # Compute indices ONCE: both map colors and plotted QA statistics
+        # derive from the same per-pixel grid, bands and scientific formulas.
+        indices={
+            "ndvi":index(b8,b4),
+            "ndre":index(b8a,b5),
+            # B8A variant matches the source TIFF's embedded NDMI band.
+            # Do not mislabel as the conventional B8 / B11 variant.
+            "ndmi":index(b8a,b11),
+            "ndwi":index(b3,b8),
+            "mndwi":index(b3,b11),
+            "bsi":index(b11+b4,b8+b2)
         }
+        source_formulas={
+            "ndvi":"(B8-B4)/(B8+B4)",
+            "ndre":"(B8A-B5)/(B8A+B5)",
+            "ndmi":"(B8A-B11)/(B8A+B11), B8A variant",
+            "ndwi":"(B3-B8)/(B3+B8) McFeeters",
+            "mndwi":"(B3-B11)/(B3+B11)",
+            "bsi":"((B11+B4)-(B8+B2))/((B11+B4)+(B8+B2))"
+        }
+        inside20=None
+        if geometry4326 is not None:
+            try:
+                geom20=transform_geom("EPSG:4326",ds20.crs,geometry4326)
+                inside20=geometry_mask([geom20],out_shape=(h,w),
+                                       transform=grid20,invert=True)
+            except Exception as ex:
+                print("INDEX_PLOT_MASK_WARNING",plot,date,str(ex)[:150],flush=True)
+        if inside20 is None or not inside20.any():
+            # No valid polygon = no trustworthy plot-wise index mean;
+            # images may still exist for visualization.
+            inside20=np.zeros((h,w),dtype=bool)
+        index_stats={}
+        for mode,a in indices.items():
+            eligible=inside20&good&np.isfinite(a)&(a>=-1.001)&(a<=1.001)
+            vals=a[eligible]
+            index_stats[mode]={
+                "formula":source_formulas[mode],
+                "sample_pixels":int(vals.size),
+                "plot_mean":round(float(np.mean(vals)),5) if vals.size else None,
+                "plot_median":round(float(np.median(vals)),5) if vals.size else None,
+                "plot_min":round(float(np.min(vals)),5) if vals.size else None,
+                "plot_max":round(float(np.max(vals)),5) if vals.size else None
+            }
+        # The TIFF already includes scientific index bands: cross-check them
+        # independently of the legacy nationwide summary and image palette.
+        for mode,name,ds in [("ndre","NDRE",ds20),("ndmi","NDMI",ds20),("mndwi","MNDWI",ds20)]:
+            if name not in [str(x or "").upper() for x in ds.descriptions]:continue
+            stored=ds.read(bands(ds,name,1),out_shape=(h,w),
+                           resampling=Resampling.nearest,masked=True).filled(np.nan)
+            mask=inside20&good&np.isfinite(indices[mode])&np.isfinite(stored)
+            if mask.any():
+                delta=indices[mode][mask]-stored[mask]
+                index_stats[mode]["source_band_rmse"]=round(float(np.sqrt(np.mean(delta**2))),5)
+                index_stats[mode]["source_band_max_abs"]=round(float(np.max(abs(delta))),5)
+                index_stats[mode]["embedded_tif_match"] = bool(np.sqrt(np.mean(delta**2))<=0.03)
+        mode_images={"true_color":true_image,"false_color":false_image}
+        for mode,a in indices.items():
+            mode_images[mode]=colorize(a,good,mode)
         output=Path(output);output.mkdir(parents=True,exist_ok=True)
         assets={}
         for mode,img in mode_images.items():
@@ -200,6 +249,8 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
             "rgb_raw_dn_stats":raw_rgb_stats,
             "rgb_display_warning":rgb_warning,
             "rgb_renderer_version":"mmc-rgb-fixed-reflectance-v2",
+            "index_renderer_version":"mmc-index-source-verified-v1",
+            "index_stats":index_stats,
             "rgb_quality_note":"Fixed cross-band reflectance display with source-nodata transparency. White or SCL-unclassified areas warrant review, not automatic cloud removal."
         }
 
@@ -250,7 +301,7 @@ def run_shard(args):
     previous_generated={(entry["plot"],entry["date"]):entry for entry in previous.get("generated_items",[])}
     # Existing v1 previews are NOT adequate: some were rendered using
     # per-channel p2/p98, causing white and black artifacts on small rasters.
-    renderer_version="mmc-rgb-fixed-reflectance-v2"
+    renderer_version="mmc-index-source-verified-v1"
     refresh_plots={x.strip() for x in (args.refresh_plots or "").split(",") if x.strip()}
     # Important: plots with old archive previews can have newer QA-valid scene dates.
     # Only skip a *plot-date* that already has an image, not the entire plot.
@@ -264,7 +315,7 @@ def run_shard(args):
             old=previous_generated.get((plot,date))
             # Upgrade every QA-valid scene exactly once to the audited renderer.
             # Even archive-backed dates need new proper RGB and alpha masks.
-            already_current=bool(old and old.get("rgb_renderer_version")==renderer_version)
+            already_current=bool(old and old.get("index_renderer_version")==renderer_version)
             if already_current and not force:continue
             local=out/"tmp"/plot/date
             local.mkdir(parents=True,exist_ok=True)
@@ -284,6 +335,21 @@ def run_shard(args):
                     paths.append(path)
                 entry=generate(paths[0],paths[1],docs/plot/date,plot,date,geoms.get(plot))
                 entry["qa_valid_pct"]=scene["qa_valid_pct"]
+                parity={}
+                for mode,stat in entry["index_stats"].items():
+                    reported=scene.get(mode)
+                    computed=stat["plot_mean"]
+                    if reported is not None and computed is not None:
+                        delta=round(float(computed-reported),5)
+                        parity[mode]={"published_mean":reported,
+                                      "source_mean":computed,
+                                      "difference":delta,
+                                      "within_0_03":abs(delta)<=0.03}
+                entry["index_parity"]=parity
+                entry["index_parity_warnings"]=[mode for mode,v in parity.items() if not v["within_0_03"]]
+                for mode,stat in entry["index_stats"].items():
+                    if stat.get("embedded_tif_match") is False and mode not in entry["index_parity_warnings"]:
+                        entry["index_parity_warnings"].append(mode)
                 entry["algorithm"]=scene.get("algorithm")
                 entry["original_tif10_file_id"]=ids[0][0]
                 entry["original_tif20_file_id"]=ids[1][0]
