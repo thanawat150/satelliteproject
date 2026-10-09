@@ -1,0 +1,148 @@
+{
+  "version": "2026-10-09-v1",
+  "source_scope": "Surveyed only: Mangrove Project 160 plot registry, MOC geojson 159 candidates, SatelliteProject 136 QA, 2023 combined KML. EVR authoritative inventory unavailable.",
+  "confirmed_registry": {
+    "unique_plots": 160,
+    "STC": 87,
+    "VSD": 73,
+    "EVR": null,
+    "provinces": 16
+  },
+  "geometry_candidates": {
+    "unique_codes": 159,
+    "canonical_pdd": 136,
+    "moc3_additional": 23,
+    "unmatched_registry": [
+      "66(1)-STC"
+    ]
+  },
+  "outside_baseline_136": [
+    "1-STC",
+    "2-STC",
+    "4-STC",
+    "5-STC",
+    "6-STC",
+    "7-STC",
+    "9-STC",
+    "10-STC",
+    "60(1)-STC",
+    "56(1)-STC",
+    "57(1)-STC",
+    "58(1)-STC",
+    "66(1)-STC",
+    "9-VSD",
+    "10-VSD",
+    "11-VSD",
+    "12-VSD",
+    "13-VSD",
+    "58-VSD",
+    "64-VSD",
+    "13(1)-VSD",
+    "19(1)-VSD",
+    "101(1)-VSD",
+    "105-VSD"
+  ],
+  "other_unconfirmed_kml_codes": [
+    "99-STC",
+    "100-STC",
+    "101-STC",
+    "106-VSD"
+  ],
+  "other_unconfirmed_kml_features": [
+    "PBI 1",
+    "PBI 2",
+    "PBI 3"
+  ],
+  "boundary_reconciliation": [
+    {
+      "issue": "DISTINCT_PLOT_KEYS",
+      "plots": [
+        "66-STC",
+        "66(1)-STC"
+      ],
+      "note": "Different registered plots; MOC source versions include misattributed geometry and extra duplicate spreadsheet row. Do not guess geometry based on area."
+    },
+    {
+      "plot": "9-STC",
+      "province": "จันทบุรี",
+      "registry_rai": 47.39,
+      "candidate_geom_rai": 0,
+      "issue": "PDD_VS_GEOMETRY_GT_5_RAI",
+      "difference_rai": 47.39
+    },
+    {
+      "plot": "89(1)-STC",
+      "province": "สตูล",
+      "registry_rai": 48.48,
+      "candidate_geom_rai": 30.9212,
+      "issue": "PDD_VS_GEOMETRY_GT_5_RAI",
+      "difference_rai": 17.5588
+    },
+    {
+      "plot": "4-STC",
+      "province": "จันทบุรี",
+      "registry_rai": 18.31,
+      "candidate_geom_rai": 2.9508,
+      "issue": "PDD_VS_GEOMETRY_GT_5_RAI",
+      "difference_rai": 15.3592
+    },
+    {
+      "plot": "13-VSD",
+      "province": "จันทบุรี",
+      "registry_rai": 131.84,
+      "candidate_geom_rai": 117.6152,
+      "issue": "PDD_VS_GEOMETRY_GT_5_RAI",
+      "difference_rai": 14.2248
+    },
+    {
+      "plot": "11-VSD",
+      "province": "จันทบุรี",
+      "registry_rai": 130.94,
+      "candidate_geom_rai": 118.6276,
+      "issue": "PDD_VS_GEOMETRY_GT_5_RAI",
+      "difference_rai": 12.3124
+    },
+    {
+      "plot": "1-STC",
+      "province": "จันทบุรี",
+      "registry_rai": 71.6,
+      "candidate_geom_rai": 64.566,
+      "issue": "PDD_VS_GEOMETRY_GT_5_RAI",
+      "difference_rai": 7.034
+    },
+    {
+      "plot": "2-STC",
+      "province": "จันทบุรี",
+      "registry_rai": 26.75,
+      "candidate_geom_rai": 21.0798,
+      "issue": "PDD_VS_GEOMETRY_GT_5_RAI",
+      "difference_rai": 5.6702
+    }
+  ],
+  "baseline_qa": {
+    "processed_plots": 136,
+    "plots_with_auto_valid_scene": 126,
+    "processed_scene_dates": 462,
+    "valid_scene_dates": 241,
+    "qa_gaps": [
+      "41-STC",
+      "42-STC",
+      "44-STC",
+      "49-STC",
+      "73-VSD",
+      "88-STC",
+      "89-STC",
+      "89(1)-STC",
+      "90-STC",
+      "90(1)-STC"
+    ]
+  },
+  "required_follow_up": [
+    "EVR source roster, polygon and authority",
+    "Resolve 66(1)-STC boundary manually",
+    "Validate zero-area 9-STC geometry",
+    "Prioritize geometry discrepancies",
+    "Determine whether 2023 KML extras are active project plots",
+    "QA permissions of original Google Drive files"
+  ]
+}
