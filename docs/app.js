@@ -74,7 +74,7 @@ function bindUI(){
   document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
   document.getElementById('report-plot').addEventListener('change',renderReportPreview);
   document.getElementById('report-type').addEventListener('change',renderReportPreview);
-  ['sat-filter-plot','sat-filter-date','sat-filter-sensor','sat-filter-resolution'].forEach(id=>document.getElementById(id)?.addEventListener('change',renderSatelliteGallery));
+  ['sat-filter-plot','sat-filter-date','sat-filter-sensor','sat-filter-resolution'].forEach(id=>document.getElementById(id)?.addEventListener('change',e=>{if(e.target.id==='sat-filter-date' && e.target.value!=='ALL')checkedSatelliteDates.clear();renderSatelliteGallery();}));
   document.getElementById('map-sat-date')?.addEventListener('change',e=>{mapSatelliteDate=e.target.value;updateMapSatelliteOverlay(selected)});
   document.getElementById('map-sat-visible')?.addEventListener('change',e=>{mapSatelliteVisible=e.target.checked;updateMapSatelliteOverlay(selected)});
   document.getElementById('map-sat-opacity')?.addEventListener('input',e=>{mapSatelliteOpacity=Number(e.target.value)/100;Object.values(satelliteImageLayers).forEach(l=>l?.setOpacity(mapSatelliteOpacity))});
@@ -163,41 +163,60 @@ function syncSatellitePlotFilter(plot){
   if(document.getElementById('tab-satellite')?.classList.contains('active'))renderSatelliteGallery();
 }
 function resetSatelliteFilters(){
+  checkedSatelliteDates.clear();
   document.getElementById('sat-filter-plot').value='ALL';
   document.getElementById('sat-filter-date').value='ALL';
   document.getElementById('sat-filter-sensor').value='ALL';
   document.getElementById('sat-filter-resolution').value='ALL';
   renderSatelliteGallery();
 }
+const checkedSatelliteDates=new Set();
+function renderSatelliteDateCheckboxes(){
+  const host=document.getElementById('sat-date-checkboxes');
+  if(!host)return;
+  const plot=document.getElementById('sat-filter-plot')?.value||'ALL';
+  const sensor=document.getElementById('sat-filter-sensor')?.value||'ALL';
+  const resolution=document.getElementById('sat-filter-resolution')?.value||'ALL';
+  const dates=[...new Set(satelliteFiles.filter(x=>(plot==='ALL'||x.plot===plot)&&(sensor==='ALL'||x.sensor===sensor)&&(resolution==='ALL'||x.resolution===resolution)).map(x=>x.date).filter(Boolean))].sort().reverse();
+  host.innerHTML=dates.map(d=>'<label class="sat-date-chip"><input type="checkbox" data-sat-date="'+d+'" '+(checkedSatelliteDates.has(d)?'checked':'')+'><span>'+datePretty(d)+'</span></label>').join('');
+  host.onchange=e=>{
+    const cb=e.target;if(!cb.matches('input[data-sat-date]'))return;
+    if(cb.checked)checkedSatelliteDates.add(cb.dataset.satDate);else checkedSatelliteDates.delete(cb.dataset.satDate);
+    document.getElementById('sat-filter-date').value='ALL';
+    renderSatelliteGallery();
+  };
+  const btn=document.getElementById('sat-date-all');
+  if(btn)btn.onclick=()=>{checkedSatelliteDates.clear();document.getElementById('sat-filter-date').value='ALL';renderSatelliteGallery()};
+}
 function satelliteFiltered(){
   const p=document.getElementById('sat-filter-plot')?.value||'ALL';
   const d=document.getElementById('sat-filter-date')?.value||'ALL';
   const s=document.getElementById('sat-filter-sensor')?.value||'ALL';
   const r=document.getElementById('sat-filter-resolution')?.value||'ALL';
-  return satelliteFiles.filter(x=>(p==='ALL'||x.plot===p)&&(d==='ALL'||x.date===d)&&(s==='ALL'||x.sensor===s)&&(r==='ALL'||x.resolution===r));
+  return satelliteFiles.filter(x=>(p==='ALL'||x.plot===p)&&(d==='ALL'||x.date===d)&&(s==='ALL'||x.sensor===s)&&(r==='ALL'||x.resolution===r)&&(!checkedSatelliteDates.size||checkedSatelliteDates.has(x.date)));
 }
 function renderSatelliteGallery(){
-  const gallery=document.getElementById('satellite-gallery'); if(!gallery)return;
+  const gallery=document.getElementById('satellite-gallery');if(!gallery)return;
+  renderSatelliteDateCheckboxes();
   const rows=satelliteFiltered();
   document.getElementById('sat-count-files').textContent=rows.length;
   document.getElementById('sat-count-dates').textContent=new Set(rows.map(x=>x.date).filter(Boolean)).size;
   document.getElementById('sat-count-plots').textContent=new Set(rows.map(x=>x.plot).filter(Boolean)).size;
-  document.getElementById('sat-latest-date').textContent=rows.length?datePretty([...rows].sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0].date):'—';
-  if(!rows.length){gallery.innerHTML='<div class="sat-empty">ไม่พบภาพตามตัวกรองนี้</div>';return}
-  gallery.innerHTML=rows.map(x=>`<article class="sat-card" onclick="openSatelliteViewer('${x.id}')">
-    <div class="sat-thumb">
-      <img class="sat-gallery-img" data-file-id="${x.id}" loading="lazy" alt="${x.plot} ${x.date}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-      <div class="sat-thumb-fallback"><span>ยังไม่มีภาพ</span><small>กดเปิดไฟล์ต้นฉบับใน Drive</small></div>
-      <div class="sat-resolution">${x.resolution||'—'}</div>
-    </div>
-    <div class="sat-card-body">
-      <div class="sat-card-top"><strong>${x.plot}</strong><span>${x.sensor}</span></div>
-      <h4>${datePretty(x.date)}</h4>
-      <p>${x.title}</p>
-      <div class="sat-card-meta"><span>${x.preview_kind==='true_color'?'สีจริง':x.preview_kind==='ndmi'?'ดัชนีความชื้น':x.preview_kind?.includes('grayscale')?'ภาพระดับเทา':x.preview_kind==='no_valid_pixels'?'ไม่มีพิกเซลที่ใช้ได้':'ภาพแสดงผล'}</span><span>${fileSizePretty(x.size)}</span></div>
-    </div>
-  </article>`).join('');
-  // Assign image sources as DOM properties, not strings in innerHTML (large data URLs).
+  document.getElementById('sat-latest-date').textContent=rows.length?datePretty(rows[0].date):'—';
+  if(!rows.length){gallery.innerHTML='<div class="sat-empty">ไม่พบภาพตามตัวกรองหรือวันที่ที่ติ๊กเลือก</div>';return}
+  const groups=new Map();
+  for(const x of rows){const d=x.date||'ไม่ระบุวันที่';if(!groups.has(d))groups.set(d,[]);groups.get(d).push(x)}
+  gallery.innerHTML=[...groups.entries()].sort((a,b)=>b[0].localeCompare(a[0])).map(([day,items])=>
+    '<section class="sat-day-group"><div class="sat-day-head"><strong>📅 '+datePretty(day)+'</strong><small>'+items.length+' ไฟล์ • '+new Set(items.map(x=>x.plot)).size+' แปลง</small></div><div class="sat-day-grid">'+
+    items.map(x=>`<article class="sat-card" onclick="openSatelliteViewer('${x.id}')">
+      <div class="sat-thumb">
+        <img class="sat-gallery-img" data-file-id="${x.id}" loading="lazy" alt="${x.plot} ${x.date}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+        <div class="sat-thumb-fallback"><span>ยังไม่มีภาพ</span><small>เปิดไฟล์ต้นฉบับใน Drive</small></div>
+        <div class="sat-resolution">${x.resolution||'—'}</div>
+      </div><div class="sat-card-body"><div class="sat-card-top"><strong>${x.plot}</strong><span>${x.sensor}</span></div>
+      <h4>${datePretty(x.date)}</h4><p>${x.title}</p>
+      <div class="sat-card-meta"><span>${x.preview_kind==='true_color'?'สีจริง':x.preview_kind==='ndmi'?'ดัชนีความชื้น':x.preview_kind?.includes('grayscale')?'ภาพระดับเทา':x.preview_kind==='no_valid_pixels'?'ไม่มีพิกเซลที่ใช้ได้':'ภาพแสดงผล'}</span><span>${fileSizePretty(x.size)}</span></div></div></article>`).join('')+'</div></section>'
+  ).join('');
   const dict=new Map(rows.map(x=>[x.id,x]));
   gallery.querySelectorAll('img[data-file-id]').forEach(im=>{
     const x=dict.get(im.dataset.fileId);
