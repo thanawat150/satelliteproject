@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#101a2a">
-  <meta name="description" content="KEN LAB — Content Factory, Auto Video Studio and GIS tools in one workspace">
-  <title>KEN LAB · Prompt Production Studio</title>
+  <meta name="description" content="Affiliate Lab — discover products, craft scripts, storyboard and video prompts">
+  <title>Affiliate Lab · AI Sales & Creative Studio</title>
   <link rel="stylesheet" href="./styles.css?v=3">
   <link rel="stylesheet" href="./geo-tools.css?v=3">
   <link rel="stylesheet" href="./product-factory.css?v=5">
@@ -14,7 +14,7 @@
 <body>
   <div class="shell">
     <aside class="sidebar" id="sidebar">
-      <a href="?tab=home" class="brand" data-nav="home" aria-label="KEN LAB หน้าแรก"><span class="brand-icon">K<span>+</span></span><span><strong>KEN LAB</strong><small>CREATIVE & GEO STUDIO</small></span></a>
+      <a href="?tab=home" class="brand" data-nav="home" aria-label="Affiliate Lab หน้าแรก"><span class="brand-icon">A<span>+</span></span><span><strong>AFFILIATE LAB</strong><small>AI SALES & CREATIVE STUDIO</small></span></a>
       <div class="menu-label">WORKSPACE</div>
       <nav id="nav-main" aria-label="เมนูหลัก">
         <button data-nav="home" class="nav-item active"><span class="nav-symbol">▦</span>ภาพรวม</button>
@@ -23,21 +23,21 @@
         <button data-nav="content" class="nav-item"><span class="nav-symbol">✎</span>Content Factory <span class="nav-pill">LIVE</span></button>
         <button data-nav="video" class="nav-item"><span class="nav-symbol">▶</span>Auto Video Studio <span class="nav-pill">LIVE</span></button>
       </nav>
-      <div class="menu-label extra-space">GEO TOOLS</div>
-      <nav id="nav-geo" aria-label="เครื่องมือภูมิสารสนเทศ">
+      <div class="menu-label extra-space" hidden>GEO TOOLS · LEGACY</div>
+      <nav id="nav-geo" aria-label="เครื่องมือภูมิสารสนเทศเดิม" hidden>
         <button data-nav="maps" class="nav-item"><span class="nav-symbol">◇</span>GIS Auto Map <span class="nav-pill">LIVE</span></button>
         <button data-nav="field" class="nav-item"><span class="nav-symbol">▤</span>Field Report <span class="nav-pill">LIVE</span></button>
         <button data-nav="satellite" class="nav-item"><span class="nav-symbol">◎</span>Satellite Intelligence <span class="nav-pill">LIVE</span></button>
         <button data-nav="learning" class="nav-item"><span class="nav-symbol">✦</span>GeoAI Learning Lab</button>
       </nav>
-      <div class="sidebar-foot"><div class="online-dot"></div><span>Local-first · ไม่ต้องล็อกอิน</span><small>KEN LAB · v4.0</small></div>
+      <div class="sidebar-foot"><div class="online-dot"></div><span>Local-first · ไม่ต้องล็อกอิน</span><small>AFFILIATE LAB · v1.0</small></div>
     </aside>
-    <div class="mobilebar"><button id="menuToggle" class="icon-btn" aria-label="เปิดเมนู">☰</button><strong>KEN <span>LAB</span></strong><button id="mobileCreate" class="mini-create">+ สร้างคลิป</button></div>
+    <div class="mobilebar"><button id="menuToggle" class="icon-btn" aria-label="เปิดเมนู">☰</button><strong>AFFILIATE <span>LAB</span></strong><button id="mobileCreate" class="mini-create">+ สร้างคลิป</button></div>
     <div id="navOverlay" class="nav-overlay" hidden></div>
     <main class="main">
-      <header class="topbar"><div><div class="breadcrumb">KEN LAB / <span id="breadcrumbCurrent">OVERVIEW</span></div><h1 id="pageTitle">ศูนย์รวมเครื่องมือของคุณ</h1><p id="pageSubtitle">จากไอเดียสู่ผลงาน — ในที่เดียว</p></div><div class="top-actions"><div id="saveIndicator" class="saved-indicator"><span class="tiny-dot"></span>บันทึกในเครื่อง</div><button class="btn btn-ghost small" id="restoreBtn" title="นำข้อมูลสำรองกลับเข้าเว็บ">↥ กู้คืน</button><button class="btn btn-ghost small" id="backupBtn" title="สำรองข้อมูลเป็นไฟล์ JSON">↧ สำรองข้อมูล</button></div></header>
+      <header class="topbar"><div><div class="breadcrumb">AFFILIATE LAB / <span id="breadcrumbCurrent">OVERVIEW</span></div><h1 id="pageTitle">ศูนย์รวมเครื่องมือของคุณ</h1><p id="pageSubtitle">จากไอเดียสู่ผลงาน — ในที่เดียว</p></div><div class="top-actions"><div id="saveIndicator" class="saved-indicator"><span class="tiny-dot"></span>บันทึกในเครื่อง</div><button class="btn btn-ghost small" id="restoreBtn" title="นำข้อมูลสำรองกลับเข้าเว็บ">↥ กู้คืน</button><button class="btn btn-ghost small" id="backupBtn" title="สำรองข้อมูลเป็นไฟล์ JSON">↧ สำรองข้อมูล</button></div></header>
       <section id="app" aria-live="polite"></section>
-      <footer class="footer">KEN LAB · ไม่สร้างข้อมูลภูมิสารสนเทศหรือสถิติจริงขึ้นมาเอง · เนื้อหาอัตโนมัติเป็นโครงร่างที่แก้ไขได้</footer>
+      <footer class="footer">AFFILIATE LAB · ข้อมูลราคา ยอดขาย และค่าคอมมิชชันต้องอ้างอิงแหล่งจริง · ตรวจสอบข้อความก่อนนำไปโฆษณา</footer>
     </main>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -45,6 +45,6 @@
   <script src="./geo-tools.js?v=3"></script>
   <script defer src="./product-factory.js?v=5"></script>
   <script defer src="./production-wizard.js?v=2"></script>
-  <script type="module" src="./app.js?v=7"></script>
+  <script type="module" src="./app.js?v=8"></script>
 </body>
 </html>
