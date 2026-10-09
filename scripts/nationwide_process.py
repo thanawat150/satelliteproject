@@ -24,7 +24,7 @@ from PIL import Image
 GOOD_SCL=(2,4,5,6,7)
 BAD_SCL=(0,1,3,8,9,10,11)
 MIN_QA=70
-ALG='pdd-full-monitor-v1.0'
+ALG='pdd-full-monitor-v1.1'
 
 def safe_index(a,b):
  den=a+b
@@ -131,8 +131,14 @@ def one_scene(plot,date,files,geom_ll,meta):
   soil=clear&~water&~veg&(bsi>0)&(ndvi<0.25)
   other=clear&~water&~veg&~soil
   wet=clear&(ndmi>0.3)
-  water_geom=geom_mask_to_shape(water,ds20,clip)
-  water_area=(water_geom.area if water_geom is not None else 0)/1600
+  # Clip each land-cover class consistently to the actual PDD polygon.
+  # A full pixel near a boundary must not be counted as an entire in-plot pixel.
+  class_masks={'water':water,'vegetation':veg,'bare_soil':soil,'other':other,'wetness':wet}
+  class_geoms={name:geom_mask_to_shape(mask,ds20,clip) for name,mask in class_masks.items()}
+  class_areas={name:round((g.area if g is not None else 0)/1600,3) for name,g in class_geoms.items()}
+  clear_geom=geom_mask_to_shape(clear,ds20,clip)
+  usable_area_rai=round((clear_geom.area if clear_geom is not None else 0)/1600,3)
+  water_area=class_areas['water']
   area_total=clip.area/1600
   cell_rai=abs(ds20.transform.a*ds20.transform.e)/1600
   indices=dict(ndvi=mean(ndvi,clear),ndre=mean(ndre,clear),ndmi=mean(ndmi,clear),mndwi=mean(mndwi,clear),ndwi=mean(ndwi,clear),bsi=mean(bsi,clear),savi=mean(savi,clear),evi=mean(evi,clear),gli=mean(gli,clear))
@@ -140,14 +146,18 @@ def one_scene(plot,date,files,geom_ll,meta):
   row=dict(plot=plot,province=meta['province'],date=date,status=qual,analysis_status=qual,qa_valid_pct=round(valid_pct,2),usable_pixels=valid_pixels,total_pixels=total_pixels,pdd_area_rai=round(area_total,4),original_tif10=f10.name,original_tif20=f20.name,algorithm=ALG,qa_rule='SCL 2,4,5,6,7; require finite original B2 B4 B8 B11 and MNDWI',classification_rule='water MNDWI>0; veg NDVI>=0.35 and not water; soil BSI>0 and NDVI<0.25 and not water/veg')
   row.update(indices if qual=='AUTO_VALID' else {k:None for k in indices})
   row.update({'partial_indices':indices if qual=='PARTIAL' else None})
-  row.update({k+'_rai':round(v*cell_rai,3) if qual=='AUTO_VALID' else None for k,v in categories.items()})
-  row['observed_area_rai_partial']=round(water_area,3) if qual=='PARTIAL' else None
-  row['water_rai']=round(water_area,3) if qual=='AUTO_VALID' else None
-  row['water_pct']=round(100*water_area/clip.area*1600,2) if qual=='AUTO_VALID' else None
+  row.update({k+'_rai':class_areas[k] if qual=='AUTO_VALID' else None for k in categories})
+  row['observed_area_rai_partial']=water_area if qual=='PARTIAL' else None
+  row['water_rai']=water_area if qual=='AUTO_VALID' else None
+  row['water_pct']=round(100*water_area/area_total,2) if qual=='AUTO_VALID' and area_total>0 else None
+  # Water, vegetation, soil, other are mutually exclusive; wetness overlaps.
+  row['qa_usable_area_rai']=usable_area_rai
+  row['class_area_sum_rai']=round(sum(class_areas[k] for k in ('water','vegetation','bare_soil','other')),3) if qual=='AUTO_VALID' else None
+  row['area_balance_error_rai']=round(row['class_area_sum_rai']-usable_area_rai,3) if qual=='AUTO_VALID' else None
   # The polygons are per-date observations, not automatically verified flooding.
   features=[]
-  for cls,mask in [('water',water),('vegetation',veg),('bare_soil',soil),('wetness',wet)]:
-   g=geom_mask_to_shape(mask,ds20,clip)
+  for cls in ('water','vegetation','bare_soil','wetness'):
+   g=class_geoms[cls]
    if g is not None:
     features.append(dict(type='Feature',geometry=to_lonlat(g,ds20.crs),properties={'plot':plot,'province':meta['province'],'date':date,'class':cls,'analysis_status':qual,'qa_valid_pct':round(valid_pct,2),'area_rai':round(g.area/1600,3),'source':'original Sentinel-2 GeoTIFF, clipped to native PDD MultiPolygon'}))
   preview=local_preview(ds10,inside,ds20)
@@ -197,8 +207,10 @@ def run(boundaries,filesdir,plots,outputdir):
     print(plot,date,item['row']['status'],'QA',item['row']['qa_valid_pct'],'water_rai',item['row']['water_rai'],'NDVI',item['row']['ndvi'],'BSI',item['row']['bsi'],flush=True)
    except Exception as e:
     result['errors'].append({'plot':plot,'date':date,'error':str(e)});print('ERROR',plot,date,e,flush=True)
-  for a,b in zip(items,items[1:]):
-   if a['row']['status']=='NO_DATA' or b['row']['status']=='NO_DATA':continue
+  # Pair consecutive QA-valid observations, even if cloudy/NO_DATA dates
+  # intervene in the calendar. Never synthesize pixel-level changes from means.
+  qa_items=[item for item in items if item['row']['status']=='AUTO_VALID']
+  for a,b in zip(qa_items,qa_items[1:]):
    result['changes'].append({'plot':plot,'province':source['properties']['province'],**change_summary(a,b)})
   result['plots'][plot]={'province':source['properties']['province'],'pdd_geometry_parts':source['properties']['geometry_parts'],'pdd_area_rai':source['properties']['geometry_area_rai'],'selected_dates':[x['row']['date'] for x in items],'completed_dates':len(items),'qa_valid_dates':sum(x['row']['status']=='AUTO_VALID' for x in items),'processing_status':'DONE' if items else 'NO_SOURCE_SCENES'}
  result['totals']={'target_plots':len(plots),'plots_with_source_scenes':sum(v['completed_dates']>0 for v in result['plots'].values()),'processed_dates':len(result['scenes']),'qa_valid_dates':sum(x['status']=='AUTO_VALID' for x in result['scenes']),'partial_dates':sum(x['status']=='PARTIAL' for x in result['scenes']),'no_data_dates':sum(x['status']=='NO_DATA' for x in result['scenes']),'date_changes':len(result['changes']),'errors':len(result['errors'])}
