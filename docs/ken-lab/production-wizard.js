@@ -25,7 +25,7 @@ const pid=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
 const safeUrl=s=>/^https?:\/\//i.test(String(s||'').trim())?clamp(s,500):'';
 function save(){try{localStorage.setItem(KEY,JSON.stringify({...state,custom:state.custom.slice(0,25)}))}catch(e){toast('พื้นที่จัดเก็บเบราว์เซอร์เต็ม โปรดดาวน์โหลดไฟล์สำรอง');}}
 function toast(msg){const e=document.querySelector('#toast');if(e){e.textContent=msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),3000);}else{let z=document.querySelector('#pw-message');if(z)z.textContent=msg;}}
-function currentHTML(){const host=document.querySelector('#app');if(host){host.innerHTML=render();window.scrollTo({top:0,behavior:'smooth'})}}
+function currentHTML(){const current=new URLSearchParams(location.search).get('tab');if(current!=='production'){window.dispatchEvent(new CustomEvent('affiliate-lab:studios-refresh'));return}const host=document.querySelector('#app');if(host){host.innerHTML=render();window.scrollTo({top:0,behavior:'smooth'})}}
 function updateStage(n){state.step=Math.max(1,Math.min(3,n));save();currentHTML()}
 function summarizeFacts(s){return String(s||'').replace(/\r/g,'').split(/\n+|[•;；]/u).map(x=>x.replace(/^\s*[-\d.)]+\s*/, '').trim()).filter(Boolean).slice(0,12);}
 function recommend(){const s=(state.project.title+' '+state.project.facts+' '+state.project.category).toLowerCase();let picks=[];
@@ -59,7 +59,7 @@ function layoutShot(title,hook,beat,index,n,details){const p=state.project;const
  const goals=["เปิดความสนใจใน 1–3 วินาที",'ทำให้เข้าใจบริบท', 'สื่อสารข้อมูลสินค้าตามที่มีจริง','สาธิตหรือแสดงรายละเอียดสินค้า','ช่วยให้ผู้ชมตัดสินใจ','ปิดด้วยการชวนดูรายละเอียด'];
  const action=p.mode==='voiceover'?'ภาพสินค้าในสถานที่ใช้งานจริง เน้นรายละเอียดที่เกี่ยวกับบทพูด ไม่สร้างฟังก์ชันที่ไม่ได้ระบุ':p.mode==='dialogue'&&secondary?'คนแรกตั้งคำถาม คนที่สองอธิบายพร้อมมองสินค้าหรือชี้ของจริงอย่างเป็นธรรมชาติ':'ผู้เล่าอยู่กับสินค้าหรือภาพประกอบจริง ใช้สีหน้าและท่าทางเล็กน้อย';
  const q=p.mode==='dialogue'&&secondary?`${char?.name||'ผู้ถาม'}: ${hook}\n${secondary.name}: ${beat}`:p.mode==='voiceover'?`Voice Over: ${beat}`:`${char?.name||'ผู้เล่า'}: ${beat}`;
- return {id:pid(),index:index+1,start,end,title,objective:n===1?'เปิด Hook แสดงข้อมูลสินค้าที่ระบุจริง และปิดด้วย CTA ภายในช็อตเดียว':goals[Math.min(index,goals.length-1)],scene:scenario,action,angle:n===1?'Single continuous medium shot, product visible, natural small camera movement':index===0?'Medium close-up → object reveal':index===n-1?'Medium shot + readable product detail':index%2?'Over-shoulder / insert close-up':'Medium shot with product visible',dialogue:q,overlay:index===0?hook.slice(0,44):(title.slice(0,45)),mood:n===1?'Curious / Helpful / CTA':index===0?'Curious / Hook':index===n-1?'Friendly / CTA':'Natural / Informative',sound:'Natural room ambience; dialogue clean and dry, no copyrighted music; no invented sound.',sourceFacts:details};}
+ return {id:pid(),index:index+1,start,end,title,objective:n===1?'เปิด Hook แสดงข้อมูลสินค้าที่ระบุจริง และปิดด้วย CTA ภายในช็อตเดียว':goals[Math.min(index,goals.length-1)],scene:scenario,outfit:char?.outfit||'',action,angle:n===1?'Single continuous medium shot, product visible, natural small camera movement':index===0?'Medium close-up → object reveal':index===n-1?'Medium shot + readable product detail':index%2?'Over-shoulder / insert close-up':'Medium shot with product visible',dialogue:q,overlay:index===0?hook.slice(0,44):(title.slice(0,45)),mood:n===1?'Curious / Helpful / CTA':index===0?'Curious / Hook':index===n-1?'Friendly / CTA':'Natural / Informative',sound:'Natural room ambience; dialogue clean and dry, no copyrighted music; no invented sound.',sourceFacts:details};}
 function beatsFor(n){const p=state.project;const facts=summarizeFacts(p.facts);const product=p.title||'ผลิตภัณฑ์';const a=facts[0]||p.facts.slice(0,120),b=facts[1]||a,c=facts[2]||b;
  const hook=p.mode==='question'?`กำลังหาข้อมูลเกี่ยวกับ${product}อยู่หรือเปล่า?`:`${product} มีอะไรที่ควรรู้ก่อนเลือก?`;
  const src=p.importedScript||state.importedScript||'';
@@ -73,7 +73,7 @@ function beatsFor(n){const p=state.project;const facts=summarizeFacts(p.facts);c
  ];
  const extra=[['FACT 03',`ข้อมูลอีกข้อ`,`ข้อมูลสินค้าเพิ่มเติมคือ ${c}`],['DETAIL',`ดูส่วนประกอบหรือฟังก์ชัน`,`ตรวจภาพและรายละเอียดสินค้าประกอบกับข้อมูลที่ให้มา`],['WRAP UP',`เลือกให้เหมาะกับตัวเอง`,`เปรียบเทียบกับสิ่งที่ต้องการก่อนตัดสินใจ`]];
  let beats=n===1?[['HOOK + FACT + CTA',hook,`รู้จัก ${product.slice(0,40)} ไหม? ${a.slice(0,50)} ดูรายละเอียดที่ลิงก์ได้เลย`]]:n===4?[primary[0],primary[2],primary[3],primary[4]]:n===5?primary:n===6?[primary[0],primary[1],primary[2],primary[3],extra[0],primary[4]]:n===8?[primary[0],primary[1],primary[2],primary[3],extra[0],extra[1],extra[2],primary[4]]:primary;
- if(segments.length&&n!==1){beats=beats.map((item,i)=>[item[0],item[1],segments[i]||item[2]])}
+ if(n===1&&src.trim()){beats[0][2]=src.trim().slice(0,900)}else if(segments.length){beats=beats.map((item,i)=>[item[0],item[1],segments[i]||item[2]])}
  return beats.map((a,i)=>layoutShot(a[0],a[1],a[2],i,beats.length,facts.slice(0,8).join(' | ')));
 }
 function shotStoryboard(s){const p=state.project;const char=selected(),other=guest();const layout=p.boardLayout==='frame'?'Produce a single vertical image ONLY with no information panel; metadata should remain outside the picture.':'Produce ONE 16:9 STORYBOARD SHEET: left side shows a framed vertical 9:16 realistic still for this shot; right side is a clean production information panel with shot number, timing, scene, camera, motion, spoken dialogue and mood. Prefer short English labels on the panel and avoid generating complex Thai writing. Do not add invented text.';
@@ -82,7 +82,7 @@ return [
 `Time ${time(s.start)}–${time(s.end)} (${(s.end-s.start).toFixed(1)} seconds). ${layout}`,
 `FORMAT OF THE FUTURE VIDEO: ${frameSpec()}`,
 `REFERENCE / IDENTITY:\n${identity(char)}${other?'\nSUPPORTING PRESENTER:\n'+identity(other):''}`,
-`LOCATION: ${s.scene}. CONTINUITY: Same approved characters, wardrobe, props, lighting, product and room across consecutive shots. Use natural Thai home/office/store environment; avoid futuristic UI.`,
+`LOCATION: ${s.scene}. SHOT WARDROBE: ${s.outfit||char?.outfit||'natural everyday outfit'}. CONTINUITY: Same approved characters, wardrobe, props, lighting, product and room across consecutive shots. Use natural Thai home/office/store environment; avoid futuristic UI.`,
 `VISUAL CONTENT: ${s.objective}. ACTION: ${s.action}. CAMERA: ${s.angle}. MOOD: ${s.mood}.`,
 `FACT BASIS (user supplied, not verified): ${s.sourceFacts||p.facts}. Do not visualize unverified product functionality, efficacy, certificates, discounts, performance or reviews.`,
 `TEXT OVERLAY (add during editing, not generative image): ${s.overlay}`,
@@ -94,7 +94,7 @@ function shotVideo(s){const p=state.project;const char=selected(),other=guest();
 `TARGET VIDEO: ${frameSpec()} 30 fps desired. ONE CONTINUOUS SHOT. Duration target ${(s.end-s.start).toFixed(1)} seconds (adjust to generator supported duration if needed). No cuts, no montage, no abrupt transitions. This is a shot-level prompt, not a whole-video montage.`,
 `REQUIRED INPUT ASSETS: Upload the approved CHARACTER MASTER image(s) directly to the generator as reference, plus original PRODUCT PHOTO for accurate packaging if available. Do not assume the reference URLs are ingested automatically.`,
 `PERMANENT IDENTITY LOCK: ${identity(char)}${other?' SUPPORTING PERSON: '+identity(other):''}`,
-`SCENE AND SETTING: ${s.scene}. Existing shot continuity preserved: clothing, furniture, time of day, lighting, product props, body proportions and face identity stay unchanged.`,
+`SCENE AND SETTING: ${s.scene}. SHOT WARDROBE: ${s.outfit||char?.outfit||'consistent everyday outfit'}. Existing shot continuity preserved: clothing, furniture, time of day, lighting, product props, body proportions and face identity stay unchanged.`,
 `TIMELINE / PERFORMANCE: ${s.objective}. ${s.action}. Character gestures must be simple and physically plausible. Match actions to the provided product facts, not imagined demonstrations.`,
 `CAMERA: ${s.angle}. Natural smartphone handheld micro-movement, realistic depth of field, no excessive cinematic movement.`,
 `EXACT THAI DIALOGUE — spoken once only, correct speaker and lip-sync if supported:\n${s.dialogue}`,
@@ -278,5 +278,17 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-prod
  if(act==='jump-video'){updateStage(3);return}
  if(act==='new-project'){if(!confirm('เริ่มโปรเจกต์ใหม่? กรุณาดาวน์โหลดไฟล์ JSON ก่อน หากต้องการเก็บงานเดิม'))return;const custom=state.custom;state=EMPTY();state.custom=custom;save();currentHTML();return}
 });
-window.KenProductionWizard={render,backup:()=>state,restore:(x)=>{if(!x||x.version!==1||!x.project||!Array.isArray(x.shots)||!Array.isArray(x.custom))return;state={...EMPTY(),...x,project:{...EMPTY().project,...x.project},custom:x.custom.slice(0,25),shots:x.shots.slice(0,16),draft:{...EMPTY().draft,...(x.draft||{})},ideaCycles:x.ideaCycles||{}};save()},generateStoryboard:()=>{if(!checkToShots())return false;state.shots=beatsFor(Number(state.project.count));updateStage(2);return true;},getPrompt, getState:()=>state,PRESETS};
+function renderCharacterOnly(){
+ const html=stage1(),marker='<section class="pw-panel"><div class="pw-head"><div><h3>เลือกตัวละคร</h3>';
+ const idx=html.indexOf(marker),tail='</section></div><div class="pw-actions">',last=html.lastIndexOf(tail);
+ if(idx<0||last<idx)throw Error('ไม่พบส่วน Character Studio');
+ return '<div class="pw" data-production-wizard><div class="pw-guide-intro"><strong>Character Studio</strong><p>เลือกตัวละครเดิม หรือออกแบบ Character Master ด้วยตัวช่วยคิดทีละหัวข้อ แล้วคัดลอก Prompt ไปสร้างภาพได้เลย</p></div>'+html.slice(idx,last+10)+'</div>';
+}
+function makeShotsSilent(){
+ const count=Math.min(8,Math.max(1,Number(state.project.count)||1));
+ if(!state.project.title.trim())return {ok:false,message:'กรุณาใส่ชื่อสินค้าหรือหัวข้อก่อน'};
+ if(!state.project.facts.trim())return {ok:false,message:'กรุณาใส่ข้อมูลสินค้า (เพื่อไม่ให้สร้างคุณสมบัติขึ้นเอง)'};
+ state.shots=beatsFor(count);save();return {ok:true,shots:state.shots}
+}
+window.KenProductionWizard={render,renderCharacterOnly,makeShotsSilent,renderShotEditor:shotEditor,saveState:save,library,selectCharacter:id=>{state.primary=id;save();return selected()},suggestCharacter:suggestNew,getCharacterPrompt:()=>characterPrompt(state.primary==='new'?draftCharacter():selected()),draftCharacter,saveNewCharacter:saveNew,backup:()=>state,restore:(x)=>{if(!x||x.version!==1||!x.project||!Array.isArray(x.shots)||!Array.isArray(x.custom))return;state={...EMPTY(),...x,project:{...EMPTY().project,...x.project},custom:x.custom.slice(0,25),shots:x.shots.slice(0,16),draft:{...EMPTY().draft,...(x.draft||{})},ideaCycles:x.ideaCycles||{}};save()},generateStoryboard:()=>{if(!checkToShots())return false;state.shots=beatsFor(Number(state.project.count));updateStage(2);return true;},getPrompt, getState:()=>state,PRESETS};
 })();
