@@ -26,3 +26,16 @@
 .pw-idea-button:hover,.pw-idea-button:focus-visible{background:#dceaff;border-color:#8db2fa}
 .pw-guide-section input,.pw-guide-section textarea{font-size:13px}
 @media(max-width:480px){.pw-guide-content{padding:12px 10px 3px}.pw-guide-section>summary{padding:12px}.pw-guided-title{flex-wrap:wrap}.pw-idea-button{font-size:11px}}
+
+/* Affiliate Lab / 6-Step export package */
+.pw-pack{border:1px solid #bfdae9;background:#f5faff;border-radius:14px;padding:18px;margin:18px 0}
+.pw-pack-heading h3{font-size:19px;margin:5px 0 5px}
+.pw-pack-heading p{font-size:12px;color:#53677e;line-height:1.65;margin:0 0 15px}
+.pw-pack-file{border:1px solid #dae5f2;background:#fff;border-radius:10px;margin:9px 0;overflow:hidden}
+.pw-pack-file>summary{padding:13px 14px;cursor:pointer;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;list-style:none}
+.pw-pack-file>summary::-webkit-details-marker{display:none}
+.pw-pack-file>summary strong{font-size:13px;color:#213d61}
+.pw-pack-file>summary small{font-size:11px;color:#7d8ca1;word-break:break-all}
+.pw-pack-file[open]>summary{border-bottom:1px solid #e0e9f5;background:#edf4ff}
+.pw-pack-file textarea{display:block;width:calc(100% - 28px);margin:0 14px 14px;padding:12px;min-height:170px;border:1px solid #d9e4f3;border-radius:9px;resize:vertical;white-space:pre-wrap;font:12px/1.65 ui-monospace,Consolas,monospace;background:#fafcff}
+@media(max-width:700px){.pw-pack{padding:12px}.pw-pack .pw-exports{flex-direction:column;align-items:stretch}.pw-pack .pw-exports .btn{width:100%}}
