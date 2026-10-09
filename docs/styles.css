@@ -335,7 +335,7 @@
 @media(max-width:700px){.sat-day-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.sat-date-panel-head{align-items:flex-start;flex-direction:column}.top-actions{gap:5px}.header-calendar-btn{padding:7px}}
 @media print{.sat-date-panel,.report-date-select,.header-calendar-btn{display:none!important}.live-explanation,.live-interpretations{break-inside:avoid!important}}
 
-/* Confirmed MOC plot geometry / legacy-report spatial-context warning */
-.moc-boundary-note{margin:7px 0 0;color:#f1c779!important;font-size:10px!important;max-width:620px;line-height:1.65}
-.moc-report-warning{margin:8px 0 14px;padding:10px 11px;background:#372d18;border:1px solid #8e6b2c;border-radius:9px;color:#fde4b2;font-size:10px;line-height:1.7}
-@media print{.moc-report-warning{display:block!important;color:#6d4b18!important;background:#fff4df!important;border-color:#d3aa68!important}}
+/* PDD is the primary project boundary; department-confirmed polygons remain archived. */
+.pdd-boundary-note{margin:7px 0 0;color:#8fd4ac!important;font-size:10px!important;max-width:620px;line-height:1.65}
+.pdd-report-note{margin:8px 0 14px;padding:10px 11px;background:#123b35;border:1px solid #2e7c65;border-radius:9px;color:#c9f4e4;font-size:10px;line-height:1.7}
+@media print{.pdd-report-note{display:block!important;color:#214c3b!important;background:#f0fcf7!important;border-color:#9fceba!important}}
