@@ -14,7 +14,21 @@ async function load(force=false){
  ]).then(([h,w])=>{history=h;waterFC=w;return h}).finally(()=>{loading=null});
  return loading;
 }
-function rows(plot){return [...(history?.plots?.[plot]||[])].sort((a,b)=>a.date.localeCompare(b.date))}
+const chosenDays=new Map();
+function allRows(plot){return [...(history?.plots?.[plot]||[])].sort((a,b)=>a.date.localeCompare(b.date))}
+function rows(plot){const all=allRows(plot),chosen=chosenDays.get(plot);return chosen?all.filter(x=>chosen.has(x.date)):all}
+function chooseReportDates(plot){
+ const host=document.getElementById("report-date-checkboxes");if(!host)return;
+ const all=allRows(plot);if(!chosenDays.has(plot))chosenDays.set(plot,new Set(all.map(x=>x.date)));
+ const selected=chosenDays.get(plot);
+ host.innerHTML=all.map(x=>'<label class="report-date-chip"><input type="checkbox" data-report-day="'+x.date+'" '+(selected.has(x.date)?'checked':'')+'><span>'+dth(x.date)+'</span><small>'+(x.analysis_status==="VERIFIED"?"ตรวจยืนยัน":x.analysis_status==="AUTO_VALID"?"ผ่าน QA":x.analysis_status==="PARTIAL"?"บางส่วน":"ข้อมูลไม่พอ")+'</small></label>').join("");
+ if(!all.length)host.textContent="ยังไม่มีข้อมูลที่วิเคราะห์ได้";
+ host.onchange=e=>{const input=e.target;if(!input.matches("input[data-report-day]"))return;
+  if(input.checked)selected.add(input.dataset.reportDay);else selected.delete(input.dataset.reportDay);
+  if(!selected.size){selected.add(input.dataset.reportDay);input.checked=true;return;}
+  if(typeof renderReportPreview==="function")renderReportPreview();
+ };
+}
 function imageDates(plot){
   try{
     if(typeof satelliteFiles==='undefined')return[];
@@ -22,7 +36,7 @@ function imageDates(plot){
   }catch(_){return[]}
 }
 function pendingIndexDates(plot){
-  const analyzed=new Set(rows(plot).filter(x=>["VERIFIED","AUTO_VALID","PARTIAL"].includes(x.analysis_status)).map(x=>x.date));
+  const analyzed=new Set(allRows(plot).filter(x=>["VERIFIED","AUTO_VALID","PARTIAL"].includes(x.analysis_status)).map(x=>x.date));
   return imageDates(plot).filter(d=>!analyzed.has(d));
 }
 function latestTrusted(plot){return rows(plot).filter(trusted).at(-1)||null}
@@ -72,6 +86,7 @@ function renderCharts(plot,root){
   {label:"NDMI (ความชื้นพืช/พื้นที่)",data:all.map(x=>trusted(x)?x.ndmi:null),borderColor:"#398aa3",pointRadius:3,tension:.25},
   {label:"MNDWI (น้ำเปิด)",data:all.map(x=>trusted(x)?x.mndwi:null),borderColor:"#2a64a0",pointRadius:3,tension:.25}
  ],"ค่าดัชนี");
+ makeChart(root.querySelector('[data-chart="bsi"]'),"line",labels,[{label:"BSI (ดินเปิดโล่ง)",data:all.map(x=>trusted(x)?x.bsi:null),borderColor:"#ae8853",pointRadius:3,tension:.25}],"ค่าดัชนี");
  makeChart(root.querySelector('[data-chart="qa"]'),"bar",labels,[{label:"พื้นที่ข้อมูลที่ใช้ได้ (%)",data:all.map(x=>x.valid_pct),backgroundColor:all.map(x=>x.valid_pct>=70?"rgba(46,144,93,.62)":x.valid_pct>=20?"rgba(218,145,43,.65)":"rgba(161,84,84,.55)"),borderWidth:0}],"%");
 }
 function tableRows(plot){
@@ -95,7 +110,7 @@ function waterFeatures(plot){return (waterFC?.features||[]).filter(f=>f.properti
 function clearMini(){if(miniMap){miniMap.remove();miniMap=null}miniLayers=[]}
 function renderWaterMap(plot,root){
  clearMini();
- const fs=waterFeatures(plot),wrap=root.querySelector(".live-water-map-wrap");
+ const selectedSet=new Set(rows(plot).map(x=>x.date));const fs=waterFeatures(plot).filter(f=>selectedSet.has(f.properties.date)),wrap=root.querySelector(".live-water-map-wrap");
  if(!fs.length){wrap.innerHTML='<div class="live-empty">ยังไม่มี Water Footprint geometry รายวันสำหรับแปลงนี้ — กราฟพื้นที่น้ำยังทำงานจากค่าที่ตรวจสอบแล้วได้ตามปกติ</div>';return}
  wrap.innerHTML=`<div class="live-water-map-head"><label>ขอบเขตน้ำวันที่ <select class="live-water-date">${fs.map(f=>`<option value="${f.properties.date}">${dth(f.properties.date)}${f.properties.analysis_status==="PARTIAL"?" • ข้อมูลบางส่วน":""}</option>`).join("")}</select></label><span class="live-water-meta"></span></div><div class="live-water-map"></div>`;
  const mapEl=wrap.querySelector(".live-water-map");
@@ -112,11 +127,51 @@ function renderWaterMap(plot,root){
  };
  const sel=wrap.querySelector(".live-water-date");sel.addEventListener("change",()=>draw(sel.value));sel.value=fs.at(-1).properties.date;setTimeout(()=>{miniMap.invalidateSize();draw(sel.value)},50);
 }
+
+const explain={
+ ndvi:["NDVI (ความเขียวพืช)","สะท้อนความเขียวจากการสะท้อนแสง Red/NIR","ลดลงอาจหมายถึงความเขียวหรือใบพืชลดลง แต่ยังไม่พิสูจน์ว่าต้นไม้ตาย","เพิ่มขึ้นอาจหมายถึงพืชเขียวมากขึ้น"],
+ ndre:["NDRE (ดัชนีขอบแดงของพืช)","สัมพันธ์กับการเปลี่ยนแปลงคลอโรฟิลล์บริเวณ Red Edge","ลดลงอาจมีความเครียดหรือคลอโรฟิลล์เปลี่ยน ควรตรวจภาคสนาม","เพิ่มขึ้นอาจสะท้อนสัญญาณคลอโรฟิลล์มากขึ้น"],
+ ndmi:["NDMI (ความชื้นพืช/พื้นที่)","ใช้ NIR/SWIR ติดตามสัญญาณความชื้น","ลดลงอาจบ่งชี้ความชื้นลดลง","เพิ่มขึ้นอาจมีความชื้นเพิ่ม แต่ไม่ได้แปลว่าพืชสุขภาพดีเสมอ"],
+ mndwi:["MNDWI (ดัชนีน้ำเปิด)","ใช้ Green/SWIR เพื่อเน้นบริเวณที่มีลักษณะคล้ายน้ำเปิด","ลดลงอาจมีน้ำเปิดน้อยลง หรือผลของน้ำขึ้นน้ำลง","เพิ่มขึ้นอาจมีน้ำเปิดมากขึ้น ต้องตรวจข้อมูลน้ำขึ้นน้ำลง"],
+ bsi:["BSI (ดินเปิดโล่ง)","ใช้การสะท้อนแสงหลายช่วงคลื่นชี้พื้นผิวดินที่เปิดโล่ง","ลดลงอาจมีพืชหรือน้ำปกคลุมดินเพิ่ม","เพิ่มขึ้นอาจมีดินเปิดโล่งมากขึ้น"],
+ water_rai:["พื้นที่น้ำ (ไร่)","พื้นที่ที่จำแนกเป็นน้ำและผ่าน QA ภายในขอบเขตแปลง","ลดลงไม่ได้ยืนยันว่าผลกระทบจากน้ำท่วมสิ้นสุด","เพิ่มขึ้นไม่ได้ยืนยันอุทกภัยโดยไม่มีบริบท"]
+};
+function story(plot,key){
+ const a=rows(plot).filter(trusted).filter(x=>Number.isFinite(Number(x[key]))&&x[key]!=null);
+ if(a.length<2)return explain[key][0]+": ยังมีข้อมูลผ่าน QA ไม่ถึงสองวัน";
+ const first=a[0],last=a.at(-1),diff=Number(last[key])-Number(first[key]);
+ const note=Math.abs(diff)<0.0005?"ค่าค่อนข้างคงที่":(diff<0?explain[key][2]:explain[key][3]);
+ return explain[key][0]+": "+fmt(first[key])+" → "+fmt(last[key])+" ("+(diff>0?"+":"")+fmt(diff)+") — "+note;
+}
+function addExplanations(plot,root){
+ const sections=[
+  ["water","พื้นที่น้ำ",["water_rai"]],
+  ["water-change","น้ำเพิ่ม/ลดจากรอบก่อน",["water_rai"]],
+  ["vegetation","ดัชนีพืช",["ndvi","ndre"]],
+  ["moisture","ความชื้นและน้ำ",["ndmi","mndwi"]],
+  ["qa","ความน่าเชื่อถือของข้อมูล",[]],
+  ["bsi","สภาพดิน",["bsi"]]
+ ];
+ for(const [chart,label,keys] of sections){
+   const canvas=root.querySelector('[data-chart="'+chart+'"]');if(!canvas)continue;
+   const card=canvas.closest("article");
+   if(!card)return;
+   const box=document.createElement("div");box.className="live-explanation";
+   const text=keys.length?keys.map(k=>story(plot,k)).join(" • "):"QA (ข้อมูลใช้ได้): เปอร์เซ็นต์พื้นที่ที่ไม่ถูกเมฆ เงา หรือค่าผิดปกติบดบัง ต้องอ่านควบคู่กับทุกกราฟ";
+   box.textContent=label+" — "+text;card.appendChild(box);
+ }
+ const overview=document.createElement("div");overview.className="live-interpretations";
+ const h=document.createElement("h4");h.textContent="สรุปภาพรวมจากวันที่ที่เลือก";overview.appendChild(h);
+ for(const key of ["water_rai","ndvi","ndre","ndmi","mndwi","bsi"]){const p=document.createElement("p");p.textContent=story(plot,key);overview.appendChild(p)}
+ const disclaimer=document.createElement("p");disclaimer.className="disclaimer";disclaimer.textContent="ค่าดัชนีบอกสัญญาณเชิงภาพดาวเทียม ไม่ใช่การยืนยันสาเหตุหรือความเสียหาย ต้องพิจารณาน้ำขึ้นลง เมฆ ฤดูกาล และสำรวจภาคสนาม";overview.appendChild(disclaimer);
+ root.querySelector(".live-grid")?.after(overview);
+}
 async function render(plot,paper){
  await load();
  if(!paper||!history?.plots?.[plot])return;
  // Report headline is rendered from this same history by LiveReportModel.
  const old=paper.querySelector(".live-trend-section");if(old)old.remove();
+ chooseReportDates(plot);
  const snap=liveSnapshot(plot),all=rows(plot);
  const root=document.createElement("section");root.className="report-section live-trend-section";
  const imgDates=imageDates(plot),pending=pendingIndexDates(plot),latestImage=imgDates.at(-1)||null;
@@ -128,7 +183,8 @@ async function render(plot,paper){
  <div class="live-table-wrap"><table class="live-table"><thead><tr><th>วันที่</th><th>QA</th><th>Usable</th><th>น้ำ (ไร่)</th><th>น้ำ (%)</th><th>Δน้ำ (ไร่)</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>MNDWI</th><th>BSI</th></tr></thead><tbody>${tableRows(plot)}</tbody></table></div>
  <p class="live-footnote">* ค่าที่มีเครื่องหมาย * เป็นพื้นที่น้ำที่ตรวจพบเฉพาะส่วนของภาพที่ผ่าน QA ไม่ใช้แทนค่าปัจจุบันโดยอัตโนมัติ</p>`;
  const footer=paper.querySelector(".report-footer");if(footer)footer.before(root);else paper.appendChild(root);
- renderCharts(plot,root);renderWaterMap(plot,root);
+ const soil=document.createElement("article");soil.innerHTML='<h5>ดินเปิดโล่ง: BSI</h5><div class="live-chart"><canvas data-chart="bsi"></canvas></div>';root.querySelector(".live-grid")?.appendChild(soil);
+ renderCharts(plot,root);addExplanations(plot,root);renderWaterMap(plot,root);
 }
 window.TrendReport={load,render,snapshot:plot=>history?liveSnapshot(plot):null,rows:plot=>history?rows(plot):[]};
 load().catch(e=>console.warn("Trend history unavailable",e));
