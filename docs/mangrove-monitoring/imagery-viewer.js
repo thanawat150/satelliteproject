@@ -14,7 +14,7 @@ const MODE={
  ndwi:['NDWI · น้ำ','(B3−B8)/(B3+B8)']
 };
 let index=null,files=new Map(),epoch=0,map=null,boundaryMapLayer=null,boundaryResizeObserver=null;
-let active={plot:'13-STC',date:'',before:'',mode:'true_color',compareMode:'true_color',alpha:.85,geometry:null,rows:[],holder:null,existing:[],boundaryVisible:true,boundaryType:'PDD'};
+let active={plot:'13-STC',date:'',before:'',beforeManual:false,mode:'true_color',compareMode:'true_color',alpha:.85,geometry:null,rows:[],holder:null,existing:[],boundaryVisible:true,boundaryType:'PDD'};
 const $=(id)=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,()=>String.fromCharCode(38)+'quot;').replace(/'/g,'&#39;');
 function dateRows(){return active.existing.filter(x=>x.plot===active.plot)}
@@ -30,6 +30,7 @@ function imageryItems(){const orig=(index?.items||[]).filter(x=>x.plot===active.
  map.set(k,{...x,fallback:old});}}
 for(const row of active.rows){if(row.date&&!map.has(row.date))map.set(row.date,{plot:active.plot,date:row.date,source:'missing',modes:[]});}
 return [...map.values()].sort((a,b)=>a.date.localeCompare(b.date));}
+function latestAvailableImage(items){return [...items].reverse().find(x=>x.source!=='missing'&&qa(x.date).kind==='AUTO_VALID');}
 function dateChoices(items,selected){return items.map(x=>'<option value="'+esc(x.date)+'" '+(selected===x.date?'selected':'')+'>'+esc(x.date)+(x.source==='missing'?' · ไม่มี Raster Preview':x.source==='generated'?' · Rendered Raster':' · Raster Preview')+' · '+qa(x.date).label+'</option>').join('');}
 function rastersFor(item,product){if(!item)return {};const rasters={};for(const x of product?.layers||[]){if(x.plot!==item.plot||x.date!==item.date)continue;if(available(item).includes(x.mode)&&previewSrc(x))rasters[x.mode]=x;}
 return rasters;}
@@ -119,16 +120,19 @@ const latestQa=validQaRows.at(-1);
 const head='<div class="panel-header"><div><h2>Satellite & Index Map · '+esc(active.plot)+'</h2><p class="muted tiny">วันวิเคราะห์และวันมี Raster Preview แยกกัน • ไม่ใช้ภาพ NO_DATA แทนภาพล่าสุดที่ผ่าน QA</p></div><span class="img-data-tag">ACTUAL RASTER ONLY</span></div>'+
 '<div class="img-data-integrity"><div><b>QA ล่าสุด</b><span>'+esc(latestQa?.date||'ยังไม่มี QA ผ่าน')+'</span></div><div><b>วันที่มี Raster Preview</b><span>'+items.filter(x=>x.source!=='missing').length+' / '+items.length+'</span></div><div><b>QA ผ่านแต่ภาพยังไม่พร้อม</b><span>'+missingQa.length+' วัน</span></div></div>';
 if(!items.length)return head+'<div class="notice">ยังไม่มี Preview แบบแผนที่สำหรับแปลง '+esc(active.plot)+' • ข้อมูลดัชนีแบบตัวเลขอาจมีอยู่ แต่แผนที่ Raster ยังไม่ได้สร้างจากไฟล์ TIFF</div><p class="muted tiny">เปิดไฟล์ TIFF ตามวันที่จากตารางด้านล่าง หรือรอการประมวลผลชุดภาพเพิ่ม ระบบไม่แสดงภาพดาวเทียมสมมุติ</p>';
-const noPreview=target?.source==='missing'?'<div class="notice img-missing"><b>ภาพวันที่ '+esc(active.date)+' ยังไม่มี Raster Preview</b> แม้มีข้อมูลวันที่นี้ในผลวิเคราะห์ ('+esc(qa(active.date).label)+') โปรดตรวจ GeoTIFF ต้นฉบับก่อนใช้งานแผนที่หรือรายงาน ระบบไม่ทดแทนด้วยภาพจากวันอื่น</div>':'';
+const latestAvailable=[...items].reverse().find(x=>x.source!=='missing'&&qa(x.date).kind==='AUTO_VALID');
+const openAvailable=latestAvailable&&latestAvailable.date!==active.date?'<button type="button" class="btn img-fallback-btn" id="image-open-available">ดูภาพจริงที่ผ่าน QA วันที่ '+esc(latestAvailable.date)+'</button>':'';
+const noPreview=target?.source==='missing'?'<div class="notice img-missing"><b>ภาพวันที่ '+esc(active.date)+' ยังไม่มี Raster Preview</b> แม้มีข้อมูลวันที่นี้ในผลวิเคราะห์ ('+esc(qa(active.date).label)+') กำลังรอสร้างภาพจาก GeoTIFF ต้นฉบับ ไม่ใช้ภาพ Esri หรือภาพคนละวันแทนผล Sentinel-2 '+openAvailable+'</div>':'';
 const smallWarning=active.rows.find(x=>x.date===active.date)?.total_pixels<30?'<div class="notice img-missing">แปลงมีพิกเซลสำหรับ QA น้อยกว่า 30 พิกเซลบนกริดวิเคราะห์ ควรใช้ภาพ Drone/ข้อมูลภาคสนามตรวจทานก่อนสรุปสภาพป่าหรือน้ำท่วม</div>':'';
 const boundaryLegend=active.geometry?'<div class="img-boundary-legend"><i></i> เส้นแดง = ขอบเขต '+esc(active.boundaryType==='PDD_136'?'PDD':active.boundaryType==='MOC3'?'MOC 3 (ยังไม่ยืนยัน)':active.boundaryType||'จากฐาน GIS')+' ที่ระบบมีอยู่ (ไม่ใช่การรับรองสิทธิ์)</div>':'<div class="notice img-missing">แปลงนี้ไม่มี Geometry ที่จับคู่ได้ จึงยังไม่สามารถวาดขอบเขตบน Raster</div>';
 const main='<div class="img-controls">'+nav+'</div>'+boundaryLegend+noPreview+smallWarning+
  '<div class="img-preview-grid"><div class="img-large"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.mode],active.mode,active.date,target)+'</div><div class="img-foot">ความละเอียด: '+esc(String(a[active.mode]?.resolution_m||'—'))+' m · ภาพเต็มสี่เหลี่ยม (ไม่ clip เฉพาะ Polygon)</div></div>'+
- '<div class="img-map-panel"><div class="img-title">แสดง Raster ซ้อนแผนที่พร้อมขอบเขต PDD</div><div class="img-geo-map" id="mmc-geo-map"></div><div class="img-foot">ขอบเขต PDD เส้นแดง · ภาพอ้างอิงพิกัดตาม bounds ของ Raster จริง</div>'
+ '<div class="img-map-panel"><div class="img-title">'+(a[active.mode]?'Raster Sentinel-2 พร้อมขอบเขต PDD':'ภาพพื้นหลัง Esri พร้อมขอบเขต PDD (ยังไม่มี Raster '+esc(active.date)+')')+'</div><div class="img-geo-map" id="mmc-geo-map"></div><div class="img-foot">'+(a[active.mode]?'ขอบเขต PDD เส้นแดง · ภาพ Sentinel-2 วันที่เลือกอ้างอิง bounds ของ Raster จริง':'ภาพนี้เป็น Basemap Esri สำหรับดูตำแหน่งเท่านั้น ไม่ใช่ภาพ Sentinel-2 วันที่ '+esc(active.date))+'</div>'
 +legend(target,active.mode)
 +'</div></div>';
 const compare='<div class="img-compare-wrap"><div class="img-compare-head"><h3>เปรียบเทียบ Before / After</h3><label>Before<select id="image-before">'+dateChoices(items,active.before)+'</select></label><label>ชนิด<select id="image-compare-mode">'+modeOptions(active.compareMode)+'</select></label></div>'+
  '<div class="img-compare-grid"><figure><div class="img-title">BEFORE · '+esc(active.before)+' '+statusPill(active.before)+'</div><div class="img-frame">'+thumb(b[active.compareMode],active.compareMode,active.before,before)+'</div></figure><figure><div class="img-title">AFTER · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.compareMode],active.compareMode,active.date,target)+'</div></figure></div>'+
+ (qa(active.before).kind!=='AUTO_VALID'?'<div class="notice img-missing">วัน Before ที่เลือกไม่ผ่าน QA จึงไม่ควรใช้เปรียบเทียบผลกระทบ โปรดเลือกวันที่ผ่าน QA</div>':'')+
  '<p class="muted tiny">แสดงภาพจากสองวันที่เลือกจริง แต่ยังไม่ใช่ผล Change Detection ที่ยืนยันแล้ว เพราะต้องตรวจ QA, พิกเซลใช้ได้ร่วมกัน และน้ำขึ้นน้ำลงก่อนตีความ</p></div>';
 const modes=['true_color','false_color','ndvi','ndre','ndmi','mndwi','bsi','ndwi'];
 const gallery='<h3 class="img-gallery-title">ภาพสีจริง / สีเท็จ / ดัชนีในวันที่เลือก</h3><div class="img-gallery">'+modes.map(mode=>'<div class="img-tile"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(a[mode],mode,active.date,target)+'</div><small>'+esc(MODE[mode][1])+'</small></div>').join('')+'</div>';
@@ -150,7 +154,11 @@ setTimeout(()=>{try{map.invalidateSize()}catch(e){}},100);
 async function renderAsync(){const id=++epoch;destroyMap();clearBoundaryLayout();const hold=active.holder;if(!hold)return;hold.innerHTML='<div class="img-load">กำลังอ่าน Raster Preview และ metadata…</div>';
 try{await getIndex();const items=imageryItems();
 if(!items.some(x=>x.date===active.date)){const v=[...items].reverse().find(x=>qa(x.date).kind==='AUTO_VALID');active.date=v?.date||items.at(-1)?.date||'';}
-if(!items.some(x=>x.date===active.before)){const before=[...items].reverse().find(x=>x.date<active.date&&qa(x.date).kind==='AUTO_VALID');active.before=before?.date||items.find(x=>x.date!==active.date)?.date||active.date;}
+if(!active.beforeManual||!items.some(x=>x.date===active.before)||active.before>=active.date){
+const before=[...items].reverse().find(x=>x.date<active.date&&x.source!=='missing'&&qa(x.date).kind==='AUTO_VALID');
+active.before=before?.date||[...items].reverse().find(x=>x.date<active.date&&qa(x.date).kind==='AUTO_VALID')?.date||'';
+active.beforeManual=false;
+}
 const cur=items.find(x=>x.date===active.date),bef=items.find(x=>x.date===active.before);
 const [cp,bp]=await Promise.all([getProduct(cur),cur?.part===bef?.part&&cur?.source===bef?.source?getProduct(cur):getProduct(bef)]);
 if(id!==epoch)return;const byDate=new Map();if(cur)byDate.set(cur.date,rastersFor(cur,cp));if(bef)byDate.set(bef.date,rastersFor(bef,bp));
@@ -159,16 +167,17 @@ hold.classList.toggle('boundary-hidden',!active.boundaryVisible);
 fitBoundaryOverlays(hold);
 drawMap(cur,byDate.get(active.date)?.[active.mode]||null);
 const change=ev=>{const t=ev.target;
-if(t.id==='image-date'){active.date=t.value;renderAsync();}
-if(t.id==='image-before'){active.before=t.value;renderAsync();}
+if(t.id==='image-date'){active.date=t.value;active.beforeManual=false;renderAsync();}
+if(t.id==='image-before'){active.before=t.value;active.beforeManual=true;renderAsync();}
 if(t.id==='image-mode'){active.mode=t.value;renderAsync();}
 if(t.id==='image-compare-mode'){active.compareMode=t.value;renderAsync();}
 if(t.id==='image-opacity'){active.alpha=Number(t.value)/100;if(map){map.eachLayer(layer=>{if(layer instanceof L.ImageOverlay)layer.setOpacity(active.alpha)})}}
 if(t.id==='image-boundary-toggle'){active.boundaryVisible=t.checked;hold.classList.toggle('boundary-hidden',!t.checked);if(map&&boundaryMapLayer){if(t.checked)boundaryMapLayer.addTo(map);else map.removeLayer(boundaryMapLayer);}const mapHolder=$('mmc-geo-map');if(mapHolder)mapHolder.dataset.boundaryVisible=String(Boolean(active.geometry&&t.checked));}
 };
+const availableBtn=$('image-open-available');if(availableBtn&&latestAvailableImage(items))availableBtn.addEventListener('click',()=>{active.date=latestAvailableImage(items).date;active.beforeManual=false;renderAsync();});
 for(const sel of ['image-date','image-before','image-mode','image-compare-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
 }catch(e){console.error('MMC imagery',e);if(id===epoch)showError(e.message||e)}}
-function mount(o){if(!o?.plot||!o?.container)return;if(active.plot!==o.plot){active.date='';active.before='';active.mode='true_color';active.compareMode='true_color';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
+function mount(o){if(!o?.plot||!o?.container)return;if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';active.compareMode='true_color';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
 function clear(){epoch++;destroyMap();clearBoundaryLayout();active.holder=null;}
 window.MMCImagery={mount,clear,get coverage(){return index?{plots:index.plot_count,dates:index.image_dates}:null}};
 })();
