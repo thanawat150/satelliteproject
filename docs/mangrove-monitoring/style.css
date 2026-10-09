@@ -51,3 +51,15 @@ select,input[type="search"],input[type="number"],input[type="date"]{background:#
  .img-gallery .img-tile{break-inside:avoid}
  .report-raster-section{break-before:page}
 }
+/* Geospatial boundary on every rendered raster, including print and responsive galleries. */
+.img-frame{position:relative;isolation:isolate}
+.img-boundary-overlay{position:absolute;z-index:2;pointer-events:none;overflow:visible;visibility:hidden;fill:none}
+.img-boundary-overlay path{fill:none;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.img-boundary-halo{stroke:#111e17;stroke-width:5;opacity:.98}
+.img-boundary-line{stroke:#ff434a;stroke-width:2.6;opacity:1}
+.boundary-hidden .img-boundary-overlay{display:none!important}
+.img-boundary-control{display:inline-flex!important;align-items:center;gap:7px;font-weight:700;color:#e9f4ec!important}
+.img-boundary-control input{width:17px;height:17px;accent-color:#ff535b}
+.img-boundary-legend{display:flex;align-items:center;gap:7px;padding:8px 11px;margin:0 0 11px;background:var(--panel-alt);border:1px solid var(--border);border-radius:8px;color:#e2efe7;font-size:11px}
+.img-boundary-legend i{display:inline-block;width:24px;flex:0 0 24px;border-top:3px solid #ff434a;box-shadow:0 1px #111}
+@media print{.img-boundary-overlay{visibility:visible!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}.img-boundary-line{stroke:#d62232!important}.img-boundary-halo{stroke:white!important}}
