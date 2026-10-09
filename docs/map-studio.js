@@ -38,10 +38,12 @@ function compactToImage(v){
  }
  ctx.putImageData(buf,0,0);v.url=c.toDataURL("image/png");return v.url;
 }
+function dataMode(mode){return mode==="true"?"true_color":mode==="false"?"false_color":mode}
 function available(p,d,mode){
  const priority={DIRECT:0,LATEST_RECT:1,NO_CLOUD_FILTER:2,HIST_CLEAR_RECT_SCL0:3};
+ const target=dataMode(mode);
  return entries
-   .filter(v=>v.plot===p?.plot&&v.date===d&&v.mode===mode)
+   .filter(v=>v.plot===p?.plot&&v.date===d&&v.mode===target)
    .sort((a,b)=>(priority[a.source_suffix]??9)-(priority[b.source_suffix]??9))[0]||null;
 }
 function date(){return mapSatelliteDate||(selected&&mapSatelliteCandidates(selected.plot)[0]?.date)||null;}
