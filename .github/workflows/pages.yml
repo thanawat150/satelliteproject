@@ -7,6 +7,10 @@ on:
       - "docs/**"
       - "scripts/validate_portal.py"
       - "scripts/derive_daily_monitoring.py"
+      - "scripts/nationwide_process.py"
+      - "scripts/nationwide_inventory.py"
+      - "scripts/nationwide_scope_136.py"
+      - "scripts/validate_nationwide.py"
       - "scripts/test_monitoring_qa_alerts.cjs"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
@@ -29,7 +33,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate portal data
-        run: python scripts/validate_portal.py
+        run: |
+          python scripts/validate_portal.py
+          python scripts/validate_nationwide.py
 
       - name: Check JavaScript syntax for the portal
         run: |
@@ -37,6 +43,7 @@ jobs:
           node --check docs/calendar.js
           node --check docs/map-studio.js
           node --check docs/trend-report.js
+          node --check docs/nationwide.js
           node --check docs/report-selector.js
           node --check docs/monitoring-studio.js
           node --check docs/monitoring-qa.js
@@ -45,7 +52,7 @@ jobs:
           node scripts/test_monitoring_qa_alerts.cjs
           node --check docs/live-report-model.js
           node scripts/test_live_report.cjs
-          python -m py_compile scripts/derive_daily_monitoring.py
+          python -m py_compile scripts/derive_daily_monitoring.py scripts/nationwide_process.py scripts/nationwide_inventory.py scripts/nationwide_scope_136.py
 
       # Refresh directly in the published docs snapshot without changing main.
       # If provider is down, keep the last known, explicitly dated reference prices.
