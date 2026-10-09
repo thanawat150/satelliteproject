@@ -93,3 +93,8 @@ html{scroll-behavior:smooth}
 .img-rgb-resolution{color:#bddac9;background:#1b3c30;border:1px solid #315d46;border-radius:8px;padding:10px 12px;margin:9px 0;font-size:11px;line-height:1.6}
 .img-rgb-warning{border-color:#be9051;background:#382d1c}
 .img-rgb-warning b{color:#f9cf89}
+
+/* Keep the actual Sentinel pixels distinguishable instead of blurring tiny 10/20 m scenes.
+   This does not add spatial detail; native pixel counts remain in the QA metadata. */
+.img-frame img{image-rendering:pixelated;image-rendering:crisp-edges}
+.img-geo-map .leaflet-image-layer{image-rendering:pixelated;image-rendering:crisp-edges}
