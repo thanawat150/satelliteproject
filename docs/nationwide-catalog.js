@@ -105,9 +105,9 @@ function openModal(id){
  $("national-modal-details").textContent=r.title+" • "+kindName(r.kind)+" • ภาพเต็มไม่ตัดตาม PDD";
  $("national-original").href=src(r);
  const im=$("national-modal-img"),fallback=$("national-modal-fallback");
- im.hidden=false;fallback.hidden=true;im.onerror=()=>{im.hidden=true;fallback.hidden=false};im.src=thumb(r);
+ im.hidden=false;fallback.hidden=true;const embedded=$("national-modal-drive-frame");if(embedded)embedded.src="about:blank";im.onerror=()=>{im.hidden=true;fallback.hidden=false;if(embedded)embedded.src="https://drive.google.com/file/d/"+encodeURIComponent(r.id)+"/preview"};im.src=thumb(r);
 }
-function closeModal(){const m=$("national-preview");m.hidden=true;m.classList.remove("open");$("national-modal-img").removeAttribute("src")}
+function closeModal(){const m=$("national-preview");m.hidden=true;m.classList.remove("open");$("national-modal-img").removeAttribute("src");const d=$("national-modal-drive-frame");if(d)d.src="about:blank"}
 function renderMap(){
  if(!geo||!window.L)return;
  if(!map){map=L.map("national-boundary-map",{zoomControl:true,scrollWheelZoom:false}).setView([11,101.5],6);
