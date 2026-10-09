@@ -76,7 +76,7 @@ const {chromium}=require("playwright");
   await page.waitForFunction(()=>document.querySelectorAll("#plot option").length>=2 && document.querySelectorAll("#dates input[data-day]").length===2,{timeout:30000});
   const validation=await page.evaluate(async()=>{
     const data=await fetch("data/nationwide/batch_01_results.json").then(r=>r.json());
-    const source=await fetch("data/nationwide/boundaries_pdd_all.geojson").then(r=>r.json());
+    const source=await fetch("data/nationwide/boundaries_pdd_136.geojson").then(r=>r.json());
     return {nPlots:Object.keys(data.plots).length,nScenes:data.scenes.length,qa:data.totals.qa_valid_dates,candidates:source.features.length,hasFullMetrics:data.scenes.some(x=>x.status==="AUTO_VALID"&&x.bsi!=null&&x.ndvi!=null&&x.ndre!=null&&x.ndmi!=null&&x.mndwi!=null&&x.savi!=null&&x.evi!=null),waterGeojsonCount:(await fetch("data/nationwide/batch_01_features.geojson").then(r=>r.json())).features.length};
   });
   assert.equal(validation.nPlots,10,"Batch 01 must contain 10 real PDD plots");
