@@ -103,3 +103,16 @@ html{scroll-behavior:smooth}
 .img-frame{background-color:#14251f;background-image:repeating-conic-gradient(#172e25 0% 25%,#22362d 0% 50%);background-position:0 0;background-size:16px 16px}
 .img-qa-explainer{font-size:11px;color:#c5d8cd;border:1px solid #365a46;border-radius:8px;padding:9px 12px;margin:10px 0;background:#173126}
 @media print{.img-frame{background:#e7eae8!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+/* Source-validated spectral index: exact palette plus plot-clipped numeric QA. */
+.img-index-brief{border-top:1px solid #335845;margin-top:8px;padding:7px 0;color:#bedecb;font-size:10.5px;line-height:1.6;overflow-wrap:anywhere}
+.img-index-brief b{color:#e5f9ec;font-size:11.5px}
+.img-index-brief>div{color:#a5c6b2}
+.img-index-audit{margin:18px 0;border:1px solid #39604a;padding:16px;border-radius:12px;background:#102d22}
+.img-index-audit h3{margin:0 0 7px}
+.img-index-audit p{margin:7px 0 11px}
+.img-index-audit table td,.img-index-audit table th{font-size:11px;line-height:1.6}
+.img-legend small{font-size:10px;display:block;color:#b5c8bd;margin-top:5px;overflow-wrap:anywhere}
+.img-legend-ramp{background-size:100% 100%}
+@media(max-width:700px){.img-index-audit{padding:10px}.img-index-brief{font-size:10px}}
+@media print{.img-index-audit{break-inside:avoid;background:white!important;color:#111!important}.img-index-brief{color:#222!important}}
