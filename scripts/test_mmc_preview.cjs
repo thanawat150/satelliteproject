@@ -58,11 +58,34 @@ await page.waitForFunction(()=>{const im=document.querySelector('.img-large .img
 const rgb30=await page.locator('#imagery-explorer').innerText();
 assert.ok(rgb30.includes('RGB Preview 9 × 13'),'30-STC actual RGB preview must use native 10m, not old 5x7 20m image');
 assert.ok(rgb30.includes('SCL 100%')&&rgb30.includes('5px'),'The 100% QA result must be labeled with only 5 sample pixels');
-assert.ok(rgb30.includes('สีเกือบขาวในแปลง'),'Independent RGB whiteness screening must be exposed');
+assert.ok(rgb30.includes('เกือบขาว'),'Independent RGB whiteness screening must be exposed');
 assert.equal(await page.locator('#image-before').inputValue(),'2026-09-22','30-STC defaults to prior QA-valid date');
 assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'Georeferenced 10m preview retains plot polygon');
 assert.equal(await page.locator('[data-history-date="2026-09-30"] .img-tile').count(),8,'30-STC has 8 mode thumbnails for native RGB and 20m indices');
 
+// Regression: 24-VSD 2026-09-05 was an almost entirely white false RGB render.
+await page.locator('#plot-select').selectOption('24-VSD');
+await page.locator('#image-date').selectOption('2026-09-05');
+await page.waitForFunction(()=>{
+ const img=document.querySelector('.img-large .img-frame img');
+ return img?.complete&&img.naturalWidth===21&&img.naturalHeight===29;
+},{timeout:20000});
+const rgb24=await page.locator('.img-large').evaluate(root=>{
+ const img=root.querySelector('.img-frame img'),canvas=document.createElement('canvas');
+ canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+ const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
+ const rgba=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+ let valid=0,nearWhite=0,greenDominant=0;
+ for(let i=0;i<rgba.length;i+=4){if(rgba[i+3]<200)continue;valid++;
+  if(Math.min(rgba[i],rgba[i+1],rgba[i+2])>=235)nearWhite++;
+  if(rgba[i+1]>rgba[i]&&rgba[i+1]>rgba[i+2])greenDominant++;
+ }
+ return {valid,nearWhite,greenDominant};
+});
+assert.ok(rgb24.valid>30,'24-VSD must render real valid pixels');
+assert.ok(rgb24.nearWhite/rgb24.valid<0.30,'24-VSD RGB must not be a white-only falsely stretched image');
+assert.ok(rgb24.greenDominant/rgb24.valid>0.40,'Vegetated plot must retain plausible green RGB band balance');
+assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'24-VSD actual polygon remains georeferenced');
 await page.locator('#plot-select').selectOption('102-VSD');
 await page.waitForFunction(()=>document.querySelector('#image-date option')?.textContent?.includes('2026'),{timeout:20000});
 await page.locator('#image-mode').selectOption('ndmi');
