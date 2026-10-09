@@ -37,3 +37,10 @@
 .ps-loading{border-radius:9px;padding:12px 15px;background:#e8f4fc;color:#25547d;margin:10px 0}
 @media(max-width:1080px){.ps-layout{grid-template-columns:1fr}.ps-input{position:static;max-height:none}.ps-export{justify-content:start}}
 @media(max-width:600px){.ps-hero{padding:21px;align-items:start}.ps-count{min-width:64px;font-size:24px;padding:8px}.ps-card-actions .btn{flex:1 1 100%}.ps-result-header{display:block}.ps-export{margin:12px 0}.ps-row{grid-template-columns:1fr}}
+/* Product Voice Studio — labels correspond to Google AI Studio TTS */
+.ps-voice-studio{margin-top:16px;padding:16px;border:1px solid #cbdce7;border-radius:14px;background:linear-gradient(180deg,#f6fbff,#fff)}
+.ps-vs-header{display:flex;flex-direction:column;gap:4px;margin-bottom:13px}.ps-vs-header strong{font-size:15px;color:#203f5f}.ps-vs-header small{font-size:11px;color:#697f94;line-height:1.6}
+.ps-voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ps-vs-help{font-size:11px;line-height:1.65;color:#596f85;background:#e8f3ff;padding:10px;border-radius:9px;margin:12px 0}
+.ps-voice-studio .btn{width:100%}
+@media(max-width:600px){.ps-voice-grid{grid-template-columns:1fr}}
