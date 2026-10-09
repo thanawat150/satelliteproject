@@ -88,3 +88,8 @@ select,input[type="search"],input[type="number"],input[type="date"]{background:#
 .img-history-link{padding:7px 11px;border:1px solid #528f73;border-radius:7px;background:#224636;color:#ccffdf;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap}
 .img-history-link:hover{background:#31684c;color:white}
 html{scroll-behavior:smooth}
+
+/* Separate spectral display quality from SCL QA, especially on tiny plots. */
+.img-rgb-resolution{color:#bddac9;background:#1b3c30;border:1px solid #315d46;border-radius:8px;padding:10px 12px;margin:9px 0;font-size:11px;line-height:1.6}
+.img-rgb-warning{border-color:#be9051;background:#382d1c}
+.img-rgb-warning b{color:#f9cf89}
