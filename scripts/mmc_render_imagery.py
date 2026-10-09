@@ -114,13 +114,17 @@ def generate(ten,twenty,output,plot,date):
         }
 
 def candidates_from_result(result,plot):
+    """Render every individually QA-valid Sentinel-2 scene, not only first/latest.
+
+    Missing/no-data dates must NOT be synthesized. De-duplicate acquisitions by
+    plot/date so the manifest corresponds to actual TIFF dates.
+    """
     valid=[x for x in result["scenes"] if x["plot"]==plot and x["analysis_status"]=="AUTO_VALID"]
     valid.sort(key=lambda x:x["date"])
-    if not valid:return []
-    # At most earliest + latest; before-after is meaningful only with plot-level QA.
-    take=[valid[0]]
-    if valid[-1]["date"]!=valid[0]["date"]:take.append(valid[-1])
-    return take
+    dates={}
+    for scene in valid:
+        dates[scene["date"]]=scene
+    return list(dates.values())
 
 def from_folder(gdown,plot,scene,folder_records):
     """Resolve exact 10m and 20m file IDs for an existing analyzed date."""
