@@ -167,10 +167,10 @@ const IDEA_GROUPS={
  behavior:['personality','delivery','voice'],
  visual:['outfit','location','lighting','camera']
 };
-function fillIdeaGroup(group){const fields=group==='all'?Object.values(IDEA_GROUPS).flat():IDEA_GROUPS[group]||[];let changed=0;for(const key of fields)if(pickIdea(key,true))changed++;save();currentHTML();toast(changed?'เติมไอเดียในช่องที่ยังว่าง '+changed+' หัวข้อแล้ว':'หมวดนี้มีข้อมูลแล้ว กด ✦ ช่วยคิด ในหัวข้อที่อยากเปลี่ยนได้');}
+function fillIdeaGroup(group){const fields=group==='all'?Object.values(IDEA_GROUPS).flat():IDEA_GROUPS[group]||[];const changed=[];for(const key of fields)if(pickIdea(key,true))changed.push(key);save();for(const key of changed){const node=document.querySelector('[data-pw-field="draft.'+key+'"]');if(node)node.value=state.draft[key];}toast(changed.length?'เติมไอเดียในช่องที่ยังว่าง '+changed.length+' หัวข้อแล้ว':'หมวดนี้มีข้อมูลแล้ว กด ✦ ช่วยคิด ในหัวข้อที่อยากเปลี่ยนได้');}
 function guidedField(field,label,placeholder,rows=0){
  const val=state.draft[field]||'';
- return '<label class="pw-field pw-guided-field"><span class="pw-guided-title"><b>'+esc(label)+'</b><button type="button" class="pw-idea-button" data-pw-idea="'+field+'" title="เปลี่ยนเฉพาะหัวข้อนี้">✦ ช่วยคิด</button></span>'+
+ return '<label class="pw-field pw-guided-field"><span class="pw-guided-title"><b>'+esc(label)+'</b>'+(Object.prototype.hasOwnProperty.call(TOPICS,field)?'<button type="button" class="pw-idea-button" data-pw-idea="'+field+'" title="เปลี่ยนเฉพาะหัวข้อนี้">✦ ช่วยคิด</button>':'')+'</span>'+
  (rows?'<textarea rows="'+rows+'" data-pw-field="draft.'+field+'" placeholder="'+esc(placeholder)+'">'+esc(val)+'</textarea>':'<input data-pw-field="draft.'+field+'" value="'+esc(val)+'" placeholder="'+esc(placeholder)+'">')+'</label>'
 }
 function guidedSection(key,title,subtitle,markup,isOpen=false){
