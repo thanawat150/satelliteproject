@@ -155,6 +155,7 @@ function render(p){
  status("กำลังจัดภาพ "+p.plot+" • "+nice(d)+" ให้ตรงขอบเขต PDD...");
  clipPlotImage(p,layer).then(url=>{
   if(callId!==renderSerial)return;
+  current={...layer,url};
   [[overviewMap,"overview"],[fullMap,"full"]].forEach(([map,k])=>{
    if(!map)return;
    satelliteImageLayers[k]=L.imageOverlay(url,b,{pane:"satellitePane",opacity:mapSatelliteOpacity,interactive:false}).addTo(map);
@@ -162,11 +163,14 @@ function render(p){
    satelliteImageLayers[k].on("error",()=>status("เปิดชั้นภาพนี้ไม่สำเร็จ ลองเลือกวันอื่น"));
   });
   applyColor();applyVisibility();
+  const qa=window.TrendReport?.rows?.(p.plot)?.find(x=>x.date===d);
+  const qualityWarning=qa?.analysis_status==="NO_DATA"?" • ⚠ ภาพวันดังกล่าวผ่าน QA ไม่เพียงพอ":
+    qa?.analysis_status==="PARTIAL"?" • ⚠ มีเมฆ/เงาบางส่วน ไม่ครอบคลุมทั้งแปลง":"";
   const size=(layer.previewResolution||"").split("×").map(Number);
   const small=size.length===2&&Math.min(...size)<80;
   status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+(layer.previewResolution?" • "+layer.previewResolution:"")+
     (layer.resolution_m?" • "+layer.resolution_m+" m":"")+
-    (small?" • ⚠ มีพิกเซลน้อย ภาพ Sentinel-2 จึงหยาบกว่าภาพฐาน":"")+" • ภาพตัดตามขอบเขต PDD");
+    (small?" • ⚠ มีพิกเซลน้อย ภาพ Sentinel-2 จึงหยาบกว่าภาพฐาน":"")+qualityWarning+" • ภาพตัดตามขอบเขต PDD");
  }).catch(e=>status("แสดงภาพไม่สำเร็จ: "+e.message));
 }
 function status(s){if($("map-sat-status"))$("map-sat-status").textContent=s;if($("studio-data-status"))$("studio-data-status").textContent=s}
