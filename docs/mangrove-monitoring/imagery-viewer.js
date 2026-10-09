@@ -158,7 +158,7 @@ function allDateGallery(items,byDate,modes){
    if(item.source==='generated'&&!item.rgb_renderer_version)out+='<p class="img-history-qa-caution">Preview รุ่นเก่า: ยังใช้การปรับสีรายภาพ ซึ่งอาจทำให้ภาพขาวหรือมีแถบดำ</p>';
    out+='<div class="img-gallery img-history-gallery">';
    for(const mode of modes){
-    out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small></div>';
+    out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small>'+indexStatBrief(item,mode)+'</div>';
    }
    out+='</div>';
   }
@@ -200,7 +200,7 @@ const compare='<div class="img-compare-wrap"><div class="img-compare-head"><h3>�
  (qa(active.before).kind!=='AUTO_VALID'?'<div class="notice img-missing">วัน Before ที่เลือกไม่ผ่าน QA จึงไม่ควรใช้เปรียบเทียบผลกระทบ โปรดเลือกวันที่ผ่าน QA</div>':'')+
  '<p class="muted tiny">แสดงภาพจากสองวันที่เลือกจริง แต่ยังไม่ใช่ผล Change Detection ที่ยืนยันแล้ว เพราะต้องตรวจ QA, พิกเซลใช้ได้ร่วมกัน และน้ำขึ้นน้ำลงก่อนตีความ</p></div>';
 const modes=['true_color','false_color','ndvi','ndre','ndmi','mndwi','bsi','ndwi'];
-const gallery='<h3 class="img-gallery-title">ภาพสีจริง / สีเท็จ / ดัชนีในวันที่เลือก</h3><div class="img-gallery">'+modes.map(mode=>'<div class="img-tile"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(a[mode],mode,active.date,target)+'</div><small>'+esc(MODE[mode][1])+'</small></div>').join('')+'</div>';
+const gallery='<h3 class="img-gallery-title">ภาพสีจริง / สีเท็จ / ดัชนีในวันที่เลือก</h3><div class="img-gallery">'+modes.map(mode=>'<div class="img-tile"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(a[mode],mode,active.date,target)+'</div><small>'+esc(MODE[mode][1])+'</small>'+indexStatBrief(target,mode)+'</div>').join('')+'</div>';
 const history=allDateGallery(items,byDate,modes);
 const indexAudit=indexAuditTable(target);
 const source=srcMeta?'<div class="img-source"><b>Traceability</b> · Plot '+esc(active.plot)+' • วันที่ภาพ '+esc(active.date)+' • '+esc(srcMeta.algorithm||'Preview จาก TIFF')+' • QA '+esc(srcMeta.analysis_status||'ยังไม่ประมวลผล')+
