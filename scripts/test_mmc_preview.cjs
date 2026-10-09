@@ -71,12 +71,24 @@ await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2
 const latestImage=await page.locator('.img-large img').first();
 await page.waitForFunction(()=>{const im=document.querySelector('.img-large img');return im?.complete&&im.naturalWidth>0;},{timeout:20000});
 assert.ok((await latestImage.getAttribute('src')).includes('/15-STC/2026-10-07/true_color.webp'),'15-STC QA-valid 2026-10-07 must now have a real RGB raster');
+await page.waitForFunction(()=>document.querySelectorAll('#img-all-dates [data-history-date]').length===4,{timeout:30000});
+assert.equal(await page.locator('#img-all-dates [data-history-date]').count(),4,'Full history must include every acquired date, including NO_DATA');
+assert.equal(await page.locator('[data-history-date="2026-10-07"] .img-tile').count(),8,'All 8 real raster bands/index views for latest valid date');
+assert.ok(await page.locator('[data-history-date="2026-08-03"] .img-tile').count()===8,'Older date also displays all 8 mode slots');
+assert.ok((await page.locator('[data-history-date="2026-10-02"]').innerText()).includes('ไม่ผ่าน QA'),'Cloudy/no-data acquisition must remain visible with clear QA warning');
+await page.waitForFunction(()=>[...document.querySelectorAll('[data-history-date="2026-10-07"] .img-tile img')].filter(im=>im.complete&&im.naturalWidth>0).length===8,{timeout:20000});
+assert.equal(await page.locator('[data-history-date="2026-10-07"] .img-boundary-line').count(),8,'Every image in complete history must have actual geometry overlay');
+
 assert.ok(await page.locator('#mmc-geo-map .leaflet-image-layer').count()>=1,'Latest QA-valid scene overlays raster on GIS map');
 assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'Latest QA-valid scene must display actual red polygon boundary');
 const missingImage=await page.locator('#imagery-explorer').innerText();
 assert.ok(!missingImage.includes('ยังไม่มี Raster Preview'),'15-STC 2026-10-07 preview is published and must not display missing notice');
 assert.equal(await page.locator('#image-before').inputValue(),'2026-08-03','Before defaults to an earlier QA-valid available raster, never NO_DATA');
 assert.ok(missingImage.includes('น้อยกว่า 30 พิกเซล'),'Small plot accuracy warning should be visible');
+await page.locator('[data-image-jump="2026-08-03"]').click();
+await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-08-03',{timeout:15000});
+assert.equal(await page.locator('#img-all-dates [data-history-date]').count(),4,'Changing selected date must preserve complete image history');
+await page.locator('#image-date').selectOption('2026-10-07');
 await page.locator('#image-before').selectOption('2026-10-02');
 assert.ok((await page.locator('#imagery-explorer').innerText()).includes('วัน Before ที่เลือกไม่ผ่าน QA'),'Manually chosen NO_DATA Before must be warned');
 await page.locator('[data-view="insights"]').click();
