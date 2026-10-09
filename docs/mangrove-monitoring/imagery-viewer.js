@@ -125,7 +125,8 @@ function allDateGallery(items,byDate,modes){
    out+='<div class="notice img-missing">วันที่นี้ยังไม่มี Raster Preview ('+esc(qa(item.date).label)+') ไม่สร้างภาพแทนจากแหล่งอื่น</div>';
   }else{
    if(qa(item.date).kind!=='AUTO_VALID')out+='<p class="img-history-qa-caution">ภาพมีอยู่จริง แต่วันดังกล่าวไม่ผ่าน QA หรือยังไม่มีผล QA ยืนยัน จึงไม่ควรใช้สรุปผลกระทบ</p>';
-   if(item.rgb_display_warning)out+='<p class="img-history-qa-caution">RGB QUALITY REVIEW: '+esc(String(item.rgb_near_white_pct))+'% ของพิกเซลในแปลงเกือบขาว โปรดตรวจแหล่งภาพและขั้นตอนปรับสี</p>';
+   if(item.rgb_display_warning||Number(item.rgb_invalid_pct)>30||Number(item.rgb_unclassified_scl_pct)>20)out+='<p class="img-history-qa-caution">RGB QUALITY REVIEW: เกือบขาว '+esc(String(item.rgb_near_white_pct??'ไม่ทราบ'))+'% · NoData/ไม่ผ่าน SCL '+esc(String(item.rgb_invalid_pct??'ไม่ทราบ'))+'% · SCL 7 '+esc(String(item.rgb_unclassified_scl_pct??'ไม่ทราบ'))+'% — ควรตรวจภาพต้นทางก่อนใช้งาน</p>';
+   if(item.source==='generated'&&!item.rgb_renderer_version)out+='<p class="img-history-qa-caution">Preview รุ่นเก่า: ยังใช้การปรับสีรายภาพ ซึ่งอาจทำให้ภาพขาวหรือมีแถบดำ</p>';
    out+='<div class="img-gallery img-history-gallery">';
    for(const mode of modes){
     out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small></div>';
@@ -155,8 +156,9 @@ const noPreview=target?.source==='missing'?'<div class="notice img-missing"><b>�
 const smallWarning=active.rows.find(x=>x.date===active.date)?.total_pixels<30?'<div class="notice img-missing">แปลงมีพิกเซลสำหรับ QA น้อยกว่า 30 พิกเซลบนกริดวิเคราะห์ จึงไม่ควรตีความว่า SCL 100% หมายถึงภาพชัดหรือแม่นยำ ควรใช้ภาพต้นฉบับและข้อมูลภาคสนามตรวจทาน</div>':'';
 const rgbSource=target?.source==='generated'?target:null;
 const whitePct=rgbSource?.rgb_near_white_pct;
-const rgbWarning=rgbSource?.rgb_display_warning?'<div class="notice img-missing img-rgb-warning"><b>RGB QUALITY REVIEW:</b> '+esc(String(whitePct))+'% ของพิกเซลสีจริงในขอบเขตแปลงที่ผ่าน SCL เป็นสีเกือบขาว อาจเกิดจากเมฆ ความสว่างสูง หรือการปรับสี ต้องตรวจ TIFF ก่อนสรุป</div>':'';
-const rgbMeta=rgbSource?.rgb_native_width?'<div class="img-rgb-resolution">RGB Preview '+esc(rgbSource.rgb_native_width)+' × '+esc(rgbSource.rgb_native_height)+' พิกเซล (กริดต้นทาง 10 ม.) · ดัชนีจากกริด 20 ม. · สีเกือบขาวในแปลง '+esc(String(whitePct??'ไม่ทราบ'))+'%</div>':'';
+const showRgbReview=!!(rgbSource&&(rgbSource.rgb_display_warning||Number(rgbSource.rgb_invalid_pct)>30||Number(rgbSource.rgb_unclassified_scl_pct)>20));
+const rgbWarning=showRgbReview?'<div class="notice img-missing img-rgb-warning"><b>RGB QUALITY REVIEW • ยังไม่รับรองภาพใส:</b> เกือบขาว '+esc(String(whitePct??'ไม่ทราบ'))+'% · NoData/ไม่ผ่าน SCL '+esc(String(rgbSource.rgb_invalid_pct??'ไม่ทราบ'))+'% · SCL 7 (ไม่จำแนก) '+esc(String(rgbSource.rgb_unclassified_scl_pct??'ไม่ทราบ'))+'% โปรดตรวจ TIFF ก่อนใช้งาน</div>':'';
+const rgbMeta=rgbSource?.rgb_native_width?'<div class="img-rgb-resolution">RGB Preview '+esc(rgbSource.rgb_native_width)+' × '+esc(rgbSource.rgb_native_height)+' พิกเซล (กริดต้นทาง 10 ม.) · ดัชนีจากกริด 20 ม. · เกือบขาว '+esc(String(whitePct??'ไม่ทราบ'))+'% · NoData/ไม่ผ่าน SCL '+esc(String(rgbSource.rgb_invalid_pct??'ไม่ทราบ'))+'% · รุ่น '+esc(rgbSource.rgb_renderer_version||'เดิม')+'</div>':'';
 const boundaryLegend=active.geometry?'<div class="img-boundary-legend"><i></i> เส้นแดง = ขอบเขต '+esc(active.boundaryType==='PDD_136'?'PDD':active.boundaryType==='MOC3'?'MOC 3 (ยังไม่ยืนยัน)':active.boundaryType||'จากฐาน GIS')+' ที่ระบบมีอยู่ (ไม่ใช่การรับรองสิทธิ์)</div>':'<div class="notice img-missing">แปลงนี้ไม่มี Geometry ที่จับคู่ได้ จึงยังไม่สามารถวาดขอบเขตบน Raster</div>';
 const main='<div class="img-controls">'+nav+'</div>'+boundaryLegend+noPreview+smallWarning+rgbWarning+rgbMeta+
  '<div class="img-preview-grid"><div class="img-large"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.mode],active.mode,active.date,target)+'</div><div class="img-foot">ความละเอียด: '+esc(String(a[active.mode]?.resolution_m||'—'))+' m · ภาพเต็มสี่เหลี่ยม (ไม่ clip เฉพาะ Polygon)</div></div>'+
