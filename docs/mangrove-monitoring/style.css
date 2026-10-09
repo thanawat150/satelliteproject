@@ -98,3 +98,8 @@ html{scroll-behavior:smooth}
    This does not add spatial detail; native pixel counts remain in the QA metadata. */
 .img-frame img{image-rendering:pixelated;image-rendering:crisp-edges}
 .img-geo-map .leaflet-image-layer{image-rendering:pixelated;image-rendering:crisp-edges}
+
+/* RGB v2: masked source pixels are transparent, visually separated from real colors. */
+.img-frame{background-color:#14251f;background-image:repeating-conic-gradient(#172e25 0% 25%,#22362d 0% 50%);background-position:0 0;background-size:16px 16px}
+.img-qa-explainer{font-size:11px;color:#c5d8cd;border:1px solid #365a46;border-radius:8px;padding:9px 12px;margin:10px 0;background:#173126}
+@media print{.img-frame{background:#e7eae8!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}}
