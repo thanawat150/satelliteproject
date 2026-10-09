@@ -24,6 +24,24 @@ assert.ok(analysis.includes('2026-09-29'),'Analysis must show real Sentinel-2 da
 assert.ok(analysis.includes('AUTO_VALID'),'Analysis must show QA state');
 await page.locator('#metric-select').selectOption('mndwi');
 assert.ok(await page.locator('.mini-chart svg circle').count()>=2,'Actual QA chart has at least 2 points');
+
+await page.waitForSelector('#image-date',{timeout:15000});
+const opts=await page.locator('#image-date option').allTextContents();
+assert.ok(opts.some(x=>x.includes('2026-09-29')),'Actual image product dates should be available for 13-STC');
+await page.locator('#image-date').selectOption('2026-09-29');
+await page.locator('#image-mode').selectOption('ndvi');
+await page.waitForFunction(()=>document.querySelectorAll('#imagery-explorer .img-gallery img').length>=5,{timeout:15000});
+assert.ok(await page.locator('#mmc-geo-map .leaflet-image-layer').count()>=1,'Georeferenced satellite layer should overlay Leaflet map');
+const imageStatus=await page.locator('#imagery-explorer').evaluate(el=>({
+  realImages:[...el.querySelectorAll('img[src^="data:image/"]')].length,
+  validLoaded:[...el.querySelectorAll('img[src^="data:image/"]')].filter(x=>x.complete&&x.naturalWidth>0).length,
+  qa:el.innerText.includes('AUTO_VALID'),
+  before:el.innerText.includes('BEFORE'),
+  after:el.innerText.includes('AFTER')
+}));
+assert.ok(imageStatus.realImages>=6&&imageStatus.validLoaded>=4,'Rendered index/rgb previews must load actual image bytes');
+assert.ok(imageStatus.qa&&imageStatus.before&&imageStatus.after,'QA and before-after labels required');
+
 await page.locator('[data-view="qa"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('66(1)-STC'),'Boundary issue should be visible');
 await page.locator('[data-view="satellite"]').click();
