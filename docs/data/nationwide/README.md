@@ -6,7 +6,7 @@ QA: Scene usable if at least 70 percent of pixel centres within the PDD boundary
 
 Batch 01: 10 plots (1–8-VSD Trat and 13-STC, 14-VSD Rayong), 20 image dates, 40 original TIFF input files. Successfully analyzed 20 dates; 13 QA_VALID, 7 NO_DATA (mostly Trat 29 September). Pixel-wise changes generated only for three plot pairs with comparable clear data. Original Rayong verified reports remain untouched and can differ because of data scope and QA.
 
-**Scope discrepancy:** MOC.zip PDD polygon sources contain **159 unique plot IDs**. Earlier target says 136. Neither the 136 authoritative target list nor a precise exclusion rule is present in current source. DO NOT automatically drop 23 candidate plots or claim all 136 processed. Resolve the canonical PDD cohort first. The inventory includes sources and duplicate variants to compare.
+**Scope reconciliation complete:** MOC.zip includes exactly **136 unique PDD plots in MOC_1 + MOC_2 + Standard** and an additional **23 PDD plots introduced in MOC_3**. Processing target is the canonical 136; MOC 3 plots are retained separately, not counted as part of this request. `pdd_scope_136.json` contains the authoritative 136-list and 14 batches. **Batch 01 completed (10 plots); 126 remain queued.**
 
 ## Run next batch
 
@@ -14,4 +14,4 @@ Batch 01: 10 plots (1–8-VSD Trat and 13-STC, 14-VSD Rayong), 20 image dates, 4
 python scripts/nationwide_process.py --inputs path/to/downloaded_tiffs --boundaries docs/data/nationwide/boundaries_pdd_all.geojson --output out/batch_02 --plots 9-VSD 10-VSD ...
 ```
 
-Only select plots whose PDD source record and 10m/20m pairs have been confirmed. Append each validated result; do not overwrite existing manually VERIFIED records.
+Take the next 10 plot IDs from `pdd_scope_136.json`. Only select plots whose PDD source record and 10m/20m pairs have been confirmed. Append each validated result; do not overwrite existing manually VERIFIED records.
