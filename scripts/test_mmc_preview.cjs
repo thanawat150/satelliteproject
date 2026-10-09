@@ -51,6 +51,18 @@ const imageStatus=await page.locator('#imagery-explorer').evaluate(el=>({
 assert.ok(imageStatus.realImages>=6&&imageStatus.validLoaded>=4,'Rendered index/rgb previews must load actual image bytes');
 assert.ok(imageStatus.qa&&imageStatus.before&&imageStatus.after,'QA and before-after labels required');
 
+// Regression for screenshot: 30-STC had a 5x7 full-color thumbnail incorrectly resampled to 20m.
+await page.locator('#plot-select').selectOption('30-STC');
+await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-09-30',{timeout:20000});
+await page.waitForFunction(()=>{const im=document.querySelector('.img-large .img-frame img');return im?.complete&&im.naturalWidth===9&&im.naturalHeight===13;},{timeout:20000});
+const rgb30=await page.locator('#imagery-explorer').innerText();
+assert.ok(rgb30.includes('RGB Preview 9 × 13'),'30-STC actual RGB preview must use native 10m, not old 5x7 20m image');
+assert.ok(rgb30.includes('SCL 100%')&&rgb30.includes('5px'),'The 100% QA result must be labeled with only 5 sample pixels');
+assert.ok(rgb30.includes('สีเกือบขาวในแปลง'),'Independent RGB whiteness screening must be exposed');
+assert.equal(await page.locator('#image-before').inputValue(),'2026-09-22','30-STC defaults to prior QA-valid date');
+assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'Georeferenced 10m preview retains plot polygon');
+assert.equal(await page.locator('[data-history-date="2026-09-30"] .img-tile').count(),8,'30-STC has 8 mode thumbnails for native RGB and 20m indices');
+
 await page.locator('#plot-select').selectOption('102-VSD');
 await page.waitForFunction(()=>document.querySelector('#image-date option')?.textContent?.includes('2026'),{timeout:20000});
 await page.locator('#image-mode').selectOption('ndmi');
