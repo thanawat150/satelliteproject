@@ -70,6 +70,7 @@ await page.waitForFunction(()=>{
  const img=document.querySelector('.img-large .img-frame img');
  return img?.complete&&img.naturalWidth===21&&img.naturalHeight===29;
 },{timeout:20000});
+assert.ok((await page.locator('.img-large .img-frame img').getAttribute('src')).includes('mmc-rgb-fixed-reflectance-v2'),'Re-rendered image URL must bypass stale white preview caches');
 const rgb24=await page.locator('.img-large').evaluate(root=>{
  const img=root.querySelector('.img-frame img'),canvas=document.createElement('canvas');
  canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
