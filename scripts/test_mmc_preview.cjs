@@ -50,13 +50,29 @@ const generated=await page.locator('#imagery-explorer').evaluate(el=>({images:[.
 assert.ok(generated.images>=6&&generated.legend&&generated.geo,'Generated true/false and index PNGs must be visible with georeferencing and numeric legend');
 
 
+// Regression: 15-STC has QA-valid 2026-10-07 without a corresponding rendered Raster Preview.
+await page.locator('#plot-select').selectOption('15-STC');
+await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
+const missingImage=await page.locator('#imagery-explorer').innerText();
+assert.ok(missingImage.includes('ยังไม่มี Raster Preview'),'Latest QA date must be visible as missing preview, never substituted with an older scene');
+assert.ok(missingImage.includes('19 พิกเซล'),'Small plot accuracy warning should be visible');
+await page.locator('[data-view="insights"]').click();
+await page.waitForFunction(()=>!!document.querySelector('.decision-panel'));
+const decision=await page.locator('.decision-panel').innerText();
+assert.ok(decision.includes('15-STC')&&decision.includes('2026-10-07'),'Plot Intelligence must link QA results to plot');
+assert.ok(decision.includes('Small Plot Warning'),'Plot Intelligence must not silently overstate small pixel samples');
 await page.locator('[data-view="qa"]').click();
+assert.ok((await page.locator('#view-root').innerText()).includes('QA / Raster Preview Integrity'),'QA view must expose missing image pairs');
+assert.ok(await page.locator('[data-action="exportgaps"]').count()===1,'Gap CSV must be available');
 assert.ok((await page.locator('#view-root').innerText()).includes('66(1)-STC'),'Boundary issue should be visible');
 await page.locator('[data-view="satellite"]').click();
 await page.locator('#plot-select').selectOption('13-STC');
 assert.ok(await page.locator('a[href*="drive.google.com"]').count()>=1,'Source assets can be inspected');
 await page.locator('[data-view="alerts"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('Candidate'),'Alert must remain candidate rather than confirmed flood');
+assert.equal(await page.locator('#risk-unit').inputValue(),'percent','Alert default must be normalized by comparable area');
+await page.locator('#risk-unit').selectOption('rai');
+assert.equal(await page.locator('#risk-threshold').inputValue(),'1','Changing risk unit should reset threshold');
 await page.locator('[data-view="modules"]').click();
 assert.equal(await page.locator('.module-card').count(),26,'All planned 26 modules listed');
 await page.locator('[data-view="field"]').click();
