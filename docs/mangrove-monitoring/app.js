@@ -57,9 +57,9 @@ function overview(){const p=filtered(),qa= p.filter(x=>plotStatus(x.code)==='VAL
  const w=Math.max(1,...prov.map(x=>x[1]));
  const st=cache.status;
  root.innerHTML=commonHead('ศูนย์ติดตามป่าชายเลนทั่วประเทศ','รวมขอบเขต GIS และผลภาพดาวเทียม โดยไม่ใช้ข้อมูลที่ยังไม่ผ่าน QA ตัดสินสุขภาพป่า',btn('ดูทุกแปลง','setview','plots','primary'))+
- infoBox()+'<div class="grid kpis">'+kpi('รายการแปลงตามขอบเขตที่เลือก',String(p.length),'ทะเบียน STC/VSD 160 • EVR ไม่ทราบจำนวน')+
- kpi('มี Geometry ที่จับคู่ได้',String(p.filter(x=>x.geometry).length),'MOC 159 • อีก 1 รหัสรอตรวจสอบ')+
- kpi('แปลงที่มีภาพผ่าน QA',String(qa),'ต้องมีอย่างน้อยหนึ่งภาพที่ผ่านเกณฑ์')+
+ infoBox()+'<div class="grid kpis">'+kpi('รายการแปลงตามขอบเขตที่เลือก',state.company==='EVR'?'ไม่ทราบ':String(p.length),'ทะเบียน STC/VSD 160 • EVR ยังไม่มีแหล่งทะเบียนที่ยืนยัน')+
+ kpi('มี Geometry ที่จับคู่ได้',state.company==='EVR'?'ยังไม่เชื่อม':String(p.filter(x=>x.geometry).length),'MOC 159 • อีก 1 รหัสรอตรวจสอบ')+
+ kpi('แปลงที่มีภาพผ่าน QA',state.company==='EVR'?'ยังไม่เชื่อม':String(qa),'ต้องมีอย่างน้อยหนึ่งภาพที่ผ่านเกณฑ์')+
  kpi('ภาพในผลวิเคราะห์ทั่วระบบ',fmt(st.totals.processed_dates,0),'ผ่าน QA '+fmt(st.totals.qa_valid_dates,0)+' วันภาพ')+'</div>'+
  '<div class="grid two"><div class="panel"><div class="panel-header"><h2>GIS Map • STC / VSD / MOC</h2>'+btn('ขยายแผนที่','setview','map','mini')+'</div><div class="map" id="home-map"></div><div class="legend"><span><i class="valid"></i>มีภาพผ่าน QA</span><span><i class="notvalid"></i>ไม่ผ่าน QA</span><span><i class="extra"></i>MOC 3</span><span><i class="unknown"></i>ยังไม่ประมวลผล</span></div></div>'+
  '<div class="panel"><div class="panel-header"><h2>ภาพรวมพื้นที่และหน่วยงาน</h2></div><div class="grid half">'+kpi('STC',companies.STC,'แปลงในตัวกรอง')+kpi('VSD',companies.VSD,'แปลงในตัวกรอง')+'</div><div class="panel-divider"></div><h3>จำนวนแปลงตามจังหวัด (10 อันดับแรก)</h3><div class="stats-list">'+prov.map(x=>'<div class="stats-row"><span>'+html(x[0])+'</span><div class="track"><i style="width:'+100*x[1]/w+'%"></i></div><strong>'+x[1]+'</strong></div>').join('')+'</div></div></div>'+
