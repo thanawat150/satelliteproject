@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "provider": "BCP",
+  "providerName": "บางจาก",
+  "source": "https://www.energy.go.th/moen/",
+  "sourceKind": "official-government-retail-table",
+  "asOf": "2026-10-09",
+  "checkedAt": null,
+  "updateStatus": "reference",
+  "note": "ข้อมูลเริ่มต้นจากราคาขายปลีกบางจากที่แสดงบนเว็บไซต์กระทรวงพลังงาน ณ 9 ต.ค. 2569; ระบบจะพยายามอัปเดตอัตโนมัติจาก API บางจาก",
+  "unit": "THB/L",
+  "prices": {
+    "gasohol95": 41.44,
+    "gasohol91": 41.07,
+    "e20": 35.69,
+    "e85": 31.63,
+    "dieselB7": 42.94,
+    "premiumDiesel": 50.05
+  }
+}
