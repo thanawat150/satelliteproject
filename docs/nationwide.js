@@ -17,7 +17,7 @@ function dataRows(){const all=batch.scenes.filter(r=>r.plot===plot).sort((a,b)=>
 function current(){return dataRows().filter(r=>selectedDays.get(plot).has(r.date))}
 function renderControls(){
  const provinces=[...new Set(plots.map(p=>getPlotMeta(p).province))].sort();$('province').innerHTML=provinces.map(pr=>`<option value="${pr}">${pr}</option>`).join('');
- const chosen=plots[0];$('province').value=getPlotMeta(chosen).province||provinces[0];populatePlots(chosen);
+ const chosen=Object.keys(batch.plots||{})[0]||plots[0];$('province').value=getPlotMeta(chosen).province||provinces[0];populatePlots(chosen);
  $('province').onchange=()=>populatePlots();$('plot').onchange=()=>{plot=$('plot').value;render()};
  $('alldates').onclick=()=>{selectedDays.set(plot,new Set(dataRows().map(x=>x.date)));render()};
  $('allmetrics').onclick=()=>{Object.keys(specs).forEach(k=>selectedMetrics.add(k));render()};
@@ -60,7 +60,7 @@ function renderCharts(rows){charts.forEach(c=>c.destroy());charts=[];const box=$
  const chart=new Chart(canvas,{type:'line',data:{labels:rows.map(x=>bdate(x.date)),datasets:[{label:specs[k][0],data:values,spanGaps:false,borderColor:'#43c9eb',pointBackgroundColor:'#43c9eb',pointRadius:4,tension:.16}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9cbbcb'}},y:{ticks:{color:'#9cbbcb'}}}}});charts.push(chart);
  }}
 function renderSummary(rows,first,last){const box=$('summary');box.innerHTML='<h3>สรุปการเปลี่ยนแปลง / Pattern interpretation</h3>';
- if(rows.length===0){box.innerHTML+='<p>ยังไม่ได้ติ๊กเลือกวัน</p>';return}
+ if(rows.length===0){box.innerHTML+='<p>'+(batch.plots[plot]?'ยังไม่ได้เลือกวันที่':'แปลงนี้มีขอบเขต PDD แล้ว แต่ยังไม่ถึงคิวประมวลผล TIFF จึงยังไม่มีค่ากราฟและรายงานรายวัน')+'</p>';return}
  const msg=[];if(first&&last&&first!==last){for(const key of ['water_rai','ndvi','ndre','ndmi','mndwi','bsi','vegetation_rai','bare_soil_rai']){if(first[key]==null||last[key]==null)continue;const change=last[key]-first[key];msg.push(`${specs[key][0]}: ${format(first[key])} → ${format(last[key])} (${change>=0?'+':''}${format(change)}). ${change<0?'มีแนวโน้มลดลง':'มีแนวโน้มเพิ่มขึ้น'}; ต้องตรวจภาพต้นฉบับและบริบทพื้นที่ร่วมกัน`)}}
  for(const row of rows.filter(x=>x.analysis_status!=='AUTO_VALID'))msg.push(`${bdate(row.date)}: ไม่ผ่าน QA (${format(row.qa_valid_pct)}%) ไม่ใช้สรุปการเปลี่ยนแปลงเชิงพื้นที่`);
  if(!msg.length)msg.push('ยังมีข้อมูลผ่าน QA ไม่เพียงพอสำหรับเปรียบเทียบ');
