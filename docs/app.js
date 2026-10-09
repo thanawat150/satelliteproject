@@ -438,19 +438,18 @@ async function renderReportPreview(){
   frame.style.display='none';frame.src='about:blank';
   paper.style.display='block';
   if(printBtn)printBtn.style.display='block';
-  if(type==='compare'){
-    paper.innerHTML='<p class="live-report-loading">กำลังโหลดข้อมูลสำหรับ Report เปรียบเทียบสองวัน...</p>';
-    window.MonitoringStudio?.renderReport?.();
-    return;
-  }
+  // Live and Compare reports now share the date/year checkbox model.
   paper.innerHTML='<div class="live-report-loading">กำลังตรวจผลการวิเคราะห์ล่าสุดและสถานะ QA...</div>';
   try{
     if(!window.TrendReport?.load||!window.LiveReportModel?.make)throw Error('โมดูล Live Report ยังโหลดไม่ครบ');
     // Force a fresh server read on Preview, but do not reprocess the satellite TIFF.
     const history=await window.TrendReport.load(true);
-    if(request!==liveReportRequest||document.getElementById('report-type').value!=='quick'||document.getElementById('report-plot').value!==p.plot)return;
-    const rs=history?.plots?.[p.plot]||[];
-    const sceneDates=satelliteFiles.filter(x=>x.plot===p.plot&&x.date).map(x=>x.date);
+    if(request!==liveReportRequest||document.getElementById('report-type').value==='verified'||document.getElementById('report-plot').value!==p.plot)return;
+    window.ReportSelector?.renderControls?.(p.plot,history,satelliteFiles);
+    const selection=window.ReportSelector?.view?.(p.plot,history,satelliteFiles);
+    const dates=new Set(selection?.dates||[]);
+    const rs=(history?.plots?.[p.plot]||[]).filter(x=>dates.has(x.date));
+    const sceneDates=satelliteFiles.filter(x=>x.plot===p.plot&&x.date&&dates.has(x.date)).map(x=>x.date);
     const model=window.LiveReportModel.make(rs,sceneDates);
     const cur=model.current,prev=model.previous,latest=model.latestRecord;
     const dt=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'—';
@@ -482,8 +481,8 @@ async function renderReportPreview(){
     const stableLand=legacyMatch&&p.stable_land_rai!=null?n(p.stable_land_rai)+' ไร่ (รอบ Verified '+datePrev+' → '+dateCurrent+')':'ยังไม่มีค่าพื้นที่ Stable Land ที่ตรวจสอบได้สำหรับคู่วันที่ล่าสุด';
     const historyUpdated=history?.generated_at?new Date(history.generated_at).toLocaleString('th-TH',{timeZone:'Asia/Bangkok'}):'—';
     paper.innerHTML=
-      '<div class="report-title">รายงานติดตามน้ำท่วมและผลกระทบสิ่งแวดล้อม</div>'+
-      '<div class="report-sub">'+p.plot+' • จังหวัดระยอง • Sentinel-2 L2A • ภาพล่าสุด '+dateLatest+' • ผลล่าสุดที่ผ่าน QA '+dateCurrent+'</div>'+
+      '<div class="report-title">'+(type==='compare'?'รายงานเปรียบเทียบภาพดาวเทียมหลายวัน':'รายงานติดตามน้ำท่วมและผลกระทบสิ่งแวดล้อม')+'</div>'+
+      '<div class="report-sub">'+p.plot+' • จังหวัดระยอง • Sentinel-2 L2A • เลือก '+(selection?.dates?.length||0)+' วัน • ภาพล่าสุดที่เลือก '+dateLatest+' • ผลล่าสุดที่ผ่าน QA '+dateCurrent+'</div>'+
       '<div class="report-rule"></div>'+
       warning+
       '<div class="report-kpis">'+
