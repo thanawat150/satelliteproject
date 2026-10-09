@@ -140,6 +140,9 @@ assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'15-ST
 assert.ok(await page.locator('.img-compare-grid .img-boundary-line').count()>=1,'Before/After images retain per-date geographic boundary');
 await page.locator('[data-view="qa"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('QA / Raster Preview Integrity'),'QA view must expose missing image pairs');
+assert.ok((await page.locator('#view-root').innerText()).includes('Raster Visual QA'),'QA must expose portfolio-wide visual integrity inspection');
+assert.ok(await page.locator('[data-action="exportvisualqa"]').count()===1,'Full RGB display-QA report must export as CSV');
+assert.ok(await page.locator('#view-root .tbl tbody tr').count()>0,'At least one QC anomaly should remain inspectable');
 assert.ok(await page.locator('[data-action="exportgaps"]').count()===1,'Gap CSV must be available');
 assert.ok((await page.locator('#view-root').innerText()).includes('66(1)-STC'),'Boundary issue should be visible');
 await page.locator('[data-view="satellite"]').click();
