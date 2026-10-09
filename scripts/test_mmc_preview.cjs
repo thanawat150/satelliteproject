@@ -55,7 +55,7 @@ await page.locator('#plot-select').selectOption('15-STC');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
 const missingImage=await page.locator('#imagery-explorer').innerText();
 assert.ok(missingImage.includes('ยังไม่มี Raster Preview'),'Latest QA date must be visible as missing preview, never substituted with an older scene');
-assert.ok(missingImage.includes('19 พิกเซล'),'Small plot accuracy warning should be visible');
+assert.ok(missingImage.includes('น้อยกว่า 30 พิกเซล'),'Small plot accuracy warning should be visible');
 await page.locator('[data-view="insights"]').click();
 await page.waitForFunction(()=>!!document.querySelector('.decision-panel'));
 const decision=await page.locator('.decision-panel').innerText();
