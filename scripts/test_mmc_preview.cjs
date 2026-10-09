@@ -4,7 +4,7 @@ const {chromium}=require('playwright');
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 try{
 const page=await browser.newPage({viewport:{width:1366,height:900}});
-const errors=[];page.on('pageerror',x=>errors.push(x.message));page.setDefaultTimeout(45000);
+const errors=[];page.on('pageerror',x=>errors.push(x.stack||x.message));page.setDefaultTimeout(45000);
 await page.goto('http://127.0.0.1:8877/mangrove-monitoring/',{waitUntil:'domcontentloaded'});
 await page.waitForFunction(()=>document.querySelector('#updated')?.textContent?.includes('ข้อมูลดาวเทียม'),{timeout:60000});
 assert.ok((await page.locator('#view-root').innerText()).includes('136 / 136'),'Overview should preserve original PDD cohort');
@@ -36,7 +36,7 @@ assert.equal(await page.locator('.module-card').count(),26,'All planned 26 modul
 await page.locator('[data-view="field"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('ยังไม่เชื่อม'),'Nonpublic field data are not exposed');
 const mobile=await browser.newPage({viewport:{width:390,height:844}});
-const mobileErrors=[];mobile.on('pageerror',x=>mobileErrors.push(x.message));
+const mobileErrors=[];mobile.on('pageerror',x=>mobileErrors.push(x.stack||x.message));
 await mobile.goto('http://127.0.0.1:8877/mangrove-monitoring/',{waitUntil:'domcontentloaded'});
 await mobile.waitForFunction(()=>document.getElementById('updated')?.textContent?.includes('ข้อมูลดาวเทียม'),{timeout:60000});
 await mobile.locator('#menu-btn').click();
