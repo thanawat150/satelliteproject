@@ -120,7 +120,8 @@ jobs:
           git add docs/mangrove-monitoring/imagery/ \
             docs/mangrove-monitoring/imagery_manifest.json \
             docs/mangrove-monitoring/imagery_render_errors.json \
-            docs/mangrove-monitoring/rgb_quality_audit.json
+            docs/mangrove-monitoring/rgb_quality_audit.json \
+            docs/mangrove-monitoring/index_quality_audit.json
           if ! git diff --cached --quiet; then
             git commit -m "Publish raster-derived Sentinel-2 color and spectral index layers"
             git pull --rebase origin main
