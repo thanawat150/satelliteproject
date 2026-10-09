@@ -44,6 +44,7 @@ jobs:
           node --check docs/map-studio.js
           node --check docs/trend-report.js
           node --check docs/nationwide.js
+          node --check docs/nationwide-catalog.js
           node --check docs/report-selector.js
           node --check docs/monitoring-studio.js
           node --check docs/monitoring-qa.js
