@@ -84,3 +84,7 @@ select,input[type="search"],input[type="number"],input[type="date"]{background:#
 @media(max-width:1100px){.img-history-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:550px){.img-history-date-card{padding:9px}.img-history-gallery{gap:6px}.img-history-gallery .img-frame{height:115px}.img-history-gallery .img-title{font-size:10px}}
 @media print{.img-history-select{display:none!important}.img-history-date-card{background:white!important}.img-history-gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important}.img-history-date-card .img-frame{height:180px!important}}
+
+.img-history-link{padding:7px 11px;border:1px solid #528f73;border-radius:7px;background:#224636;color:#ccffdf;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap}
+.img-history-link:hover{background:#31684c;color:white}
+html{scroll-behavior:smooth}
