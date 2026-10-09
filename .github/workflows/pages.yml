@@ -10,6 +10,9 @@ on:
       - "scripts/test_monitoring_qa_alerts.cjs"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
+  # 08:15 Thailand daily; also runs automatically on website changes.
+  schedule:
+    - cron: "15 1 * * *"
 
 permissions:
   contents: write
@@ -43,6 +46,14 @@ jobs:
           node --check docs/live-report-model.js
           node scripts/test_live_report.cjs
           python -m py_compile scripts/derive_daily_monitoring.py
+
+      # Refresh directly in the published docs snapshot without changing main.
+      # If provider is down, keep the last known, explicitly dated reference prices.
+      - name: Refresh coastal-trip fuel prices (Bangchak API)
+        continue-on-error: true
+        run: |
+          node --check scripts/refresh_trip_fuel_prices.cjs
+          node scripts/refresh_trip_fuel_prices.cjs
 
       - name: Prepare static site
         run: |
