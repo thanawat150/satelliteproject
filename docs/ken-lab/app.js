@@ -19,6 +19,7 @@ function load(){try{const x=JSON.parse(localStorage.getItem(KEY));if(x?.version=
 let state=load(),tab=new URLSearchParams(location.search).get('tab')||'home',selectedEpisode=null,videoEpisode=null;
 let playing=false,previewSeconds=0,previewTick=0,previewLast=0,renderBusy=false,renderPercent=0,voiceFile=null,musicFile=null,toastTimeout=null,saveTimeout=null;
 if(!TITLES[tab])tab='home';
+if(tab==='shopee-publisher'){window.location.replace('../shopee-publisher/?view=dashboard')}
 const $=sel=>document.querySelector(sel);
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));let n=$('#saveIndicator');if(n)n.innerHTML='<span class="tiny-dot"></span>บันทึกแล้ว';}catch(e){notify('ที่เก็บข้อมูลในเบราว์เซอร์เต็ม กรุณาสำรองไฟล์ข้อมูล')}}
 function scheduleSave(){clearTimeout(saveTimeout);saveTimeout=setTimeout(persist,300)}
