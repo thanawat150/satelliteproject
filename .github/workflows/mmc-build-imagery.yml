@@ -2,6 +2,12 @@ name: MMC Build True Satellite RGB and Index Maps
 
 on:
   workflow_dispatch:
+    inputs:
+      refresh_plots:
+        description: "Plot IDs to regenerate from source TIFF (comma-separated, optional)"
+        required: false
+        default: ""
+        type: string
   push:
     branches: [main]
     paths:
@@ -39,7 +45,7 @@ jobs:
           python scripts/mmc_render_imagery.py render \
             --shard "${{ matrix.shard }}" --shards 8 \
             --out "work/shard-${{ matrix.shard }}" \
-            --refresh-plots "30-STC"
+            --refresh-plots "${{ github.event.inputs.refresh_plots || '' }}"
       - uses: actions/upload-artifact@v4
         with:
           name: mmc-render-shard-${{ matrix.shard }}
@@ -92,7 +98,7 @@ jobs:
                       assert im.width>=2 and im.height>=2,(item['plot'],item['date'],mode)
                       im.verify()
           test=[item for item in new if item['plot']=='30-STC' and item['date']=='2026-09-30']
-          assert len(test)==1, '30-STC 2026-09-30 must be regenerated'
+          assert len(test)==1, '30-STC 2026-09-30 must have a native 10m RGB preview'
           sample=test[0]
           from PIL import Image
           with Image.open(home/sample['assets']['true_color'].removeprefix('./')) as im:
