@@ -64,28 +64,80 @@ def colorize(x,mask,mode):
     rgb[...,3]=np.where(finite,255,0).astype(np.uint8)
     return Image.fromarray(rgb,'RGBA')
 
-def generate(ten,twenty,output,plot,date):
-    with rio_open(ten) as ds10,rio_open(twenty) as ds20:
-        if ds10.crs is None or ds20.crs is None:raise ValueError("Source TIFF has no CRS")
-        if ds10.count<4 or ds20.count<7:raise ValueError("Input TIFF missing required bands")
-        scale=min(1.0,MAX_DIM/max(ds20.width,ds20.height))
-        w=max(2,round(ds20.width*scale));h=max(2,round(ds20.height*scale))
-        target=ds20.transform*Affine.scale(ds20.width/w,ds20.height/h)
-        def read10(name,i):
-            with WarpedVRT(ds10,crs=ds20.crs,transform=target,width=w,height=h,resampling=Resampling.bilinear) as vt:
+def generate(ten,twenty,output,plot,date,geometry4326=None):
+    """RGB uses the actual native 10 m pixel grid; indices retain a 20 m grid."""
+    from rasterio.features import geometry_mask
+    from rasterio.warp import transform_geom
+    with rio_open(ten) as ds10, rio_open(twenty) as ds20:
+        if ds10.crs is None or ds20.crs is None:
+            raise ValueError("Source TIFF has no CRS")
+        if ds10.count < 4 or ds20.count < 7:
+            raise ValueError("Input TIFF missing required bands")
+        scale20=min(1.0,MAX_DIM/max(ds20.width,ds20.height))
+        w=max(2,round(ds20.width*scale20)); h=max(2,round(ds20.height*scale20))
+        grid20=ds20.transform*Affine.scale(ds20.width/w,ds20.height/h)
+
+        def read10_to20(name,i):
+            with WarpedVRT(ds10,crs=ds20.crs,transform=grid20,width=w,height=h,
+                           resampling=Resampling.bilinear) as vt:
                 return vt.read(bands(ds10,name,i),masked=False).astype(np.float32)
+
         def read20(name,i,how=Resampling.bilinear):
-            return ds20.read(bands(ds20,name,i),out_shape=(h,w),resampling=how).astype(np.float32)
-        b2,b3,b4,b8=(read10("B2",1),read10("B3",2),read10("B4",3),read10("B8",4))
+            return ds20.read(bands(ds20,name,i),out_shape=(h,w),
+                             resampling=how).astype(np.float32)
+
+        b2,b3,b4,b8=(read10_to20("B2",1),read10_to20("B3",2),
+                     read10_to20("B4",3),read10_to20("B8",4))
         b5,b8a,b11=(read20("B5",1),read20("B8A",4),read20("B11",5))
         scl=read20("SCL",7,Resampling.nearest)
         if not np.isfinite(scl).any():raise ValueError("SCL has no finite pixels")
         good=np.isfinite(scl)&np.isin(scl,SCL_GOOD)&np.isfinite(b2)&np.isfinite(b3)&np.isfinite(b4)&np.isfinite(b8)&np.isfinite(b11)
         valid_pixels=int(good.sum())
         if valid_pixels<2:raise ValueError("No SCL-valid pixels available")
+
+        # Use native Sentinel-2 10m samples for RGB; prior preview had resampled
+        # the four 10m bands to the 20m grid, making tiny plots appear as 5x7px.
+        scale10=min(1.0,MAX_DIM/max(ds10.width,ds10.height))
+        w10=max(2,round(ds10.width*scale10));h10=max(2,round(ds10.height*scale10))
+        grid10=ds10.transform*Affine.scale(ds10.width/w10,ds10.height/h10)
+        def read10_native(name,i):
+            return ds10.read(bands(ds10,name,i),out_shape=(h10,w10),
+                             resampling=Resampling.bilinear).astype(np.float32)
+        n2,n3,n4,n8=(read10_native("B2",1),read10_native("B3",2),
+                     read10_native("B4",3),read10_native("B8",4))
+        with WarpedVRT(ds20,crs=ds10.crs,transform=grid10,width=w10,height=h10,
+                       resampling=Resampling.nearest) as qa10:
+            scl10=qa10.read(bands(ds20,"SCL",7),masked=False)
+        usable10=(np.isfinite(n2)&np.isfinite(n3)&np.isfinite(n4)&
+                  np.isfinite(n8)&np.isin(scl10,SCL_GOOD))
+        native_valid=int(usable10.sum())
+        if native_valid<2:
+            raise ValueError("Native 10m RGB has no SCL-valid source pixels")
+        # Prevent invalid/NoData source pixels from dominating per-band stretching.
+        true_image=stretched_rgb([n4,n3,n2],usable10)
+        false_image=stretched_rgb([n8,n4,n3],usable10)
+
+        # Radiometric *display* check is separate from the SCL acceptance rule.
+        # A large amount of near-white RGB is suspicious, but never proof of cloud.
+        plotmask=np.ones((h10,w10),dtype=bool)
+        mask_scope="raster_rectangle"
+        if geometry4326 is not None:
+            try:
+                localgeom=transform_geom("EPSG:4326",ds10.crs,geometry4326)
+                pm=geometry_mask([localgeom],out_shape=(h10,w10),transform=grid10,invert=True)
+                if pm.any():
+                    plotmask=pm
+                    mask_scope="plot_polygon"
+            except Exception as ex:
+                print("RGB_PLOT_MASK_WARNING",plot,date,str(ex)[:150],flush=True)
+        sample=usable10&plotmask
+        rgb_np=np.asarray(true_image)
+        near_white=(np.min(rgb_np,axis=2)>=235)&sample
+        n_sample=int(sample.sum())
+        white_pct=round(100*int(near_white.sum())/n_sample,1) if n_sample else None
         mode_images={
-            "true_color":stretched_rgb([b4,b3,b2],good),
-            "false_color":stretched_rgb([b8,b4,b3],good),
+            "true_color":true_image,
+            "false_color":false_image,
             "ndvi":colorize(index(b8,b4),good,"ndvi"),
             "ndre":colorize(index(b8a,b5),good,"ndre"),
             "ndmi":colorize(index(b8a,b11),good,"ndmi"),
@@ -97,21 +149,35 @@ def generate(ten,twenty,output,plot,date):
         assets={}
         for mode,img in mode_images.items():
             ext="webp" if mode in ("true_color","false_color") else "png"
-            f=output/f"{mode}.{ext}"
-            if ext=="webp":img.save(f,"WEBP",quality=85,method=4)
-            else:img.save(f,"PNG",optimize=True)
-            assets[mode]="./imagery/"+plot+"/"+date+"/"+f.name
+            file=output/f"{mode}.{ext}"
+            if ext=="webp":img.save(file,"WEBP",quality=90,method=4)
+            else:img.save(file,"PNG",optimize=True)
+            assets[mode]="./imagery/"+plot+"/"+date+"/"+file.name
         left,bottom,right,top=transform_bounds(ds20.crs,"EPSG:4326",*ds20.bounds,densify_pts=21)
+        left10,bottom10,right10,top10=transform_bounds(ds10.crs,"EPSG:4326",*ds10.bounds,densify_pts=21)
+        bounds20=[[bottom,left],[top,right]]
+        bounds10=[[bottom10,left10],[top10,right10]]
+        rgb_warning=bool(white_pct is not None and white_pct>=65)
         return {
             "plot":plot,"date":date,"source":"generated","modes":list(assets),
-            "assets":assets,"bounds":[[bottom,left],[top,right]],
+            "assets":assets,"bounds":bounds20,
+            "mode_bounds":{"true_color":bounds10,"false_color":bounds10},
+            "mode_dimensions":{"true_color":[w10,h10],"false_color":[w10,h10],
+                               "indices_20m":[w,h]},
             "source_bands":"Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
-            "display_grid":"20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+            "display_grid":"RGB = 10m native source grid; indices = 20m grid, not higher-resolution spectral measurements",
             "source_resolution_m":{"rgb":10,"spectral_index_20m":20},
-            "scaling":{"rgb":"per-scene p2–p98 on valid pixel mask","index":"fixed ramps in code; full -1 to +1 range"},
-            "qa_note":"Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
-            "valid_preview_pixels":valid_pixels,"width":w,"height":h
+            "scaling":{"rgb":"per-scene p2-p98 on SCL-valid native 10m bands",
+                       "index":"fixed ramps in code, full -1 to +1 range"},
+            "qa_note":"SCL QA from previous PDD analysis; RGB radiometric QC is a separate warning, not a cloud classification",
+            "valid_preview_pixels":valid_pixels,"width":w,"height":h,
+            "rgb_native_width":w10,"rgb_native_height":h10,
+            "rgb_plot_sample_pixels":n_sample,"rgb_quality_scope":mask_scope,
+            "rgb_near_white_pct":white_pct,
+            "rgb_display_warning":rgb_warning,
+            "rgb_quality_note":"Near-white is a radiometric/display screening signal, not proof of cloud or a corrected SCL class"
         }
+
 
 def candidates_from_result(result,plot):
     """Render every individually QA-valid Sentinel-2 scene, not only first/latest.
@@ -150,10 +216,13 @@ def run_shard(args):
     folder_index=json_read(DATA/"source_plot_folders.json")["folders"]
     canon=json_read(DATA/"pdd_scope_136.json")["plots"]
     plots=sorted([p["code"] for p in canon],key=lambda x:x)
+    boundaries=json_read(DATA/"boundaries_pdd_136.geojson")
+    geoms={feat["properties"]["plot"]:feat["geometry"] for feat in boundaries["features"]}
     assigned=[p for i,p in enumerate(plots) if i%args.shards==args.shard]
     previous=json_read(BASE/"docs"/"mangrove-monitoring"/"imagery_manifest.json")
     existing_dates={(entry["plot"],entry["date"]) for entry in
                     previous.get("items",[])+previous.get("generated_items",[])}
+    refresh_plots={x.strip() for x in (args.refresh_plots or "").split(",") if x.strip()}
     # Important: plots with old archive previews can have newer QA-valid scene dates.
     # Only skip a *plot-date* that already has an image, not the entire plot.
     out=Path(args.out)
@@ -162,7 +231,8 @@ def run_shard(args):
     for plot in assigned:
         for scene in candidates_from_result(data,plot):
             date=scene["date"]
-            if (plot,date) in existing_dates:continue
+            force=plot in refresh_plots
+            if (plot,date) in existing_dates and not force:continue
             local=out/"tmp"/plot/date
             local.mkdir(parents=True,exist_ok=True)
             try:
@@ -179,7 +249,7 @@ def run_shard(args):
                     if not got or not path.exists() or path.stat().st_size<1024:
                         raise ValueError("Original TIFF inaccessible: "+filename)
                     paths.append(path)
-                entry=generate(paths[0],paths[1],docs/plot/date,plot,date)
+                entry=generate(paths[0],paths[1],docs/plot/date,plot,date,geoms.get(plot))
                 entry["qa_valid_pct"]=scene["qa_valid_pct"]
                 entry["algorithm"]=scene.get("algorithm")
                 entry["original_tif10_file_id"]=ids[0][0]
@@ -234,6 +304,7 @@ if __name__=="__main__":
     cmd=parser.add_subparsers(dest="cmd",required=True)
     a=cmd.add_parser("render")
     a.add_argument("--shard",type=int,required=True);a.add_argument("--shards",type=int,default=8);a.add_argument("--out",required=True)
+    a.add_argument("--refresh-plots",default="",help="Force regeneration of QA-valid dates for comma-separated plot IDs")
     b=cmd.add_parser("merge")
     b.add_argument("--shards",type=int,default=8);b.add_argument("--parts",required=True)
     args=parser.parse_args()
