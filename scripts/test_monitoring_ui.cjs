@@ -90,7 +90,7 @@ const {chromium}=require("playwright");
   assert.ok((await page.locator('#plotmeta').innerText()).includes('PDD'),"PDD metadata visible");
   await page.locator('input[data-metric="bsi"]').uncheck();
   await page.waitForFunction(()=>document.querySelectorAll('#charts canvas').length>0 && ![...document.querySelectorAll('#charts h3')].some(x=>x.textContent==="BSI"),{timeout:15000});
-  assert.ok((await page.locator("#tablebody").innerText()).includes("2026"),"Daily table loaded");
+  assert.equal(await page.locator("#tablebody tr").count(),2,"Daily table must show both selected actual acquisition dates");
     assert.deepEqual(errors,[],"Unhandled browser runtime errors: "+errors.join(" | "));
   console.log("BROWSER SMOKE PASS: compare map, alert list, calendar, report multi-date, annual images, graph checkboxes, real BSI values and nationwide PDD full-process pipeline");
  }finally{await browser.close()}
