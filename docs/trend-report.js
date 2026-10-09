@@ -94,22 +94,27 @@ function waterFeatures(plot){return (waterFC?.features||[]).filter(f=>f.properti
 function clearMini(){if(miniMap){miniMap.remove();miniMap=null}miniLayers=[]}
 function renderWaterMap(plot,root){
  clearMini();
- const selectedSet=new Set(rows(plot).map(x=>x.date));const fs=waterFeatures(plot).filter(f=>selectedSet.has(f.properties.date)),wrap=root.querySelector(".live-water-map-wrap");
- if(!fs.length){wrap.innerHTML='<div class="live-empty">ยังไม่มี Water Footprint geometry รายวันสำหรับแปลงนี้ — กราฟพื้นที่น้ำยังทำงานจากค่าที่ตรวจสอบแล้วได้ตามปกติ</div>';return}
- wrap.innerHTML=`<div class="live-water-map-head"><label>ขอบเขตน้ำวันที่ <select class="live-water-date">${fs.map(f=>`<option value="${f.properties.date}">${dth(f.properties.date)}${f.properties.analysis_status==="PARTIAL"?" • ข้อมูลบางส่วน":""}</option>`).join("")}</select></label><span class="live-water-meta"></span></div><div class="live-water-map"></div>`;
- const mapEl=wrap.querySelector(".live-water-map");
- miniMap=L.map(mapEl,{zoomControl:true,attributionControl:false});
+ const wanted=new Set(selection(plot).dates);
+ const fs=waterFeatures(plot).filter(f=>wanted.has(f.properties.date));
+ const wrap=root.querySelector(".live-water-map-wrap");if(!wrap)return;
+ if(!fs.length){wrap.innerHTML='<div class="live-empty">ยังไม่มี Polygon พื้นที่น้ำของวันที่เลือก • กราฟใช้ผลวิเคราะห์ที่มีอยู่จริง</div>';return;}
+ wrap.innerHTML='<div class="live-water-map-head"><strong>เปรียบเทียบขอบเขตน้ำตามวันที่ติ๊กเลือก</strong><span>สีแต่ละชั้นแทนวันที่ต่างกัน • เป็นผลวิเคราะห์จาก Raster</span></div><div class="live-water-map"></div><div class="live-footprint-legend"></div>';
+ miniMap=L.map(wrap.querySelector(".live-water-map"),{zoomControl:true,attributionControl:false});
  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19}).addTo(miniMap);
- const draw=date=>{
-   miniLayers.forEach(l=>miniMap.removeLayer(l));miniLayers=[];
-   const f=fs.find(x=>x.properties.date===date);if(!f)return;
-   const b=boundaryByPlot?.get(plot);
-   if(b){const l=L.geoJSON(b,{style:{color:"#ff6b61",weight:2,fill:false}}).addTo(miniMap);miniLayers.push(l)}
-   const w=L.geoJSON(f,{style:{color:"#32a6dc",weight:1.5,fillColor:"#32a6dc",fillOpacity:.38}}).addTo(miniMap);miniLayers.push(w);
-   const group=L.featureGroup(miniLayers);if(group.getBounds().isValid())miniMap.fitBounds(group.getBounds(),{padding:[12,12],maxZoom:17});
-   const p=f.properties;wrap.querySelector(".live-water-meta").textContent=`น้ำจาก raster ≈ ${fmt(p.derived_water_rai)} ไร่ • usable ${fmt(p.valid_pct)}%${p.report_water_rai!=null?` • ค่า Report ${fmt(p.report_water_rai)} ไร่`:""}`;
- };
- const sel=wrap.querySelector(".live-water-date");sel.addEventListener("change",()=>draw(sel.value));sel.value=fs.at(-1).properties.date;setTimeout(()=>{miniMap.invalidateSize();draw(sel.value)},50);
+ const boundary=boundaryByPlot?.get(plot);
+ if(boundary){miniLayers.push(L.geoJSON(boundary,{style:{color:"#d75b4d",weight:2,fill:false}}).addTo(miniMap))}
+ const colors=["#1776b6","#22a3c2","#27a088","#8ab85a","#e0a146","#ce685c","#805fc0","#d05c9c"];
+ const legend=wrap.querySelector(".live-footprint-legend");
+ fs.forEach((f,i)=>{
+  const color=colors[i%colors.length],p=f.properties;
+  miniLayers.push(L.geoJSON(f,{style:{color,weight:2,fillColor:color,fillOpacity:.17}}).addTo(miniMap));
+  const chip=document.createElement("span");chip.className="live-footprint-chip";
+  const square=document.createElement("i");square.style.background=color;chip.append(square);
+  chip.append(document.createTextNode(dth(p.date)+" • "+fmt(p.derived_water_rai)+" ไร่"+(p.analysis_status==="PARTIAL"?" (บางส่วน)":"")));
+  legend.appendChild(chip);
+ });
+ const group=L.featureGroup(miniLayers);
+ setTimeout(()=>{if(!miniMap)return;miniMap.invalidateSize();if(group.getBounds().isValid())miniMap.fitBounds(group.getBounds(),{padding:[12,12],maxZoom:17})},30);
 }
 
 const explain={
@@ -149,6 +154,40 @@ function addExplanations(plot,root){
  const disclaimer=document.createElement("p");disclaimer.className="disclaimer";disclaimer.textContent="ค่าดัชนีบอกสัญญาณเชิงภาพดาวเทียม ไม่ใช่การยืนยันสาเหตุหรือความเสียหาย ต้องพิจารณาน้ำขึ้นลง เมฆ ฤดูกาล และสำรวจภาคสนาม";overview.appendChild(disclaimer);
  root.querySelector(".live-grid")?.after(overview);
 }
+function appendSelectedSatelliteImages(plot,root){
+ const sel=selection(plot);
+ const scenes=sel.scenes||[];
+ const section=document.createElement("section");section.className="report-section report-imagery";
+ const title=document.createElement("h4");title.textContent=sel.mode==="annual"?"ภาพดาวเทียมตัวแทนรายปี (ปีละ 1 ภาพ)":"ภาพดาวเทียมตามวันที่เลือก";section.appendChild(title);
+ const note=document.createElement("p");note.className="report-imagery-note";
+ note.textContent=sel.mode==="annual"?"ภาพตัวแทนเป็นภาพจริงจากวันที่มีข้อมูลที่ดีที่สุดเท่าที่มี ไม่ใช่ค่าเฉลี่ยตลอดทั้งปี • ปีที่ไม่มีภาพจะไม่แสดง":"แสดงภาพที่มีอยู่จริงตามวันที่เลือก • วันที่ไม่มีภาพแสดงผลหรือไม่มีข้อมูล 10m จะระบุไว้ตามจริง";
+ section.appendChild(note);
+ const grid=document.createElement("div");grid.className="report-imagery-grid";
+ const obs=new Map((sel.observations||[]).map(r=>[r.date,r]));
+ for(const d of sel.dates){
+  const candidates=scenes.filter(x=>x.date===d&&x.web_preview_url);
+  candidates.sort((a,b)=>{
+   const pri=x=>x.resolution==="10m"?0:x.resolution==="20m"?1:2;
+   return pri(a)-pri(b);
+  });
+  const file=candidates[0];
+  const item=document.createElement("figure");item.className="report-imagery-item";
+  const v=obs.get(d);const qa=v?.analysis_status||"NOT_ANALYZED";
+  if(file){
+   const im=document.createElement("img");im.src=file.web_preview_url;im.alt=plot+" ภาพ Sentinel-2 "+d+" "+file.resolution;
+   im.loading="eager";im.decoding="async";item.appendChild(im);
+  }else{
+   const missing=document.createElement("div");missing.className="report-imagery-missing";missing.textContent="ยังไม่มีภาพ Preview ที่แสดงได้";item.appendChild(missing);
+  }
+  const caption=document.createElement("figcaption");
+  caption.textContent=(sel.mode==="annual"?d.slice(0,4)+" • ":"")+dth(d)+" • "+(file?.resolution||"ไม่ระบุความละเอียด")+" • "+(file?.preview_kind||"ยังไม่มีภาพ")+" • "+(statusTextLabel(qa))+" • QA "+fmt(v?.valid_pct)+"%";
+  item.appendChild(caption);grid.appendChild(item);
+ }
+ if(!sel.dates.length){const p=document.createElement("p");p.className="live-empty";p.textContent="ยังไม่ได้เลือกวันที่หรือปี";grid.appendChild(p)}
+ section.appendChild(grid);
+ const table=root.querySelector(".live-table-wrap");if(table)table.before(section);else root.appendChild(section);
+}
+function statusTextLabel(code){return {VERIFIED:"ตรวจยืนยัน",AUTO_VALID:"ผ่าน QA อัตโนมัติ",PARTIAL:"ข้อมูลบางส่วน",NO_DATA:"ไม่ผ่าน QA",NOT_ANALYZED:"ยังไม่วิเคราะห์"}[code]||code}
 const graphItems={water:"พื้นที่น้ำที่ผ่าน QA (ไร่)","water-change":"น้ำเพิ่ม/ลด (ไร่)",ndvi:"NDVI — ความเขียวพืช",ndre:"NDRE — ขอบแดงพืช",ndmi:"NDMI — ความชื้นพืช/พื้นที่",mndwi:"MNDWI — น้ำเปิด",bsi:"BSI — ดินเปิดโล่ง",qa:"คุณภาพข้อมูล (%)"};
 function graphCards(plot){
  const keys=selection(plot).graphKeys||[];
@@ -173,7 +212,7 @@ async function render(plot,paper){
  <p class="live-footnote">* ค่าที่มีเครื่องหมาย * เป็นพื้นที่น้ำที่ตรวจพบเฉพาะส่วนของภาพที่ผ่าน QA ไม่ใช้แทนค่าปัจจุบันโดยอัตโนมัติ</p>`;
  const footer=paper.querySelector(".report-footer");if(footer)footer.before(root);else paper.appendChild(root);
  
- renderCharts(plot,root);addExplanations(plot,root);renderWaterMap(plot,root);
+ renderCharts(plot,root);addExplanations(plot,root);renderWaterMap(plot,root);appendSelectedSatelliteImages(plot,root);
 }
 window.TrendReport={load,render,snapshot:plot=>history?liveSnapshot(plot):null,rows:plot=>history?rows(plot):[]};
 load().catch(e=>console.warn("Trend history unavailable",e));
