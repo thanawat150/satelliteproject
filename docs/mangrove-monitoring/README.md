@@ -72,6 +72,15 @@ Run Playwright smoke locally with:
 
 Tests exercise 160 public-registry placeholders, QA coverage, charts, source links, unconnected modules and mobile menu. Passing the test does not mean all 26 modules are complete.
 
+## Full satellite history for each plot (2026-10-09)
+
+- The Satellite Explorer and printable Report Center display **all available dates** for the selected plot, with all **8 raster modes** (true color RGB, false color, NDVI, NDRE, NDMI, NDWI, MNDWI, BSI) in a dated grid and a real polygon outline for each image.
+- Days with Raster but `NO_DATA`/failed QA remain visible for inspection and carry a caution; missing assets are explicitly marked missing, never synthesized or silently replaced with basemap imagery.
+- Archived previews may lack one of the 8 modes; the corresponding slot says no image rather than synthesizing data.
+- The original true-color image/map and QA-valid Before/After controls are retained above the full-history grid. Each dated section can be selected directly on the georeferenced map.
+- Incremental raster pipeline now iterates **every QA-valid acquired date**, not only earliest and latest. As of this run, **241/241 QA-valid plot-date entries** have matching published preview entries; **126 distinct plots** have any Raster Preview. This is coverage of existing analyzed dates, **not coverage of every registered STC/VSD/EVR plot**.
+- Rendering the full gallery is lazy-loaded for images and the old per-part JSON archive is fetched once per part. Real source TIFFs remain unchanged.
+
 ## Raster boundary overlays (2026-10-09)
 
 - Satellite Catalog, Environmental Analytics, Plot Intelligence and Report Center now draw the selected **published plot polygon as a red outline on top of each real raster image** — main scene, before/after comparisons, and all index/RGB thumbnails.
