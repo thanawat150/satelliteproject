@@ -29,7 +29,8 @@ function renderControls(){
 function populatePlots(preferred){const province=$('province').value;const codes=plots.filter(p=>getPlotMeta(p).province===province);$('plot').innerHTML=codes.map(c=>`<option value="${c}">${c}</option>`).join('');plot=preferred&&codes.includes(preferred)?preferred:codes[0];$('plot').value=plot;render()}
 function init(){renderControls();const n=batch.totals||{};$('progress').textContent=`ประมวลผลแล้ว ${n.plots_with_source_scenes||0}/136 แปลง • ${n.processed_dates||0} วันภาพ • ผ่าน QA ${n.qa_valid_dates||0} / ไม่มีข้อมูล ${n.no_data_dates||0} วันภาพ • เปรียบเทียบผ่าน QA ${n.date_changes||0} คู่ • รักษาผล Verified เดิม`;
  $('progressbar').style.width=`${(n.plots_with_source_scenes||0)/136*100}%`;
- $('scope').textContent=`ขอบเขต PDD ยืนยัน 136 แปลง (MOC 1 + MOC 2 + Standard; MOC 3 แยกต่างหาก) • มีผล TIFF ${n.plots_with_source_scenes||0}/136 แปลง • อีก ${136-(n.plots_with_source_scenes||0)} แปลงยังไม่มีฉากภาพที่ประมวลผลสำเร็จ • ค่าที่ไม่ผ่าน QA จะไม่ถูกแทนเป็นศูนย์`;}
+ const qaPlots=Object.values(batch.plots||{}).filter(p=>(p.qa_valid_dates||0)>0).length;
+ $('scope').textContent=`ขอบเขต PDD ยืนยัน 136 แปลง (MOC 1 + MOC 2 + Standard) • ประมวลผล TIFF ${n.plots_with_source_scenes||0}/136 แปลง • มีอย่างน้อย 1 วันภาพผ่าน QA ${qaPlots}/136 แปลง • อีก ${136-qaPlots} แปลงยังไม่มีภาพผ่าน QA ≥70% • ไม่แทนค่าที่ขาดด้วยศูนย์`;}
 function render(){if(!plot)return;const all=dataRows(),days=selectedDays.get(plot),rows=current();const info=getPlotMeta(plot);
  $('plotmeta').textContent=`PDD MultiPolygon ${(info.pdd_geometry_parts||info.geometry_parts||1)} ส่วน • พื้นที่คำนวณ ${format((info.pdd_area_rai||info.geometry_area_rai))} ไร่`;
  $('dates').innerHTML=all.map(r=>`<label><input type="checkbox" data-day="${r.date}" ${days.has(r.date)?'checked':''}> ${bdate(r.date)} ${r.status==='AUTO_VALID'?'✓':'⚠'}</label>`).join('');
@@ -60,9 +61,11 @@ function renderImages(rows){
   const title=document.createElement('strong');title.textContent=bdate(row.date)+' • '+(row.analysis_status==='AUTO_VALID'?'ผ่าน QA':'ไม่ผ่าน QA');
   const p=document.createElement('p');p.className='muted';p.textContent='แสดงภาพต้นฉบับแบบไม่ตัด PDD: ภาพวิเคราะห์เดิมเป็น clipped preview จึงไม่นำมาแสดงแทน full image';
   wrap.append(title,p);
-  [row.original_tif10,row.original_tif20].filter(Boolean).forEach((name,i)=>{
-   const link=document.createElement('a');link.href='https://drive.google.com/drive/u/0/search?q='+encodeURIComponent(name);
-   link.target='_blank';link.rel='noopener';link.textContent=(i?'20 m':'10 m')+' • '+name;link.style.display='block';link.style.overflowWrap='anywhere';wrap.append(link);
+  [{name:row.original_tif10,id:row.original_tif10_file_id,res:'10 m'},{name:row.original_tif20,id:row.original_tif20_file_id,res:'20 m'}].filter(f=>f.name).forEach(f=>{
+   const link=document.createElement('a');
+   link.href=f.id?'https://drive.google.com/file/d/'+encodeURIComponent(f.id)+'/view':'https://drive.google.com/drive/u/0/search?q='+encodeURIComponent(f.name);
+   link.target='_blank';link.rel='noopener';link.textContent=f.res+' • '+f.name+(f.id?' ↗':' (ค้นหาใน Drive)');
+   link.style.display='block';link.style.overflowWrap='anywhere';wrap.append(link);
   });
   const go=document.createElement('a');go.href='#national-library';go.textContent='↓ เปิดคลังภาพเต็ม 136 แปลง';go.style.display='block';go.style.marginTop='8px';wrap.append(go);
   frame.append(wrap);panel.append(frame);
