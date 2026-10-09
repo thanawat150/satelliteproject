@@ -143,6 +143,7 @@ function drawMap(item,raster){destroyMap();const holder=$('mmc-geo-map');if(!hol
  map=L.map(holder,{preferCanvas:true,attributionControl:true});L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Tiles © Esri'}).addTo(map);
 let bounds=localBounds(raster,item)||plotBounds(active.geometry);if(bounds&&raster){L.imageOverlay(previewSrc(raster),bounds,{opacity:active.alpha,interactive:false}).addTo(map);}
 if(active.geometry){boundaryMapLayer=L.geoJSON({type:'Feature',geometry:active.geometry,properties:{}},{style:{color:'#ff5454',weight:3,opacity:1,fillOpacity:0,interactive:false}});if(active.boundaryVisible)boundaryMapLayer.addTo(map);}
+holder.dataset.boundaryVisible=String(Boolean(active.geometry&&active.boundaryVisible));
 if(bounds)map.fitBounds(bounds,{padding:[20,20]});else map.setView([10.4,100.8],7);
 setTimeout(()=>{try{map.invalidateSize()}catch(e){}},100);
 }
@@ -163,7 +164,7 @@ if(t.id==='image-before'){active.before=t.value;renderAsync();}
 if(t.id==='image-mode'){active.mode=t.value;renderAsync();}
 if(t.id==='image-compare-mode'){active.compareMode=t.value;renderAsync();}
 if(t.id==='image-opacity'){active.alpha=Number(t.value)/100;if(map){map.eachLayer(layer=>{if(layer instanceof L.ImageOverlay)layer.setOpacity(active.alpha)})}}
-if(t.id==='image-boundary-toggle'){active.boundaryVisible=t.checked;hold.classList.toggle('boundary-hidden',!t.checked);if(map&&boundaryMapLayer){if(t.checked)boundaryMapLayer.addTo(map);else map.removeLayer(boundaryMapLayer);}}
+if(t.id==='image-boundary-toggle'){active.boundaryVisible=t.checked;hold.classList.toggle('boundary-hidden',!t.checked);if(map&&boundaryMapLayer){if(t.checked)boundaryMapLayer.addTo(map);else map.removeLayer(boundaryMapLayer);}const mapHolder=$('mmc-geo-map');if(mapHolder)mapHolder.dataset.boundaryVisible=String(Boolean(active.geometry&&t.checked));}
 };
 for(const sel of ['image-date','image-before','image-mode','image-compare-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
 }catch(e){console.error('MMC imagery',e);if(id===epoch)showError(e.message||e)}}
