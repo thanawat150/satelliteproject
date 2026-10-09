@@ -1,0 +1,48 @@
+const assert=require('node:assert/strict');
+const {chromium}=require('playwright');
+(async()=>{
+const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+try{
+const page=await browser.newPage({viewport:{width:1366,height:900}});
+const errors=[];page.on('pageerror',x=>errors.push(x.message));page.setDefaultTimeout(45000);
+await page.goto('http://127.0.0.1:8877/mangrove-monitoring/',{waitUntil:'domcontentloaded'});
+await page.waitForFunction(()=>document.querySelector('#updated')?.textContent?.includes('ข้อมูลดาวเทียม'),{timeout:60000});
+assert.ok((await page.locator('#view-root').innerText()).includes('136 / 136'),'Overview should preserve original PDD cohort');
+assert.ok((await page.locator('#view-root').innerText()).includes('126 / 136'),'Overview should keep QA count');
+assert.ok((await page.locator('#view-root').innerText()).includes('160'),'Must show 160-register total');
+await page.locator('[data-view="plots"]').click();
+await page.waitForFunction(()=>document.querySelector('#plot-search')&&document.querySelectorAll('.tbl tbody tr').length>100);
+assert.equal(await page.locator('.tbl tbody tr').count(),160,'159 published boundaries + one unmatched 66(1)-STC candidate');
+await page.locator('#plot-search').fill('66(1)-STC');
+assert.equal(await page.locator('.tbl tbody tr').count(),1,'Missing geometry entry remains visible');
+assert.ok((await page.locator('.tbl tbody tr').first().innerText()).includes('ต้องจับคู่'),'No invented geometry');
+await page.locator('[data-view="analysis"]').click();
+await page.waitForFunction(()=>!!document.querySelector('#metric-select'));
+await page.locator('#plot-select').selectOption('13-STC');
+const analysis=await page.locator('#view-root').innerText();
+assert.ok(analysis.includes('2026-09-29'),'Analysis must show real Sentinel-2 date');
+assert.ok(analysis.includes('AUTO_VALID'),'Analysis must show QA state');
+await page.locator('#metric-select').selectOption('mndwi');
+assert.ok(await page.locator('.mini-chart svg circle').count()>=2,'Actual QA chart has at least 2 points');
+await page.locator('[data-view="qa"]').click();
+assert.ok((await page.locator('#view-root').innerText()).includes('66(1)-STC'),'Boundary issue should be visible');
+await page.locator('[data-view="satellite"]').click();
+await page.locator('#plot-select').selectOption('13-STC');
+assert.ok(await page.locator('a[href*="drive.google.com"]').count()>=1,'Source assets can be inspected');
+await page.locator('[data-view="alerts"]').click();
+assert.ok((await page.locator('#view-root').innerText()).includes('Candidate'),'Alert must remain candidate rather than confirmed flood');
+await page.locator('[data-view="modules"]').click();
+assert.equal(await page.locator('.module-card').count(),26,'All planned 26 modules listed');
+await page.locator('[data-view="field"]').click();
+assert.ok((await page.locator('#view-root').innerText()).includes('ยังไม่เชื่อม'),'Nonpublic field data are not exposed');
+const mobile=await browser.newPage({viewport:{width:390,height:844}});
+const mobileErrors=[];mobile.on('pageerror',x=>mobileErrors.push(x.message));
+await mobile.goto('http://127.0.0.1:8877/mangrove-monitoring/',{waitUntil:'domcontentloaded'});
+await mobile.waitForFunction(()=>document.querySelector('#view-root')?.textContent?.includes('Nationwide'),{timeout:60000});
+await mobile.locator('#menu-btn').click();
+assert.ok(await mobile.locator('#sidebar').evaluate(el=>el.classList.contains('open')),'Mobile nav must open');
+assert.deepEqual(errors,[],'Desktop JS errors: '+errors.join(' | '));assert.deepEqual(mobileErrors,[],'Mobile JS errors: '+mobileErrors.join(' | '));
+console.log('MMC_PREVIEW_PASS registry=160 qa=126 pdd=136 chart sources=actual plot 13-STC modules=26 mobile=390');
+await mobile.close();
+}finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exit(1)});
