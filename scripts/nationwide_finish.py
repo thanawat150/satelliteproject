@@ -106,7 +106,7 @@ def process(args):
                 try:
                     fetched = gdown.download_folder(
                         id=info["folder_id"], output=str(dest),
-                        quiet=True, remaining_ok=True, use_cookies=False
+                        quiet=True, use_cookies=False, retries=2
                     )
                     if fetched is None:
                         raise RuntimeError("Public folder download returned no files")
