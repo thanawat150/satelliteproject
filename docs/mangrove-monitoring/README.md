@@ -4,6 +4,21 @@ App URL: https://thanawat150.github.io/satelliteproject/mangrove-monitoring/
 
 This is an **independent UI route**, but currently lives in the existing SatelliteProject GitHub repository so it can safely reuse already-published public data. It is **not yet** a separate secured production API, project database, or authenticated fieldwork platform.
 
+
+## Update — 2026-10-09: QA-integrity and Plot Intelligence
+
+This update changes the **live read-only preview** but does not create an authenticated production platform.
+
+- New **Plot Intelligence & Decisions** page: plot-level QA provenance, two-valid-date *descriptive* numerical differences (not pixel change polygons), small-plot warnings, current raster-preview coverage, action checklist, and evidence JSON.
+- New **QA ↔ Raster Preview Integrity** list on Overview and QA/QC. Export missing plot-date pairs as CSV, with links to original TIFFs where source metadata exists. A date present in analysis but missing in preview is marked explicitly; it is never replaced with a different date.
+- In the imagery explorer, QA-valid dates without a rendered image appear as selectable **missing-preview dates** and display a warning. The default date is the latest QA-valid observation rather than simply the latest image preview date.
+- Early-warning candidate thresholds use **10% of common comparable clear area** by default (switch to rai if needed). Water **increase**, vegetation **decrease**, and bare-soil **increase** are screening directions, not proof of a flood or degradation.
+- The *next execution* of `scripts/nationwide_process.py` (algorithm `pdd-full-monitor-v1.1`) compares consecutive QA-valid dates even when NO_DATA dates intervene, and calculates water/vegetation/soil/other clipped areas consistently with the PDD polygon. Existing published results retain their previous `v1.0` values until the source TIFF processing is rerun and QA-reviewed.
+
+**Known example:** `15-STC` has four processed dates, and `2026-10-07` is QA-valid in the existing result, but no corresponding image preview is present in the manifest. Its total QA sample is only 19 pixels on the 20 m analysis grid. Do not interpret the observed difference as independently verified forest growth or flooding. The missing preview is shown explicitly and the original TIFF is linked.
+
+**Remaining gates:** rerender 33 QA-valid plot-date previews absent from the existing published manifest, reprocess affected valid-date comparisons with matching TIFF pairs, independently validate change accuracy, reconcile all registry/boundary versions including EVR, and deploy authenticated database/workflows before calling the system production-ready.
+
 ## Functional screens in this preview
 
 - Overview dashboard, company and province filters, data-coverage indicators
