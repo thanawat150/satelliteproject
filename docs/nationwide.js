@@ -50,9 +50,23 @@ function renderMap(rows){
  });
  if(layerGroup.getBounds().isValid())map.fitBounds(layerGroup.getBounds(),{padding:[20,20],maxZoom:17});setTimeout(()=>map.invalidateSize(),80);
 }
-function renderImages(rows){const panel=$('images'),list=previews.images.filter(x=>x.plot===plot&&rows.some(r=>r.date===x.date));
- panel.innerHTML='';for(const p of list){const f=document.createElement('figure');f.className='scene';const image=document.createElement('img');image.src=p.src;image.alt=plot+' '+p.date;const cap=document.createElement('figcaption');const obs=rows.find(x=>x.date===p.date);cap.textContent=bdate(p.date)+' • '+(obs?.analysis_status==='AUTO_VALID'?'ผ่าน QA':'ไม่ผ่าน QA')+' • ภาพจริงคลิปตาม PDD';f.append(image,cap);panel.appendChild(f)}
- if(!list.length)panel.textContent='ไม่มีภาพในวันที่เลือก';}
+function renderImages(rows){
+ const panel=$('images');panel.innerHTML='';
+ if(!rows.length){panel.textContent='ยังไม่มีวันที่ที่ผ่านการเลือก';return}
+ for(const row of rows){
+  const frame=document.createElement('article');frame.className='scene';
+  const wrap=document.createElement('div');wrap.style.padding='13px';
+  const title=document.createElement('strong');title.textContent=bdate(row.date)+' • '+(row.analysis_status==='AUTO_VALID'?'ผ่าน QA':'ไม่ผ่าน QA');
+  const p=document.createElement('p');p.className='muted';p.textContent='แสดงภาพต้นฉบับแบบไม่ตัด PDD: ภาพวิเคราะห์เดิมเป็น clipped preview จึงไม่นำมาแสดงแทน full image';
+  wrap.append(title,p);
+  [row.original_tif10,row.original_tif20].filter(Boolean).forEach((name,i)=>{
+   const link=document.createElement('a');link.href='https://drive.google.com/drive/u/0/search?q='+encodeURIComponent(name);
+   link.target='_blank';link.rel='noopener';link.textContent=(i?'20 m':'10 m')+' • '+name;link.style.display='block';link.style.overflowWrap='anywhere';wrap.append(link);
+  });
+  const go=document.createElement('a');go.href='#national-library';go.textContent='↓ เปิดคลังภาพเต็ม 136 แปลง';go.style.display='block';go.style.marginTop='8px';wrap.append(go);
+  frame.append(wrap);panel.append(frame);
+ }
+}
 function renderCharts(rows){charts.forEach(c=>c.destroy());charts=[];const box=$('charts');box.innerHTML='';
  if(typeof Chart==='undefined'){box.textContent='กราฟยังไม่พร้อม: ไม่สามารถโหลด Chart.js';return}
  for(const k of selectedMetrics){if(!specs[k])continue;const pane=document.createElement('article');pane.className='chart';const h=document.createElement('h3');h.textContent=specs[k][0];const canvas=document.createElement('canvas');const p=document.createElement('p');p.className='muted';p.textContent=specs[k][1];pane.append(h,canvas,p);box.append(pane);
