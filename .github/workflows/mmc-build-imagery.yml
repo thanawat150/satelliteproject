@@ -77,6 +77,8 @@ jobs:
         run: |
           python scripts/mmc_render_imagery.py merge \
             --parts work/parts --shards 8
+      - name: Test fixed reflectance RGB and NoData masks
+        run: python scripts/test_mmc_rgb_renderer.py
       - name: Validate image index, asset size and source integrity
         run: |
           python - <<'PY'
@@ -109,13 +111,16 @@ jobs:
           print('RGB_10M_AND_DISPLAY_QA_VERIFIED',sample['plot'],sample['date'],sample['rgb_native_width'],sample['rgb_native_height'],'near_white_pct',sample['rgb_near_white_pct'])
           print('RASTER_ASSETS_VERIFIED',len(new),'dates')
           PY
+      - name: Audit every published image and QA date
+        run: python scripts/mmc_visual_audit.py
       - name: Commit new imagery previews and provenance to main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/mangrove-monitoring/imagery/ \
             docs/mangrove-monitoring/imagery_manifest.json \
-            docs/mangrove-monitoring/imagery_render_errors.json
+            docs/mangrove-monitoring/imagery_render_errors.json \
+            docs/mangrove-monitoring/rgb_quality_audit.json
           if ! git diff --cached --quiet; then
             git commit -m "Publish raster-derived Sentinel-2 color and spectral index layers"
             git pull --rebase origin main
