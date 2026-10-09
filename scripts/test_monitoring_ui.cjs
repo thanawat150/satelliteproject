@@ -72,7 +72,26 @@ const {chromium}=require("playwright");
     await choices.nth(0).uncheck();
     await page.waitForFunction(()=>document.querySelectorAll('#report-paper .report-imagery-item').length<document.querySelectorAll('#report-date-checkboxes input[data-report-date]').length,{timeout:25000});
   }
-  assert.deepEqual(errors,[],"Unhandled browser runtime errors: "+errors.join(" | "));
-  console.log("BROWSER SMOKE PASS: compare map, alert list, calendar, report multi-date, annual images, graph checkboxes and real BSI values");
+  await page.goto("http://127.0.0.1:8877/nationwide.html",{waitUntil:"domcontentloaded"});
+  await page.waitForFunction(()=>document.querySelectorAll("#plot option").length>=2 && document.querySelectorAll("#dates input[data-day]").length===2,{timeout:30000});
+  const validation=await page.evaluate(async()=>{
+    const data=await fetch("data/nationwide/batch_01_results.json").then(r=>r.json());
+    const source=await fetch("data/nationwide/boundaries_pdd_all.geojson").then(r=>r.json());
+    return {nPlots:Object.keys(data.plots).length,nScenes:data.scenes.length,qa:data.totals.qa_valid_dates,candidates:source.features.length,hasFullMetrics:data.scenes.some(x=>x.status==="AUTO_VALID"&&x.bsi!=null&&x.ndvi!=null&&x.ndre!=null&&x.ndmi!=null&&x.mndwi!=null&&x.savi!=null&&x.evi!=null),waterGeojsonCount:(await fetch("data/nationwide/batch_01_features.geojson").then(r=>r.json())).features.length};
+  });
+  assert.equal(validation.nPlots,10,"Batch 01 must contain 10 real PDD plots");
+  assert.equal(validation.nScenes,20,"Batch 01 must contain 20 original TIFF analysis dates");
+  assert.equal(validation.candidates,159,"Native PDD source inventory has 159 candidate geometries");
+  assert.ok(validation.hasFullMetrics,"Original TIFFs must provide full index set");
+  assert.ok(validation.waterGeojsonCount>10,"Vector water/vegetation/soil/wetness geometries must exist");
+  await page.locator('#province').selectOption('ตราด');
+  await page.locator('#plot').selectOption('7-VSD');
+  await page.waitForFunction(()=>document.querySelectorAll('#charts canvas').length>3 && document.querySelectorAll('#images img').length===2,{timeout:20000});
+  assert.ok((await page.locator('#plotmeta').innerText()).includes('PDD'),"PDD metadata visible");
+  await page.locator('input[data-metric="bsi"]').uncheck();
+  await page.waitForFunction(()=>document.querySelectorAll('#charts canvas').length>0 && ![...document.querySelectorAll('#charts h3')].some(x=>x.textContent==="BSI"),{timeout:15000});
+  assert.ok((await page.locator("#tablebody").innerText()).includes("2026"),"Daily table loaded");
+    assert.deepEqual(errors,[],"Unhandled browser runtime errors: "+errors.join(" | "));
+  console.log("BROWSER SMOKE PASS: compare map, alert list, calendar, report multi-date, annual images, graph checkboxes, real BSI values and nationwide PDD full-process pipeline");
  }finally{await browser.close()}
 })().catch(err=>{console.error(err);process.exit(1)});
