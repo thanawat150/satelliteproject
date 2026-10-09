@@ -24,7 +24,7 @@ function available(item){return item?.modes||[]}
 function srcOK(x){return typeof x==='string'&&(/^data:image\/(?:png|jpeg|webp);base64,/i.test(x)||/^\.\/imagery\/[a-z0-9_()\/.\-]+$/i.test(x));}
 function previewSrc(row){return srcOK(row?.src)?row.src:null}
 async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261009-v3',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
-async function getProduct(item){if(!item||item.source==='missing')return null;if(item.source==='generated'){return {layers:Object.entries(item.assets||{}).map(([mode,u])=>({plot:item.plot,date:item.date,mode,src:u,bounds:item.bounds,resolution_m:mode==='true_color'||mode==='false_color'?10:20}))};}
+async function getProduct(item){if(!item||item.source==='missing')return null;if(item.source==='generated'){return {layers:Object.entries(item.assets||{}).map(([mode,u])=>({plot:item.plot,date:item.date,mode,src:u,bounds:item.mode_bounds?.[mode]||item.bounds,resolution_m:mode==='true_color'||mode==='false_color'?10:20}))};}
 const key='part-'+item.part;
 if(!files.has(key)){const url='../data/full_preview_part_'+item.part+'.json';
  files.set(key,fetch(url).then(response=>{if(!response.ok)throw Error('Image product HTTP '+response.status);return response.json();}).catch(err=>{files.delete(key);throw err;}));
@@ -107,7 +107,7 @@ function fitBoundaryOverlays(holder){
  }
 }
 
-function statusPill(date){let x=qa(date);let info=x.percent!=null?' · '+x.percent+'%':'';
+function statusPill(date){let x=qa(date);let row=active.rows.find(r=>r.date===date);let info=x.percent!=null?' · SCL '+x.percent+'%':'';if(row?.total_pixels!=null)info+=' · '+row.total_pixels+'px';
 return '<span class="img-status '+(x.kind==='AUTO_VALID'?'ok':'warn')+'">'+esc(x.label+info)+'</span>';}
 function thumb(layer,mode,date,item){if(!layer)return '<div class="mmc-img-empty">ยังไม่มีภาพ '+esc(MODE[mode]?.[0]||mode)+' ของวันที่เลือก</div>';
 const src=previewSrc(layer);if(!src)return '<div class="mmc-img-empty">ไฟล์ภาพไม่พร้อมใช้งาน</div>';
@@ -125,6 +125,7 @@ function allDateGallery(items,byDate,modes){
    out+='<div class="notice img-missing">วันที่นี้ยังไม่มี Raster Preview ('+esc(qa(item.date).label)+') ไม่สร้างภาพแทนจากแหล่งอื่น</div>';
   }else{
    if(qa(item.date).kind!=='AUTO_VALID')out+='<p class="img-history-qa-caution">ภาพมีอยู่จริง แต่วันดังกล่าวไม่ผ่าน QA หรือยังไม่มีผล QA ยืนยัน จึงไม่ควรใช้สรุปผลกระทบ</p>';
+   if(item.rgb_display_warning)out+='<p class="img-history-qa-caution">RGB QUALITY REVIEW: '+esc(String(item.rgb_near_white_pct))+'% ของพิกเซลในแปลงเกือบขาว โปรดตรวจแหล่งภาพและขั้นตอนปรับสี</p>';
    out+='<div class="img-gallery img-history-gallery">';
    for(const mode of modes){
     out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small></div>';
@@ -151,9 +152,13 @@ if(!items.length)return head+'<div class="notice">ยังไม่มี Previ
 const latestAvailable=[...items].reverse().find(x=>x.source!=='missing'&&qa(x.date).kind==='AUTO_VALID');
 const openAvailable=latestAvailable&&latestAvailable.date!==active.date?'<button type="button" class="btn img-fallback-btn" id="image-open-available">ดูภาพจริงที่ผ่าน QA วันที่ '+esc(latestAvailable.date)+'</button>':'';
 const noPreview=target?.source==='missing'?'<div class="notice img-missing"><b>ภาพวันที่ '+esc(active.date)+' ยังไม่มี Raster Preview</b> แม้มีข้อมูลวันที่นี้ในผลวิเคราะห์ ('+esc(qa(active.date).label)+') กำลังรอสร้างภาพจาก GeoTIFF ต้นฉบับ ไม่ใช้ภาพ Esri หรือภาพคนละวันแทนผล Sentinel-2 '+openAvailable+'</div>':'';
-const smallWarning=active.rows.find(x=>x.date===active.date)?.total_pixels<30?'<div class="notice img-missing">แปลงมีพิกเซลสำหรับ QA น้อยกว่า 30 พิกเซลบนกริดวิเคราะห์ ควรใช้ภาพ Drone/ข้อมูลภาคสนามตรวจทานก่อนสรุปสภาพป่าหรือน้ำท่วม</div>':'';
+const smallWarning=active.rows.find(x=>x.date===active.date)?.total_pixels<30?'<div class="notice img-missing">แปลงมีพิกเซลสำหรับ QA น้อยกว่า 30 พิกเซลบนกริดวิเคราะห์ จึงไม่ควรตีความว่า SCL 100% หมายถึงภาพชัดหรือแม่นยำ ควรใช้ภาพต้นฉบับและข้อมูลภาคสนามตรวจทาน</div>':'';
+const rgbSource=target?.source==='generated'?target:null;
+const whitePct=rgbSource?.rgb_near_white_pct;
+const rgbWarning=rgbSource?.rgb_display_warning?'<div class="notice img-missing img-rgb-warning"><b>RGB QUALITY REVIEW:</b> '+esc(String(whitePct))+'% ของพิกเซลสีจริงในขอบเขตแปลงที่ผ่าน SCL เป็นสีเกือบขาว อาจเกิดจากเมฆ ความสว่างสูง หรือการปรับสี ต้องตรวจ TIFF ก่อนสรุป</div>':'';
+const rgbMeta=rgbSource?.rgb_native_width?'<div class="img-rgb-resolution">RGB Preview '+esc(rgbSource.rgb_native_width)+' × '+esc(rgbSource.rgb_native_height)+' พิกเซล (กริดต้นทาง 10 ม.) · ดัชนีจากกริด 20 ม. · สีเกือบขาวในแปลง '+esc(String(whitePct??'ไม่ทราบ'))+'%</div>':'';
 const boundaryLegend=active.geometry?'<div class="img-boundary-legend"><i></i> เส้นแดง = ขอบเขต '+esc(active.boundaryType==='PDD_136'?'PDD':active.boundaryType==='MOC3'?'MOC 3 (ยังไม่ยืนยัน)':active.boundaryType||'จากฐาน GIS')+' ที่ระบบมีอยู่ (ไม่ใช่การรับรองสิทธิ์)</div>':'<div class="notice img-missing">แปลงนี้ไม่มี Geometry ที่จับคู่ได้ จึงยังไม่สามารถวาดขอบเขตบน Raster</div>';
-const main='<div class="img-controls">'+nav+'</div>'+boundaryLegend+noPreview+smallWarning+
+const main='<div class="img-controls">'+nav+'</div>'+boundaryLegend+noPreview+smallWarning+rgbWarning+rgbMeta+
  '<div class="img-preview-grid"><div class="img-large"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.mode],active.mode,active.date,target)+'</div><div class="img-foot">ความละเอียด: '+esc(String(a[active.mode]?.resolution_m||'—'))+' m · ภาพเต็มสี่เหลี่ยม (ไม่ clip เฉพาะ Polygon)</div></div>'+
  '<div class="img-map-panel"><div class="img-title">'+(a[active.mode]?'Raster Sentinel-2 พร้อมขอบเขต PDD':'ภาพพื้นหลัง Esri พร้อมขอบเขต PDD (ยังไม่มี Raster '+esc(active.date)+')')+'</div><div class="img-geo-map" id="mmc-geo-map"></div><div class="img-foot">'+(a[active.mode]?'ขอบเขต PDD เส้นแดง · ภาพ Sentinel-2 วันที่เลือกอ้างอิง bounds ของ Raster จริง':'ภาพนี้เป็น Basemap Esri สำหรับดูตำแหน่งเท่านั้น ไม่ใช่ภาพ Sentinel-2 วันที่ '+esc(active.date))+'</div>'
 +legend(target,active.mode)
