@@ -286,7 +286,10 @@ def merge(args):
                 shutil.copy2(path,dst/path.name)
             count+=1
         errors.extend(payload["errors"])
-    if count<1:raise RuntimeError("Zero new rendered satellite imagery; not publishing empty products")
+    if count<1:
+        if errors:raise RuntimeError("No new imagery was rendered; inspect Drive/source errors")
+        print("RENDER_NOOP_ALL_EXISTING_PREVIEWS_CURRENT",flush=True)
+        return
     manifest["generated_items"]=list(old.values())
     manifest["render_status"]={
         "rendered_image_dates":count,
