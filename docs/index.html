@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261009-pdd1" />
+  <link rel="stylesheet" href="styles.css?v=20261009-reportselect1" />
 </head>
 <body>
   <header class="topbar">
@@ -287,16 +287,27 @@
           <section class="card report-controls">
             <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3><p class="pdd-report-note">ขอบเขตแปลงหลักใช้ PDD ตามฐานข้อมูลเดิมของรายงาน • ขอบเขตยืนยันกรมเก็บไว้สำหรับเทียบข้อมูล ไม่ใช้แทน PDD อัตโนมัติ</p>
             <label>เลือกแปลง<select id="report-plot"></select></label>
-            <label>รูปแบบ<select id="report-type"><option value="quick">Live Report — อัปเดตตามประวัติข้อมูล</option><option value="compare">Compare Report — เลือก 2 วัน</option><option value="verified">Verified Report — 6 หน้า</option></select></label><div class="cmp-report-controls"><label>วันที่ A<select id="report-date-a"></select></label><label>วันที่ B<select id="report-date-b"></select></label><p>เลือกกราฟสำหรับ Compare Report</p><div class="cmp-metrics">
- <label><input data-monitor-metric type="checkbox" value="water" checked> พื้นที่น้ำ</label>
- <label><input data-monitor-metric type="checkbox" value="ndvi" checked> NDVI</label>
- <label><input data-monitor-metric type="checkbox" value="ndre" checked> NDRE</label>
- <label><input data-monitor-metric type="checkbox" value="ndmi" checked> NDMI</label>
- <label><input data-monitor-metric type="checkbox" value="mndwi"> MNDWI</label>
- <label><input data-monitor-metric type="checkbox" value="bsi"> BSI</label>
- <label><input data-monitor-metric type="checkbox" value="valid_pct"> คุณภาพภาพ (QA)</label></div></div>
-            <div class="report-date-select" id="report-date-select"><strong>เลือกวันที่สำหรับกราฟและสรุป (เลือกหลายวันได้)</strong><div id="report-date-checkboxes" class="report-date-checkboxes">กำลังโหลดประวัติภาพ...</div></div>
-            <div class="check-grid"><label><input type="checkbox" checked> สถานะน้ำ</label><label><input type="checkbox" checked> ดัชนีพืช</label><label><input type="checkbox" checked> Stable land</label><label><input type="checkbox" checked> QA / วันที่</label></div>
+            <label>รูปแบบรายงาน<select id="report-type"><option value="quick">Live Report — เลือกหลายวันและหลายปี</option><option value="compare">Compare Report — เปรียบเทียบวันที่ติ๊กเลือก</option><option value="verified">Verified Report — PDF ต้นฉบับ (ไม่เปลี่ยนแปลง)</option></select></label>
+            <div class="report-selection-panel" id="report-selection-panel">
+              <div class="report-selector-title">ช่วงเวลาที่ต้องการแสดง</div>
+              <fieldset class="report-mode-options" aria-label="รูปแบบการแสดงวันที่">
+                <label><input type="radio" name="report-period-mode" value="dates" checked> เลือกวันที่เอง</label>
+                <label><input type="radio" name="report-period-mode" value="years"> เลือกแต่ละปี (ทุกภาพในปีนั้น)</label>
+                <label><input type="radio" name="report-period-mode" value="annual"> ทุกปี ปีละ 1 ภาพ</label>
+              </fieldset>
+              <div id="report-date-panel">
+                <div class="report-selector-actions"><strong>เลือกวันได้หลายวัน</strong><div><button id="report-date-select-all" type="button" class="ghost-btn">เลือกทั้งหมด</button><button id="report-date-select-none" type="button" class="ghost-btn">ล้างที่เลือก</button></div></div>
+                <div class="report-date-checkboxes" id="report-date-checkboxes">กำลังโหลดวันที่จริง...</div>
+              </div>
+              <div id="report-year-panel" hidden>
+                <strong class="report-year-title">เลือกปีที่ต้องการ</strong>
+                <div id="report-year-checkboxes" class="report-year-checkboxes"></div>
+                <p class="report-year-help">โหมดปีละ 1 ภาพ: เลือกจากภาพดาวเทียมที่มีจริง โดยให้ความสำคัญกับข้อมูลที่ผ่าน QA</p>
+              </div>
+              <p class="report-scope-caption" id="report-scope-caption"></p>
+              <div class="report-selector-title report-graph-title">เลือกกราฟที่จะแสดง</div>
+              <div id="report-graph-checkboxes" class="report-graph-checkboxes">กำลังโหลดตัวเลือกกราฟ...</div>
+            </div>
             <button class="primary-btn wide" onclick="renderReportPreview()">Preview Report</button>
             <button class="ghost-btn wide" id="print-report-btn" onclick="printReport()">Export Quick Report เป็น PDF</button>
             <a class="ghost-btn wide" id="verified-folder-2" target="_blank" rel="noopener">เปิด Verified PDF ของแปลงนี้</a>
@@ -308,13 +319,14 @@
   </div>
 
   <script src="map-studio.js?v=20261009-multipolygon3"></script>
-  <script src="trend-report.js?v=20261009-multidate2"></script>
+  <script src="report-selector.js?v=20261009-reportselect1"></script>
+  <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261009-pddclip1"></script>
+  <script src="app.js?v=20261009-reportselect1"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
-  <script src="monitoring-studio.js?v=20261008-alertfix2"></script>
+  <script src="monitoring-studio.js?v=20261009-reportselect1"></script>
   <script src="calendar.js?v=20261008-alertfix3"></script>
 </body>
 </html>
