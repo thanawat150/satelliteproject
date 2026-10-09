@@ -59,8 +59,8 @@ function pick(p,d,mode){
 async function init(){
  if(initialized)return;initialized=true;
  try{
-   const parts=await Promise.all(Array.from({length:10},(_,i)=>fetch("data/full_preview_part_"+(i+1)+".json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("full preview part "+(i+1)+" HTTP "+r.status);return r.json()})));
-   entries=parts.flatMap(x=>Array.isArray(x.layers)?x.layers:[]);
+   const parts=await Promise.allSettled(Array.from({length:10},(_,i)=>fetch("data/full_preview_part_"+(i+1)+".json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("full preview part "+(i+1)+" HTTP "+r.status);return r.json()})));
+   entries=parts.filter(x=>x.status==="fulfilled").flatMap(x=>Array.isArray(x.value.layers)?x.value.layers:[]);if(!entries.length)throw Error("Missing full preview layers");
  }catch(e){
    console.warn("Full preview layers unavailable, falling back to compact quicklooks",e);
    try{const r=await fetch("data/visual_layers.json",{cache:"no-store"});if(r.ok){const j=await r.json();entries=Array.isArray(j.layers)?j.layers:[];}}catch(_){}
@@ -89,11 +89,9 @@ function updateInputs(){
 function syncModes(p){
  if(!p)return;
  const d=date(),e=$("studio-mode");
- [...e.options].forEach(o=>{if(o.value!=="true"){o.disabled=!available(p,d,o.value);o.title=o.disabled?"ยังไม่มีชั้นภาพจาก raster ของวัน/แปลงนี้":"";}});
- const truth=pick(p,d,"true");
- if((state.mode==="true"&&!truth) || e.querySelector('option[value="'+state.mode+'"]')?.disabled){
-   state.mode=truth?"true":(["mndwi","ndmi","ndre","ndvi","false","bsi"].find(m=>available(p,d,m))||"true");
- }
+ const plotHas=mode=>entries.some(v=>v.plot===p.plot&&v.mode===dataMode(mode))||(mode==="true"&&mapSatelliteCandidates(p.plot).length>0);
+ [...e.options].forEach(o=>{o.disabled=!plotHas(o.value);o.title=o.disabled?"ไม่มีภาพโหมดนี้สำหรับแปลงที่เลือก":"";});
+ if(!plotHas(state.mode))state.mode=["true","false","mndwi","ndvi","ndre","ndmi","bsi"].find(plotHas)||"true";
  e.value=state.mode;
  const isIndex=MODES[state.mode].type==="index", legend=$("studio-legend");
  legend.hidden=!isIndex;
@@ -102,7 +100,16 @@ function syncModes(p){
 function render(p){
  if(!p)return;syncModes(p);current=null;removeMapSatelliteLayers();
  if(!mapSatelliteVisible){status("ภาพดาวเทียมถูกซ่อน");applyVisibility();return}
- const d=date(),layer=pick(p,d,state.mode);
+ let d=date(),layer=pick(p,d,state.mode);
+ if(!layer){
+   const choices=[...new Set(entries.filter(v=>v.plot===p.plot&&v.mode===dataMode(state.mode)).map(v=>v.date)
+     .concat(state.mode==="true"?mapSatelliteCandidates(p.plot).map(v=>v.date):[]))].sort().reverse();
+   if(choices.length){
+     d=choices[0];mapSatelliteDate=d;
+     const sel=$("map-sat-date");if(sel&&[...sel.options].some(o=>o.value===d))sel.value=d;
+     layer=pick(p,d,state.mode);
+   }
+ }
  if(!layer?.bounds||!layer.url){status(p.plot+" • "+nice(d)+" • ยังไม่มีภาพ "+MODES[state.mode].name+" ที่พร้อมแสดง");applyVisibility();return}
  const b=L.latLngBounds(layer.bounds[0],layer.bounds[1]);current=layer;
  [[overviewMap,"overview"],[fullMap,"full"]].forEach(([map,k])=>{
