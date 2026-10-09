@@ -60,9 +60,9 @@ assert.ok(generated.images>=6&&generated.legend&&generated.geo,'Generated true/f
 assert.ok(await page.locator('#imagery-explorer .img-tile .img-boundary-overlay').count()>=6,'Generated index gallery must include geometry overlay');
 await page.locator('#image-boundary-toggle').uncheck();
 assert.ok(await page.locator('#imagery-explorer').evaluate(el=>el.classList.contains('boundary-hidden')),'User can toggle boundary overlays off');
-assert.equal(await page.locator('#mmc-geo-map .leaflet-overlay-pane path').count(),0,'Boundary toggle must also hide polygon on the map');
+assert.equal(await page.locator('#mmc-geo-map').getAttribute('data-boundary-visible'),'false','Boundary toggle must also hide polygon on canvas map');
 await page.locator('#image-boundary-toggle').check();
-assert.ok(await page.locator('#mmc-geo-map .leaflet-overlay-pane path').count()>0,'Boundary toggle restores polygon on map');
+assert.equal(await page.locator('#mmc-geo-map').getAttribute('data-boundary-visible'),'true','Boundary toggle restores polygon on canvas map');
 
 
 // Regression: 15-STC has QA-valid 2026-10-07 without a corresponding rendered Raster Preview.
