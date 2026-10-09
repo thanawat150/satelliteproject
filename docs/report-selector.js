@@ -26,7 +26,8 @@ function view(plot,history,files){
   if(file.web_preview_url&&file.resolution==="10m")hasPreview.set(file.date,true);
  }
  const chooseRepresentative=y=>{
-  const candidates=[...new Set(scenes.filter(x=>x.date.startsWith(y)).map(x=>x.date))];
+  const datesWithImages=scenes.filter(x=>x.date.startsWith(y)&&x.web_preview_url).map(x=>x.date);
+  const candidates=[...new Set(datesWithImages.length?datesWithImages:scenes.filter(x=>x.date.startsWith(y)).map(x=>x.date))];
   const score=d=>{
    const o=byDate.get(d);
    const trusted=o&&["VERIFIED","AUTO_VALID"].includes(o.analysis_status)&&Number(o.valid_pct)>=70;
