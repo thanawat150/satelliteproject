@@ -5,6 +5,7 @@ on:
     paths:
       - "docs/mangrove-monitoring/**"
       - "scripts/test_mmc_preview.cjs"
+      - "scripts/nationwide_process.py"
       - ".github/workflows/mmc-preview-smoke.yml"
   workflow_dispatch:
 permissions:
@@ -19,7 +20,10 @@ jobs:
         with:
           node-version: "22"
       - name: Validate JavaScript syntax
-        run: node --check docs/mangrove-monitoring/app.js
+        run: |
+          node --check docs/mangrove-monitoring/app.js
+          node --check docs/mangrove-monitoring/imagery-viewer.js
+          python -m py_compile scripts/nationwide_process.py
       - name: Install Playwright Chromium
         run: |
           npm install --no-save playwright@1.56.1
