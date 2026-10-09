@@ -3,20 +3,21 @@ const $=id=>document.getElementById(id),base='data/nationwide/';
 const selectedDays=new Map();const selectedMetrics=new Set(['water_rai','ndvi','ndre','ndmi','mndwi','bsi','vegetation_rai','bare_soil_rai','qa_valid_pct']);
 const specs={water_rai:['พื้นที่น้ำ (ไร่)','น้ำที่จำแนกจาก MNDWI > 0 หลังผ่าน QA'],ndvi:['NDVI','ความเขียวพืช: ค่าลดลงอาจเป็นพืชเครียด/มีพื้นที่ใบลดลง'],ndre:['NDRE','ดัชนีขอบแดงที่สัมพันธ์กับคลอโรฟิลล์'],ndmi:['NDMI','ดัชนีความชื้นของพืชและพื้นผิว'],mndwi:['MNDWI','ดัชนีน้ำเปิด (Green/SWIR)'],ndwi:['NDWI','น้ำตาม Green/NIR'],bsi:['BSI','ดัชนีดินเปิดโล่ง: เพิ่มขึ้นอาจสัมพันธ์กับดินเปิดมากขึ้น'],savi:['SAVI','ดัชนีพืชที่ลดอิทธิพลของดิน'],evi:['EVI','ดัชนีพืชที่ใช้แบนด์ NIR/Red/Blue'],gli:['GLI','Green Leaf Index'],vegetation_rai:['พื้นที่พืช (ไร่)','จำแนกแบบเบื้องต้นด้วย NDVI ≥ 0.35'],bare_soil_rai:['พื้นที่ดินเปิดโล่ง (ไร่)','ใช้ BSI และ NDVI พร้อมไม่นับน้ำ'],wetness_rai:['พื้นที่ชื้น (ไร่)','สถานะความชื้นที่อาจทับซ้อนชั้นพืช/น้ำ'],qa_valid_pct:['คุณภาพภาพ QA (%)','สัดส่วนพิกเซลใน PDD ที่ใช้วิเคราะห์ได้']};
 let boundary={features:[]},batch={plots:{},scenes:[],changes:[],totals:{}},water={features:[]},previews={images:[]},map=null,layerGroup=null,plots=[],plot='',charts=[];
+const getPlotMeta=p=>batch.plots[p]||boundary.features.find(f=>f.properties.plot===p)?.properties||{};
 const format=v=>v==null||!isFinite(Number(v))?'—':Number(v).toLocaleString('th-TH',{minimumFractionDigits:Number(v)%1?2:0,maximumFractionDigits:5});
 const bdate=d=>{if(!d)return '—';const [y,m,dd]=d.split('-');return `${dd}/${m}/${+y+543}`};
 const trusted=r=>r.analysis_status==='AUTO_VALID'||r.analysis_status==='VERIFIED';
 const color=['#35addc','#e9b24a','#b267d8','#4bb688','#ec7992','#bedb59','#63bacc'];
 async function load(){try{
- const [b,r,f,p]=await Promise.all(['boundaries_pdd_all.geojson','batch_01_results.json','batch_01_features.geojson','batch_01_previews.json'].map(file=>fetch(base+file).then(x=>{if(!x.ok)throw Error(file+': '+x.status);return x.json()})));
- boundary=b;batch=r;water=f;previews=p;plots=Object.keys(r.plots||{}).sort((a,b)=>a.localeCompare(b,'en',{numeric:true}));
+ const [b,r,f,p]=await Promise.all(['boundaries_pdd_136.geojson','batch_01_results.json','batch_01_features.geojson','batch_01_previews.json'].map(file=>fetch(base+file).then(x=>{if(!x.ok)throw Error(file+': '+x.status);return x.json()})));
+ boundary=b;batch=r;water=f;previews=p;plots=b.features.map(f=>f.properties.plot).sort((a,b)=>a.localeCompare(b,'en',{numeric:true}));
  init();
  }catch(e){$('scope').textContent='ไม่สามารถโหลดผลการประมวลผล: '+e.message;console.error(e)}}
 function dataRows(){const all=batch.scenes.filter(r=>r.plot===plot).sort((a,b)=>a.date.localeCompare(b.date));if(!selectedDays.has(plot))selectedDays.set(plot,new Set(all.map(x=>x.date)));return all}
 function current(){return dataRows().filter(r=>selectedDays.get(plot).has(r.date))}
 function renderControls(){
- const provinces=[...new Set(plots.map(p=>batch.plots[p]?.province))].sort();$('province').innerHTML=provinces.map(pr=>`<option value="${pr}">${pr}</option>`).join('');
- const chosen=plots[0];$('province').value=batch.plots[chosen]?.province||provinces[0];populatePlots(chosen);
+ const provinces=[...new Set(plots.map(p=>getPlotMeta(p).province))].sort();$('province').innerHTML=provinces.map(pr=>`<option value="${pr}">${pr}</option>`).join('');
+ const chosen=plots[0];$('province').value=getPlotMeta(chosen).province||provinces[0];populatePlots(chosen);
  $('province').onchange=()=>populatePlots();$('plot').onchange=()=>{plot=$('plot').value;render()};
  $('alldates').onclick=()=>{selectedDays.set(plot,new Set(dataRows().map(x=>x.date)));render()};
  $('allmetrics').onclick=()=>{Object.keys(specs).forEach(k=>selectedMetrics.add(k));render()};
@@ -24,12 +25,12 @@ function renderControls(){
  $('dates').onchange=e=>{const v=e.target.dataset.day;if(!v)return;const set=selectedDays.get(plot);if(e.target.checked)set.add(v);else set.delete(v);render()};
  $('metrics').onchange=e=>{const v=e.target.dataset.metric;if(!v)return;e.target.checked?selectedMetrics.add(v):selectedMetrics.delete(v);render()};
 }
-function populatePlots(preferred){const province=$('province').value;const codes=plots.filter(p=>batch.plots[p]?.province===province);$('plot').innerHTML=codes.map(c=>`<option value="${c}">${c}</option>`).join('');plot=preferred&&codes.includes(preferred)?preferred:codes[0];$('plot').value=plot;render()}
+function populatePlots(preferred){const province=$('province').value;const codes=plots.filter(p=>getPlotMeta(p).province===province);$('plot').innerHTML=codes.map(c=>`<option value="${c}">${c}</option>`).join('');plot=preferred&&codes.includes(preferred)?preferred:codes[0];$('plot').value=plot;render()}
 function init(){renderControls();const n=batch.totals||{};$('progress').textContent=`ชุดแรก ${n.plots_with_source_scenes||0}/10 แปลง • ${n.processed_dates||0} วันภาพ • ผ่าน QA ${n.qa_valid_dates||0} / ไม่ผ่าน ${n.no_data_dates||0} วันภาพ • การเปรียบเทียบที่มีภาพใช้ได้ ${n.date_changes||0} คู่ • ไม่เปลี่ยนค่ารายงาน Verified เดิม`;
  $('progressbar').style.width=`${(n.plots_with_source_scenes||0)/136*100}%`;
- $('scope').textContent='ขอบเขตงานที่ยืนยัน 136 แปลง • ชุด MOC PDD ที่พบ 159 รหัสแปลง ยังต้องกระทบยอดรายชื่อ 136 ก่อนเปิดประมวลผลชุดต่อไป • ขณะนี้เผยแพร่เฉพาะชุดแรก 10 แปลงพร้อมผลตรวจสอบ QA';}
-function render(){if(!plot)return;const all=dataRows(),days=selectedDays.get(plot),rows=current();const info=batch.plots[plot];
- $('plotmeta').textContent=`PDD MultiPolygon ${info.pdd_geometry_parts} ส่วน • พื้นที่คำนวณ ${format(info.pdd_area_rai)} ไร่`;
+ $('scope').textContent='ขอบเขตงานที่ยืนยัน 136 แปลง • ชุด PDD ตาม MOC 1 + MOC 2 + Standard ยืนยันครบ 136 แปลงแล้ว (MOC 3 อีก 23 แปลงแยกออก) • สถานะชุดแรกประมวลผล 10/136 แปลง ที่เหลือแสดง PDD และรอรัน TIFF';}
+function render(){if(!plot)return;const all=dataRows(),days=selectedDays.get(plot),rows=current();const info=getPlotMeta(plot);
+ $('plotmeta').textContent=`PDD MultiPolygon ${(info.pdd_geometry_parts||info.geometry_parts||1)} ส่วน • พื้นที่คำนวณ ${format((info.pdd_area_rai||info.geometry_area_rai))} ไร่`;
  $('dates').innerHTML=all.map(r=>`<label><input type="checkbox" data-day="${r.date}" ${days.has(r.date)?'checked':''}> ${bdate(r.date)} ${r.status==='AUTO_VALID'?'✓':'⚠'}</label>`).join('');
  $('metrics').innerHTML=Object.entries(specs).map(([k,v])=>`<label><input type="checkbox" data-metric="${k}" ${selectedMetrics.has(k)?'checked':''}> ${v[0]}</label>`).join('');
  const valid=rows.filter(trusted),last=valid.at(-1),first=valid[0];
