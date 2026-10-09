@@ -23,7 +23,7 @@ const modeOptions=(m)=>Object.entries(MODE).map(([k,v])=>'<option value="'+k+'" 
 function available(item){return item?.modes||[]}
 function srcOK(x){return typeof x==='string'&&(/^data:image\/(?:png|jpeg|webp);base64,/i.test(x)||/^\.\/imagery\/[a-z0-9_()\/.\-]+$/i.test(x));}
 function previewSrc(row){return srcOK(row?.src)?row.src:null}
-async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261009-v1');if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
+async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261009-v2',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
 async function getProduct(item){if(!item)return null;if(item.source==='generated'){return {layers:Object.entries(item.assets||{}).map(([mode,u])=>({plot:item.plot,date:item.date,mode,src:u,bounds:item.bounds,resolution_m:mode==='true_color'||mode==='false_color'?10:20}))};}
 const key='part-'+item.part;if(!files.has(key)){const url='../data/full_preview_part_'+item.part+'.json';const response=await fetch(url);if(!response.ok)throw Error('Image product HTTP '+response.status);files.set(key,await response.json());}return files.get(key);}
 function imageryItems(){const orig=(index?.items||[]).filter(x=>x.plot===active.plot);const extra=(index?.generated_items||[]).filter(x=>x.plot===active.plot);const map=new Map();for(const x of [...orig,...extra]){let k=x.date;const old=map.get(k);if(!old)map.set(k,x);else if(x.source==='generated'){// generated preview can supply modes not available in older preview
