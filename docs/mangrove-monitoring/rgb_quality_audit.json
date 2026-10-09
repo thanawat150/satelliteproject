@@ -9,7 +9,6 @@
     "archived_date_pairs": 65,
     "rendered_files_with_errors": 0,
     "visual_review_flag_counts": {
-      "RGB_ALPHA_NOT_PRESERVED": 109,
       "SCL_UNCLASSIFIED_HIGH": 24,
       "SMALL_RGB_SAMPLE": 4,
       "RGB_NODATA_HIGH": 1
@@ -22,63 +21,57 @@
       "plot": "1-VSD",
       "date": "2026-09-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 156,
       "rgb_image_dimensions": [
         24,
         17
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "100-VSD",
       "date": "2026-04-25",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 4666,
       "rgb_image_dimensions": [
         86,
         139
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "102-VSD",
       "date": "2026-07-09",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 512,
       "rgb_image_dimensions": [
         44,
         53
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "13-STC",
       "date": "2026-04-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.9,
       "rgb_plot_sample_pixels": 4165,
       "rgb_image_dimensions": [
@@ -92,9 +85,9 @@
       "plot": "13-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 1.8,
       "rgb_plot_sample_pixels": 4165,
       "rgb_image_dimensions": [
@@ -108,10 +101,10 @@
       "plot": "14(1)-STC",
       "date": "2026-07-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 2.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 2,
       "rgb_plot_sample_pixels": 199,
       "rgb_image_dimensions": [
         25,
@@ -124,9 +117,9 @@
       "plot": "14-STC",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 31.9,
       "rgb_plot_sample_pixels": 72,
       "rgb_image_dimensions": [
@@ -142,10 +135,10 @@
       "plot": "14-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 72,
       "rgb_image_dimensions": [
         16,
@@ -159,9 +152,9 @@
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 82.35,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 15.3,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 61,
       "rgb_image_dimensions": [
         16,
@@ -174,10 +167,10 @@
       "plot": "14-VSD",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 626,
       "rgb_image_dimensions": [
         55,
@@ -190,10 +183,10 @@
       "plot": "14-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 626,
       "rgb_image_dimensions": [
         55,
@@ -206,9 +199,9 @@
       "plot": "15-STC",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 37.8,
       "rgb_plot_sample_pixels": 82,
       "rgb_image_dimensions": [
@@ -224,9 +217,9 @@
       "plot": "15-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 34.1,
       "rgb_plot_sample_pixels": 82,
       "rgb_image_dimensions": [
@@ -234,7 +227,6 @@
         21
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -243,9 +235,9 @@
       "plot": "15-VSD",
       "date": "2026-06-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 1.1,
       "rgb_plot_sample_pixels": 747,
       "rgb_image_dimensions": [
@@ -259,10 +251,10 @@
       "plot": "15-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 747,
       "rgb_image_dimensions": [
         54,
@@ -275,27 +267,25 @@
       "plot": "15-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 5.1,
       "rgb_plot_sample_pixels": 747,
       "rgb_image_dimensions": [
         54,
         40
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "16-STC",
       "date": "2026-07-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 11.9,
       "rgb_plot_sample_pixels": 436,
       "rgb_image_dimensions": [
@@ -309,10 +299,10 @@
       "plot": "16-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 436,
       "rgb_image_dimensions": [
         33,
@@ -326,7 +316,7 @@
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 98.15,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 1.4,
       "rgb_unclassified_scl_pct": 23.7,
       "rgb_plot_sample_pixels": 430,
@@ -343,63 +333,57 @@
       "plot": "16-VSD",
       "date": "2026-07-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 18.7,
       "rgb_plot_sample_pixels": 193,
       "rgb_image_dimensions": [
         31,
         32
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "16-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 193,
       "rgb_image_dimensions": [
         31,
         32
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "16-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 14.5,
       "rgb_plot_sample_pixels": 193,
       "rgb_image_dimensions": [
         31,
         32
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "17-STC",
       "date": "2026-04-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 1.2,
       "rgb_plot_sample_pixels": 4407,
       "rgb_image_dimensions": [
@@ -413,10 +397,10 @@
       "plot": "17-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 4407,
       "rgb_image_dimensions": [
         127,
@@ -429,28 +413,26 @@
       "plot": "17-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 4.8,
       "rgb_plot_sample_pixels": 4407,
       "rgb_image_dimensions": [
         125,
         81
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "17-VSD",
       "date": "2026-07-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 2.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 2,
       "rgb_plot_sample_pixels": 392,
       "rgb_image_dimensions": [
         36,
@@ -463,10 +445,10 @@
       "plot": "17-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
+      "scl_valid_pct": 100,
       "rgb_near_white_pct": 0.3,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 392,
       "rgb_image_dimensions": [
         36,
@@ -479,9 +461,9 @@
       "plot": "17-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 36.2,
       "rgb_plot_sample_pixels": 392,
       "rgb_image_dimensions": [
@@ -489,7 +471,6 @@
         30
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -498,10 +479,10 @@
       "plot": "18(1)-STC",
       "date": "2026-09-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 342,
       "rgb_image_dimensions": [
         37,
@@ -514,10 +495,10 @@
       "plot": "18(1)-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 342,
       "rgb_image_dimensions": [
         37,
@@ -530,27 +511,25 @@
       "plot": "18(1)-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 342,
       "rgb_image_dimensions": [
         36,
         29
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "18-STC",
       "date": "2026-04-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 9.1,
       "rgb_plot_sample_pixels": 506,
       "rgb_image_dimensions": [
@@ -564,10 +543,10 @@
       "plot": "18-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 506,
       "rgb_image_dimensions": [
         46,
@@ -580,27 +559,25 @@
       "plot": "18-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 8.1,
       "rgb_plot_sample_pixels": 506,
       "rgb_image_dimensions": [
         45,
         56
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "18-VSD",
       "date": "2026-04-20",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.6,
       "rgb_plot_sample_pixels": 30583,
       "rgb_image_dimensions": [
@@ -615,7 +592,7 @@
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 71.6,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 28.5,
       "rgb_unclassified_scl_pct": 3.2,
       "rgb_plot_sample_pixels": 21879,
@@ -630,45 +607,41 @@
       "plot": "19-STC",
       "date": "2026-09-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 8.5,
       "rgb_plot_sample_pixels": 236,
       "rgb_image_dimensions": [
         33,
         25
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "19-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 236,
       "rgb_image_dimensions": [
         33,
         25
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "19-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 38.6,
       "rgb_plot_sample_pixels": 236,
       "rgb_image_dimensions": [
@@ -676,7 +649,6 @@
         25
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -685,28 +657,26 @@
       "plot": "19-VSD",
       "date": "2026-07-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 5040,
       "rgb_image_dimensions": [
         118,
         50
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "2-VSD",
       "date": "2026-09-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 394,
       "rgb_image_dimensions": [
         29,
@@ -719,9 +689,9 @@
       "plot": "20-STC",
       "date": "2026-04-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 20.2,
       "rgb_plot_sample_pixels": 456,
       "rgb_image_dimensions": [
@@ -729,7 +699,6 @@
         47
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -738,27 +707,25 @@
       "plot": "20-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
+      "scl_valid_pct": 100,
       "rgb_near_white_pct": 3.5,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 456,
       "rgb_image_dimensions": [
         43,
         47
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "20-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 20.8,
       "rgb_plot_sample_pixels": 456,
       "rgb_image_dimensions": [
@@ -766,7 +733,6 @@
         47
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -775,9 +741,9 @@
       "plot": "21-STC",
       "date": "2026-03-13",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 34.1,
       "rgb_plot_sample_pixels": 2350,
       "rgb_image_dimensions": [
@@ -794,7 +760,7 @@
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 97.13,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 2.8,
       "rgb_unclassified_scl_pct": 4.6,
       "rgb_plot_sample_pixels": 2284,
@@ -809,46 +775,42 @@
       "plot": "21-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 14.9,
       "rgb_plot_sample_pixels": 2350,
       "rgb_image_dimensions": [
         94,
         92
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "22(1)-STC",
       "date": "2026-03-13",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 16.4,
       "rgb_plot_sample_pixels": 207,
       "rgb_image_dimensions": [
         17,
         33
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "22(1)-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 207,
       "rgb_image_dimensions": [
         17,
@@ -861,27 +823,25 @@
       "plot": "22(1)-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 5.8,
       "rgb_plot_sample_pixels": 207,
       "rgb_image_dimensions": [
         17,
         33
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "22-STC",
       "date": "2026-03-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 37.8,
       "rgb_plot_sample_pixels": 418,
       "rgb_image_dimensions": [
@@ -913,28 +873,26 @@
       "plot": "22-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 3.3,
       "rgb_plot_sample_pixels": 418,
       "rgb_image_dimensions": [
         31,
         40
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "22-VSD",
       "date": "2026-06-24",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 4811,
       "rgb_image_dimensions": [
         285,
@@ -947,28 +905,26 @@
       "plot": "22-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 4811,
       "rgb_image_dimensions": [
         285,
         203
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "23(1)-STC",
       "date": "2026-04-25",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 120,
       "rgb_image_dimensions": [
         26,
@@ -981,10 +937,10 @@
       "plot": "23-STC",
       "date": "2026-09-09",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
+      "scl_valid_pct": 100,
       "rgb_near_white_pct": 0.1,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 683,
       "rgb_image_dimensions": [
         55,
@@ -997,10 +953,10 @@
       "plot": "23-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 24.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 24,
       "rgb_plot_sample_pixels": 683,
       "rgb_image_dimensions": [
         55,
@@ -1015,10 +971,10 @@
       "plot": "23-VSD",
       "date": "2026-06-24",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 3202,
       "rgb_image_dimensions": [
         224,
@@ -1031,28 +987,26 @@
       "plot": "23-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 3202,
       "rgb_image_dimensions": [
         224,
         154
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "24-VSD",
       "date": "2026-09-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 234,
       "rgb_image_dimensions": [
         21,
@@ -1066,9 +1020,9 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 81.36,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 17.1,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 194,
       "rgb_image_dimensions": [
         21,
@@ -1081,10 +1035,10 @@
       "plot": "25-VSD",
       "date": "2026-06-12",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 633,
       "rgb_image_dimensions": [
         38,
@@ -1097,10 +1051,10 @@
       "plot": "25-VSD",
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 633,
       "rgb_image_dimensions": [
         38,
@@ -1114,9 +1068,9 @@
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 71.9,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 29.4,
-      "rgb_unclassified_scl_pct": 32.0,
+      "rgb_unclassified_scl_pct": 32,
       "rgb_plot_sample_pixels": 447,
       "rgb_image_dimensions": [
         38,
@@ -1131,100 +1085,90 @@
       "plot": "27-VSD",
       "date": "2026-09-20",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 158,
       "rgb_image_dimensions": [
         18,
         26
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "27-VSD",
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 158,
       "rgb_image_dimensions": [
         18,
         26
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "28-STC",
       "date": "2026-08-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 19.5,
       "rgb_plot_sample_pixels": 41,
       "rgb_image_dimensions": [
         14,
         10
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "28-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 19.5,
       "rgb_plot_sample_pixels": 41,
       "rgb_image_dimensions": [
         14,
         10
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "28-STC",
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 41,
       "rgb_image_dimensions": [
         14,
         10
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "28-VSD",
       "date": "2026-08-16",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 79,
       "rgb_image_dimensions": [
         19,
@@ -1238,9 +1182,9 @@
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 94.74,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 3.8,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 76,
       "rgb_image_dimensions": [
         19,
@@ -1253,9 +1197,9 @@
       "plot": "29-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 33.3,
       "rgb_plot_sample_pixels": 132,
       "rgb_image_dimensions": [
@@ -1263,7 +1207,6 @@
         17
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -1272,63 +1215,57 @@
       "plot": "29-VSD",
       "date": "2026-09-25",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 41,
       "rgb_image_dimensions": [
         16,
         14
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "29-VSD",
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 41,
       "rgb_image_dimensions": [
         16,
         14
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "29-VSD",
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 41,
       "rgb_image_dimensions": [
         16,
         14
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "3-VSD",
       "date": "2026-09-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 9.4,
       "rgb_plot_sample_pixels": 171,
       "rgb_image_dimensions": [
@@ -1342,17 +1279,16 @@
       "plot": "30-STC",
       "date": "2026-09-22",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 19,
       "rgb_image_dimensions": [
         9,
         13
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SMALL_RGB_SAMPLE"
       ],
       "image_assets": 8
@@ -1361,9 +1297,9 @@
       "plot": "30-STC",
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 89.5,
       "rgb_plot_sample_pixels": 19,
       "rgb_image_dimensions": [
@@ -1371,7 +1307,6 @@
         13
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH",
         "SMALL_RGB_SAMPLE"
       ],
@@ -1381,18 +1316,16 @@
       "plot": "30-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 213,
       "rgb_image_dimensions": [
         31,
         14
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
@@ -1400,7 +1333,7 @@
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 89.29,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 8.9,
       "rgb_unclassified_scl_pct": 11.9,
       "rgb_plot_sample_pixels": 194,
@@ -1415,10 +1348,10 @@
       "plot": "31-STC",
       "date": "2026-08-01",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 190,
       "rgb_image_dimensions": [
         29,
@@ -1431,10 +1364,10 @@
       "plot": "31-STC",
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 190,
       "rgb_image_dimensions": [
         29,
@@ -1447,27 +1380,25 @@
       "plot": "31-STC",
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 190,
       "rgb_image_dimensions": [
         28,
         41
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "31-VSD",
       "date": "2026-09-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 78.9,
       "rgb_plot_sample_pixels": 123,
       "rgb_image_dimensions": [
@@ -1483,108 +1414,96 @@
       "plot": "31-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 2.4,
       "rgb_plot_sample_pixels": 123,
       "rgb_image_dimensions": [
         30,
         20
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "32-VSD",
       "date": "2026-09-20",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 201,
       "rgb_image_dimensions": [
         19,
         25
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "32-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 201,
       "rgb_image_dimensions": [
         19,
         25
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "33-VSD",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 10.7,
       "rgb_plot_sample_pixels": 262,
       "rgb_image_dimensions": [
         34,
         32
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "33-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 3.1,
       "rgb_plot_sample_pixels": 262,
       "rgb_image_dimensions": [
         34,
         32
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "34-VSD",
       "date": "2026-09-20",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 144,
       "rgb_image_dimensions": [
         22,
         15
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
@@ -1592,7 +1511,7 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 94.29,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 4.9,
       "rgb_unclassified_scl_pct": 78.8,
       "rgb_plot_sample_pixels": 137,
@@ -1609,82 +1528,74 @@
       "plot": "35-STC",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 299,
       "rgb_image_dimensions": [
         67,
         44
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "35-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 299,
       "rgb_image_dimensions": [
         67,
         44
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "35-VSD",
       "date": "2026-09-22",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 89,
       "rgb_image_dimensions": [
         22,
         22
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "35-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 89,
       "rgb_image_dimensions": [
         22,
         22
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "36-STC",
       "date": "2026-09-22",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1575,
       "rgb_image_dimensions": [
         231,
@@ -1698,9 +1609,9 @@
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 88.35,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 11.7,
-      "rgb_unclassified_scl_pct": 12.0,
+      "rgb_unclassified_scl_pct": 12,
       "rgb_plot_sample_pixels": 1390,
       "rgb_image_dimensions": [
         231,
@@ -1713,9 +1624,9 @@
       "plot": "36-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 1.8,
       "rgb_plot_sample_pixels": 1575,
       "rgb_image_dimensions": [
@@ -1729,45 +1640,41 @@
       "plot": "36-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 7.8,
       "rgb_plot_sample_pixels": 51,
       "rgb_image_dimensions": [
         18,
         10
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "36-VSD",
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 51,
       "rgb_image_dimensions": [
         18,
         10
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "37-STC",
       "date": "2026-04-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 3.2,
       "rgb_plot_sample_pixels": 2522,
       "rgb_image_dimensions": [
@@ -1782,9 +1689,9 @@
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 91.24,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 8.5,
-      "rgb_unclassified_scl_pct": 2.0,
+      "rgb_unclassified_scl_pct": 2,
       "rgb_plot_sample_pixels": 2307,
       "rgb_image_dimensions": [
         175,
@@ -1797,9 +1704,9 @@
       "plot": "37-VSD",
       "date": "2026-06-14",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 64.6,
       "rgb_plot_sample_pixels": 404,
       "rgb_image_dimensions": [
@@ -1815,35 +1722,32 @@
       "plot": "38-STC",
       "date": "2026-09-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 554,
       "rgb_image_dimensions": [
         28,
         57
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "38-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 18,
       "rgb_image_dimensions": [
         11,
         7
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SMALL_RGB_SAMPLE"
       ],
       "image_assets": 8
@@ -1852,17 +1756,16 @@
       "plot": "38-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 18,
       "rgb_image_dimensions": [
         11,
         7
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SMALL_RGB_SAMPLE"
       ],
       "image_assets": 8
@@ -1872,9 +1775,9 @@
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 99.49,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 0.6,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1591,
       "rgb_image_dimensions": [
         53,
@@ -1887,9 +1790,9 @@
       "plot": "39-VSD",
       "date": "2026-09-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 43.1,
       "rgb_plot_sample_pixels": 58,
       "rgb_image_dimensions": [
@@ -1897,7 +1800,6 @@
         14
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -1906,46 +1808,42 @@
       "plot": "39-VSD",
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 58,
       "rgb_image_dimensions": [
         17,
         14
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "39-VSD",
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 58,
       "rgb_image_dimensions": [
         17,
         14
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "4-VSD",
       "date": "2026-09-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 30.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 30,
       "rgb_plot_sample_pixels": 347,
       "rgb_image_dimensions": [
         37,
@@ -1960,18 +1858,16 @@
       "plot": "40-STC",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 794,
       "rgb_image_dimensions": [
         50,
         55
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
@@ -1979,9 +1875,9 @@
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 97.09,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 3.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 3,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 770,
       "rgb_image_dimensions": [
         50,
@@ -1994,10 +1890,10 @@
       "plot": "40-VSD",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 4438,
       "rgb_image_dimensions": [
         99,
@@ -2010,27 +1906,25 @@
       "plot": "40-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.1,
       "rgb_plot_sample_pixels": 4438,
       "rgb_image_dimensions": [
         99,
         159
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "41-VSD",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.7,
       "rgb_plot_sample_pixels": 2865,
       "rgb_image_dimensions": [
@@ -2044,9 +1938,9 @@
       "plot": "42-VSD",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.6,
       "rgb_plot_sample_pixels": 3573,
       "rgb_image_dimensions": [
@@ -2060,36 +1954,32 @@
       "plot": "42-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.3,
       "rgb_plot_sample_pixels": 3573,
       "rgb_image_dimensions": [
         91,
         96
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "43-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 417,
       "rgb_image_dimensions": [
         30,
         25
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
@@ -2097,9 +1987,9 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 99.8,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 0.7,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1956,
       "rgb_image_dimensions": [
         62,
@@ -2112,9 +2002,9 @@
       "plot": "44-VSD",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.5,
       "rgb_plot_sample_pixels": 3542,
       "rgb_image_dimensions": [
@@ -2128,54 +2018,48 @@
       "plot": "44-VSD",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.1,
       "rgb_plot_sample_pixels": 3542,
       "rgb_image_dimensions": [
         88,
         154
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "45-STC",
       "date": "2026-04-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 713,
       "rgb_image_dimensions": [
         26,
         64
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "46-STC",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1137,
       "rgb_image_dimensions": [
         72,
         99
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
@@ -2183,9 +2067,9 @@
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 89.55,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 10.2,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1021,
       "rgb_image_dimensions": [
         72,
@@ -2198,45 +2082,41 @@
       "plot": "47-STC",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 807,
       "rgb_image_dimensions": [
         90,
         42
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "48-STC",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 735,
       "rgb_image_dimensions": [
         56,
         129
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "5-VSD",
       "date": "2026-09-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 27.1,
       "rgb_plot_sample_pixels": 325,
       "rgb_image_dimensions": [
@@ -2252,63 +2132,57 @@
       "plot": "50-STC",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1725,
       "rgb_image_dimensions": [
         49,
         82
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "51-STC",
       "date": "2026-08-28",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 2769,
       "rgb_image_dimensions": [
         72,
         225
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "52-STC",
       "date": "2026-07-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1698,
       "rgb_image_dimensions": [
         97,
         127
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "53-STC",
       "date": "2026-05-25",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.3,
       "rgb_plot_sample_pixels": 681,
       "rgb_image_dimensions": [
@@ -2322,63 +2196,57 @@
       "plot": "54-STC",
       "date": "2026-08-28",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 4.4,
       "rgb_plot_sample_pixels": 1147,
       "rgb_image_dimensions": [
         77,
         60
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "54-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1147,
       "rgb_image_dimensions": [
         77,
         60
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "55-STC",
       "date": "2026-09-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 753,
       "rgb_image_dimensions": [
         56,
         77
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "59-STC",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.4,
       "rgb_plot_sample_pixels": 7494,
       "rgb_image_dimensions": [
@@ -2392,10 +2260,10 @@
       "plot": "6-VSD",
       "date": "2026-07-18",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 252,
       "rgb_image_dimensions": [
         34,
@@ -2408,136 +2276,122 @@
       "plot": "62-STC",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 3.8,
       "rgb_plot_sample_pixels": 1057,
       "rgb_image_dimensions": [
         61,
         52
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "62-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1057,
       "rgb_image_dimensions": [
         61,
         52
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "63-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 888,
       "rgb_image_dimensions": [
         56,
         47
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "64-STC",
       "date": "2026-09-09",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 194,
       "rgb_image_dimensions": [
         34,
         23
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "64-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 194,
       "rgb_image_dimensions": [
         34,
         23
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "65-STC",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 12.2,
       "rgb_plot_sample_pixels": 978,
       "rgb_image_dimensions": [
         44,
         59
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "65-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 978,
       "rgb_image_dimensions": [
         44,
         59
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "66-STC",
       "date": "2026-06-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 3.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 3,
       "rgb_plot_sample_pixels": 497,
       "rgb_image_dimensions": [
         104,
@@ -2550,10 +2404,10 @@
       "plot": "66-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 3.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 3,
       "rgb_plot_sample_pixels": 497,
       "rgb_image_dimensions": [
         104,
@@ -2566,45 +2420,41 @@
       "plot": "66-VSD",
       "date": "2026-07-31",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1555,
       "rgb_image_dimensions": [
         86,
         51
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "66-VSD",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1555,
       "rgb_image_dimensions": [
         86,
         51
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "67-STC",
       "date": "2026-06-11",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.5,
       "rgb_plot_sample_pixels": 6031,
       "rgb_image_dimensions": [
@@ -2618,8 +2468,8 @@
       "plot": "68-STC",
       "date": "2026-08-01",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 2.8,
       "rgb_unclassified_scl_pct": 21.1,
       "rgb_plot_sample_pixels": 785,
@@ -2636,10 +2486,10 @@
       "plot": "68-STC",
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 2.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 2,
       "rgb_plot_sample_pixels": 808,
       "rgb_image_dimensions": [
         27,
@@ -2652,10 +2502,10 @@
       "plot": "68-VSD",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 96,
       "rgb_image_dimensions": [
         25,
@@ -2668,9 +2518,9 @@
       "plot": "69-STC",
       "date": "2026-08-13",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 19.4,
       "rgb_plot_sample_pixels": 1215,
       "rgb_image_dimensions": [
@@ -2685,9 +2535,9 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 87.5,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 12.3,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1066,
       "rgb_image_dimensions": [
         56,
@@ -2700,28 +2550,26 @@
       "plot": "69-STC",
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1215,
       "rgb_image_dimensions": [
         56,
         72
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "69-VSD",
       "date": "2026-05-25",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 289,
       "rgb_image_dimensions": [
         25,
@@ -2734,9 +2582,9 @@
       "plot": "7-VSD",
       "date": "2026-09-09",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 31.6,
       "rgb_plot_sample_pixels": 38,
       "rgb_image_dimensions": [
@@ -2744,7 +2592,6 @@
         12
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -2753,9 +2600,9 @@
       "plot": "7-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 31.6,
       "rgb_plot_sample_pixels": 38,
       "rgb_image_dimensions": [
@@ -2763,7 +2610,6 @@
         12
       ],
       "issues": [
-        "RGB_ALPHA_NOT_PRESERVED",
         "SCL_UNCLASSIFIED_HIGH"
       ],
       "image_assets": 8
@@ -2772,10 +2618,10 @@
       "plot": "70-STC",
       "date": "2026-06-11",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 2183,
       "rgb_image_dimensions": [
         65,
@@ -2788,27 +2634,25 @@
       "plot": "70-VSD",
       "date": "2026-09-09",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 876,
       "rgb_image_dimensions": [
         45,
         40
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "71(1)-VSD",
       "date": "2026-06-14",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 6.6,
       "rgb_plot_sample_pixels": 636,
       "rgb_image_dimensions": [
@@ -2822,10 +2666,10 @@
       "plot": "71-STC",
       "date": "2026-06-17",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1152,
       "rgb_image_dimensions": [
         47,
@@ -2839,9 +2683,9 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 87.2,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 13.1,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1001,
       "rgb_image_dimensions": [
         47,
@@ -2854,28 +2698,26 @@
       "plot": "71-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1152,
       "rgb_image_dimensions": [
         46,
         56
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "71-VSD",
       "date": "2026-04-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1248,
       "rgb_image_dimensions": [
         46,
@@ -2888,18 +2730,16 @@
       "plot": "72-STC",
       "date": "2026-04-28",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.6,
       "rgb_plot_sample_pixels": 16278,
       "rgb_image_dimensions": [
         250,
         171
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
@@ -2907,7 +2747,7 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 75.73,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 24.2,
       "rgb_unclassified_scl_pct": 0.6,
       "rgb_plot_sample_pixels": 12332,
@@ -2922,10 +2762,10 @@
       "plot": "72-VSD",
       "date": "2026-06-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 146,
       "rgb_image_dimensions": [
         19,
@@ -2939,7 +2779,7 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 79.21,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 21.2,
       "rgb_unclassified_scl_pct": 0.3,
       "rgb_plot_sample_pixels": 6114,
@@ -2955,9 +2795,9 @@
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 75.54,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 24.5,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 5853,
       "rgb_image_dimensions": [
         122,
@@ -2971,7 +2811,7 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 91.39,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 8.9,
       "rgb_unclassified_scl_pct": 0.3,
       "rgb_plot_sample_pixels": 1521,
@@ -2986,27 +2826,25 @@
       "plot": "74-VSD",
       "date": "2026-06-14",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 391,
       "rgb_image_dimensions": [
         42,
         34
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "75-STC",
       "date": "2026-04-18",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.4,
       "rgb_plot_sample_pixels": 7026,
       "rgb_image_dimensions": [
@@ -3021,7 +2859,7 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 78.73,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 21.2,
       "rgb_unclassified_scl_pct": 3.6,
       "rgb_plot_sample_pixels": 5535,
@@ -3036,10 +2874,10 @@
       "plot": "76-STC",
       "date": "2026-09-25",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1684,
       "rgb_image_dimensions": [
         71,
@@ -3052,10 +2890,10 @@
       "plot": "76-STC",
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1684,
       "rgb_image_dimensions": [
         71,
@@ -3068,10 +2906,10 @@
       "plot": "77-STC",
       "date": "2026-08-11",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 1.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 1,
       "rgb_plot_sample_pixels": 832,
       "rgb_image_dimensions": [
         45,
@@ -3085,9 +2923,9 @@
       "date": "2026-09-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 92.86,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 7.5,
-      "rgb_unclassified_scl_pct": 1.0,
+      "rgb_unclassified_scl_pct": 1,
       "rgb_plot_sample_pixels": 770,
       "rgb_image_dimensions": [
         45,
@@ -3101,7 +2939,7 @@
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 91.9,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 8.3,
       "rgb_unclassified_scl_pct": 20.1,
       "rgb_plot_sample_pixels": 763,
@@ -3118,10 +2956,10 @@
       "plot": "78-STC",
       "date": "2026-06-12",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 24.5,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 315,
       "rgb_image_dimensions": [
         32,
@@ -3135,9 +2973,9 @@
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 97.12,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 1.4,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 411,
       "rgb_image_dimensions": [
         32,
@@ -3150,10 +2988,10 @@
       "plot": "79-STC",
       "date": "2026-06-24",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 818,
       "rgb_image_dimensions": [
         33,
@@ -3166,28 +3004,26 @@
       "plot": "8-VSD",
       "date": "2026-09-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 69,
       "rgb_image_dimensions": [
         10,
         16
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "80-STC",
       "date": "2026-07-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1139,
       "rgb_image_dimensions": [
         25,
@@ -3200,9 +3036,9 @@
       "plot": "81-STC",
       "date": "2026-07-22",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.1,
       "rgb_plot_sample_pixels": 10670,
       "rgb_image_dimensions": [
@@ -3217,9 +3053,9 @@
       "date": "2026-10-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 98.28,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 1.8,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 10478,
       "rgb_image_dimensions": [
         194,
@@ -3232,9 +3068,9 @@
       "plot": "85-VSD",
       "date": "2026-05-25",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.4,
       "rgb_plot_sample_pixels": 9594,
       "rgb_image_dimensions": [
@@ -3248,28 +3084,26 @@
       "plot": "86-VSD",
       "date": "2026-08-03",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.2,
       "rgb_plot_sample_pixels": 18266,
       "rgb_image_dimensions": [
         202,
         175
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "87-VSD",
       "date": "2026-08-08",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1494,
       "rgb_image_dimensions": [
         86,
@@ -3282,10 +3116,10 @@
       "plot": "87-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1494,
       "rgb_image_dimensions": [
         86,
@@ -3298,9 +3132,9 @@
       "plot": "88-VSD",
       "date": "2026-07-16",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 7.2,
       "rgb_plot_sample_pixels": 4127,
       "rgb_image_dimensions": [
@@ -3315,9 +3149,9 @@
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 99.9,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 0.1,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 4123,
       "rgb_image_dimensions": [
         106,
@@ -3330,10 +3164,10 @@
       "plot": "89-VSD",
       "date": "2026-09-14",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 412,
       "rgb_image_dimensions": [
         26,
@@ -3346,10 +3180,10 @@
       "plot": "89-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 412,
       "rgb_image_dimensions": [
         26,
@@ -3362,10 +3196,10 @@
       "plot": "89-VSD",
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 412,
       "rgb_image_dimensions": [
         26,
@@ -3378,10 +3212,10 @@
       "plot": "90-VSD",
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 0.6,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 357,
       "rgb_image_dimensions": [
         59,
@@ -3394,10 +3228,10 @@
       "plot": "91-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 4472,
       "rgb_image_dimensions": [
         120,
@@ -3410,100 +3244,90 @@
       "plot": "91-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 4472,
       "rgb_image_dimensions": [
         120,
         106
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "91-VSD",
       "date": "2026-08-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 179,
       "rgb_image_dimensions": [
         29,
         15
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "91-VSD",
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 6.7,
       "rgb_plot_sample_pixels": 179,
       "rgb_image_dimensions": [
         29,
         15
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "92-STC",
       "date": "2026-08-08",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1593,
       "rgb_image_dimensions": [
         97,
         42
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "92-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1593,
       "rgb_image_dimensions": [
         97,
         42
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "92-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1593,
       "rgb_image_dimensions": [
         97,
@@ -3516,82 +3340,74 @@
       "plot": "92-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1593,
       "rgb_image_dimensions": [
         97,
         42
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "92-VSD",
       "date": "2026-08-30",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 61,
       "rgb_image_dimensions": [
         11,
         28
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "92-VSD",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 61,
       "rgb_image_dimensions": [
         11,
         28
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "92-VSD",
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 61,
       "rgb_image_dimensions": [
         11,
         28
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "93-STC",
       "date": "2026-08-08",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1264,
       "rgb_image_dimensions": [
         71,
@@ -3604,10 +3420,10 @@
       "plot": "93-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1264,
       "rgb_image_dimensions": [
         71,
@@ -3620,10 +3436,10 @@
       "plot": "93-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1264,
       "rgb_image_dimensions": [
         71,
@@ -3636,28 +3452,26 @@
       "plot": "93-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1264,
       "rgb_image_dimensions": [
         71,
         54
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "93-VSD",
       "date": "2026-09-24",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1323,
       "rgb_image_dimensions": [
         60,
@@ -3670,10 +3484,10 @@
       "plot": "93-VSD",
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1323,
       "rgb_image_dimensions": [
         60,
@@ -3686,10 +3500,10 @@
       "plot": "94-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 495,
       "rgb_image_dimensions": [
         46,
@@ -3702,10 +3516,10 @@
       "plot": "94-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 495,
       "rgb_image_dimensions": [
         46,
@@ -3718,28 +3532,26 @@
       "plot": "94-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 495,
       "rgb_image_dimensions": [
         46,
         22
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "94-VSD",
       "date": "2026-08-05",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 2258,
       "rgb_image_dimensions": [
         110,
@@ -3753,7 +3565,7 @@
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 91.06,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 8.9,
       "rgb_unclassified_scl_pct": 8.2,
       "rgb_plot_sample_pixels": 2057,
@@ -3768,64 +3580,58 @@
       "plot": "95-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 366,
       "rgb_image_dimensions": [
         34,
         22
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "95-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 366,
       "rgb_image_dimensions": [
         34,
         22
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "95-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 366,
       "rgb_image_dimensions": [
         34,
         22
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "95-VSD",
       "date": "2026-09-14",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 3210,
       "rgb_image_dimensions": [
         120,
@@ -3839,9 +3645,9 @@
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 77.74,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 22.4,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 2491,
       "rgb_image_dimensions": [
         120,
@@ -3854,10 +3660,10 @@
       "plot": "95-VSD",
       "date": "2026-10-04",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 3210,
       "rgb_image_dimensions": [
         120,
@@ -3870,10 +3676,10 @@
       "plot": "96-STC",
       "date": "2026-09-29",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 83,
       "rgb_image_dimensions": [
         16,
@@ -3886,10 +3692,10 @@
       "plot": "96-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 83,
       "rgb_image_dimensions": [
         16,
@@ -3902,36 +3708,32 @@
       "plot": "96-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 83,
       "rgb_image_dimensions": [
         15,
         17
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "96-VSD",
       "date": "2026-07-09",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 461,
       "rgb_image_dimensions": [
         44,
         25
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
@@ -3939,9 +3741,9 @@
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 99.15,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 0.7,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 458,
       "rgb_image_dimensions": [
         44,
@@ -3954,10 +3756,10 @@
       "plot": "97-STC",
       "date": "2026-09-22",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 257,
       "rgb_image_dimensions": [
         28,
@@ -3970,10 +3772,10 @@
       "plot": "97-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 257,
       "rgb_image_dimensions": [
         28,
@@ -3986,28 +3788,26 @@
       "plot": "97-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 257,
       "rgb_image_dimensions": [
         28,
         23
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "97-VSD",
       "date": "2026-05-25",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 2953,
       "rgb_image_dimensions": [
         93,
@@ -4020,28 +3820,26 @@
       "plot": "98-STC",
       "date": "2026-09-22",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 57,
       "rgb_image_dimensions": [
         23,
         18
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "98-STC",
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 57,
       "rgb_image_dimensions": [
         23,
@@ -4054,36 +3852,32 @@
       "plot": "98-STC",
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 57,
       "rgb_image_dimensions": [
         23,
         18
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
       "plot": "98-VSD",
       "date": "2026-06-14",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
       "rgb_unclassified_scl_pct": 0.1,
       "rgb_plot_sample_pixels": 2411,
       "rgb_image_dimensions": [
         99,
         69
       ],
-      "issues": [
-        "RGB_ALPHA_NOT_PRESERVED"
-      ],
+      "issues": [],
       "image_assets": 8
     },
     {
@@ -4091,9 +3885,9 @@
       "date": "2026-10-02",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 78.2,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 22.1,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 1877,
       "rgb_image_dimensions": [
         99,
@@ -4106,10 +3900,10 @@
       "plot": "99-VSD",
       "date": "2026-06-14",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
-      "scl_valid_pct": 100.0,
-      "rgb_near_white_pct": 0.0,
-      "rgb_invalid_pct": 0.0,
-      "rgb_unclassified_scl_pct": 0.0,
+      "scl_valid_pct": 100,
+      "rgb_near_white_pct": 0,
+      "rgb_invalid_pct": 0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 3292,
       "rgb_image_dimensions": [
         111,
@@ -4123,9 +3917,9 @@
       "date": "2026-10-07",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
       "scl_valid_pct": 70.1,
-      "rgb_near_white_pct": 0.0,
+      "rgb_near_white_pct": 0,
       "rgb_invalid_pct": 30.5,
-      "rgb_unclassified_scl_pct": 0.0,
+      "rgb_unclassified_scl_pct": 0,
       "rgb_plot_sample_pixels": 2287,
       "rgb_image_dimensions": [
         110,
