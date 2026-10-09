@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261009-multidate2" />
+  <link rel="stylesheet" href="styles.css?v=20261009-moc1" />
 </head>
 <body>
   <header class="topbar">
@@ -97,7 +97,7 @@
       <section class="tab-panel" id="tab-map">
         <section class="card full-card">
           <div class="card-head map-view-head">
-            <div><div class="eyebrow">GIS + SATELLITE VIEW</div><h3>แผนที่แปลงระยอง</h3><p id="map-sat-status">เลือกแปลงเพื่อแสดงภาพดาวเทียมบนแผนที่</p></div>
+            <div><div class="eyebrow">GIS + SATELLITE VIEW</div><h3>แผนที่แปลงระยอง</h3><p id="map-sat-status">เลือกแปลงเพื่อแสดงภาพดาวเทียมบนแผนที่</p><p id="moc-boundary-note" class="moc-boundary-note">ขอบเขตยืนยันกรมจาก MOC.zip • รายงานย้อนหลังอาจอ้างอิงขอบเขตเดิม</p></div>
             <div class="map-sat-controls">
               <label>วันที่ภาพ
                 <select id="map-sat-date"></select>
@@ -285,7 +285,7 @@
       <section class="tab-panel" id="tab-report">
         <div class="report-layout">
           <section class="card report-controls">
-            <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3>
+            <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3><p class="moc-report-warning">แผนที่ใช้ขอบเขตยืนยันกรมจาก MOC.zip แล้ว แต่ตัวเลข Verified Report เดิมยังอ้างอิงพื้นที่วิเคราะห์เดิม จนกว่าจะคำนวณย้อนหลังตามขอบเขตใหม่นี้</p>
             <label>เลือกแปลง<select id="report-plot"></select></label>
             <label>รูปแบบ<select id="report-type"><option value="quick">Live Report — อัปเดตตามประวัติข้อมูล</option><option value="compare">Compare Report — เลือก 2 วัน</option><option value="verified">Verified Report — 6 หน้า</option></select></label><div class="cmp-report-controls"><label>วันที่ A<select id="report-date-a"></select></label><label>วันที่ B<select id="report-date-b"></select></label><p>เลือกกราฟสำหรับ Compare Report</p><div class="cmp-metrics">
  <label><input data-monitor-metric type="checkbox" value="water" checked> พื้นที่น้ำ</label>
@@ -310,7 +310,7 @@
   <script src="map-studio.js?v=20261009-multidate2"></script>
   <script src="trend-report.js?v=20261009-multidate2"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261009-multidate2"></script>
+  <script src="app.js?v=20261009-moc1"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
