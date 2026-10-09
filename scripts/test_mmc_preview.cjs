@@ -42,6 +42,14 @@ const imageStatus=await page.locator('#imagery-explorer').evaluate(el=>({
 assert.ok(imageStatus.realImages>=6&&imageStatus.validLoaded>=4,'Rendered index/rgb previews must load actual image bytes');
 assert.ok(imageStatus.qa&&imageStatus.before&&imageStatus.after,'QA and before-after labels required');
 
+await page.locator('#plot-select').selectOption('102-VSD');
+await page.waitForFunction(()=>document.querySelector('#image-date option')?.textContent?.includes('2026'),{timeout:20000});
+await page.locator('#image-mode').selectOption('ndmi');
+await page.waitForFunction(()=>document.querySelectorAll('#imagery-explorer .img-tile img[src^="./imagery/"]').length>=6,{timeout:20000});
+const generated=await page.locator('#imagery-explorer').evaluate(el=>({images:[...el.querySelectorAll('.img-tile img')].filter(x=>x.complete&&x.naturalWidth>0).length,legend:!!el.querySelector('.img-legend-ramp'),geo:!!el.querySelector('.leaflet-image-layer')}));
+assert.ok(generated.images>=6&&generated.legend&&generated.geo,'Generated true/false and index PNGs must be visible with georeferencing and numeric legend');
+
+
 await page.locator('[data-view="qa"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('66(1)-STC'),'Boundary issue should be visible');
 await page.locator('[data-view="satellite"]').click();
