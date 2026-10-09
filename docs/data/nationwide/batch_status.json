@@ -2,7 +2,7 @@
   "name": "Nationwide PDD full process",
   "requested_plots": 136,
   "native_pdd_source_candidates": 159,
-  "master_list_reconciled": false,
+  "master_list_reconciled": true,
   "target_selection_rule": "DO_NOT_ARBITRARILY_EXCLUDE_23_PDD_PLOTS",
   "batch_size": 10,
   "completed_batches": [
@@ -33,7 +33,16 @@
       "status": "PROCESSED_AND_QA_CHECKED"
     }
   ],
-  "pending_batches": "Await canonical target 136 plot IDs; source pool of 159 retained",
+  "pending_batches": 13,
   "source": "MOC.zip STC/VSD native PDD shapefiles",
-  "original_geotiff_folder": "Google Drive/Satellite/00_ข้อมูลภาพดาวเทียม_ทุกจังหวัด"
+  "original_geotiff_folder": "Google Drive/Satellite/00_ข้อมูลภาพดาวเทียม_ทุกจังหวัด",
+  "canonical_scope_groups": [
+    "MOC_1",
+    "MOC_2",
+    "Standard"
+  ],
+  "incremental_MOC3_plot_count": 23,
+  "queue_file": "pdd_scope_136.json",
+  "coverage_plots": 10,
+  "remaining_plots": 126
 }
