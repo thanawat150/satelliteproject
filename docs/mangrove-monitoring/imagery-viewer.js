@@ -25,7 +25,11 @@ function srcOK(x){return typeof x==='string'&&(/^data:image\/(?:png|jpeg|webp);b
 function previewSrc(row){return srcOK(row?.src)?row.src:null}
 async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261009-v3',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
 async function getProduct(item){if(!item||item.source==='missing')return null;if(item.source==='generated'){return {layers:Object.entries(item.assets||{}).map(([mode,u])=>({plot:item.plot,date:item.date,mode,src:u,bounds:item.bounds,resolution_m:mode==='true_color'||mode==='false_color'?10:20}))};}
-const key='part-'+item.part;if(!files.has(key)){const url='../data/full_preview_part_'+item.part+'.json';const response=await fetch(url);if(!response.ok)throw Error('Image product HTTP '+response.status);files.set(key,await response.json());}return files.get(key);}
+const key='part-'+item.part;
+if(!files.has(key)){const url='../data/full_preview_part_'+item.part+'.json';
+ files.set(key,fetch(url).then(response=>{if(!response.ok)throw Error('Image product HTTP '+response.status);return response.json();}).catch(err=>{files.delete(key);throw err;}));
+}
+return files.get(key);}
 function imageryItems(){const orig=(index?.items||[]).filter(x=>x.plot===active.plot);const extra=(index?.generated_items||[]).filter(x=>x.plot===active.plot);const map=new Map();for(const x of [...orig,...extra]){let k=x.date;const old=map.get(k);if(!old)map.set(k,x);else if(x.source==='generated'){// generated preview can supply modes not available in older preview
  map.set(k,{...x,fallback:old});}}
 for(const row of active.rows){if(row.date&&!map.has(row.date))map.set(row.date,{plot:active.plot,date:row.date,source:'missing',modes:[]});}
@@ -159,9 +163,15 @@ const before=[...items].reverse().find(x=>x.date<active.date&&x.source!=='missin
 active.before=before?.date||[...items].reverse().find(x=>x.date<active.date&&qa(x.date).kind==='AUTO_VALID')?.date||'';
 active.beforeManual=false;
 }
-const cur=items.find(x=>x.date===active.date),bef=items.find(x=>x.date===active.before);
-const [cp,bp]=await Promise.all([getProduct(cur),cur?.part===bef?.part&&cur?.source===bef?.source?getProduct(cur):getProduct(bef)]);
-if(id!==epoch)return;const byDate=new Map();if(cur)byDate.set(cur.date,rastersFor(cur,cp));if(bef)byDate.set(bef.date,rastersFor(bef,bp));
+const cur=items.find(x=>x.date===active.date);
+const results=await Promise.all(items.map(async item=>{
+ try{return {item,product:await getProduct(item)}}catch(err){
+  console.warn('Raster preview could not load for '+item.plot+' '+item.date,err);
+  return {item,product:null};
+ }
+}));
+if(id!==epoch)return;
+const byDate=new Map(results.map(({item,product})=>[item.date,rastersFor(item,product)]));
 hold.innerHTML=groupMarkup(items,byDate);
 hold.classList.toggle('boundary-hidden',!active.boundaryVisible);
 fitBoundaryOverlays(hold);
@@ -175,6 +185,10 @@ if(t.id==='image-opacity'){active.alpha=Number(t.value)/100;if(map){map.eachLaye
 if(t.id==='image-boundary-toggle'){active.boundaryVisible=t.checked;hold.classList.toggle('boundary-hidden',!t.checked);if(map&&boundaryMapLayer){if(t.checked)boundaryMapLayer.addTo(map);else map.removeLayer(boundaryMapLayer);}const mapHolder=$('mmc-geo-map');if(mapHolder)mapHolder.dataset.boundaryVisible=String(Boolean(active.geometry&&t.checked));}
 };
 const availableBtn=$('image-open-available');if(availableBtn&&latestAvailableImage(items))availableBtn.addEventListener('click',()=>{active.date=latestAvailableImage(items).date;active.beforeManual=false;renderAsync();});
+for(const button of hold.querySelectorAll('[data-image-jump]'))button.addEventListener('click',()=>{
+ active.date=button.dataset.imageJump;active.beforeManual=false;renderAsync();
+ hold.scrollIntoView({block:'start',behavior:'smooth'});
+});
 for(const sel of ['image-date','image-before','image-mode','image-compare-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
 }catch(e){console.error('MMC imagery',e);if(id===epoch)showError(e.message||e)}}
 function mount(o){if(!o?.plot||!o?.container)return;if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';active.compareMode='true_color';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
