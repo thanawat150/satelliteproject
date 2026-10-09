@@ -86,6 +86,14 @@ const rgb24=await page.locator('.img-large').evaluate(root=>{
 assert.ok(rgb24.valid>30,'24-VSD must render real valid pixels');
 assert.ok(rgb24.nearWhite/rgb24.valid<0.30,'24-VSD RGB must not be a white-only falsely stretched image');
 assert.ok(rgb24.greenDominant/rgb24.valid>0.40,'Vegetated plot must retain plausible green RGB band balance');
+assert.ok((await page.locator('#index-value-audit').innerText()).includes('NDMI'),'Source index comparison table is visible');
+const qa24=await page.locator('#index-value-audit').innerText();
+assert.ok(qa24.includes('0.7176')&&qa24.includes('0.7174'),'24-VSD 2026-09-05 NDVI source mean and previous mean must both appear');
+await page.locator('#image-mode').selectOption('ndmi');
+assert.ok((await page.locator('[data-index-legend="ndmi"]').innerText()).includes('B8A'),'NDMI B8A variant must be explicitly labeled');
+assert.ok((await page.locator('[data-index-stat="ndmi"]').first().innerText()).includes('0.3661'),'Calculated NDMI mean comes from TIFF pixels');
+assert.ok((await page.locator('[data-index-legend="ndmi"] .img-legend-ticks').innerText()).includes('−0.5'),'Legend must include correctly positioned numeric colors');
+
 assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'24-VSD actual polygon remains georeferenced');
 await page.locator('#plot-select').selectOption('102-VSD');
 await page.waitForFunction(()=>document.querySelector('#image-date option')?.textContent?.includes('2026'),{timeout:20000});
@@ -142,6 +150,10 @@ assert.ok(await page.locator('.img-compare-grid .img-boundary-line').count()>=1,
 await page.locator('[data-view="qa"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('QA / Raster Preview Integrity'),'QA view must expose missing image pairs');
 assert.ok((await page.locator('#view-root').innerText()).includes('Raster Visual QA'),'QA must expose portfolio-wide visual integrity inspection');
+assert.ok((await page.locator('#view-root').innerText()).includes('Index QA'),'QA view must list spectral formula and report parity checks');
+assert.ok((await page.locator('#view-root').innerText()).includes('241 / 241'),'All QA-valid dates must have source-verified spectral means');
+assert.ok(await page.locator('[data-action="exportindexqa"]').count()===1,'Downloadable source-index parity CSV must be available');
+
 assert.ok(await page.locator('[data-action="exportvisualqa"]').count()===1,'Full RGB display-QA report must export as CSV');
 assert.ok(await page.locator('#view-root .tbl tbody tr').count()>0,'At least one QC anomaly should remain inspectable');
 assert.ok(await page.locator('[data-action="exportgaps"]').count()===1,'Gap CSV must be available');
