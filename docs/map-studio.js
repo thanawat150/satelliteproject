@@ -97,52 +97,9 @@ function syncModes(p){
  legend.hidden=!isIndex;
  if(isIndex){$("studio-legend-label").textContent=MODES[state.mode].name+" • ค่าประมาณ −1 ถึง +1";$("studio-ramp").style.background="linear-gradient(to right,"+MODES[state.mode].colors.join(",")+")";}
 }
-/* Display raster imagery only inside the selected PDD polygon; preserve interior holes. */
-const clippedImages=new Map();
+/* Satellite imagery is displayed at its full rectangular raster extent; PDD is a separate vector overlay. */
 let renderSerial=0;
-function clipPlotImage(p,layer){
- const geom=boundaryByPlot?.get(p.plot)?.geometry;
- const bounds=layer.bounds;
- if(!geom||!bounds||!layer.url?.startsWith("data:image/"))return Promise.resolve(layer.url);
- const key=[p.plot,layer.date,layer.mode,layer.sourceSuffix||"base"].join("|");
- if(clippedImages.has(key))return Promise.resolve(clippedImages.get(key));
- return new Promise(resolve=>{
-  const im=new Image();
-  im.onload=()=>{
-   try{
-    const w=im.naturalWidth,h=im.naturalHeight;
-    if(!w||!h||w*h>16000000){resolve(layer.url);return}
-    const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
-    const ctx=canvas.getContext("2d");ctx.drawImage(im,0,0);
-    // Each member is a separate polygon. Composite their masks as a union
-    // instead of one global even-odd shape that can cancel another member.
-    const mask=document.createElement("canvas");mask.width=w;mask.height=h;
-    const maskCtx=mask.getContext("2d");maskCtx.fillStyle="#fff";
-    const south=+bounds[0][0],west=+bounds[0][1],north=+bounds[1][0],east=+bounds[1][1];
-    const merc=lat=>Math.log(Math.tan(Math.PI/4+Math.max(-85,Math.min(85,lat))*Math.PI/360));
-    const top=merc(north),bottom=merc(south);
-    if(!(east>west&&top>bottom)){resolve(layer.url);return}
-    const polys=geom.type==="Polygon"?[geom.coordinates]:geom.type==="MultiPolygon"?geom.coordinates:[];
-    for(const rings of polys){
-     maskCtx.beginPath();
-     for(const ring of rings){
-      ring.forEach((pt,i)=>{
-       const x=(+pt[0]-west)/(east-west)*w,y=(top-merc(+pt[1]))/(top-bottom)*h;
-       if(!i)maskCtx.moveTo(x,y);else maskCtx.lineTo(x,y);
-      });
-      maskCtx.closePath();
-     }
-     // Even-odd applies to interior holes of THIS polygon only.
-     maskCtx.fill("evenodd");
-    }
-    ctx.globalCompositeOperation="destination-in";
-    ctx.drawImage(mask,0,0);
-    const out=canvas.toDataURL("image/png");clippedImages.set(key,out);resolve(out);
-   }catch(e){console.warn("PDD clipping unavailable",e);resolve(layer.url)}
-  };
-  im.onerror=()=>resolve(layer.url);im.src=layer.url;
- });
-}
+function clipPlotImage(p,layer){return Promise.resolve(layer.url);}
 function render(p){
  if(!p)return;const callId=++renderSerial;syncModes(p);current=null;removeMapSatelliteLayers();
  if(!mapSatelliteVisible){status("ภาพดาวเทียมถูกซ่อน");applyVisibility();return}
@@ -158,7 +115,7 @@ function render(p){
  }
  if(!layer?.bounds||!layer.url){status(p.plot+" • "+nice(d)+" • ยังไม่มีภาพ "+MODES[state.mode].name+" ที่พร้อมแสดง");applyVisibility();return}
  const b=L.latLngBounds(layer.bounds[0],layer.bounds[1]);current=layer;
- status("กำลังจัดภาพ "+p.plot+" • "+nice(d)+" ให้ตรงขอบเขต PDD...");
+ status("กำลังแสดงภาพเต็มขอบเขต Raster "+p.plot+" • "+nice(d)+"...");
  clipPlotImage(p,layer).then(url=>{
   if(callId!==renderSerial)return;
   current={...layer,url};
@@ -179,7 +136,7 @@ function render(p){
   const small=size.length===2&&Math.min(...size)<80;
   status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+(layer.previewResolution?" • "+layer.previewResolution:"")+
     (layer.resolution_m?" • "+layer.resolution_m+" m":"")+
-    (small?" • ⚠ มีพิกเซลน้อย ภาพ Sentinel-2 จึงหยาบกว่าภาพฐาน":"")+qualityWarning+partLabel+" • ภาพตัดตามขอบเขต PDD");
+    (small?" • ⚠ มีพิกเซลน้อย ภาพ Sentinel-2 จึงหยาบกว่าภาพฐาน":"")+qualityWarning+partLabel+" • ภาพเต็มสี่เหลี่ยม Raster • PDD เป็นชั้นเส้นขอบแยก");
  }).catch(e=>status("แสดงภาพไม่สำเร็จ: "+e.message));
 }
 function status(s){if($("map-sat-status"))$("map-sat-status").textContent=s;if($("studio-data-status"))$("studio-data-status").textContent=s}
