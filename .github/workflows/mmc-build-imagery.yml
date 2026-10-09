@@ -37,12 +37,12 @@ jobs:
       - name: Generate georeferenced RGB and spectral indices
         run: |
           python scripts/mmc_render_imagery.py render \
-            --shard "\${{ matrix.shard }}" --shards 8 \
-            --out "work/shard-\${{ matrix.shard }}"
+            --shard "${{ matrix.shard }}" --shards 8 \
+            --out "work/shard-${{ matrix.shard }}"
       - uses: actions/upload-artifact@v4
         with:
-          name: mmc-render-shard-\${{ matrix.shard }}
-          path: work/shard-\${{ matrix.shard }}/
+          name: mmc-render-shard-${{ matrix.shard }}
+          path: work/shard-${{ matrix.shard }}/
           if-no-files-found: error
           retention-days: 5
   publish:
@@ -61,8 +61,8 @@ jobs:
       - name: Normalize artifact names
         run: |
           for i in {0..7}; do
-            test -f "work/parts/mmc-render-shard-\${i}/generated_shard.json"
-            mv "work/parts/mmc-render-shard-\${i}" "work/parts/shard-\${i}"
+            test -f "work/parts/mmc-render-shard-${i}/generated_shard.json"
+            mv "work/parts/mmc-render-shard-${i}" "work/parts/shard-${i}"
           done
       - name: Merge image products and source metadata
         run: |
