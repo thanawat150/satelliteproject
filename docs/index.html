@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261009-reportselect1" />
+  <link rel="stylesheet" href="styles.css?v=20261009-uncropped1" />
 </head>
 <body>
   <header class="topbar">
@@ -25,7 +25,7 @@
       <button class="ghost-btn" onclick="copyShareLink()">คัดลอกลิงก์</button>
       <a class="ghost-btn" id="verified-folder" target="_blank" rel="noopener">Verified Reports</a>
       <button class="ghost-btn header-calendar-btn" type="button" onclick="switchTab('calendar')">📅 ปฏิทินภาพ</button>
-      <a class="ghost-btn" href="nationwide.html" title="ติดตาม PDD ทุกจังหวัด — ขณะนี้เผยแพร่ชุดแรก 10 แปลง">🗺️ ทุกจังหวัด (Batch 01)</a>
+      <a class="ghost-btn" href="nationwide.html" title="คลังภาพดาวเทียม 136 แปลง 2020–2026 และรายงาน QA">🗺️ ทุกจังหวัด · 136 แปลง</a>
       <button class="primary-btn" onclick="openReportCenter()">สร้าง Report</button>
     </div>
   </header>
@@ -98,7 +98,7 @@
       <section class="tab-panel" id="tab-map">
         <section class="card full-card">
           <div class="card-head map-view-head">
-            <div><div class="eyebrow">GIS + SATELLITE VIEW</div><h3>แผนที่แปลงระยอง</h3><p id="map-sat-status">เลือกแปลงเพื่อแสดงภาพดาวเทียมบนแผนที่</p><p id="pdd-boundary-note" class="pdd-boundary-note">ขอบเขตหลัก PDD • ขอบเขตยืนยันกรมเป็นข้อมูลสำรอง</p></div>
+            <div><div class="eyebrow">GIS + SATELLITE VIEW</div><h3>แผนที่แปลงระยอง (ภาพเต็มไม่ตัด)</h3><p id="map-sat-status">เลือกแปลงเพื่อแสดงภาพดาวเทียมบนแผนที่</p><p id="pdd-boundary-note" class="pdd-boundary-note">ภาพดาวเทียมแสดงเต็มสี่เหลี่ยม Raster โดยไม่ Clip; ขอบเขตหลัก PDD แสดงเป็นชั้นเส้นแยก</p></div>
             <div class="map-sat-controls">
               <label>วันที่ภาพ
                 <select id="map-sat-date"></select>
@@ -319,7 +319,7 @@
     </main>
   </div>
 
-  <script src="map-studio.js?v=20261009-multipolygon3"></script>
+  <script src="map-studio.js?v=20261009-uncropped1"></script>
   <script src="report-selector.js?v=20261009-reportselect1"></script>
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
