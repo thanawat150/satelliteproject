@@ -38,7 +38,8 @@ jobs:
         run: |
           python scripts/mmc_render_imagery.py render \
             --shard "${{ matrix.shard }}" --shards 8 \
-            --out "work/shard-${{ matrix.shard }}"
+            --out "work/shard-${{ matrix.shard }}" \
+            --refresh-plots "30-STC"
       - uses: actions/upload-artifact@v4
         with:
           name: mmc-render-shard-${{ matrix.shard }}
@@ -90,6 +91,16 @@ jobs:
                   with Image.open(f) as im:
                       assert im.width>=2 and im.height>=2,(item['plot'],item['date'],mode)
                       im.verify()
+          test=[item for item in new if item['plot']=='30-STC' and item['date']=='2026-09-30']
+          assert len(test)==1, '30-STC 2026-09-30 must be regenerated'
+          sample=test[0]
+          from PIL import Image
+          with Image.open(home/sample['assets']['true_color'].removeprefix('./')) as im:
+              assert im.width==sample['rgb_native_width'] and im.width>sample['width'],(im.size,sample['width'])
+          assert sample.get('rgb_quality_scope')=='plot_polygon',sample.get('rgb_quality_scope')
+          assert sample.get('rgb_near_white_pct') is not None
+          assert sample['mode_bounds']['true_color'], 'Real 10m georeferenced bounds required'
+          print('RGB_10M_AND_DISPLAY_QA_VERIFIED',sample['plot'],sample['date'],sample['rgb_native_width'],sample['rgb_native_height'],'near_white_pct',sample['rgb_near_white_pct'])
           print('RASTER_ASSETS_VERIFIED',len(new),'dates')
           PY
       - name: Commit new imagery previews and provenance to main
