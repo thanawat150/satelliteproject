@@ -66,14 +66,10 @@ function renderCharts(plot,root){
  ],"ไร่");
  const changes=all.map((x,i)=>{if(i===0||!trusted(x))return null;const prev=[...all.slice(0,i)].reverse().find(trusted);return prev&&x.water_rai!=null&&prev.water_rai!=null?+(x.water_rai-prev.water_rai).toFixed(2):null});
  makeChart(root.querySelector('[data-chart="water-change"]'),"bar",labels,[{label:"น้ำเพิ่ม/ลดจากรอบก่อน (ไร่)",data:changes,backgroundColor:changes.map(v=>v==null?"rgba(120,130,140,.25)":v>=0?"rgba(43,151,196,.65)":"rgba(219,111,83,.65)"),borderWidth:0}],"ไร่");
- makeChart(root.querySelector('[data-chart="vegetation"]'),"line",labels,[
-  {label:"NDVI (ความเขียวพืช)",data:all.map(x=>trusted(x)?x.ndvi:null),borderColor:"#4b9253",pointRadius:3,tension:.25},
-  {label:"NDRE (สภาพใบพืช)",data:all.map(x=>trusted(x)?x.ndre:null),borderColor:"#7c6dad",pointRadius:3,tension:.25}
- ],"ค่าดัชนี");
- makeChart(root.querySelector('[data-chart="moisture"]'),"line",labels,[
-  {label:"NDMI (ความชื้นพืช/พื้นที่)",data:all.map(x=>trusted(x)?x.ndmi:null),borderColor:"#398aa3",pointRadius:3,tension:.25},
-  {label:"MNDWI (น้ำเปิด)",data:all.map(x=>trusted(x)?x.mndwi:null),borderColor:"#2a64a0",pointRadius:3,tension:.25}
- ],"ค่าดัชนี");
+ makeChart(root.querySelector('[data-chart="ndvi"]'),"line",labels,[{label:"NDVI",data:all.map(x=>trusted(x)?x.ndvi:null),borderColor:"#4b9253",pointRadius:3,tension:.25}],"ค่าดัชนี");
+ makeChart(root.querySelector('[data-chart="ndre"]'),"line",labels,[{label:"NDRE",data:all.map(x=>trusted(x)?x.ndre:null),borderColor:"#7c6dad",pointRadius:3,tension:.25}],"ค่าดัชนี");
+ makeChart(root.querySelector('[data-chart="ndmi"]'),"line",labels,[{label:"NDMI",data:all.map(x=>trusted(x)?x.ndmi:null),borderColor:"#398aa3",pointRadius:3,tension:.25}],"ค่าดัชนี");
+ makeChart(root.querySelector('[data-chart="mndwi"]'),"line",labels,[{label:"MNDWI",data:all.map(x=>trusted(x)?x.mndwi:null),borderColor:"#2a64a0",pointRadius:3,tension:.25}],"ค่าดัชนี");
  makeChart(root.querySelector('[data-chart="bsi"]'),"line",labels,[{label:"BSI (ดินเปิดโล่ง)",data:all.map(x=>trusted(x)?x.bsi:null),borderColor:"#ae8853",pointRadius:3,tension:.25}],"ค่าดัชนี");
  makeChart(root.querySelector('[data-chart="qa"]'),"bar",labels,[{label:"พื้นที่ข้อมูลที่ใช้ได้ (%)",data:all.map(x=>x.valid_pct),backgroundColor:all.map(x=>x.valid_pct>=70?"rgba(46,144,93,.62)":x.valid_pct>=20?"rgba(218,145,43,.65)":"rgba(161,84,84,.55)"),borderWidth:0}],"%");
 }
@@ -133,12 +129,11 @@ function story(plot,key){
 }
 function addExplanations(plot,root){
  const sections=[
-  ["water","พื้นที่น้ำ",["water_rai"]],
-  ["water-change","น้ำเพิ่ม/ลดจากรอบก่อน",["water_rai"]],
-  ["vegetation","ดัชนีพืช",["ndvi","ndre"]],
-  ["moisture","ความชื้นและน้ำ",["ndmi","mndwi"]],
-  ["qa","ความน่าเชื่อถือของข้อมูล",[]],
-  ["bsi","สภาพดิน",["bsi"]]
+ ["water","พื้นที่น้ำ",["water_rai"]],
+ ["water-change","น้ำเพิ่ม/ลด",["water_rai"]],
+ ["ndvi","NDVI",["ndvi"]],["ndre","NDRE",["ndre"]],
+ ["ndmi","NDMI",["ndmi"]],["mndwi","MNDWI",["mndwi"]],
+ ["bsi","ดินเปิดโล่ง",["bsi"]],["qa","คุณภาพข้อมูล",[]]
  ];
  for(const [chart,label,keys] of sections){
    const canvas=root.querySelector('[data-chart="'+chart+'"]');if(!canvas)continue;
@@ -154,6 +149,12 @@ function addExplanations(plot,root){
  const disclaimer=document.createElement("p");disclaimer.className="disclaimer";disclaimer.textContent="ค่าดัชนีบอกสัญญาณเชิงภาพดาวเทียม ไม่ใช่การยืนยันสาเหตุหรือความเสียหาย ต้องพิจารณาน้ำขึ้นลง เมฆ ฤดูกาล และสำรวจภาคสนาม";overview.appendChild(disclaimer);
  root.querySelector(".live-grid")?.after(overview);
 }
+const graphItems={water:"พื้นที่น้ำที่ผ่าน QA (ไร่)","water-change":"น้ำเพิ่ม/ลด (ไร่)",ndvi:"NDVI — ความเขียวพืช",ndre:"NDRE — ขอบแดงพืช",ndmi:"NDMI — ความชื้นพืช/พื้นที่",mndwi:"MNDWI — น้ำเปิด",bsi:"BSI — ดินเปิดโล่ง",qa:"คุณภาพข้อมูล (%)"};
+function graphCards(plot){
+ const keys=selection(plot).graphKeys||[];
+ if(!keys.length)return '<p class="live-empty">ยังไม่ได้ติ๊กเลือกกราฟที่จะนำมาแสดง</p>';
+ return keys.filter(k=>graphItems[k]).map(k=>'<article><h5>'+graphItems[k]+'</h5><div class="live-chart"><canvas data-chart="'+k+'"></canvas></div></article>').join("");
+}
 async function render(plot,paper){
  await load();
  if(!paper||!history?.plots?.[plot])return;
@@ -166,12 +167,12 @@ async function render(plot,paper){
  root.innerHTML=`<div class="live-title-row"><div><h4>แนวโน้มตามเวลา / Live Analysis History</h4><p>${summarize(plot)}</p></div><span class="live-update">ข้อมูลวิเคราะห์ ${all.length} รอบ • history updated ${history.generated_at?new Date(history.generated_at).toLocaleString("th-TH"):"—"}</span></div>
  <div class="live-kpis"><div><span>ภาพล่าสุด</span><strong>${latestImage?dth(latestImage):"—"}</strong></div><div><span>Current ที่ผ่าน QA</span><strong>${snap?dth(snap.current.date):"—"}</strong></div><div><span>พื้นที่น้ำ Current</span><strong>${snap?fmt(snap.current.water_rai)+" ไร่":"—"}</strong></div><div><span>รอดัชนี</span><strong>${pending.length}</strong></div></div>
  ${pending.length?`<div class="live-pending"><b>ภาพพร้อม แต่ดัชนียังไม่ครบ:</b> ${pending.map(d=>dth(d)).join(", ")} • วันที่เหล่านี้เปิดดูภาพได้ แต่ยังไม่ใช้คำนวณ Report จนกว่าไฟล์ดัชนีจริงจะถูกอัปโหลด</div>`:""}
- <div class="live-grid"><article><h5>ขอบเขตน้ำตามเวลา</h5><div class="live-chart"><canvas data-chart="water"></canvas></div></article><article><h5>น้ำเพิ่ม/ลดจากรอบก่อน</h5><div class="live-chart"><canvas data-chart="water-change"></canvas></div></article><article><h5>พืช: NDVI / NDRE</h5><div class="live-chart"><canvas data-chart="vegetation"></canvas></div></article><article><h5>น้ำและความชื้น: NDMI / MNDWI</h5><div class="live-chart"><canvas data-chart="moisture"></canvas></div></article><article class="live-wide"><h5>คุณภาพข้อมูลที่ใช้วิเคราะห์</h5><div class="live-chart live-chart-short"><canvas data-chart="qa"></canvas></div></article></div>
+ <div class="live-grid">${graphCards(plot)}</div>
  <div class="live-water-map-wrap"></div>
  <div class="live-table-wrap"><table class="live-table"><thead><tr><th>วันที่</th><th>QA</th><th>Usable</th><th>น้ำ (ไร่)</th><th>น้ำ (%)</th><th>Δน้ำ (ไร่)</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>MNDWI</th><th>BSI</th></tr></thead><tbody>${tableRows(plot)}</tbody></table></div>
  <p class="live-footnote">* ค่าที่มีเครื่องหมาย * เป็นพื้นที่น้ำที่ตรวจพบเฉพาะส่วนของภาพที่ผ่าน QA ไม่ใช้แทนค่าปัจจุบันโดยอัตโนมัติ</p>`;
  const footer=paper.querySelector(".report-footer");if(footer)footer.before(root);else paper.appendChild(root);
- const soil=document.createElement("article");soil.innerHTML='<h5>ดินเปิดโล่ง: BSI</h5><div class="live-chart"><canvas data-chart="bsi"></canvas></div>';root.querySelector(".live-grid")?.appendChild(soil);
+ 
  renderCharts(plot,root);addExplanations(plot,root);renderWaterMap(plot,root);
 }
 window.TrendReport={load,render,snapshot:plot=>history?liveSnapshot(plot):null,rows:plot=>history?rows(plot):[]};
