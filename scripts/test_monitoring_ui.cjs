@@ -86,7 +86,7 @@ const {chromium}=require("playwright");
   assert.ok(validation.waterGeojsonCount>10,"Vector water/vegetation/soil/wetness geometries must exist");
   await page.locator('#province').selectOption('ตราด');
   await page.locator('#plot').selectOption('7-VSD');
-  await page.waitForFunction(()=>document.querySelectorAll('#charts canvas').length>3 && document.querySelectorAll('#images img').length===2,{timeout:20000});
+  await page.waitForFunction(()=>document.querySelectorAll('#charts canvas').length>3 && document.querySelectorAll('#images .scene').length===2 && document.querySelectorAll('#images a[href*="drive.google.com"]').length>=2,{timeout:20000});
   assert.ok((await page.locator('#plotmeta').innerText()).includes('PDD'),"PDD metadata visible");
   await page.locator('input[data-metric="bsi"]').uncheck();
   await page.waitForFunction(()=>document.querySelectorAll('#charts canvas').length>0 && ![...document.querySelectorAll('#charts h3')].some(x=>x.textContent==="BSI"),{timeout:15000});
