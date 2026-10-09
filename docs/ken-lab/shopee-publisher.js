@@ -46,7 +46,7 @@
       const record={...draft,id,status:intent,created:draft.created||new Date().toISOString()};data.posts=data.posts.filter(p=>p.id!==id);data.posts.push(record);save();selected="";pending=null;draft=fresh();tab="queue";refresh();notify(intent==="queued"?"บันทึกเข้าคิวแล้ว ต้องโพสต์บน Shopee เอง":"บันทึกร่างแล้ว")};commit();
   }
   document.addEventListener("input",e=>{if(!e.target.closest?.("[data-shopee-publisher]"))return;const t=e.target;let a=t.dataset.productName,b=t.dataset.productUrl;if(a!==undefined&&draft.products[Number(a)])draft.products[Number(a)].name=t.value;if(b!==undefined&&draft.products[Number(b)])draft.products[Number(b)].url=t.value;if(t.name==="title"||t.name==="caption"||t.name==="schedule"||t.name==="notes")draft[t.name]=t.value});
-  document.addEventListener("change",e=>{const t=e.target;if(!t.closest?.("[data-shopee-publisher]"))return;if(t.id==="svb-file"){let f=t.files?.[0];if(f){if(f.size>500*1024*1024)return notify("ไฟล์ใหญ่กว่า 500MB กรุณาย่อขนาดก่อน");pending=f;draft.filename=f.name;draft.size=f.size;notify("เลือกไฟล์ "+f.name+" แล้ว")}}});
+  document.addEventListener("change",e=>{const t=e.target;if(!t.closest?.("[data-shopee-publisher]"))return;if(t.id==="svb-file"){let f=t.files?.[0];if(f){if(!/\.(mp4|mov)$/i.test(f.name))return notify("กรุณาใช้ไฟล์ MP4 หรือ MOV");if(f.size>500*1024*1024)return notify("ไฟล์ใหญ่กว่า 500MB กรุณาย่อขนาดก่อน");pending=f;draft.filename=f.name;draft.size=f.size;notify("เลือกไฟล์ "+f.name+" แล้ว")}}});
   document.addEventListener("submit",e=>{if(e.target.id==="svb-form")submit(e)});
   document.addEventListener("click",async e=>{let btn=e.target.closest?.("[data-shopee-publisher] [data-svb], [data-shopee-publisher] [data-svb-tab]");if(!btn)return;e.preventDefault();if(btn.dataset.svbTab){tab=btn.dataset.svbTab;refresh();return}const cmd=btn.dataset.svb,p=data.posts.find(x=>x.id===btn.dataset.id);
     if(cmd==="new")return newPost();
@@ -55,6 +55,7 @@
     if(cmd==="import-product"){const x=parseProducts();if(!x)return notify("ยังไม่มีข้อมูลสินค้าใน Product Script Factory");draft.products=[x];draft.title||=x.name;return refresh()}
     if(cmd==="caption"){let n=draft.products[0]?.name||draft.title||"สินค้านี้";draft.caption=`กำลังดู ${n} อยู่หรือเปล่า? 🛒\nคลิปนี้ชวนดูรายละเอียดสินค้าที่คุณอาจสนใจ\nตรวจข้อมูลและเงื่อนไขของสินค้าในตะกร้า Shopee Video ก่อนตัดสินใจ\n#ShopeeVideo #แนะนำสินค้า`;return refresh()}
     if(cmd==="copy-draft")return copy(draft.caption);
+    if(cmd==="csv"){const header=["title","schedule","status","products","postedUrl","views","orders","commission"];const c=x=>'"' + String(x??"").replace(/"/g,'""') +'"';let content="\uFEFF"+[header.join(","),...data.posts.map(x=>header.map(k=>c(k==="products"?x.products.map(y=>y.url).join(";"):x[k])).join(","))].join("\r\n");return download(new Blob([content],{type:"text/csv;charset=utf-8"}),"Shopee_Results.csv")}
     if(!p)return;
     if(cmd==="edit"){selected=p.id;draft={...fresh(),...p,products:p.products.map(x=>({...x}))};pending=null;tab="compose";return refresh()}
     if(cmd==="copy-caption")return copy(p.caption);
@@ -63,7 +64,7 @@
     if(cmd==="published"){let link=prompt("วางลิงก์ Shopee Video ที่เผยแพร่จริง",p.postedUrl||"");if(link===null)return;if(!safe(link)||!productUrl(link))return notify("ต้องเป็นลิงก์ Shopee ที่ถูกต้อง");if(!confirm("ตรวจด้วยตนเองแล้วว่าคลิปเผยแพร่ใน Shopee และติดตะกร้าสินค้าถูกต้องจริงหรือไม่?"))return;p.status="published";p.postedUrl=link;p.confirmed=true;p.postedAt=new Date().toISOString();save();refresh();return notify("บันทึกการยืนยันโพสต์จากคุณแล้ว")}
     if(cmd==="metrics"){let vs=prompt("ยอดวิว",String(p.views||0)),os=prompt("จำนวนออเดอร์",String(p.orders||0)),cs=prompt("ค่าคอมมิชชัน (บาท)",String(p.commission||0));if([vs,os,cs].some(x=>x===null||!Number.isFinite(Number(x))||Number(x)<0))return;p.views=Number(vs);p.orders=Number(os);p.commission=Number(cs);save();return refresh()}
     if(cmd==="delete"&&confirm("ลบรายการและไฟล์วิดีโอในเครื่องนี้หรือไม่?")){data.posts=data.posts.filter(x=>x.id!==p.id);save();await videoDelete(p.id);return refresh()}
-    if(cmd==="csv"){const header=["title","schedule","status","products","postedUrl","views","orders","commission"];const c=x=>'"'+String(x??"").replace(/"/g,'""')+'"';let content="\uFEFF"+[header.join(","),...data.posts.map(x=>header.map(k=>c(k==="products"?x.products.map(y=>y.url).join(";"):x[k])).join(","))].join("\r\n");return download(new Blob([content],{type:"text/csv;charset=utf-8"}),"Shopee_Results.csv")}
+    
   });
   window.AffiliateShopeePublisher={render,backup:()=>({version:1,posts:data.posts.map(p=>({...p,hasVideo:false}))}),restore:x=>{if(x?.version!==1||!Array.isArray(x.posts))throw Error("Invalid Publisher backup");data={version:1,posts:x.posts.slice(0,200).map(p=>({...p,hasVideo:false}))};save();refresh()},getState:()=>data};
 })();
