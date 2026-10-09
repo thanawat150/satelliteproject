@@ -2,11 +2,6 @@ name: Recover missing PDD Sentinel-2 TIFF analyses
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-    paths:
-      - "scripts/nationwide_retry.py"
-      - ".github/workflows/nationwide-retry.yml"
 
 permissions:
   contents: write
@@ -56,6 +51,12 @@ jobs:
         with:
           pattern: retry-shard-*
           path: work/parts
+      - name: Normalize downloaded artifact folder names
+        run: |
+          for i in {0..7}; do
+            test -f "work/parts/retry-shard-${i}/results.json"
+            mv "work/parts/retry-shard-${i}" "work/parts/shard-${i}"
+          done
       - name: Merge retry results without replacing previous QA
         run: |
           python scripts/nationwide_retry.py merge \
