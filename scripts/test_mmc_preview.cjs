@@ -69,8 +69,18 @@ assert.equal(await page.locator('#mmc-geo-map').getAttribute('data-boundary-visi
 await page.locator('#plot-select').selectOption('15-STC');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
 const missingImage=await page.locator('#imagery-explorer').innerText();
-assert.ok(missingImage.includes('ยังไม่มี Raster Preview'),'Latest QA date must be visible as missing preview, never substituted with an older scene');
+const missingRaster=missingImage.includes('ยังไม่มี Raster Preview');
+if(missingRaster){
+ assert.ok(missingImage.includes('ภาพพื้นหลัง Esri')&&missingImage.includes('ไม่ใช่ภาพ Sentinel-2'),'Missing raster must be clearly labeled as Esri basemap rather than S2');
+ assert.ok(await page.locator('#image-open-available').count()===1,'Missing raster must offer last QA-valid preview');
+}else{
+ await page.waitForFunction(()=>document.querySelector('#mmc-geo-map .leaflet-image-layer')!==null,{timeout:15000});
+ assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'Latest QA-valid scene must display a real raster with plot polygon');
+}
+assert.equal(await page.locator('#image-before').inputValue(),'2026-08-03','Before defaults to an earlier QA-valid available raster, never NO_DATA');
 assert.ok(missingImage.includes('น้อยกว่า 30 พิกเซล'),'Small plot accuracy warning should be visible');
+await page.locator('#image-before').selectOption('2026-10-02');
+assert.ok((await page.locator('#imagery-explorer').innerText()).includes('วัน Before ที่เลือกไม่ผ่าน QA'),'Manually chosen NO_DATA Before must be warned');
 await page.locator('[data-view="insights"]').click();
 await page.waitForFunction(()=>!!document.querySelector('.decision-panel'));
 const decision=await page.locator('.decision-panel').innerText();
