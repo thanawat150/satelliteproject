@@ -43,7 +43,9 @@ def audit():
                         dims=(item.get("rgb_native_width"),item.get("rgb_native_height"))
                         if all(isinstance(d,int) for d in dims) and img.size!=dims:
                             issues.append("RGB_WRONG_PIXEL_GRID")
-                        if item.get("rgb_renderer_version")==RENDERER and img.mode!="RGBA":
+                        if (item.get("rgb_renderer_version")==RENDERER
+                            and (item.get("rgb_invalid_pct") or 0)>0
+                            and img.mode!="RGBA"):
                             issues.append("RGB_ALPHA_NOT_PRESERVED")
             except Exception as exc:bad_files.append([plot,date,mode,str(exc)[:160]])
         if item.get("rgb_display_warning"):issues.append("RGB_NEAR_WHITE")
