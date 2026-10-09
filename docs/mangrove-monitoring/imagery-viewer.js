@@ -112,6 +112,30 @@ return '<span class="img-status '+(x.kind==='AUTO_VALID'?'ok':'warn')+'">'+esc(x
 function thumb(layer,mode,date,item){if(!layer)return '<div class="mmc-img-empty">ยังไม่มีภาพ '+esc(MODE[mode]?.[0]||mode)+' ของวันที่เลือก</div>';
 const src=previewSrc(layer);if(!src)return '<div class="mmc-img-empty">ไฟล์ภาพไม่พร้อมใช้งาน</div>';
 return '<img loading="lazy" src="'+src+'" alt="'+esc(MODE[mode]?.[0]||mode)+' วันที่ '+esc(date)+' จากภาพดาวเทียมต้นฉบับ" draggable="false">'+overlaySvg(layer,item);}
+
+function allDateGallery(items,byDate,modes){
+ const loaded=items.filter(x=>Object.keys(byDate.get(x.date)||{}).length>0).length;
+ let out='<section class="img-history" id="img-all-dates"><div class="img-history-heading"><div><h3>ภาพดาวเทียมทุกวันของ '+esc(active.plot)+'</h3><p class="muted tiny">แสดงทุกวันที่มีในคลัง แยกตามวันที่และชนิดภาพ โดยมีขอบเขตสีแดงครอบภาพจริงทุกชนิด</p></div><span class="img-data-tag">'+loaded+' / '+items.length+' DATES WITH RASTER</span></div>';
+ for(const item of [...items].reverse()){
+  const layers=byDate.get(item.date)||{};
+  const count=modes.filter(mode=>layers[mode]).length;
+  out+='<article class="img-history-date-card" data-history-date="'+esc(item.date)+'"><div class="img-history-meta"><div class="img-history-date"><b>'+esc(item.date)+'</b> '+statusPill(item.date)+' <span class="img-history-count">'+count+' / 8 ภาพ</span></div>'+
+   '<button type="button" class="img-history-select" data-image-jump="'+esc(item.date)+'">เลือกดูวันที่นี้บนแผนที่</button></div>';
+  if(!count){
+   out+='<div class="notice img-missing">วันที่นี้ยังไม่มี Raster Preview ('+esc(qa(item.date).label)+') ไม่สร้างภาพแทนจากแหล่งอื่น</div>';
+  }else{
+   if(qa(item.date).kind!=='AUTO_VALID')out+='<p class="img-history-qa-caution">ภาพมีอยู่จริง แต่วันดังกล่าวไม่ผ่าน QA หรือยังไม่มีผล QA ยืนยัน จึงไม่ควรใช้สรุปผลกระทบ</p>';
+   out+='<div class="img-gallery img-history-gallery">';
+   for(const mode of modes){
+    out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small></div>';
+   }
+   out+='</div>';
+  }
+  out+='</article>';
+ }
+ return out+'</section>';
+}
+
 function groupMarkup(items,byDate){const target=items.find(x=>x.date===active.date),before=items.find(x=>x.date===active.before);
 const a=byDate.get(active.date)||{},b=byDate.get(active.before)||{};
 const sourceRows=active.rows.filter(x=>x.date===active.date);
@@ -140,10 +164,11 @@ const compare='<div class="img-compare-wrap"><div class="img-compare-head"><h3>�
  '<p class="muted tiny">แสดงภาพจากสองวันที่เลือกจริง แต่ยังไม่ใช่ผล Change Detection ที่ยืนยันแล้ว เพราะต้องตรวจ QA, พิกเซลใช้ได้ร่วมกัน และน้ำขึ้นน้ำลงก่อนตีความ</p></div>';
 const modes=['true_color','false_color','ndvi','ndre','ndmi','mndwi','bsi','ndwi'];
 const gallery='<h3 class="img-gallery-title">ภาพสีจริง / สีเท็จ / ดัชนีในวันที่เลือก</h3><div class="img-gallery">'+modes.map(mode=>'<div class="img-tile"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(a[mode],mode,active.date,target)+'</div><small>'+esc(MODE[mode][1])+'</small></div>').join('')+'</div>';
+const history=allDateGallery(items,byDate,modes);
 const source=srcMeta?'<div class="img-source"><b>Traceability</b> · Plot '+esc(active.plot)+' • วันที่ภาพ '+esc(active.date)+' • '+esc(srcMeta.algorithm||'Preview จาก TIFF')+' • QA '+esc(srcMeta.analysis_status||'ยังไม่ประมวลผล')+
  '<br><small>Original TIFF: '+esc(srcMeta.original_tif10||'รอต้นฉบับ')+' / '+esc(srcMeta.original_tif20||'รอต้นฉบับ')+'</small>'+
 '<br>'+[['10 m TIFF',srcMeta.original_tif10_file_id],['20 m TIFF / SCL',srcMeta.original_tif20_file_id]].filter(x=>x[1]).map(x=>'<a href="https://drive.google.com/file/d/'+encodeURIComponent(x[1])+'/view" target="_blank" rel="noopener noreferrer">'+esc(x[0])+' ↗</a>').join(' · ')+'</div>':'<div class="img-source">ภาพนี้มี Raster Preview แต่ยังไม่มีผล QA ที่จับคู่กับชุดวิเคราะห์ PDD เดิม จึงไม่ใช้สรุปผลกระทบ</div>';
-return head+main+compare+gallery+source;
+return head+main+compare+gallery+history+source;
 }
 function destroyMap(){if(map){try{map.remove()}catch(e){}map=null;}boundaryMapLayer=null;}
 function plotBounds(geo){const c=[];function walk(a){if(!Array.isArray(a))return;if(a.length>=2&&typeof a[0]==='number'&&typeof a[1]==='number')c.push([a[1],a[0]]);else for(let p of a)walk(p);}walk(geo?.coordinates);if(!c.length)return null;return [[Math.min(...c.map(x=>x[0])),Math.min(...c.map(x=>x[1]))],[Math.max(...c.map(x=>x[0])),Math.max(...c.map(x=>x[1]))]];}
