@@ -52987,9 +52987,9 @@
     }
   ],
   "render_status": {
-    "rendered_image_dates": 241,
+    "rendered_image_dates": 231,
     "generated_plot_count": 126,
-    "new_errors": 0,
+    "new_errors": 10,
     "preserved_existing_19_plots": true,
     "product_note": "Original Sentinel-2 10m/20m GeoTIFF via matching Drive IDs; render QA-valid dates only"
   }

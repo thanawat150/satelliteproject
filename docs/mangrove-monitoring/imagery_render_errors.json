@@ -1,3 +1,54 @@
 {
-  "errors": []
+  "errors": [
+    {
+      "plot": "63-STC",
+      "date": "2026-10-07",
+      "error": "HTTPSConnectionPool(host='drive.google.com', port=443): Read timed out. (read timeout=45)"
+    },
+    {
+      "plot": "87-VSD",
+      "date": "2026-09-29",
+      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
+    },
+    {
+      "plot": "94-VSD",
+      "date": "2026-08-05",
+      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
+    },
+    {
+      "plot": "94-VSD",
+      "date": "2026-10-04",
+      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
+    },
+    {
+      "plot": "98-VSD",
+      "date": "2026-06-14",
+      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
+    },
+    {
+      "plot": "98-VSD",
+      "date": "2026-10-02",
+      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
+    },
+    {
+      "plot": "35-VSD",
+      "date": "2026-10-07",
+      "error": "Failed to retrieve folder contents for folder ID: 1QuCb-iKm8Pssy9OISGgbE5w-oljSquEC (status code 500). You may need to change the permission to 'Anyone with the link', or have had many accesses. Check FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq."
+    },
+    {
+      "plot": "97-STC",
+      "date": "2026-09-22",
+      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
+    },
+    {
+      "plot": "97-STC",
+      "date": "2026-10-02",
+      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
+    },
+    {
+      "plot": "97-STC",
+      "date": "2026-10-07",
+      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
+    }
+  ]
 }
