@@ -91,11 +91,26 @@ const {chromium}=require("playwright");
   await page.locator('input[data-metric="bsi"]').uncheck();
   await page.waitForFunction(()=>document.querySelectorAll('#charts canvas').length>0 && ![...document.querySelectorAll('#charts h3')].some(x=>x.textContent==="BSI"),{timeout:15000});
   assert.equal(await page.locator("#tablebody tr").count(),2,"Daily table must show both selected actual acquisition dates");
-  // Every canonical PDD plot remains browsable even before its TIFF batch is processed.
+  // The 136 PDD source plots are now all processed; some dates are unusable.
+  // Never display invented water/vegetation/soil values for a QA=0 scene.
   await page.locator('#province').selectOption('กระบี่');
-  await page.locator('#plot').selectOption('100-VSD');
-  assert.ok((await page.locator('#plotmeta').innerText()).includes('PDD'),"Queued PDD geometry should be visible");
-  assert.ok((await page.locator('#summary').innerText()).includes('ยังไม่ถึงคิว'),"Queued plot must not invent metrics");
+  await page.locator('#plot').selectOption('44-STC');
+  await page.waitForFunction(()=>document.querySelectorAll('#tablebody tr').length>=2,{timeout:20000});
+  assert.ok((await page.locator('#plotmeta').innerText()).includes('PDD'),"All PDD geometries remain browsable");
+  const status44=await page.evaluate(()=>{
+    const rows=[...document.querySelectorAll('#tablebody tr')];
+    const qa=document.querySelector('#kpis')?.textContent||'';
+    const water=[...document.querySelectorAll('#charts .chart')].find(
+      el=>el.querySelector('h3')?.textContent?.includes('พื้นที่น้ำ')
+    );
+    const canvas=water?.querySelector('canvas');
+    const series=canvas&&window.Chart?.getChart?.(canvas)?.data?.datasets?.[0]?.data||[];
+    return {n:rows.length,qa,series,summary:document.querySelector('#summary')?.textContent||''};
+  });
+  assert.ok(status44.n>=2,"QA-pending plot retains actual dated observations");
+  assert.ok(status44.qa.includes('วันภาพผ่าน QA')&&status44.qa.includes('0'),"QA-pending plot has zero usable QA dates");
+  assert.ok(status44.series.every(x=>x==null),"No water-area values may be invented for NO_DATA scenes");
+  assert.ok(status44.summary.includes('ไม่ผ่าน QA'),"QA failure must be visibly explained");
 
     assert.deepEqual(errors,[],"Unhandled browser runtime errors: "+errors.join(" | "));
   console.log("BROWSER SMOKE PASS: compare map, alert list, calendar, report multi-date, annual images, graph checkboxes, real BSI values and nationwide PDD full-process pipeline");
