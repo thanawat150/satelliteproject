@@ -34,6 +34,20 @@ async function callGoogle(key:string,model:string,body:unknown){
   if(!res.ok){const status=res.status;const msg=status===429?'Gemini API quota/rate limit exceeded; check Google AI Studio Usage & Billing':status===403||status===401?'Gemini API key or model permission denied':status===404?'Gemini model unavailable for this key':status===400?'Gemini rejected request format or model':'Gemini upstream error';throw Object.assign(new Error(`${msg} (HTTP ${status})`),{status:502,upstream_status:status});}
   return data;
 }
+
+// Raw REST Interactions responses put audio in steps[].content[]; output_audio is SDK-only convenience.
+function readInteractionAudio(result:any):{data:string,mime_type?:string,sample_rate?:number}|null{
+  const steps=Array.isArray(result?.steps)?result.steps:Array.isArray(result?.interaction?.steps)?result.interaction.steps:[];
+  const blocks:any[]=[];
+  for(const step of steps){
+    if(step?.type!=='model_output'||!Array.isArray(step.content))continue;
+    for(const block of step.content)if(block?.type==='audio'&&typeof block.data==='string'&&block.data.length)blocks.push(block);
+  }
+  if(blocks.length)return blocks[blocks.length-1];
+  const shortcut=result?.output_audio||result?.interaction?.output_audio;
+  return shortcut&&typeof shortcut.data==='string'&&shortcut.data.length?shortcut:null;
+}
+
 Deno.serve(async(req:Request)=>{
   if(req.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
   if(req.method!=='POST')return reply({ok:false,error:'POST required'},405);
@@ -87,19 +101,50 @@ Deno.serve(async(req:Request)=>{
     const voice=VOICES.includes(body?.voice)?body.voice:'Puck';
     const style=cap(body?.style,170)||'อ่านภาษาไทยชัดเจนเป็นธรรมชาติ';
     const pace=['fast','medium','slow'].includes(body?.pace)?body.pace:'medium';
-    const ttsResult=await callGoogle(key,Deno.env.get('GEMINI_TTS_MODEL')||'gemini-3.8-flash-tts',{
-      contents:[{role:'user',parts:[{
-        text:`อ่านบทพากย์ภาษาไทยสำหรับคลิปสินค้าโดยไม่เติมคำใหม่ และไม่แก้ข้อเท็จจริง ออกเสียงชัดเจน น้ำเสียง ${style}, จังหวะ ${pace}. บท: ${txt}`,
-        speech_metadata:{style:`Thai narrator. ${style}; speaking pace ${pace}; no added words or sound effects.`}
-      }]}],
-      generationConfig:{responseModalities:['AUDIO'],responseFormat:{audio:{mimeType:'AUDIO_L16',sampleRate:24000}},speechConfig:{voiceConfig:{voice}}}
+    const allowedModels=['gemini-3.8-flash-tts','gemini-3.8-flash-lite-tts','gemini-3.1-flash-tts-preview'];
+    const requestedModel=cap(body?.model,100);
+    const ttsModel=allowedModels.includes(requestedModel)?requestedModel:'gemini-3.8-flash-tts';
+    const legacy=ttsModel==='gemini-3.1-flash-tts-preview';
+    const scene=cap(body?.scene,500);
+    const sampleContext=cap(body?.context,500);
+    const expression=['curious','amused','excited','serious','whispers','pause'].includes(body?.expression)?body.expression:'';
+    const paceInstruction=pace==='fast'?'slightly faster than normal':pace==='slow'?'measured and unhurried':'natural conversational pace';
+    const sceneInstruction=[scene,sampleContext,style,paceInstruction].filter(Boolean).join('; ').slice(0,1300);
+    // Gemini 3.8 treats text as an exact transcript. Keep direction in structured speech_metadata.style.
+    // Gemini 3.1 preview instead accepts older expressive [tags] in the plain text prompt.
+    const expr31:Record<string,string>={curious:'[curious]',amused:'[amused]',excited:'[excited]',serious:'[serious]',whispers:'[whispers]',pause:'[short pause]'};
+    const expr38:Record<string,string>={curious:'curious and conversational',amused:'slightly amused',excited:'enthusiastic but natural',serious:'serious and clear',whispers:'gentle whispering',pause:'brief pause before speaking'};
+    const spoken=legacy?(expression?expr31[expression]+' ':'')+txt
+      :expression==='pause'?'<short pause> '+txt:txt;
+    const inputs=legacy
+      ?[`Scene: ${scene||'Friendly Thai product explainer'}\\nSample context: ${sampleContext||'A calm presenter sharing product facts'}\\nSpeaking style: ${style}; pace: ${paceInstruction}.\\nRead the following Thai spoken script without inventing claims: ${spoken}`]
+      :[{type:'user_input',content:[{type:'text',text:spoken,annotations:[{type:'speech_metadata',style:[sceneInstruction,expr38[expression]||''].filter(Boolean).join('; ').slice(0,1400)}]}]}];
+    const payload={
+      model:ttsModel,input:legacy?inputs[0]:inputs,
+      response_format:{type:'audio'},
+      generation_config:{speech_config:[{voice}]}
+    };
+    const ttsResponse=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
+      method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},
+      body:JSON.stringify(payload),signal:AbortSignal.timeout(100_000)
     });
-    const part=(ttsResult?.candidates?.[0]?.content?.parts||[]).find((x:any)=>x.inlineData?.data);
-    if(!part?.inlineData?.data)return reply({ok:false,error:'Gemini TTS returned no audio; check selected voice/model'},502);
-    const audio=part.inlineData.data;
+    const ttsResult=await ttsResponse.json().catch(()=>null);
+    if(!ttsResponse.ok){
+      const status=ttsResponse.status;
+      const msg=status===429?'โควตาการสร้างเสียงเต็มหรือถึง Rate limit':status===404?'โมเดลเสียงนี้ไม่พร้อมให้ใช้งานกับ API Key นี้':status===400?'รูปแบบคำขอเสียงไม่ตรงกับโมเดลที่เลือก':status===403||status===401?'Gemini API Key ไม่มีสิทธิ์สร้างเสียง':`Gemini TTS error HTTP ${status}`;
+      return reply({ok:false,error:msg,upstream_status:status},502);
+    }
+    const block=readInteractionAudio(ttsResult);
+    if(!block)return reply({ok:false,error:'Gemini ตอบกลับแต่ไม่พบข้อมูลเสียงใน steps[].content[] (ตรวจโมเดลและสถานะการสร้างเสียง)',code:'GEMINI_NO_AUDIO'},502);
+    const audio=block.data;
     if(audio.length>9_000_000)return reply({ok:false,error:'TTS audio exceeds response size limit'},413);
+    if(!/^[A-Za-z0-9+/]+={0,2}$/.test(audio))return reply({ok:false,error:'Gemini returned invalid base64 audio',code:'GEMINI_BAD_AUDIO'},502);
+    const declaredMime=String(block.mime_type||block.mimeType||'').toLowerCase().split(';')[0];
+    const mimeType=['audio/wav','audio/l16','audio/mp3','audio/mpeg','audio/ogg','audio/opus'].includes(declaredMime)?
+       declaredMime:(legacy?'audio/l16':'audio/wav');
+    const sampleRate=Number(block.sample_rate||block.sampleRate)||24000;
     const usage=await sb.from('ai_usage_events').insert({user_id:user.id,mode});
     if(usage.error)return reply({ok:false,error:'Could not reserve audio quota'},503);
-    return reply({ok:true,audio,mimeType:part.inlineData.mimeType||'audio/l16',sampleRate:24000,voice,model:Deno.env.get('GEMINI_TTS_MODEL')||'gemini-3.8-flash-tts'});
+    return reply({ok:true,audio,mimeType,sampleRate,voice,model:ttsModel});
   }catch(e:any){return reply({ok:false,error:e?.message||'AI processing failed',upstream_status:e?.upstream_status||null},e?.status||500)}
 });
