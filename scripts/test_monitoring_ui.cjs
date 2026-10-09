@@ -47,7 +47,7 @@ const {chromium}=require("playwright");
   const available=await page.locator('#report-date-checkboxes input[data-report-date]').count();
   assert.ok(available>=2,"At least 2 selectable actual plot dates");
   await page.locator('input[data-report-graph="ndvi"]').uncheck();
-  await page.waitForFunction(()=>!document.querySelector('.live-grid [data-chart="ndvi"]'),{timeout:25000});
+  await page.waitForFunction(()=>!!document.querySelector('.live-grid [data-chart="ndre"]')&&!document.querySelector('.live-grid [data-chart="ndvi"]'),{timeout:25000});
   assert.equal(await page.locator('.live-grid [data-chart="ndvi"]').count(),0,"Unchecked NDVI graph hidden");
   assert.ok(await page.locator('.live-grid [data-chart="ndre"]').count()>0,"Other checked graphs stay visible");
   await page.locator('input[name="report-period-mode"][value="annual"]').check();
