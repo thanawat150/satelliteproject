@@ -16,7 +16,7 @@ const MODE={
 let index=null,files=new Map(),epoch=0,map=null;
 let active={plot:'13-STC',date:'',before:'',mode:'true_color',compareMode:'true_color',alpha:.85,geometry:null,rows:[],holder:null,existing:[]};
 const $=(id)=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'"/g).replace(/'/g,'&#39;');
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,()=>String.fromCharCode(38)+'quot;').replace(/'/g,'&#39;');
 function dateRows(){return active.existing.filter(x=>x.plot===active.plot)}
 function qa(date){let r=active.rows.find(x=>x.date===date);if(!r)return {label:'QA ยังไม่ประมวลผล',kind:'noanalysis',percent:null};return {label:r.analysis_status||'ไม่ระบุ',kind:r.analysis_status||'unknown',percent:r.qa_valid_pct};}
 const modeOptions=(m)=>Object.entries(MODE).map(([k,v])=>'<option value="'+k+'" '+(k===m?'selected':'')+'>'+esc(v[0])+'</option>').join('');
