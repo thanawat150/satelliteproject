@@ -38,7 +38,7 @@ assert.ok((await page.locator('#view-root').innerText()).includes('ยังไ�
 const mobile=await browser.newPage({viewport:{width:390,height:844}});
 const mobileErrors=[];mobile.on('pageerror',x=>mobileErrors.push(x.message));
 await mobile.goto('http://127.0.0.1:8877/mangrove-monitoring/',{waitUntil:'domcontentloaded'});
-await mobile.waitForFunction(()=>document.querySelector('#view-root')?.textContent?.includes('Nationwide'),{timeout:60000});
+await mobile.waitForFunction(()=>document.getElementById('updated')?.textContent?.includes('ข้อมูลดาวเทียม'),{timeout:60000});
 await mobile.locator('#menu-btn').click();
 assert.ok(await mobile.locator('#sidebar').evaluate(el=>el.classList.contains('open')),'Mobile nav must open');
 assert.deepEqual(errors,[],'Desktop JS errors: '+errors.join(' | '));assert.deepEqual(mobileErrors,[],'Mobile JS errors: '+mobileErrors.join(' | '));
