@@ -215,7 +215,7 @@ function renderSummary(){
 function reportDateChange(){ms.A=$("report-date-a")?.value||ms.A;ms.B=$("report-date-b")?.value||ms.B;selectVal("compare-date-a",ms.A);selectVal("compare-date-b",ms.B);redrawMap();renderSummary();renderReport()}
 function renderReport(){
  const root=$("report-paper");if(!root)return;
- const type=$("report-type")?.value;if(type!=="compare")return;
+ const type=$("report-type")?.value;if(type!=="compare"||window.ReportSelector)return;
  const p=$("report-plot")?.value||ms.plot;
  if(p!==ms.plot){ms.plot=p;ms.A=null;ms.B=null;refreshInputs()}
  const a=observation(p,ms.A),b=observation(p,ms.B),can=valid(a)&&valid(b),known=isVerifiedPair(p,ms.A,ms.B),pa=plotInfo(p);
@@ -304,10 +304,15 @@ function bind(){
   ms.reportMetrics=[...document.querySelectorAll("[data-monitor-metric]:checked")].map(x=>x.value);
   if($("report-type")?.value==="compare")renderReport();
  }));
- $("compare-to-report")?.addEventListener("click",()=>{
-  selectVal("report-plot",ms.plot);selectVal("report-date-a",ms.A);selectVal("report-date-b",ms.B);selectVal("report-type","compare");
+ $("compare-to-report")?.addEventListener("click",async()=>{
+  selectVal("report-plot",ms.plot);selectVal("report-type","compare");
+  try{
+    const history=await window.TrendReport?.load?.();
+    const files=typeof satelliteFiles==="undefined"?[]:satelliteFiles;
+    window.ReportSelector?.setTwoDates?.(ms.plot,ms.A,ms.B,history,files);
+  }catch(e){log(e)}
   if(typeof switchTab==="function")switchTab("report");
-  renderReport();
+  if(typeof renderReportPreview==="function")renderReportPreview();
  });
  $("compare-export-csv")?.addEventListener("click",exportCSV);
  $("hotspot-open-compare")?.addEventListener("click",()=>{if(typeof switchTab==="function")switchTab("compare");showTab("compare")});
