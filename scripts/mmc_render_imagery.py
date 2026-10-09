@@ -148,15 +148,17 @@ def run_shard(args):
     plots=sorted([p["code"] for p in canon],key=lambda x:x)
     assigned=[p for i,p in enumerate(plots) if i%args.shards==args.shard]
     previous=json_read(BASE/"docs"/"mangrove-monitoring"/"imagery_manifest.json")
-    existing={i["plot"] for i in previous["items"]}
-    # Pre-rendered public layer stacks cover these plots; don't waste downloads.
-    assigned=[p for p in assigned if p not in existing]
+    existing_dates={(entry["plot"],entry["date"]) for entry in
+                    previous.get("items",[])+previous.get("generated_items",[])}
+    # Important: plots with old archive previews can have newer QA-valid scene dates.
+    # Only skip a *plot-date* that already has an image, not the entire plot.
     out=Path(args.out)
     docs=out/"imagery"
     images=[];errors=[]
     for plot in assigned:
         for scene in candidates_from_result(data,plot):
             date=scene["date"]
+            if (plot,date) in existing_dates:continue
             local=out/"tmp"/plot/date
             local.mkdir(parents=True,exist_ok=True)
             try:
