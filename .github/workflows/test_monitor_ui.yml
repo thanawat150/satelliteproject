@@ -4,6 +4,11 @@ on:
     branches: [main]
     paths:
       - "scripts/test_monitoring_ui.cjs"
+      - "scripts/test_nationwide_catalog.cjs"
+      - "docs/nationwide.html"
+      - "docs/nationwide-catalog.js"
+      - "docs/map-studio.js"
+      - "docs/data/nationwide/catalog_*.json"
       - ".github/workflows/test_monitor_ui.yml"
   workflow_dispatch:
 
@@ -27,4 +32,6 @@ jobs:
         run: |
           python -m http.server 8877 --bind 127.0.0.1 --directory docs > /tmp/monitor-site.log 2>&1 &
       - name: Smoke test actual Leaflet browser
-        run: node scripts/test_monitoring_ui.cjs
+        run: |
+          node scripts/test_monitoring_ui.cjs
+          node scripts/test_nationwide_catalog.cjs
