@@ -1,0 +1,1052 @@
+{
+  "requested_target_count": 136,
+  "source_plot_count": 136,
+  "source_groups": [
+    "MOC_1",
+    "MOC_2",
+    "Standard"
+  ],
+  "excluded_incremental_group": "MOC_3",
+  "excluded_candidate_count": 23,
+  "geometry_role": "PDD MultiPolygon primary",
+  "generated_at": "2026-10-09T04:51:45.565089+00:00",
+  "plots": [
+    {
+      "code": "100-VSD",
+      "province": "กระบี่",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "35-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "38-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "39-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "40-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "41-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "42-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "43-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "44-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "45-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "46-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "47-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "48-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "49-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "50-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "51-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "52-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "53-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "54-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "55-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "59-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "62-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "63-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "64-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "65-STC",
+      "province": "กระบี่",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "96-VSD",
+      "province": "กระบี่",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "97-VSD",
+      "province": "กระบี่",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "98-VSD",
+      "province": "กระบี่",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "99-VSD",
+      "province": "กระบี่",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "36-STC",
+      "province": "ฉะเชิงเทรา",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 4
+    },
+    {
+      "code": "18-VSD",
+      "province": "ชุมพร",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 4
+    },
+    {
+      "code": "19-VSD",
+      "province": "ชุมพร",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "66-VSD",
+      "province": "ตรัง",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "1-VSD",
+      "province": "ตราด",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "2-VSD",
+      "province": "ตราด",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "3-VSD",
+      "province": "ตราด",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "geometry_parts": 5
+    },
+    {
+      "code": "4-VSD",
+      "province": "ตราด",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "geometry_parts": 6
+    },
+    {
+      "code": "5-VSD",
+      "province": "ตราด",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "geometry_parts": 4
+    },
+    {
+      "code": "6-VSD",
+      "province": "ตราด",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "geometry_parts": 4
+    },
+    {
+      "code": "7-VSD",
+      "province": "ตราด",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "8-VSD",
+      "province": "ตราด",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "22-VSD",
+      "province": "นครศรีธรรมราช",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "23-VSD",
+      "province": "นครศรีธรรมราช",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "66-STC",
+      "province": "ประจวบคีรีขันธ์",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 26
+    },
+    {
+      "code": "28-STC",
+      "province": "ปัตตานี",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "29-STC",
+      "province": "ปัตตานี",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "88-VSD",
+      "province": "ปัตตานี",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "89-VSD",
+      "province": "ปัตตานี",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "90-VSD",
+      "province": "ปัตตานี",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 11
+    },
+    {
+      "code": "91-VSD",
+      "province": "ปัตตานี",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "92-VSD",
+      "province": "ปัตตานี",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "93-VSD",
+      "province": "ปัตตานี",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "94-VSD",
+      "province": "ปัตตานี",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "95-VSD",
+      "province": "ปัตตานี",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "24-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "25-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "27-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "28-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "29-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "30-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "30-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "31-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "31-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 4
+    },
+    {
+      "code": "32-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "33-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 4
+    },
+    {
+      "code": "34-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "35-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "36-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "37-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "38-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "39-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "40-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "41-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "42-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "43-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "44-VSD",
+      "province": "พังงา",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "67-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "68-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "69-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "70-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "71-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "72-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "73-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "74-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "75-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "76-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "77-STC",
+      "province": "พังงา",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "102-VSD",
+      "province": "ภูเก็ต",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "78-STC",
+      "province": "ภูเก็ต",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "79-STC",
+      "province": "ภูเก็ต",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "80-STC",
+      "province": "ภูเก็ต",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "81-STC",
+      "province": "ระนอง",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "13-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/Standard.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "14(1)-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "14-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "14-VSD",
+      "province": "ระยอง",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "15-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "15-VSD",
+      "province": "ระยอง",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "16-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/Standard.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "16-VSD",
+      "province": "ระยอง",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "17-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/Standard.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "17-VSD",
+      "province": "ระยอง",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 5
+    },
+    {
+      "code": "18(1)-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 4
+    },
+    {
+      "code": "18-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/Standard.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "19-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "20-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "21-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/Standard.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "22(1)-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "22-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "23(1)-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "23-STC",
+      "province": "ระยอง",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "68-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "69-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "70-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "71(1)-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "71-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "72-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "73-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "74-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "85-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "86-VSD",
+      "province": "สตูล",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "88-STC",
+      "province": "สตูล",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "89(1)-STC",
+      "province": "สตูล",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 3
+    },
+    {
+      "code": "89-STC",
+      "province": "สตูล",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "90(1)-STC",
+      "province": "สตูล",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "90-STC",
+      "province": "สตูล",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "87-VSD",
+      "province": "สมุทรสงคราม",
+      "source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "geometry_parts": 5
+    },
+    {
+      "code": "91-STC",
+      "province": "สมุทรสงคราม",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "92-STC",
+      "province": "สมุทรสงคราม",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 2
+    },
+    {
+      "code": "93-STC",
+      "province": "สมุทรสงคราม",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "94-STC",
+      "province": "สมุทรสงคราม",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "95-STC",
+      "province": "สมุทรสงคราม",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "96-STC",
+      "province": "สมุทรสงคราม",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "97-STC",
+      "province": "สมุทรสงคราม",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "98-STC",
+      "province": "สมุทรสงคราม",
+      "source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "geometry_parts": 1
+    },
+    {
+      "code": "37-STC",
+      "province": "สุราษฎร์ธานี",
+      "source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "geometry_parts": 2
+    }
+  ],
+  "batches": [
+    {
+      "id": "batch_01",
+      "plots": [
+        "1-VSD",
+        "2-VSD",
+        "3-VSD",
+        "4-VSD",
+        "5-VSD",
+        "6-VSD",
+        "7-VSD",
+        "8-VSD",
+        "13-STC",
+        "14-VSD"
+      ],
+      "status": "PROCESSED"
+    },
+    {
+      "id": "batch_02",
+      "plots": [
+        "100-VSD",
+        "35-STC",
+        "38-STC",
+        "39-STC",
+        "40-STC",
+        "41-STC",
+        "42-STC",
+        "43-STC",
+        "44-STC",
+        "45-STC"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_03",
+      "plots": [
+        "46-STC",
+        "47-STC",
+        "48-STC",
+        "49-STC",
+        "50-STC",
+        "51-STC",
+        "52-STC",
+        "53-STC",
+        "54-STC",
+        "55-STC"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_04",
+      "plots": [
+        "59-STC",
+        "62-STC",
+        "63-STC",
+        "64-STC",
+        "65-STC",
+        "96-VSD",
+        "97-VSD",
+        "98-VSD",
+        "99-VSD",
+        "36-STC"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_05",
+      "plots": [
+        "18-VSD",
+        "19-VSD",
+        "66-VSD",
+        "22-VSD",
+        "23-VSD",
+        "66-STC",
+        "28-STC",
+        "29-STC",
+        "88-VSD",
+        "89-VSD"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_06",
+      "plots": [
+        "90-VSD",
+        "91-VSD",
+        "92-VSD",
+        "93-VSD",
+        "94-VSD",
+        "95-VSD",
+        "24-VSD",
+        "25-VSD",
+        "27-VSD",
+        "28-VSD"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_07",
+      "plots": [
+        "29-VSD",
+        "30-STC",
+        "30-VSD",
+        "31-STC",
+        "31-VSD",
+        "32-VSD",
+        "33-VSD",
+        "34-VSD",
+        "35-VSD",
+        "36-VSD"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_08",
+      "plots": [
+        "37-VSD",
+        "38-VSD",
+        "39-VSD",
+        "40-VSD",
+        "41-VSD",
+        "42-VSD",
+        "43-VSD",
+        "44-VSD",
+        "67-STC",
+        "68-STC"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_09",
+      "plots": [
+        "69-STC",
+        "70-STC",
+        "71-STC",
+        "72-STC",
+        "73-STC",
+        "74-STC",
+        "75-STC",
+        "76-STC",
+        "77-STC",
+        "102-VSD"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_10",
+      "plots": [
+        "78-STC",
+        "79-STC",
+        "80-STC",
+        "81-STC",
+        "14(1)-STC",
+        "14-STC",
+        "15-STC",
+        "15-VSD",
+        "16-STC",
+        "16-VSD"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_11",
+      "plots": [
+        "17-STC",
+        "17-VSD",
+        "18(1)-STC",
+        "18-STC",
+        "19-STC",
+        "20-STC",        "21-STC",
+        "22(1)-STC",
+        "22-STC",
+        "23(1)-STC"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_12",
+      "plots": [
+        "23-STC",
+        "68-VSD",
+        "69-VSD",
+        "70-VSD",
+        "71(1)-VSD",
+        "71-VSD",
+        "72-VSD",
+        "73-VSD",
+        "74-VSD",
+        "85-VSD"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_13",
+      "plots": [
+        "86-VSD",
+        "88-STC",
+        "89(1)-STC",
+        "89-STC",
+        "90(1)-STC",
+        "90-STC",
+        "87-VSD",
+        "91-STC",
+        "92-STC",
+        "93-STC"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    },
+    {
+      "id": "batch_14",
+      "plots": [
+        "94-STC",
+        "95-STC",
+        "96-STC",
+        "97-STC",
+        "98-STC",
+        "37-STC"
+      ],
+      "status": "QUEUED_SOURCE_TIFF_QA"
+    }
+  ]
+}
