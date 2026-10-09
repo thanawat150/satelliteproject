@@ -3,6 +3,7 @@
 "use strict";
 let history=null,waterFC=null,loading=null,charts=[],miniMap=null,miniLayers=[];
 const fmt=n=>n==null||Number.isNaN(Number(n))?"—":Number(n).toLocaleString("th-TH",{maximumFractionDigits:2});
+const fmtIndex=n=>n==null||Number.isNaN(Number(n))?"—":Number(n).toLocaleString("th-TH",{minimumFractionDigits:3,maximumFractionDigits:5});
 const dth=d=>{if(!d)return"—";const [y,m,dd]=d.split("-");return `${dd}/${m}/${y}`};
 const trusted=x=>x&&["VERIFIED","AUTO_VALID"].includes(x.analysis_status)&&(x.valid_pct==null||x.valid_pct>=70);
 async function load(force=false){
@@ -58,6 +59,13 @@ function decorateReport(plot,paper){
 function renderCharts(plot,root){
  destroyCharts();
  const all=rows(plot),labels=all.map(x=>dth(x.date));
+ const qaSkipped=all.filter(x=>x.bsi==null&&x.bsi_issue).map(x=>dth(x.date)+" (พิกเซลใช้ได้ "+fmt(x.bsi_valid_pct)+"%)");
+ if(qaSkipped.length && root){
+  const info=document.createElement("p");info.className="live-footnote";
+  info.textContent="BSI ไม่มีค่าในบางวันที่เลือกเพราะไม่ผ่าน QA: "+qaSkipped.join(", ")+" — ไม่เติมตัวเลขสมมติ";
+  root.querySelector(".live-grid")?.after(info);
+ }
+ 
  const verifiedWater=all.map(x=>trusted(x)?x.water_rai:null);
  const partialWater=all.map(x=>x.analysis_status==="PARTIAL"?x.observed_water_rai:null);
  makeChart(root.querySelector('[data-chart="water"]'),"line",labels,[
@@ -78,7 +86,7 @@ function tableRows(plot){
    const change=x.change_water_rai!=null?x.change_water_rai:null;
    const status=x.analysis_status==="VERIFIED"?"Verified":x.analysis_status==="AUTO_VALID"?"Auto QA ผ่าน":x.analysis_status==="PARTIAL"?"ข้อมูลบางส่วน":"ไม่ใช้วิเคราะห์";
    const water=x.water_rai!=null?fmt(x.water_rai):(x.observed_water_rai!=null?fmt(x.observed_water_rai)+"*":"—");
-   return `<tr><td>${dth(x.date)}</td><td><span class="live-status live-${x.analysis_status.toLowerCase()}">${status}</span></td><td>${fmt(x.valid_pct)}%</td><td>${water}</td><td>${x.water_pct==null?"—":fmt(x.water_pct)+"%"}</td><td>${change==null?"—":(change>=0?"+":"")+fmt(change)}</td><td>${fmt(x.ndvi)}</td><td>${fmt(x.ndre)}</td><td>${fmt(x.ndmi)}</td><td>${fmt(x.mndwi)}</td><td>${fmt(x.bsi)}</td></tr>`;
+   return `<tr><td>${dth(x.date)}</td><td><span class="live-status live-${x.analysis_status.toLowerCase()}">${status}</span></td><td>${fmt(x.valid_pct)}%</td><td>${water}</td><td>${x.water_pct==null?"—":fmt(x.water_pct)+"%"}</td><td>${change==null?"—":(change>=0?"+":"")+fmt(change)}</td><td>${fmtIndex(x.ndvi)}</td><td>${fmtIndex(x.ndre)}</td><td>${fmtIndex(x.ndmi)}</td><td>${fmtIndex(x.mndwi)}</td><td>${fmtIndex(x.bsi)}</td></tr>`;
  }).join("");
 }
 function summarize(plot){
@@ -130,7 +138,8 @@ function story(plot,key){
  if(a.length<2)return explain[key][0]+": ยังมีข้อมูลผ่าน QA ไม่ถึงสองวัน";
  const first=a[0],last=a.at(-1),diff=Number(last[key])-Number(first[key]);
  const note=Math.abs(diff)<0.0005?"ค่าค่อนข้างคงที่":(diff<0?explain[key][2]:explain[key][3]);
- return explain[key][0]+": "+fmt(first[key])+" → "+fmt(last[key])+" ("+(diff>0?"+":"")+fmt(diff)+") — "+note;
+ const f=key==="water_rai"?fmt:fmtIndex;
+ return explain[key][0]+": "+f(first[key])+" → "+f(last[key])+" ("+(diff>0?"+":"")+f(diff)+") — "+note;
 }
 function addExplanations(plot,root){
  const sections=[
