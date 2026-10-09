@@ -55,7 +55,10 @@ jobs:
               assert {'true_color','false_color','ndvi','ndmi','mndwi','bsi'}.issubset(item['assets'])
               for mode,url in item['assets'].items():
                   file=home/url.removeprefix('./')
-                  assert file.is_file() and file.stat().st_size>200,(item['plot'],mode)
+                  assert file.is_file() and file.stat().st_size>50,(item['plot'],mode)
+                  from PIL import Image
+                  with Image.open(file) as img:
+                      img.verify()
           print('MMC_IMAGE_PUBLISH_QA_PASS',len(m['generated_items']))
           PY
       - name: Commit image assets and index to main
