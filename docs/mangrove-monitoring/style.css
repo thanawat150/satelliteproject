@@ -39,3 +39,15 @@ select,input[type="search"],input[type="number"],input[type="date"]{background:#
 .img-data-integrity span{font-size:12px;font-weight:700;overflow-wrap:anywhere}
 .img-missing{margin:8px 0 12px;border-color:#ad784c;background:#3c2d203d}
 @media(max-width:620px){.img-data-integrity{grid-template-columns:1fr}.decision-panel .grid.half{grid-template-columns:1fr}}
+
+@media print {
+ .img-controls,.img-compare-head label,.img-map-panel{display:none!important}
+ .img-preview-grid{display:block!important}
+ .img-large{width:100%!important;max-width:100%;margin:10px 0}
+ .img-compare-grid,.img-gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .img-frame img{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .img-data-integrity{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .img-frame{height:190px!important;min-height:100px!important}
+ .img-gallery .img-tile{break-inside:avoid}
+ .report-raster-section{break-before:page}
+}
