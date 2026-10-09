@@ -6224,20 +6224,63 @@
           98.4637079836882
         ]
       ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            8.40498011149173,
+            98.46279791440185
+          ],
+          [
+            8.406157072862962,
+            98.46361702674989
+          ]
+        ],
+        "false_color": [
+          [
+            8.40498011149173,
+            98.46279791440185
+          ],
+          [
+            8.406157072862962,
+            98.46361702674989
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          9,
+          13
+        ],
+        "false_color": [
+          9,
+          13
+        ],
+        "indices_20m": [
+          5,
+          7
+        ]
+      },
       "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
-      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "display_grid": "RGB = 10m native source grid; indices = 20m grid, not higher-resolution spectral measurements",
       "source_resolution_m": {
         "rgb": 10,
         "spectral_index_20m": 20
       },
       "scaling": {
-        "rgb": "per-scene p2–p98 on valid pixel mask",
-        "index": "fixed ramps in code; full -1 to +1 range"
+        "rgb": "per-scene p2-p98 on SCL-valid native 10m bands",
+        "index": "fixed ramps in code, full -1 to +1 range"
       },
-      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "qa_note": "SCL QA from previous PDD analysis; RGB radiometric QC is a separate warning, not a cloud classification",
       "valid_preview_pixels": 35,
       "width": 5,
       "height": 7,
+      "rgb_native_width": 9,
+      "rgb_native_height": 13,
+      "rgb_plot_sample_pixels": 19,
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_near_white_pct": 10.5,
+      "rgb_display_warning": false,
+      "rgb_quality_note": "Near-white is a radiometric/display screening signal, not proof of cloud or a corrected SCL class",
       "qa_valid_pct": 100.0,
       "algorithm": "pdd-full-monitor-v1.0",
       "original_tif10_file_id": "1_EiYbHapzDdMBSL0JPXSR2AcRhswihig",
@@ -6277,20 +6320,63 @@
           98.4637079836882
         ]
       ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            8.40498011149173,
+            98.46279791440185
+          ],
+          [
+            8.406157072862962,
+            98.46361702674989
+          ]
+        ],
+        "false_color": [
+          [
+            8.40498011149173,
+            98.46279791440185
+          ],
+          [
+            8.406157072862962,
+            98.46361702674989
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          9,
+          13
+        ],
+        "false_color": [
+          9,
+          13
+        ],
+        "indices_20m": [
+          5,
+          7
+        ]
+      },
       "source_bands": "Sentinel-2 B2/B3/B4/B8 native 10m, 20m B5/B8A/B11/SCL",
-      "display_grid": "20m-georeferenced preview grid; true/false-color 10m source bands reprojected for overlay",
+      "display_grid": "RGB = 10m native source grid; indices = 20m grid, not higher-resolution spectral measurements",
       "source_resolution_m": {
         "rgb": 10,
         "spectral_index_20m": 20
       },
       "scaling": {
-        "rgb": "per-scene p2–p98 on valid pixel mask",
-        "index": "fixed ramps in code; full -1 to +1 range"
+        "rgb": "per-scene p2-p98 on SCL-valid native 10m bands",
+        "index": "fixed ramps in code, full -1 to +1 range"
       },
-      "qa_note": "Input date is AUTO_VALID in previous PDD analysis; maps include transparent invalid SCL pixels; preview-only not certification",
+      "qa_note": "SCL QA from previous PDD analysis; RGB radiometric QC is a separate warning, not a cloud classification",
       "valid_preview_pixels": 35,
       "width": 5,
       "height": 7,
+      "rgb_native_width": 9,
+      "rgb_native_height": 13,
+      "rgb_plot_sample_pixels": 19,
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_near_white_pct": 21.1,
+      "rgb_display_warning": false,
+      "rgb_quality_note": "Near-white is a radiometric/display screening signal, not proof of cloud or a corrected SCL class",
       "qa_valid_pct": 100.0,
       "algorithm": "pdd-full-monitor-v1.0",
       "original_tif10_file_id": "1xj4qXi7yYuInJY1LCWRfw72vLCU7tdiG",
@@ -12340,7 +12426,7 @@
     }
   ],
   "render_status": {
-    "rendered_image_dates": 21,
+    "rendered_image_dates": 2,
     "generated_plot_count": 117,
     "new_errors": 0,
     "preserved_existing_19_plots": true,
