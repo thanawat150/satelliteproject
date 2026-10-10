@@ -183,15 +183,25 @@ function likelyCloudObscured(im){
    white!=null&&Number(white)>80||
    invalid!=null&&Number(invalid)>65;
 }
+function visualQuality(im){
+ const q=allScenes().find(x=>x.plot===im.plot&&x.date===im.date);
+ if(!q)return {usable:false,automatic:false,reason:'ไม่มีผลตรวจ QA สำหรับวันภาพ'};
+ if(q.analysis_status==='NO_DATA'||Number(q.qa_valid_pct||0)<=0||Number(q.usable_pixels||0)<=0)
+  return {usable:false,automatic:false,reason:'NO_DATA หรือไม่มีพิกเซลที่นำมาวิเคราะห์ได้ (QA 0%)'};
+ if(likelyCloudObscured(im))return {usable:false,automatic:false,reason:'เมฆ/NoData บังพื้นที่ภาพมาก'};
+ const pct=Number(q.qa_valid_pct);
+ if(!Number.isFinite(pct)||pct<30)return {usable:false,automatic:false,reason:'พื้นที่ผ่าน QA น้อยเกินไปสำหรับการเปรียบเทียบภาพ'};
+ return {usable:true,automatic:pct>=50,reason:pct>=50?'ภาพอยู่ในเกณฑ์แสดงและตรวจจับเบื้องต้น':'ภาพใช้ดูเบื้องต้นได้ แต่ไม่วงอัตโนมัติเพราะ QA ต่ำ'};
+}
 function visualPairCard(before,after,mode='mndwi'){
- const aligned=imageryAlignment(before,after,mode),cloud=likelyCloudObscured(before)||likelyCloudObscured(after);
+ const aligned=imageryAlignment(before,after,mode),cloud=likelyCloudObscured(before)||likelyCloudObscured(after),qualityA=visualQuality(before),qualityB=visualQuality(after);
  const qaFor=im=>ctx?.scenes?.find(x=>x.plot===im.plot&&x.date===im.date);
  const badge=im=>{const q=qaFor(im);return 'วันภาพ '+esc(im.date)+' · QA '+esc(q?.analysis_status||'ไม่มีผลตรวจ')+
   ' · พิกเซลผ่าน QA '+(q?.qa_valid_pct==null?'—':num(q.qa_valid_pct)+'%');};
  const geometry=plotList().find(p=>p.code===after.plot)?.geometry||null;
  const boundarySvg=reportBoundary(after,mode),boundaryPath=boundarySvg.match(/<path d="([^"]+)"/)?.[1]||'';
  const overlayId='rpt-visual-clip-'+[after.plot,before.date,after.date,mode].join('-').replace(/[^a-z0-9_-]/gi,'_');
- const overlap=rasterOverlap(before,after,mode),compareOK=overlap>.72&&!cloud&&before?.index_renderer_version===after?.index_renderer_version&&Boolean(boundaryPath);
+ const overlap=rasterOverlap(before,after,mode),compareOK=overlap>.72&&!cloud&&qualityA.automatic&&qualityB.automatic&&before?.index_renderer_version===after?.index_renderer_version&&Boolean(boundaryPath);
  const beforePic=picture(before,mode),afterPic=picture(after,mode);
  const mask='<svg class="rpt-visual-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="ขอบเขตพื้นที่ดัชนีที่เปลี่ยนเฉพาะภายในแปลง">'+
   '<defs><clipPath id="'+overlayId+'" clipPathUnits="userSpaceOnUse"><path class="rpt-visual-polygon" d="'+esc(boundaryPath)+'" clip-rule="evenodd"/></clipPath></defs>'+
@@ -203,7 +213,7 @@ function visualPairCard(before,after,mode='mndwi'){
   '<div class="rpt-visual-date"><b>ภาพก่อนหน้า · '+esc(before.date)+'</b>'+beforePic+'<small>'+badge(before)+'</small></div>'+
   '<div class="rpt-visual-date"><b>ภาพปัจจุบันที่ใช้เทียบ · '+esc(after.date)+'</b>'+afterMarked+'<small>'+badge(after)+'</small></div>'+
   '</div><p class="rpt-visual-result">'+
-  (cloud?'มีสัญญาณภาพขาว/NoData มาก ไม่วงอัตโนมัติเพราะอาจถูกเมฆหรือข้อมูลขาดบัง':
+  (!qualityA.usable||!qualityB.usable?'ภาพที่ไม่พร้อมใช้ตามเกณฑ์ QA ถูกคัดออกจากการวงอัตโนมัติ':!qualityA.automatic||!qualityB.automatic?'แสดงให้ดูเบื้องต้นได้ แต่ QA ไม่เพียงพอสำหรับการวงอัตโนมัติ':cloud?'มีสัญญาณภาพขาว/NoData มาก ไม่วงอัตโนมัติเพราะอาจถูกเมฆหรือข้อมูลขาดบัง':
    overlap<=.72?'ภาพสองวันซ้อนทับกันไม่พอจะระบุตำแหน่งเปลี่ยนได้ จึงแสดงให้ดูด้วยตา':
    !boundaryPath?'ยังไม่มี GIS Polygon สำหรับจำกัดการวงในแปลง จึงไม่วงบริเวณนอกแปลง':!compareOK?'รุ่นการแสดงดัชนีไม่ตรงกัน จึงไม่คำนวณสีต่างเพื่อวงตำแหน่ง':'กำลังตรวจความต่างของสีที่แสดงบนภาพดัชนี…')+
   '</p><p class="rpt-caption">วงสีส้ม = จุดสงสัยจากความต่างสีภาพดัชนีที่แสดง ไม่ใช่ขอบเขตน้ำท่วมหรือพื้นที่เปลี่ยนแปลงที่คำนวณจาก GeoTIFF · เมฆและการปรับสีอาจทำให้คลาดเคลื่อน</p></div>';
@@ -217,12 +227,11 @@ function visualScreeningPages(d){
  }
  const groups=[];
  for(const p of d.pp){
-  const items=(byPlot.get(p.code)||[]).filter(im=>!likelyCloudObscured(im)).sort((a,b)=>a.date.localeCompare(b.date));
+  const items=(byPlot.get(p.code)||[]).filter(im=>visualQuality(im).usable).sort((a,b)=>a.date.localeCompare(b.date));
   if(items.length<2)continue;
   const ts=series.get(p.code),last=items.at(-1),peak=ts&&items.find(im=>im.date===ts.peak.date);
   const before=ts?.falling&&peak&&peak.date<last.date?peak:items.at(-2);
   const qaOf=im=>d.all.find(q=>q.plot===p.code&&q.date===im.date);
-  if([before,last].every(im=>{const q=qaOf(im);return q&&(q.analysis_status==='NO_DATA'&&Number(q.qa_valid_pct||0)<1);} ))continue;
   const after=last;
   const recentQa=d.good.filter(x=>x.plot===p.code);
   const score=(ts?.falling?1000:0)+(ts?.all.length||0)*35+recentQa.length*20+
