@@ -24,7 +24,7 @@ from PIL import Image
 GOOD_SCL=(2,4,5,6,7)
 BAD_SCL=(0,1,3,8,9,10,11)
 MIN_QA=70
-ALG='pdd-full-monitor-v1.2-clipped-change'
+ALG='pdd-full-monitor-v1.3-mndwi-avg-staging'
 
 def safe_index(a,b):
  den=a+b
@@ -143,7 +143,7 @@ def one_scene(plot,date,files,geom_ll,meta):
   cell_rai=abs(ds20.transform.a*ds20.transform.e)/1600
   indices=dict(ndvi=mean(ndvi,clear),ndre=mean(ndre,clear),ndmi=mean(ndmi,clear),mndwi=mean(mndwi,clear),ndwi=mean(ndwi,clear),bsi=mean(bsi,clear),savi=mean(savi,clear),evi=mean(evi,clear),gli=mean(gli,clear))
   categories={'water':int(water.sum()),'vegetation':int(veg.sum()),'bare_soil':int(soil.sum()),'other':int(other.sum()),'wetness':int(wet.sum())}
-  row=dict(plot=plot,province=meta['province'],date=date,status=qual,analysis_status=qual,qa_valid_pct=round(valid_pct,2),usable_pixels=valid_pixels,total_pixels=total_pixels,pdd_area_rai=round(area_total,4),original_tif10=f10.name,original_tif20=f20.name,algorithm=ALG,qa_rule='SCL 2,4,5,6,7; require finite original B2 B4 B8 B11 and MNDWI',classification_rule='water MNDWI>0; veg NDVI>=0.35 and not water; soil BSI>0 and NDVI<0.25 and not water/veg')
+  row=dict(plot=plot,province=meta['province'],date=date,status=qual,analysis_status=qual,qa_valid_pct=round(valid_pct,2),usable_pixels=valid_pixels,total_pixels=total_pixels,pdd_area_rai=round(area_total,4),original_tif10=f10.name,original_tif20=f20.name,algorithm=ALG,qa_rule='SCL 2,4,5,6,7; require finite original B2 B4 B8 B11 and MNDWI',classification_rule='water MNDWI>0 (B3 averaged to 20m); veg NDVI>=0.35 and not water; soil BSI>0 and NDVI<0.25 and not water/veg')
   row.update(indices if qual=='AUTO_VALID' else {k:None for k in indices})
   row.update({'partial_indices':indices if qual=='PARTIAL' else None})
   row.update({k+'_rai':class_areas[k] if qual=='AUTO_VALID' else None for k in categories})
