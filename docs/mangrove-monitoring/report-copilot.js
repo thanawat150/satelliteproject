@@ -177,8 +177,8 @@ function visualPairCard(before,after,mode='mndwi'){
    !compareOK?'รุ่นการแสดงดัชนีไม่ตรงกัน จึงไม่คำนวณสีต่างเพื่อวงตำแหน่ง':'กำลังตรวจความต่างของสีที่แสดงบนภาพดัชนี…')+
   '</p><p class="rpt-caption">วงสีส้ม = จุดสงสัยจากความต่างสีภาพดัชนีที่แสดง ไม่ใช่ขอบเขตน้ำท่วมหรือพื้นที่เปลี่ยนแปลงที่คำนวณจาก GeoTIFF · เมฆและการปรับสีอาจทำให้คลาดเคลื่อน</p></div>';
 }
-function visualScreeningPages(d,withQaPairs){
- const pages=[],used=new Set(withQaPairs),byPlot=new Map(),mode='mndwi';
+function visualScreeningPages(d){
+ const pages=[],series=floodTimeSeries(d),mode='mndwi',byPlot=new Map();
  for(const im of d.visualImages||[]){
   if(!imageURL(im,mode))continue;
   if(!byPlot.has(im.plot))byPlot.set(im.plot,[]);
@@ -186,26 +186,32 @@ function visualScreeningPages(d,withQaPairs){
  }
  const groups=[];
  for(const p of d.pp){
-  const items=byPlot.get(p.code)||[],clear=items.filter(x=>!likelyCloudObscured(x));
-  if(clear.length<2)continue;
-  let before=null,after=null;
-  for(let i=0;i<clear.length;i++){for(let j=i+1;j<clear.length;j++){
-    if(imageryAlignment(clear[j],clear[i],mode)&&clear[j].index_renderer_version===clear[i].index_renderer_version){
-      before=clear[j];after=clear[i];break;
-    }
-  }if(before)break;}
-  if(!before){before=clear[1];after=clear[0];}
-  const qaBefore=d.good.some(x=>x.plot===p.code&&x.date===before.date),qaAfter=d.good.some(x=>x.plot===p.code&&x.date===after.date);
-  groups.push({p,before,after,qaBefore,qaAfter,missingQa:!qaBefore||!qaAfter,priority:!used.has(p.code)});
+  const items=(byPlot.get(p.code)||[]).sort((a,b)=>a.date.localeCompare(b.date));
+  if(items.length<2)continue;
+  const ts=series.get(p.code),last=items.at(-1),peak=ts&&items.find(im=>im.date===ts.peak.date);
+  const before=ts?.falling&&peak&&peak.date<last.date?peak:items.at(-2);
+  const after=last;
+  const recentQa=d.good.filter(x=>x.plot===p.code);
+  const score=(ts?.falling?1000:0)+(ts?.all.length||0)*35+recentQa.length*20+
+    (d.good.some(q=>q.plot===p.code&&q.date===after.date)?15:0)-
+    (recentQa.length===0?250:0);
+  groups.push({p,items,ts,before,after,score});
  }
- groups.sort((a,b)=>(Number(b.priority)-Number(a.priority))||(Number(b.missingQa)-Number(a.missingQa))||a.p.code.localeCompare(b.p.code));
- for(const x of groups.slice(0,2)){
-  pages.push({key:'V / VISUAL '+x.p.code,title:'จุดสังเกตจากภาพดัชนี · '+x.p.code,
-   body:'<p class="rpt-lead">ภาพนี้ใช้เพื่อคัดกรองด้วยสายตา โดยไม่บังคับว่าต้องผ่าน QA หากภาพยังเห็นผิวพื้นที่ได้ชัดเจน <b>ไม่ใช้ค่าจากภาพนี้คำนวณไร่หรือยืนยันน้ำท่วม</b></p>'+
-     '<div class="rpt-visual-qa">ภาพก่อนหน้า: '+esc(x.qaBefore?'ผ่าน QA':'ไม่ผ่าน/ยังไม่มี QA')+
-     ' · ภาพปัจจุบัน: '+esc(x.qaAfter?'ผ่าน QA':'ไม่ผ่าน/ยังไม่มี QA')+'</div>'+
-     visualPairCard(x.before,x.after,'mndwi')+
-     '<p class="rpt-disclaimer">เป็นข้อสังเกตเชิงภาพเท่านั้น สำหรับจุดที่เห็นน้ำเพิ่ม/ลดหรือพืชพรรณเปลี่ยน ให้ตรวจภาพสีจริงประกอบ แล้วใช้ GeoTIFF และ Mask ที่เชื่อถือได้ก่อนวัดพื้นที่</p>'});
+ groups.sort((a,b)=>b.score-a.score||a.p.code.localeCompare(b.p.code));
+ for(const x of groups.slice(0,4)){
+  const q=date=>d.all.find(z=>z.plot===x.p.code&&z.date===date),qb=q(x.before.date),qa=q(x.after.date);
+  const observation=x.ts?.falling?'ค่าที่จำแนกเป็นน้ำจากภาพ QA ล่าสุดลดลงจากช่วงสูงสุด '+num(Math.abs(x.ts.delta))+' ไร่':
+    x.ts?.all.length?'ยังไม่พบหลักฐานจากค่า QA ว่าพื้นที่น้ำลดจากจุดสูงสุด':'ข้อมูล QA ไม่พอวัดพื้นที่ แต่นำภาพที่มองเห็นได้มาเปรียบเทียบเชิงสายตา';
+  const history=x.items.map(im=>'<span class="rpt-visual-datechip">'+esc(im.date)+
+    ' <b>'+esc(q(im.date)?.analysis_status||'ไม่มี QA')+'</b></span>').join('');
+  pages.push({key:'V / VISUAL '+x.p.code,title:'ภาพเปรียบเทียบจุดน้ำเปลี่ยน · '+x.p.code,
+   body:'<p class="rpt-lead">'+esc(observation)+' — ดูภาพเรียงตามวันที่เพื่อแยกช่วงน้ำมากและช่วงน้ำเริ่มลด</p>'+
+    '<div class="rpt-visual-history"><b>วันภาพทั้งหมดที่มี Raster MNDWI:</b><div>'+history+'</div></div>'+
+    '<div class="rpt-visual-qa">ภาพก่อน: '+esc(x.before.date)+' ('+esc(qb?.analysis_status||'ไม่มี QA')+') · ภาพล่าสุด: '+
+      esc(x.after.date)+' ('+esc(qa?.analysis_status||'ไม่มี QA')+')</div>'+
+    visualPairCard(x.before,x.after,mode)+
+    (x.ts?waterTimelineGraph(x.ts):'')+
+    '<p class="rpt-disclaimer">จุดวงเป็นเพียงบริเวณสีดัชนีเปลี่ยนที่ควรตรวจด้วยตา ไม่ยืนยันว่าเป็นน้ำเพิ่มหรือลดจากสีเพียงอย่างเดียว หากต้องระบุพื้นที่จริงต้องใช้ Raster รายพิกเซลที่เทียบกันได้</p>'});
  }
  return pages;
 }
