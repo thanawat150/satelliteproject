@@ -126,7 +126,184 @@ function chart(rows,metric){
  '<text x="40" y="179" font-size="11">'+esc(data[0].date)+'</text><text x="530" y="179" text-anchor="end" font-size="11">'+esc(data.at(-1).date)+'</text></svg>';
 }
 
+
+/* Flood brief is question-first: decision pages before optional visual evidence appendix.
+   Pair changes are screening evidence only; different dates/tides must not become a flood claim. */
+function floodPlan(d){
+ const out=[],section=(key,title,body)=>out.push({key,title,body});
+ const latest=d.good.at(-1),pairs=new Map(),matched=new Set(d.pp.map(p=>p.code));
+ const raw=d.changes.filter(c=>matched.has(c.plot)&&c.date_a&&c.date_b&&c.date_a<c.date_b
+  &&c.water_net_change_rai!==null&&c.water_net_change_rai!==undefined
+  &&Number.isFinite(Number(c.water_net_change_rai))&&Number(c.common_clear_rai)>0);
+ for(const c of raw){
+  const old=pairs.get(c.plot);
+  if(!old||c.date_b>old.date_b||(c.date_b===old.date_b&&c.date_a>old.date_a))pairs.set(c.plot,c);
+ }
+ const pairDays=c=>Math.round((Date.parse(c.date_b+'T00:00:00Z')-Date.parse(c.date_a+'T00:00:00Z'))/86400000);
+ const rows=d.pp.map(p=>{
+  const c=pairs.get(p.code)||null,water=c?Number(c.water_net_change_rai):null,area=c?Number(c.common_clear_rai):null;
+  const pct=c&&area>0?water/area*100:null;
+  const raster=d.images.filter(x=>x.plot===p.code);
+  return {plot:p,code:p.code,sceneCount:d.good.filter(x=>x.plot===p.code).length,
+    pair:c,water,area,pct,days:c?pairDays(c):null,raster,latest:d.good.filter(x=>x.plot===p.code).at(-1)};
+ });
+ const comparable=rows.filter(r=>r.pair),increase=comparable.filter(r=>r.water>0);
+ const ordered=increase.slice().sort((a,b)=>b.water-a.water||a.code.localeCompare(b.code));
+ const noPair=rows.length-comparable.length,variableWindows=new Set(comparable.map(r=>r.days)).size>1;
+ const issues=[];
+ if(!d.pp.length)issues.push('ไม่พบแปลงในขอบเขตที่เลือก');
+ if(!comparable.length)issues.push('ไม่มีคู่ภาพ Change Detection ที่ผ่านเกณฑ์ในช่วงเวลา จึงไม่จัดอันดับสัญญาณพื้นที่น้ำ');
+ if(noPair)issues.push(noPair+' แปลงไม่มีคู่ภาพที่เทียบการเปลี่ยนแปลงน้ำได้');
+ if(variableWindows)issues.push('ช่วงห่างระหว่างคู่ภาพไม่เท่ากัน จึงใช้ลำดับพื้นที่น้ำเพิ่มเพื่อตั้งคำถาม ไม่ใช้เป็นการเปรียบเทียบความรุนแรงที่เทียบเท่ากัน');
+ const geodiff=comparable.filter(r=>r.plot.geometry&&r.plot.area!=null&&r.area>Number(r.plot.area)+0.1);
+ if(geodiff.length)issues.push('พื้นที่พิกเซลร่วมมากกว่าพื้นที่ Geometry ใน '+geodiff.length+' แปลง: อาจต่างจาก Rasterization ต้องตรวจการคำนวณก่อน Audit');
+ issues.push('ยังไม่พบข้อมูลระดับน้ำขึ้นลง ณ เวลาถ่ายภาพที่ผูกกับคู่ภาพในการส่งออกรายงานนี้');
+ issues.push('ยังไม่มีหลักฐานภาคสนามหรือการตรวจสอบความถูกต้องอิสระเพื่อยืนยันน้ำท่วมหรือความเสียหาย');
+ const candidates=Math.min(3,ordered.length),priority=ordered.slice(0,candidates);
+ const sourceScene=(code,date)=>d.good.find(x=>x.plot===code&&x.date===date);
+ const image=(code,date,mode)=>{
+  const im=d.images.find(x=>x.plot===code&&x.date===date&&imageURL(x,mode));
+  return im?picture(im,mode):'<p class="rpt-empty">ไม่พบภาพ '+esc(mode.toUpperCase())+' ของ '+esc(code)+' วันที่ '+esc(date)+' ในคลังที่ผ่าน QA</p>';
+ };
+ const metric=(k,v)=>'<div class="rpt-kpi"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>';
+ const waterVal=r=>r.water===null?'ไม่มีคู่เปรียบเทียบ':(r.water>0?'+':'')+num(r.water)+' ไร่';
+ const percentVal=r=>r.pct==null?'—':num(r.pct)+'%';
+ const pairText=r=>r.pair?r.pair.date_a+' → '+r.pair.date_b:'ไม่มีคู่ภาพ';
+ const shortRow=r=>({code:r.code,water:waterVal(r),pct:percentVal(r),interval:r.days==null?'—':r.days+' วัน',dates:pairText(r)});
+ const scope=ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ทุกแปลงในระบบ';
+ const scopeText=ui.scope==='plot'?'แปลง':ui.scope==='province'?'จังหวัด':'เครือข่าย';
+ const status=comparable.length?'พบสัญญาณพื้นที่น้ำเปลี่ยนแปลง ต้องตรวจบริบทเพิ่มเติม':'ข้อมูลคู่ภาพไม่เพียงพอสำหรับสรุปการเปลี่ยนแปลงน้ำ';
+ const coverVisual=priority.slice(0,2).map(r=>{
+  const im=d.images.find(x=>x.plot===r.code&&x.date===r.pair.date_b&&imageURL(x,'true_color'));
+  return im?picture(im,'true_color'):'<p class="rpt-empty">ภาพสีจริงหลังเหตุการณ์ '+esc(r.code)+' ยังไม่มี</p>';
+ }).join('');
+ const coverage='<div class="rpt-kpis rpt-flood-kpis">'+metric('แปลงในขอบเขต',rows.length)+metric('คู่ภาพเทียบได้',comparable.length+'/'+rows.length)+
+  metric('แปลงน้ำเพิ่ม (คัดกรอง)',increase.length)+metric('วันที่ภาพ QA ล่าสุด',latest?.date||'—')+'</div>';
+ const top3=table(ordered.slice(0,3).map(shortRow),[['code','แปลง'],['water','น้ำเปลี่ยน'],['pct','% พื้นที่ร่วม'],['interval','ช่วงเทียบ']]);
+ section('01 / DECISION','สรุปสถานการณ์พื้นที่น้ำ · '+scope,
+  '<div class="rpt-flood-status"><strong>ผลคัดกรอง:</strong> '+esc(status)+'</div>'+
+  '<p class="rpt-lead">วิเคราะห์ '+esc(scopeText)+' '+esc(scope)+' จาก Sentinel-2 และคู่ภาพ Change Detection ที่ผ่านเกณฑ์ข้อมูลในช่วง '+esc(ui.period==='all'?'ทุกวันที่มีข้อมูล':ui.period+' วันย้อนหลัง')+'. ค่าที่เห็นเป็นการเปลี่ยนแปลงการจำแนกน้ำ ไม่ใช่พื้นที่น้ำท่วมยืนยัน</p>'+
+  coverage+'<h3>แปลงที่มีพื้นที่น้ำเพิ่มสุทธิสูงสุดในชุดที่ตรวจได้</h3>'+top3+
+  '<div class="rpt-pictures rpt-cover-grid">'+coverVisual+'</div>'+
+  '<p class="rpt-disclaimer"><b>ข้อสรุปสำหรับผู้บริหาร:</b> ยังไม่ยืนยันว่าเกิดน้ำท่วมหรือพืชตาย ต้องตรวจวันภาพ น้ำขึ้นลง ฝน และหลักฐานภาคสนามก่อนระบุผลกระทบ</p>');
+ // GIS footprint as schematic plot positions, no fabricated basemap.
+ const geoPoints=[];
+ for(const r of rows){
+  const g=r.plot.geometry;
+  if(!g||!['Polygon','MultiPolygon'].includes(g.type))continue;
+  const flat=g.type==='Polygon'?g.coordinates.flat(1):g.coordinates.flat(2);
+  const coords=flat.filter(p=>Array.isArray(p)&&Number.isFinite(Number(p[0]))&&Number.isFinite(Number(p[1])));
+  if(!coords.length)continue;
+  const x=coords.reduce((v,p)=>v+Number(p[0]),0)/coords.length;
+  const y=coords.reduce((v,p)=>v+Number(p[1]),0)/coords.length;
+  geoPoints.push({x,y,code:r.code,signal:r.water>0,comparable:!!r.pair});
+ }
+ let gis='<p class="rpt-empty">ไม่มีขอบเขต GIS ที่สามารถแสดงตำแหน่งแปลงได้</p>';
+ if(geoPoints.length){
+  const west=Math.min(...geoPoints.map(x=>x.x)),east=Math.max(...geoPoints.map(x=>x.x)),south=Math.min(...geoPoints.map(x=>x.y)),north=Math.max(...geoPoints.map(x=>x.y));
+  const dx=Math.max(east-west,0.01),dy=Math.max(north-south,0.01);
+  const pointMap=geoPoints.map(p=>{
+   const x=38+(p.x-west)/dx*480,y=225-(p.y-south)/dy*190;
+   const color=p.signal?'#bc6337':p.comparable?'#217758':'#8c9c91';
+   return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="5" fill="'+color+'" stroke="white" stroke-width="2"/>'+
+     '<text x="'+(x+7).toFixed(1)+'" y="'+(y-5).toFixed(1)+'" font-size="9" fill="#244a38">'+esc(p.code)+'</text>';
+  }).join('');
+  gis='<svg viewBox="0 0 570 255" class="rpt-gis-overview" role="img" aria-label="ตำแหน่งแปลงตามพิกัด GIS จริง ไม่มีแผนที่พื้นหลัง">'+
+   '<rect x="16" y="10" width="538" height="228" rx="6" fill="#eff5f0" stroke="#c9dacc"/>'+
+   [0,1,2,3,4].map(i=>'<line x1="'+(38+i*120)+'" y1="18" x2="'+(38+i*120)+'" y2="230" stroke="#d9e7dc"/>').join('')+
+   [0,1,2,3].map(i=>'<line x1="26" y1="'+(27+i*62)+'" x2="545" y2="'+(27+i*62)+'" stroke="#d9e7dc"/>').join('')+
+   pointMap+'</svg><p class="rpt-caption">ตำแหน่งเชิงแผนภาพจากพิกัด Geometry จริง ไม่ใช่แผนที่ดาวเทียมและไม่ใช่ขอบเขตการท่วม · สีส้ม=พบพื้นที่น้ำเพิ่มสุทธิ, เขียว=มีคู่ภาพแต่ไม่เพิ่ม, เทา=ไม่มีคู่ภาพ</p>';
+ }
+ section('02 / COVERAGE','ขอบเขตศึกษาและความครอบคลุม',
+  '<h3>การกระจายตัวของแปลง</h3>'+gis+coverage+
+  '<p class="rpt-caption">จำนวนภาพ Sentinel-2 '+d.all.length+' รายการ · ภาพผ่าน QA '+d.good.length+' รายการ · เปรียบเทียบน้ำได้ '+comparable.length+' แปลง</p>'+
+  '<p class="rpt-disclaimer">แผนผังแสดงพิกัดแปลง ไม่ยืนยันพื้นที่ท่วม ระดับน้ำ หรือระดับความเสียหาย</p>');
+ const ranked=comparable.slice().sort((a,b)=>(b.water??-Infinity)-(a.water??-Infinity));
+ const rankingCols=[['code','แปลง'],['water','Δ น้ำ ไร่'],['pct','% พื้นที่ร่วม'],['interval','ช่วง (วัน)'],['dates','คู่วันที่']];
+ const rankChunk=ranked.slice(0,14);
+ section('03 / EVIDENCE','แปลงที่ควรตรวจสอบก่อน',
+  '<p>จัดลำดับตาม <b>พื้นที่น้ำเพิ่มสุทธิที่จำแนกได้</b> ในคู่ภาพล่าสุดที่ผ่านเงื่อนไขของแต่ละแปลง ไม่ใช่อันดับน้ำท่วมจริง และไม่ได้ปรับระยะเวลาหรือน้ำขึ้นลงให้เทียบเท่ากัน</p>'+
+  table(rankChunk.map(shortRow),rankingCols)+
+  '<p class="rpt-caption">แสดง '+rankChunk.length+' / '+comparable.length+' แปลงที่มีคู่ภาพ · สัญญาณน้ำเพิ่ม '+increase.length+' แปลง · ไม่มีคู่ภาพ '+noPair+' แปลง</p>'+
+  '<p class="rpt-disclaimer">ช่วงเวลาต่างกัน: '+esc(variableWindows?'ห้ามตีความอันดับนี้เป็นความรุนแรงเปรียบเทียบกันได้':'ช่วงเวลาต้องตรวจสอบแยกแปลง')+' · ช่วงวันที่หลังภาพไม่จำเป็นต้องเป็นวันที่ภาพล่าสุดที่มี</p>');
+ if(comparable.length>14){
+  for(let i=14;i<comparable.length;i+=16)section('03 / EVIDENCE '+(i/16+1),'ตารางหลักฐานเพิ่มเติม',
+   table(ranked.slice(i,i+16).map(shortRow),rankingCols)+'<p class="rpt-caption">รายการที่มีคู่ภาพทั้งหมด ไม่ซ่อนแปลงท้ายรายงาน</p>');
+ }
+ for(let n=0;n<candidates;n++){
+  const r=priority[n],c=r.pair,imAfter=d.images.find(x=>x.plot===r.code&&x.date===c.date_b&&imageURL(x,'mndwi'));
+  const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===c.date_b);
+  const scA=sourceScene(r.code,c.date_a),scB=sourceScene(r.code,c.date_b);
+  const before=image(r.code,c.date_a,'true_color'),after=image(r.code,c.date_b,'true_color');
+  section('04 / CASE '+(n+1),'กรณีตรวจสอบ '+r.code+' · คู่ภาพจริง',
+   '<div class="rpt-kpis rpt-case-kpis">'+metric('น้ำเพิ่มสุทธิ',waterVal(r))+metric('พื้นที่ร่วม',num(r.area)+' ไร่')+
+   metric('สัดส่วนต่อพื้นที่ร่วม',percentVal(r))+metric('ห่างกัน',r.days+' วัน')+'</div>'+
+   '<p><b>ช่วงภาพ:</b> '+esc(pairText(r))+' · <b>QA ก่อน/หลัง:</b> '+num(scA?.qa_valid_pct)+'% / '+num(scB?.qa_valid_pct)+'%</p>'+
+   '<div class="rpt-pictures rpt-case-compare">'+before+after+'</div>'+
+   '<p class="rpt-caption">ก่อน (ซ้าย) เทียบหลัง (ขวา) ตามวันในผล Change Detection • ภาพจาก TIFF ที่ผ่าน QA เท่านั้น</p>'+
+   (imAfter?'<div class="rpt-case-index">'+picture(imAfter,'mndwi')+'</div>':'<p class="rpt-empty">MNDWI วันหลังเหตุการณ์ไม่พร้อมสำหรับแสดงประกอบ</p>')+
+   '<p class="rpt-caption">ฝน NASA POWER ก่อนวันหลังภาพ 3 วัน (UTC): '+(rain&&rain.rain_prev_3_utc_days_mm!=null?num(rain.rain_prev_3_utc_days_mm)+' มม.':'ไม่มีข้อมูลที่ตรงวัน')+'</p>'+
+   '<p class="rpt-disclaimer">ยังไม่สรุปว่าเป็นน้ำท่วม และไม่สามารถบอกผลกระทบต่อการรอดของต้นไม้จากภาพสองวันได้ ต้องตรวจน้ำขึ้นลงและพื้นที่จริง</p>');
+ }
+ const rainRows=priority.concat(ordered.slice(3,6)).map(r=>{
+  const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===r.pair.date_b);
+  return {plot:r.code,date:r.pair.date_b,rain:rain?.rain_prev_3_utc_days_mm==null?'—':num(rain.rain_prev_3_utc_days_mm),one:rain?.rain_prev_1_utc_day_mm==null?'—':num(rain.rain_prev_1_utc_day_mm),qa:rain?.data_quality||'ไม่ทราบ'};
+ });
+ section('05 / CONTEXT','ฝน น้ำขึ้นลง และข้อจำกัดเหตุการณ์',
+  '<h3>ฝนย้อนหลังอ้างอิงวันที่ภาพหลัง (ถ้ามี)</h3>'+
+  table(rainRows,[['plot','แปลง'],['date','วันที่ภาพหลัง'],['one','ฝน 1 วัน มม.'],['rain','ฝน 3 วัน มม.'],['qa','คุณภาพ']])+
+  '<h3>การตีความอย่างปลอดภัย</h3><ul class="rpt-findings">'+
+  '<li>NASA POWER เป็นข้อมูลฝนประมาณการตามวัน UTC ไม่ใช่สถานีวัดฝนภาคสนาม และไม่ใช้ยืนยันการท่วมเพียงอย่างเดียว</li>'+
+  '<li>ยังไม่มีข้อมูลระดับน้ำขึ้นลงที่ผูกเวลาภาพไว้ จึงแยกน้ำทะเลขึ้นกับน้ำท่วมไม่ได้</li>'+
+  '<li>คู่ภาพต่างฤดูกาลหรือห่างหลายเดือนอาจทำให้เกิดความต่างที่ไม่ใช่เหตุการณ์น้ำท่วมช่วงสั้น</li>'+
+  '<li>ภาพวันที่ผ่าน QA ล่าสุด ('+esc(latest?.date||'—')+') ไม่เท่ากับวันที่หลังในคู่ Change Detection เสมอไป</li></ul>');
+ section('06 / ACTION','ข้อเสนอแนะและการตัดสินใจ',
+  '<p class="rpt-lead">คำแนะนำนี้เป็นขั้นตอนการตรวจสอบ ไม่ใช่คำรับรองพื้นที่น้ำท่วมหรือประเมินมูลค่าความเสียหาย</p>'+
+  '<div class="rpt-actions-list">'+
+  '<div><b>1. ตรวจเชิงพื้นที่</b><p>ตรวจคู่ภาพจริงและขอบเขต Geometry สำหรับ '+esc(priority.map(r=>r.code).join(', ')||'แปลงที่ข้อมูลพร้อม')+' ตรวจวันภาพ สัดส่วนพื้นที่ร่วม และค่าที่ผิดปกติ</p></div>'+
+  '<div><b>2. ตรวจปัจจัยน้ำ</b><p>ขอเวลาผ่านของ Sentinel-2 เทียบกับระดับน้ำขึ้นลงที่น่าเชื่อถือ และข้อมูลฝน/เหตุการณ์ภาคสนามที่ตรงช่วงเดียวกัน</p></div>'+
+  '<div><b>3. ตรวจแปลงภาคสนาม</b><p>หากมีหลักฐานเพิ่ม ให้เลือกจุดสำรวจ ตรวจการท่วมขัง การรอดของต้นไม้ และสภาพพื้นที่ บันทึกภาพพร้อมพิกัดและวันเวลา</p></div>'+
+  '<div><b>4. อนุมัติรายงานผลกระทบ</b><p>ยกระดับเป็นผลยืนยันได้เฉพาะเมื่อมีหลักฐานอย่างเป็นอิสระ และผู้ตรวจทานรับรองสมมติฐาน/วิธีคำนวณ</p></div></div>'+
+  '<h3>ข้อสรุปที่ยังตอบไม่ได้</h3><p class="rpt-disclaimer">ยังสรุปไม่ได้ว่ามีน้ำท่วมจริงกี่ไร่ เกิดวันใด ทำให้ต้นไม้เสียหายกี่ต้น หรือเกิดมูลค่าความเสียหายเท่าไร</p>');
+ const dates=new Set(d.good.map(x=>x.date)),dataGaps=d.pp.filter(p=>!pairs.has(p.code)).map(p=>p.code);
+ section('07 / AUDIT','หลักฐาน QA/QC และความพร้อมการตรวจสอบ',
+  '<div class="rpt-kpis rpt-flood-kpis">'+metric('แปลงทั้งหมด',rows.length)+metric('แปลงมี Change Pair',comparable.length)+
+  metric('วันภาพ QA ผ่าน',d.good.length+'/'+d.all.length)+metric('แปลงยังไม่มีคู่เทียบ',dataGaps.length)+'</div>'+
+  '<h3>ประเด็นจำกัดคุณภาพข้อมูล</h3><ul class="rpt-findings">'+issues.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
+  '<h3>การตรวจสอบความพร้อมก่อนใช้งาน</h3>'+
+  table([{item:'ผลน้ำเปลี่ยนบน Common-clear Area',state:comparable.length?'มีข้อมูลคัดกรอง':'ไม่มีข้อมูล',owner:'ตรวจวิธีคำนวณ'},{
+   item:'ภาพ TIFF และวันภาพ QA',state:d.good.length?'พบชุดข้อมูล':'ไม่มี',owner:'ตรวจ scene ID / SCL'},{
+   item:'ระดับน้ำขึ้นลงตรงเวลาภาพ',state:'ยังไม่เชื่อมหลักฐาน',owner:'รอข้อมูลก่อนยืนยัน'},{
+   item:'ภาคสนามและการตรวจอิสระ',state:'ยังไม่มีหลักฐานในรายงาน',owner:'รอผลสำรวจ'}],
+   [['item','หัวข้อ'],['state','สถานะ'],['owner','สิ่งที่ต้องทำ']])+
+  '<p class="rpt-disclaimer">สถานะรายงาน: DRAFT / SCREENING ONLY · ไม่ผ่านเกณฑ์ยืนยันผลกระทบด้านน้ำท่วมและต้นไม้ โดยไม่มีหลักฐานเพิ่ม</p>'+
+  '<p class="rpt-caption">ที่มา: ขอบเขตโครงการ, Sentinel-2 GeoTIFF, ผล Change Detection ที่ผ่าน AUTO_VALID และข้อมูล NASA POWER เมื่อมี · สร้าง '+esc(dateNow())+'</p>');
+ if(ui.appendix){
+  const modes=ui.modules.has('indices')?[...ui.metrics].filter(m=>METRICS[m]).slice(0,3):[];
+  const cards=[];
+  for(const p of d.pp){
+   const imgs=d.images.filter(im=>im.plot===p.code).slice(0,Math.min(4,Math.max(1,Number(ui.imageDates)||2)));
+   for(const im of imgs){
+    if(imageURL(im,'true_color'))cards.push({im,mode:'true_color'});
+    for(const m of modes)if(imageURL(im,m))cards.push({im,mode:m});
+   }
+  }
+  for(let n=0;n<cards.length;n+=4){
+   const subset=cards.slice(n,n+4);
+   section('A / APPENDIX '+(Math.floor(n/4)+1),'ภาคผนวก Raster Evidence · '+(Math.floor(n/4)+1),
+    '<div class="rpt-pictures rpt-flood-appendix">'+subset.map(x=>picture(x.im,x.mode)).join('')+'</div>'+
+    table(subset.map(x=>({plot:x.im.plot,date:x.im.date,mode:x.mode.toUpperCase()})),
+      [['plot','แปลง'],['date','วันภาพ'],['mode','ดัชนี / ภาพ']])+
+    '<p class="rpt-caption">ชุดภาพที่ผู้ใช้ขอแนบเพิ่มเติม • เฉพาะ Raster จริงผ่าน QA พร้อมขอบเขตถ้ามี ไม่ใช้ตีความความรุนแรงแยกจากข้อสรุปหลัก</p>');
+  }
+ }
+ return {out,imageCount:out.reduce((n,p)=>n+(p.body.match(/<figure class="rpt-image"/g)||[]).length,0),
+   audit:{scope,plots:rows.length,comparable:comparable.length,increases:increase.length,latestQA:latest?.date||null,
+    reviewNeeded:true,changePairCaveats:issues,priority:priority.map(r=>({plot:r.code,net_water_rai:r.water,common_clear_rai:r.area,date_a:r.pair.date_a,date_b:r.pair.date_b}))}};
+}
+
 function documentPlan(d){
+ if(ui.type==='water')return floodPlan(d);
  const latest=d.good.at(-1),isSingle=ui.scope==='plot',out=[];
  const rowsLimit=ui.density==='brief'?9:ui.density==='technical'?18:14;
  const sampleDays=Math.max(1,Math.min(4,Number(ui.imageDates)||2));
