@@ -670,6 +670,49 @@ function monitoringPlan(d){
    table(shown.slice(i,i+12),[['rank','#'],['plot','แปลง'],['date','วันภาพก่อนหน้า → ปัจจุบัน'],['index','ดัชนีเปลี่ยน'],['qa','วัน QA'],['next','สิ่งที่ต้องตรวจ']])+
    '<p class="rpt-caption">ค่าที่ไม่มีคู่ภาพไม่ถูกสมมติเป็นศูนย์ · วันที่ของแต่ละแปลงอาจต่างกัน'+(ranks.length>limit?' · แสดง '+limit+' จาก '+ranks.length+' แปลง':'')+'</p>');
  }
+
+ if(ui.scope==='province'){
+  const shapes=[],geo=[];
+  for(const record of items){
+   const g=record.p.geometry,polys=g?.type==='Polygon'?[g.coordinates]:g?.type==='MultiPolygon'?g.coordinates:[];
+   const rings=polys.flatMap(part=>(part||[])).filter(ring=>Array.isArray(ring)&&ring.length>=3)
+    .map(ring=>ring.filter(pt=>Array.isArray(pt)&&Number.isFinite(Number(pt[0]))&&Number.isFinite(Number(pt[1]))).map(pt=>[Number(pt[0]),Number(pt[1])]))
+    .filter(ring=>ring.length>=3);
+   if(rings.length){rings.flat().forEach(pt=>geo.push(pt));shapes.push({record,rings});}
+  }
+  if(geo.length){
+   const left=Math.min(...geo.map(p=>p[0])),right=Math.max(...geo.map(p=>p[0])),bottom=Math.min(...geo.map(p=>p[1])),top=Math.max(...geo.map(p=>p[1]));
+   const factor=Math.cos((top+bottom)/2*Math.PI/180),sw=Math.max(.000001,(right-left)*factor),sh=Math.max(.000001,top-bottom);
+   const scale=Math.min(505/sw,233/sh),cx=30+(505-sw*scale)/2,cy=30+(233-sh*scale)/2;
+   const xy=p=>[cx+(p[0]-left)*factor*scale,cy+(top-p[1])*scale];
+   const paths=shapes.map(({record,rings},i)=>{
+    const color=record.prev?'#278261':record.last?'#c59045':'#97a6a0';
+    const d=rings.map(ring=>ring.map((p,i)=>{const a=xy(p);return(i?'L':'M')+a[0].toFixed(1)+','+a[1].toFixed(1);}).join(' ')+' Z').join(' ');
+    const first=rings[0],sum=first.reduce((a,p)=>[a[0]+p[0],a[1]+p[1]],[0,0]),pos=xy([sum[0]/first.length,sum[1]/first.length]);
+    return '<path d="'+d+'" fill="'+color+'" fill-opacity=".18" stroke="'+color+'" stroke-width="1.5" fill-rule="evenodd"/>'+
+     '<circle cx="'+pos[0].toFixed(1)+'" cy="'+pos[1].toFixed(1)+'" r="7.5" fill="#234e3a" stroke="#fff" stroke-width="1"/>'+
+     '<text x="'+pos[0].toFixed(1)+'" y="'+(pos[1]+2.6).toFixed(1)+'" font-size="7" text-anchor="middle" fill="white">'+(items.indexOf(record)+1)+'</text>';
+   }).join('');
+   add('03 / LOCATION','แผนที่ขอบเขตแปลงจริง · '+scope,
+    '<p class="rpt-lead">ผังนี้สร้างจาก Polygon GIS ของแปลงที่มีพิกัด ไม่ใช่ฐานแผนที่ภูมิประเทศหรือแผนที่แสดงความเสียหาย</p>'+
+    '<svg class="rpt-gis-overview" viewBox="0 0 570 305" role="img" aria-label="ผังขอบเขต GIS และหมายเลขแปลง"><rect x="8" y="8" width="554" height="287" rx="5" fill="#f4f8f5" stroke="#bed3c4"/>'+paths+
+    '<text x="18" y="26" fill="#245e43" font-size="12">N ↑</text><text x="552" y="291" fill="#608070" text-anchor="end" font-size="9">WGS84 / Polygon GIS</text></svg>'+
+    '<div class="rpt-locator-key">'+items.map((x,i)=>'<div><b>'+(i+1)+'.</b> '+esc(x.code)+' <small>'+esc(x.prev?'มีคู่ภาพ QA':x.last?'มี QA วันเดียว':'ยังไม่มีคู่ภาพ QA')+'</small></div>').join('')+'</div>'+
+    '<p class="rpt-caption">สีเขียว = มีคู่ภาพที่ใช้คำนวณ · เหลือง = มีภาพ QA วันเดียว · เทา = ไม่มีคู่ภาพ · สีไม่ใช่ระดับความเสี่ยงหรือสถานะน้ำท่วม</p>');
+  }
+ }
+ if(ui.scope==='all'){
+  const prov=new Map();
+  for(const r of items){
+   const k=r.p.province||'ไม่ระบุจังหวัด';
+   if(!prov.has(k))prov.set(k,{province:k,total:0,compared:0,images:0});
+   const v=prov.get(k);v.total++;if(r.prev)v.compared++;v.images+=r.scenes.length;
+  }
+  const rows=[...prov.values()].sort((a,b)=>b.total-a.total).map(v=>({province:v.province,plots:String(v.total),comparisons:String(v.compared),valid:String(v.images)}));
+  for(let i=0;i<rows.length;i+=14)add('03 / PROVINCES '+(i/14+1),'ความครอบคลุมรายจังหวัด',
+   '<p class="rpt-lead">สรุปทะเบียนทั้งประเทศตามจังหวัด เพื่อให้ทราบว่าสถานะรายงานแต่ละจังหวัดมีหลักฐานเพียงพอหรือไม่</p>'+
+   table(rows.slice(i,i+14),[['province','จังหวัด'],['plots','แปลง'],['comparisons','มีคู่ QA'],['valid','วันภาพผ่าน QA']]));
+ }
  // All-six indicator matrix: no single index may stand in for forest health.
  for(const group of [['ndvi','ndre','ndmi'],['ndwi','mndwi','bsi']]){
   const detail=(ui.scope==='all'?ordered.slice(0,20):items).map(x=>({
