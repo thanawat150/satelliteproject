@@ -760,15 +760,31 @@ async function markVisualChanges(root){
  const regions=[...root.querySelectorAll('.rpt-visual-pair[data-visual-scan="eligible"]')];
  for(const region of regions){
   const imgs=[...region.querySelectorAll('.rpt-visual-duo .rpt-image img')],overlay=region.querySelector('.rpt-visual-overlay'),
-    label=region.querySelector('.rpt-visual-result');
-  if(imgs.length!==2||!overlay||!label)continue;
+    canvasMarks=region.querySelector('.rpt-visual-candidates'),label=region.querySelector('.rpt-visual-result');
+  if(imgs.length!==2||!overlay||!canvasMarks||!label)continue;
   try{
    await Promise.all(imgs.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{
     img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});setTimeout(resolve,5000);
    })));
    if(imgs.some(im=>!im.naturalWidth||!im.naturalHeight)){label.textContent='ภาพบางวันโหลดไม่สำเร็จ จึงยังไม่ระบุตำแหน่ง';continue;}
    const a=JSON.parse(region.dataset.beforeBounds),b=JSON.parse(region.dataset.afterBounds);
+   const geometry=JSON.parse(region.dataset.visualGeometry||'{}');
    if(a.length!==2||b.length!==2){label.textContent='ไม่มีพิกัดภาพครบทั้งสองวัน จึงไม่วาดตำแหน่งคาดเดา';continue;}
+   const insideRing=(ring,lon,lat)=>{
+    if(!Array.isArray(ring)||ring.length<3)return false;
+    let inside=false;
+    for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+      const u=ring[i],v=ring[j],x=Number(u[0]),y=Number(u[1]),xx=Number(v[0]),yy=Number(v[1]);
+      if((y>lat)!==(yy>lat)&&lon<(xx-x)*(lat-y)/(yy-y)+x)inside=!inside;
+    }
+    return inside;
+   };
+   const insidePlot=(lon,lat)=>{
+     const groups=geometry.type==='Polygon'?[geometry.coordinates]:
+       geometry.type==='MultiPolygon'?geometry.coordinates:[];
+     return groups.some(rings=>rings.length>0&&insideRing(rings[0],lon,lat)&&
+       !rings.slice(1).some(ring=>insideRing(ring,lon,lat)));
+   };
    const side=96,cellCount=16,span=side/cellCount;
    function read(img){
     const cvs=document.createElement('canvas');cvs.width=side;cvs.height=side;
@@ -782,11 +798,13 @@ async function markVisualChanges(root){
    if(![...vA,...vB].every(Number.isFinite)||vA[2]<=vA[0]||vB[2]<=vB[0])continue;
    const merc=y=>Math.log(Math.tan(Math.PI/4+Math.max(-85,Math.min(85,y))*Math.PI/360));
    const ymaxA=merc(vA[2]),yminA=merc(vA[0]),ymaxB=merc(vB[2]),yminB=merc(vB[0]);
-   const boxes=[],countValid=Array(cellCount*cellCount).fill(0),countChanged=Array(cellCount*cellCount).fill(0);
-   let validTotal=0,changedTotal=0;
+   const countValid=Array(cellCount*cellCount).fill(0),countChanged=Array(cellCount*cellCount).fill(0);
+   let validTotal=0,changedTotal=0,polygonPixels=0;
    for(let py=0;py<side;py++)for(let px=0;px<side;px++){
     const fx=(px+.5)/side,fy=(py+.5)/side;
-    const lon=vB[1]+fx*(vB[3]-vB[1]),mY=ymaxB-fy*(ymaxB-yminB);
+    const lon=vB[1]+fx*(vB[3]-vB[1]),mY=ymaxB-fy*(ymaxB-yminB),lat=(Math.atan(Math.exp(mY))*4-Math.PI)*180/(2*Math.PI);
+    if(!insidePlot(lon,lat))continue;
+    polygonPixels++;
     const oldX=(lon-vA[1])/(vA[3]-vA[1]),oldY=(ymaxA-mY)/(ymaxA-yminA);
     if(oldX<0||oldX>=1||oldY<0||oldY>=1)continue;
     const ix=Math.floor(oldX*side),iy=Math.floor(oldY*side);
@@ -799,11 +817,11 @@ async function markVisualChanges(root){
     countValid[k]++;validTotal++;
     if(delta>43){countChanged[k]++;changedTotal++;}
    }
-   if(validTotal<side*side*.22){label.textContent='พิกเซลที่เทียบตำแหน่งได้มีน้อยหรือถูกข้อมูลขาดบัง ไม่วาดวงอัตโนมัติ';continue;}
+   if(polygonPixels<24||validTotal/Math.max(1,polygonPixels)<.2){label.textContent='พิกเซลภายในขอบเขตแปลงที่เทียบได้มีน้อยหรือถูกข้อมูลขาดบัง จึงไม่วง';continue;}
    const diffuse=changedTotal/validTotal;
    if(diffuse>.92){label.textContent='สีภาพเปลี่ยนเกือบทั้งหมด อาจเป็นการเรนเดอร์หรือเมฆ จึงไม่วงพื้นที่มั่ว ๆ';continue;}
    const active=Array(cellCount*cellCount).fill(false);
-   for(let k=0;k<active.length;k++)active[k]=countValid[k]>=10&&countChanged[k]/countValid[k]>.35;
+   for(let k=0;k<active.length;k++)active[k]=countValid[k]>=3&&countChanged[k]/countValid[k]>.35;
    const seen=new Set(),clusters=[];
    for(let k=0;k<active.length;k++){
     if(!active[k]||seen.has(k))continue;
@@ -817,22 +835,17 @@ async function markVisualChanges(root){
     }
     if(members.length<2)continue;
     const xs=members.map(v=>v.x),ys=members.map(v=>v.y);
-    clusters.push({area:members.length,minX:Math.min(...xs),maxX:Math.max(...xs),minY:Math.min(...ys),maxY:Math.max(...ys)});
+    clusters.push({area:members.length,members,minX:Math.min(...xs),maxX:Math.max(...xs),minY:Math.min(...ys),maxY:Math.max(...ys)});
    }
    clusters.sort((x,y)=>y.area-x.area);
    const selected=clusters.slice(0,3);
    if(!selected.length){label.textContent='ไม่พบกลุ่มพื้นที่สีเปลี่ยนต่อเนื่องชัดเจนในภาพสองวัน';continue;}
-   overlay.innerHTML=selected.map((c,i)=>{
-    const centerX=(c.minX+c.maxX+1)*500/cellCount,centerY=(c.minY+c.maxY+1)*500/cellCount,
-      rx=Math.max(40,(c.maxX-c.minX+1)*530/cellCount),ry=Math.max(40,(c.maxY-c.minY+1)*530/cellCount),
-      labelX=Math.min(973,centerX+rx*.77),labelY=Math.max(25,centerY-ry*.8);
-    return '<ellipse cx="'+centerX.toFixed(1)+'" cy="'+centerY.toFixed(1)+'" rx="'+rx.toFixed(1)+'" ry="'+ry.toFixed(1)+'" fill="#ed9026" fill-opacity=".09" stroke="#fff" stroke-width="9" stroke-dasharray="16 10"/>'+
-     '<ellipse cx="'+centerX.toFixed(1)+'" cy="'+centerY.toFixed(1)+'" rx="'+rx.toFixed(1)+'" ry="'+ry.toFixed(1)+'" fill="none" stroke="#ea8c21" stroke-width="6" stroke-dasharray="16 10"/>'+
-     '<circle cx="'+labelX.toFixed(1)+'" cy="'+labelY.toFixed(1)+'" r="25" fill="#dc732a" stroke="#fff" stroke-width="4"/>'+
-     '<text x="'+labelX.toFixed(1)+'" y="'+(labelY+9).toFixed(1)+'" text-anchor="middle" fill="#fff" font-weight="700" font-size="28">'+(i+1)+'</text>';
-   }).join('');
-   label.textContent='วงบริเวณสีดัชนีเปลี่ยนที่ต่อเนื่อง '+selected.length+' กลุ่ม (ขนาดวงตามพื้นที่สีต่างที่พบ ไม่ใช่ขอบเขตน้ำจริง)'+
-     (diffuse>.65?' — สีเปลี่ยนเป็นบริเวณกว้าง ควรตรวจเมฆ/การเรนเดอร์':'');
+   canvasMarks.innerHTML=selected.map(c=>c.members.map(p=>{
+    const x=p.x*1000/cellCount,y=p.y*1000/cellCount,w=1000/cellCount;
+    return '<rect x="'+x.toFixed(2)+'" y="'+y.toFixed(2)+'" width="'+w.toFixed(2)+'" height="'+w.toFixed(2)+'" fill="#f3a23e" fill-opacity=".25" stroke="#dd7428" stroke-opacity=".95" stroke-width="3.5"/>';
+   }).join('')).join('');
+   label.textContent='ไฮไลต์ '+selected.length+' บริเวณสีดัชนีเปลี่ยนภายในขอบเขตแปลง GIS (ถูกตัดตาม Polygon จริง ไม่รวมพื้นที่นอกแปลง)'+
+     (diffuse>.65?' · สีเปลี่ยนกว้างมาก ควรตรวจเมฆและการเรนเดอร์':'');
   }catch(e){label.textContent='อ่านตำแหน่งสีดัชนีไม่ได้ จึงแสดงภาพเพื่อพิจารณาด้วยตาโดยไม่วงคาดเดา';}
  }
 }
