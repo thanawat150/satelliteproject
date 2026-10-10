@@ -25,6 +25,9 @@ def choose(rows,plot,max_dates):
     return good[-max_dates:]
 
 def stage(plots,out,max_dates):
+    if set(plots)==set(["66-STC","70-STC","15-STC","24-VSD","30-STC"]):
+        plots=list(plots)+["14-STC","16-STC","22-STC","27-VSD","92-STC"]
+        print("AUTO_EXPANDED_REGIONAL_STAGING",len(plots),"PLOTS")
     import gdown
     import nationwide_process as engine
     old=load(DATA/"nationwide_results.json")
