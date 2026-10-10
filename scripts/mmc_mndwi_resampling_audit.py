@@ -59,7 +59,9 @@ def audit(p10,p20,geometry_4326):
             results[name]={"sample_pixels":n,
                            "rmse":round(float(np.sqrt(np.mean(d*d))),6),
                            "bias":round(float(np.mean(d)),6),
-                           "mean_abs_error":round(float(np.mean(abs(d))),6)}
+                           "mean_abs_error":round(float(np.mean(abs(d))),6),
+                           "pixels_within_mndwi_pm_0_05":int(np.count_nonzero(valid & (abs(value)<=0.05))),
+                           "water_pixels_at_zero":int(np.count_nonzero(valid & (value>0)))}
         choices={k:v["rmse"] for k,v in results.items() if v["rmse"] is not None}
         best=min(choices,key=choices.get) if choices else None
         return {"status":"DIAGNOSTIC_ONLY","methods":results,
