@@ -42,13 +42,19 @@ function timeSeriesRows(plot,key){
 function timeSeriesInfo(key,rows){
  const n=rows.length,first=rows[0],last=rows.at(-1),unit=seriesUnit(key);
  const isRain=seriesMeta(key)[1]==='mm';
+ const table=rows.map(row=>'<tr><td>'+html(row.date)+'</td><td class="num">'+
+   seriesFmt(key,row.series_value)+' '+html(unit)+'</td><td>AUTO_VALID</td></tr>').join('');
+ const sparse=n<4?'<div class="notice">มีข้อมูลผ่าน QA เพียง '+n+
+   ' วันสำหรับกราฟนี้ • ไม่เพียงพอเป็นค่า Baseline ตามฤดูกาล'+
+   (isRain?' ของฝนตามวันภาพ':' และห้ามสรุปการสูญเสียต้นไม้หรือเหตุการณ์น้ำท่วมจากทิศทางเส้น')+'</div>':'';
+
  return '<div class="time-series-summary">'+
    '<span>ข้อมูลผ่าน QA '+n+' วัน</span>'+
    '<span>ล่าสุด '+(last?html(last.date)+' : <b>'+seriesFmt(key,last.series_value)+' '+unit+'</b>':'ไม่มีค่าที่ใช้ได้')+'</span>'+
    (n>1?'<span>เปลี่ยนจากวันแรก '+seriesFmt(key,last.series_value-first.series_value)+' '+unit+'</span>':'')+
-   '</div><p class="muted tiny">'+(isRain?
+   '</div>'+sparse+'<details class="series-source-table"><summary>ตรวจตัวเลขที่ใช้วาดกราฟ ('+n+' วัน)</summary><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่ Sentinel-2</th><th>ค่าที่ใช้วาดกราฟ</th><th>QA</th></tr></thead><tbody>'+table+'</tbody></table></div></details><p class="muted tiny">'+(isRain?
    'NASA POWER PRECTOTCORR: ฝนสะสมในวัน UTC ก่อนวันถ่ายภาพ ไม่ใช่ 24/72 ชั่วโมงย้อนหลังจากเวลาผ่านดาวเทียม • แสดงเฉพาะวัน Sentinel-2 ผ่าน QA และมีฝนครบ':
-   'ใช้ค่า Sentinel-2 รายแปลงที่ผ่าน AUTO_VALID เท่านั้น • ค่าพื้นที่เป็นผลจำแนกเดิมที่ยังไม่มีการปรับน้ำขึ้นน้ำลง')+
+   'ที่มา: docs/data/nationwide/nationwide_results.json • ค่าจาก Sentinel-2 รายแปลงที่ผ่าน AUTO_VALID เท่านั้น • ไม่ปรับน้ำขึ้นน้ำลง • รูปแบบเส้นเป็นการเชื่อมจุดวันที่มีข้อมูลจริง ไม่ใช่ค่ารายวันต่อเนื่อง')+
    '</p>';
 }
 function timeSeriesKpis(plot,key){
