@@ -431,7 +431,7 @@ function floodPlan(d){
  const scopeText=ui.scope==='plot'?'แปลง':ui.scope==='province'?'จังหวัด':'เครือข่าย';
  const status=recedingCount?'พบพื้นที่น้ำที่จำแนกได้ลดลงในภาพล่าสุด '+recedingCount+' แปลง หลังจากช่วงที่มีค่าสูงกว่า':comparable.length?'พบสัญญาณพื้นที่น้ำเปลี่ยนแปลง ต้องตรวจบริบทเพิ่มเติม':'ข้อมูลคู่ภาพไม่เพียงพอสำหรับสรุปการเปลี่ยนแปลงน้ำ';
  const coverVisual=priority.slice(0,2).map(r=>{
-  const im=(d.visualImages||[]).find(x=>x.plot===r.code&&x.date===r.timeline?.latest.date&&imageURL(x,'true_color'))||d.images.find(x=>x.plot===r.code&&x.date===r.pair?.date_b&&imageURL(x,'true_color'));
+  const im=(d.visualImages||[]).find(x=>x.plot===r.code&&x.date===r.timeline?.latest.date&&visualQuality(x).usable&&imageURL(x,'true_color'))||d.images.find(x=>x.plot===r.code&&x.date===r.pair?.date_b&&imageURL(x,'true_color'));
   return im?picture(im,'true_color'):'<p class="rpt-empty">ภาพสีจริงล่าสุด '+esc(r.code)+' ยังไม่มี</p>';
  }).join('');
  const coverage='<div class="rpt-kpis rpt-flood-kpis">'+metric('แปลงในขอบเขต',rows.length)+metric('คู่ภาพเทียบได้',comparable.length+'/'+rows.length)+
@@ -465,7 +465,7 @@ function floodPlan(d){
  }
  for(const r of priority.slice(0,3)){
   const ts=r.timeline;if(!ts||!ts.all.length)continue;
-  const imgs=(d.visualImages||[]).filter(im=>im.plot===r.code&&imageURL(im,'true_color')).sort((a,b)=>a.date.localeCompare(b.date));
+  const imgs=(d.visualImages||[]).filter(im=>im.plot===r.code&&visualQuality(im).usable&&imageURL(im,'true_color')).sort((a,b)=>a.date.localeCompare(b.date));
   const before=imgs.find(x=>x.date===ts.first.date)||imgs[0],peak=imgs.find(x=>x.date===ts.peak.date)||imgs.find(x=>x.date>=ts.peak.date),
    current=imgs.find(x=>x.date===ts.latest.date)||imgs.at(-1);
   const chosen=[before,peak,current].filter((x,i,arr)=>x&&arr.findIndex(y=>y?.date===x.date)===i);
