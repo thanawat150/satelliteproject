@@ -299,6 +299,16 @@ assert.ok(rayong.text.includes('rpt-water-decreased')&&rayong.text.includes('แ
 assert.ok(rayong.text.includes('2026-10-07 · 13.75')&&rayong.text.includes('2026-09-29 · 76.01'),'21-STC recent receding water is included');
 assert.ok(rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 17-STC')&&rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 21-STC'),'Visual timeline pages prioritize dated recession examples');
 assert.ok(rayong.text.includes('วันภาพทั้งหมดที่มี Raster MNDWI'),'Review pages disclose every raster date, not only two');
+ 
+const rejectedSceneCheck=await page.evaluate(()=>{
+ const r=window.MMCReportCopilot.renderPages(),root=document.createElement('main');root.innerHTML=r.pages;
+ const visualPairs=[...root.querySelectorAll('.rpt-visual-pair')].map(pair=>({labels:[...pair.querySelectorAll('.rpt-visual-date small')].map(x=>x.textContent||''),scan:pair.dataset.visualScan}));
+ return {rejected:r.audit?.visualImagesRejected,qaPage:r.pages.includes('ภาพที่คัดออกจากการแปลผลเชิงภาพ'),hasBad14:r.pages.includes('ภาพเปรียบเทียบจุดน้ำเปลี่ยน · 14(1)-STC'),zeroInPairs:visualPairs.filter(v=>v.labels.some(label=>/QA NO_DATA|พิกเซลผ่าน QA 0[.]00%/.test(label))),pairs:visualPairs.length};
+});
+assert.ok(rejectedSceneCheck.rejected>0&&rejectedSceneCheck.qaPage,'Rejected images must be logged with explicit reasons in QA, not quietly used');
+assert.equal(rejectedSceneCheck.hasBad14,false,'14(1)-STC with QA zero on both Oct 2 and 7 must not produce visual analysis pages');
+assert.equal(rejectedSceneCheck.zeroInPairs.length,0,'Never compare or auto-outline NO_DATA / QA-zero imagery');
+assert.ok(rejectedSceneCheck.pairs>=1,'Still use clear comparison images from other suitable scenes');
 assert.ok(rayong.front.includes('น้ำลดจากช่วงสูงในภาพล่าสุด'),'Executive KPI differentiates current recession from older pair change');
 
 assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็นน้ำท่วม'),'Screening uncertainty must be explicit and unambiguous');
