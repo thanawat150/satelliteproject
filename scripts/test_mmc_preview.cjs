@@ -294,6 +294,8 @@ assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู�
 
 assert.ok(rayong.front.includes('สถานการณ์ล่าสุดเทียบช่วงที่น้ำสูงกว่า'),'Executive cover must lead with latest receding-water evidence');
 assert.ok(rayong.text.includes('2026-10-07 · 60.06')&&rayong.text.includes('2026-09-29 · 238.45'),'17-STC shows both high-water and later recession rather than stopping in September');
+assert.ok(rayong.text.includes('−178.39')||rayong.text.includes('-178.39')||rayong.text.includes('178.39'),'Main Rayong report shows 17-STC decline since 29 Sept, not just historic +238 rai');
+assert.ok(rayong.text.includes('rpt-water-decreased')&&rayong.text.includes('แนวโน้มล่าสุด'),'Water change chart is based on recent dates and emphasizes the decrease');
 assert.ok(rayong.text.includes('2026-10-07 · 13.75')&&rayong.text.includes('2026-09-29 · 76.01'),'21-STC recent receding water is included');
 assert.ok(rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 17-STC')&&rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 21-STC'),'Visual timeline pages prioritize dated recession examples');
 assert.ok(rayong.text.includes('วันภาพทั้งหมดที่มี Raster MNDWI'),'Review pages disclose every raster date, not only two');
@@ -316,13 +318,14 @@ await page.waitForFunction(()=>{
 },{timeout:20000});
 assert.ok(visualReview.visualPages>=2,'Multiple visual plot timelines exist in the full report');
 
-const visualDiagnostics=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-visual-pair')].map(x=>({status:x.dataset.visualScan,outlines:x.querySelectorAll('.rpt-visual-overlay ellipse').length,note:x.querySelector('.rpt-visual-result')?.textContent?.slice(0,100)})));
+const visualDiagnostics=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-visual-pair')].map(x=>({status:x.dataset.visualScan,highlightCells:x.querySelectorAll('.rpt-visual-candidates rect').length,clipPath:!!x.querySelector('.rpt-visual-overlay defs clipPath path.rpt-visual-polygon'),actualClipped:x.querySelector('.rpt-visual-candidates')?.getAttribute('clip-path')||'',note:x.querySelector('.rpt-visual-result')?.textContent?.slice(0,110)})));
 console.log('MMC_VISUAL_SCREEN_DIAGNOSTICS',JSON.stringify(visualDiagnostics));
+assert.ok(visualDiagnostics.some(x=>x.status==='eligible'&&x.highlightCells>0&&x.clipPath&&x.actualClipped.startsWith('url(#rpt-visual-clip-')),'Generated highlights must be clipped to the real GIS polygon; no circles beyond boundary');
 
 
 
 assert.ok(rayong.text.includes('ข้อค้นพบเฉพาะแปลง 17-STC')&&rayong.text.includes('ข้อค้นพบเฉพาะแปลง 13-STC'),'Rayong flood cases must include plot-specific interpretations');
-assert.ok(rayong.text.includes('เปลี่ยนเป็นน้ำ')&&rayong.text.includes('เปลี่ยนออกจากน้ำ'),'Report must show independent measured gain and loss of water, not net alone');
+assert.ok(rayong.text.includes('น้ำเพิ่ม')&&rayong.text.includes('น้ำลด')&&rayong.text.includes('ข้อมูลย้อนหลังที่คำนวณจากพิกเซลร่วม'),'Historical gain and loss must be separately labeled and secondary to current trend');
 assert.ok(rayong.text.includes('rpt-locator-key')&&rayong.text.includes('WGS84 · GIS polygons'),'Location page uses actual polygon geometry and number-keyed labels');
 assert.ok(rayong.text.includes('พื้นที่พิกเซลร่วมเกินพื้นที่ Geometry'),'Flag known area/geometry mismatches as an audit issue');
 assert.ok(rayong.text.includes('ทุกแปลงที่มีคู่ภาพพบพื้นที่น้ำเพิ่มสุทธิพร้อมกัน'),'Unusually universal water increase triggers systemic QA notice');
