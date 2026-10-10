@@ -1,5 +1,14 @@
 # Mangrove Monitoring Center — Read-only Web Preview
 
+## 2026-10-10 Roadmap implementation — Plot Twin + Clipped Change
+
+- **Plot Digital Twin (read-only):** the Plot Intelligence screen now includes a per-plot source-linked index table, scene QA and visual QA warning counts, preview coverage, and the most recent available pixel-change comparisons. This is NOT a field survey, signed audit or carbon MRV approval.
+- **Change Processing v1.2:** `scripts/nationwide_process.py` now derives common-clear, class gains and class losses by intersecting raster class masks with the actual plot geometry; this avoids assigning full cell area to boundary pixels. It emits `common_clear_pct_of_plot`, `comparison_review`, `area_method`, `tide_normalized=false`, `season_normalized=false` and screening-only interpretation flags. Consecutive QA-valid dates are compared even when invalid dates intervene.
+- **Index/Raster quality gate:** the Twin surfaces existing source TIFF parity flags and RGB/SCL quality warnings separately from the AUTO_VALID SCL status. Three MNDWI pixel-parity review cases and the visual QA review queue remain unresolved until individual evidence is examined. Do not relabel these as approved.
+- **Data migration limitation:** v1.2 affects only a NEW TIFF analysis run. Existing published `nationwide_results.json` change records remain from the earlier pipeline and must not be represented as newly recomputed. A controlled full rerun, independent area regression testing and review are required before replacing historic change figures.
+- **Production limitation:** tidal normalization, season-matched baselines, authenticated field evidence, approval signatures, and an EVR master registry are not implemented by this change.
+
+
 App URL: https://thanawat150.github.io/satelliteproject/mangrove-monitoring/
 
 This is an **independent UI route**, but currently lives in the existing SatelliteProject GitHub repository so it can safely reuse already-published public data. It is **not yet** a separate secured production API, project database, or authenticated fieldwork platform.
