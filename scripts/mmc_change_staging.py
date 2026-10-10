@@ -89,18 +89,20 @@ def stage(plots,out,max_dates):
                                            "qa_staging":r.get("analysis_status"),
                                            "index_and_area_differences":diff,
                                            "area_balance_error_rai":r.get("area_balance_error_rai")})
+        plot_areas={k:float(v.get("pdd_area_rai") or 0)
+                    for k,v in old.get("plots",{}).items()}
         area_review=[]
         for item in report["plot_results"]:
             for key in ("water_rai","vegetation_rai","bare_soil_rai"):
                 delta=item["index_and_area_differences"][key]["delta"]
-                if delta is not None and abs(delta)>=0.25:
+                area=plot_areas.get(item["plot"],0)
+                pct=(100*abs(delta)/area) if (delta is not None and area>0) else 0
+                if delta is not None and (abs(delta)>=0.25 or (abs(delta)>=0.05 and pct>=5)):
                     area_review.append({"plot":item["plot"],"date":item["date"],
                         "metric":key,"difference_rai":delta,
                         "reason":"PUBLISHED_VS_POLYGON_CLIPPED_AREA_DIFFERENCE"})
         # Review priority depends on magnitude and plot area, not a universal
         # declaration that the boundary clipping alone explains every change.
-        plot_areas={k:float(v.get("pdd_area_rai") or 0)
-                    for k,v in old.get("plots",{}).items()}
         for flag in area_review:
             area=plot_areas.get(flag["plot"],0)
             flag["pdd_area_rai"]=round(area,4) if area else None
