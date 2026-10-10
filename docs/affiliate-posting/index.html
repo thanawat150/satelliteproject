@@ -130,7 +130,7 @@ h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",s
     <div>
       <div class="kicker">AFFILIATE DAILY QUEUE</div>
       <h1>วันนี้ต้องโพสต์อะไร</h1>
-      <p>Affiliate แยกสถานะ TikTok / Shopee ชัดเจน พร้อมไฟล์ แคปชั่น แฮชแท็ก และเวลาโพสต์ ส่วน Metricool แสดงแยกด้านบน</p>
+      <p>คิว Affiliate ใช้เฉพาะคลิปในโฟลเดอร์ “พร้อม” และแสดงวันละ 1 คลิป ใช้คลิปเดียวกันลงทั้ง TikTok และ Shopee</p>
     </div>
     <div class="clock"><small>Asia / Bangkok</small><strong id="now">—</strong></div>
   </section>
@@ -158,20 +158,20 @@ h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",s
 
   <section id="inventorySection">
     <div class="section-head">
-      <div><div class="kicker">ขายของ · DRIVE AUDIT</div><h2>สถานะคลิปสินค้า</h2></div>
-      <span class="snapshot">ตรวจไฟล์ · 10 ต.ค. 2569</span>
+      <div><div class="kicker">READY SOURCE</div><h2>โฟลเดอร์ “พร้อม” คือแหล่งคลิปพร้อมโพสต์</h2></div>
+      <span class="snapshot">Ready Folder · 16 คลิป</span>
     </div>
     <div class="inventory-grid" id="inventoryGrid"></div>
   </section>
 
   <section id="affiliateSection">
     <div class="section-head affiliate-head">
-      <div><div class="kicker">DAILY SALES PLAN</div><h2>คลิปขายสำหรับ TikTok / Shopee</h2></div>
+      <div><div class="kicker">DAILY SALES PLAN</div><h2>วันละ 1 คลิป · TikTok + Shopee</h2></div>
     </div>
     <main class="list" id="list"></main>
   </section>
 
-  <div class="notice">หมายเหตุ: รายการ Metricool ด้านบนเป็น Snapshot จากตารางที่ตั้งไว้ ณ วันที่ 10 ต.ค. 2569 จึงไม่ใช่ Live API บนหน้า GitHub โดยตรง หากสถานะเป็น <b>ERROR</b> ให้ดาวน์โหลดคลิปจากหน้านี้แล้วโพสต์เอง สถานะ Affiliate จะจำแยก TikTok และ Shopee ในเบราว์เซอร์นี้ และคลิปจะถือว่าใช้ครบเมื่อโพสต์ทั้งสองแพลตฟอร์ม</div>
+  <div class="notice">หมายเหตุ: รายการ Metricool ด้านบนเป็น Snapshot จากตารางที่ตั้งไว้ ณ วันที่ 10 ต.ค. 2569 จึงไม่ใช่ Live API บนหน้า GitHub โดยตรง หากสถานะเป็น <b>ERROR</b> ให้ดาวน์โหลดคลิปจากหน้านี้แล้วโพสต์เอง ระบบใช้เฉพาะคลิปจากโฟลเดอร์ “พร้อม” วันละ 1 คลิป และใช้คลิปเดียวกันลงทั้ง TikTok กับ Shopee; สถานะทั้งสองแพลตฟอร์มจะถูกจำแยกกันในเบราว์เซอร์นี้</div>
 </div>
 <div class="toast" id="toast">คัดลอกแล้ว</div>
 
@@ -180,49 +180,31 @@ const START = new Date('2026-10-10T00:00:00+07:00');
 const DAYS = 60;
 const STORE_KEY = 'affiliate-daily-post-platform-status-v2';
 
+const READY_FOLDER='https://drive.google.com/drive/folders/1kY02WlyrCcv9q13HKn2LcArrpLGGckM4';
+
 const products = [
   {
-    key:'sun', name:'ครีมกันแดดศิริราช', sub:'SIRIRAJ TINTED PHYSICAL SUNSCREEN',
-    shopee:'20:00', tiktok:'21:00',
-    folder:'https://drive.google.com/drive/folders/1pYXNSp8T9zykrWwwk0mmXt66y464nsP3',
-    hashtags:'#กันแดดศิริราช #กันแดดสีเนื้อ #PhysicalSunscreen #SPF50Plus #ผิวบอบบาง #ShopeeVideo #TikTokAffiliate'
-  },
-  {
-    key:'chair', name:'เก้าอี้มหัศจรรย์คุณตาแสวง', sub:'แท่นยืนยืดเส้น / ไม้ยืนเพื่อสุขภาพ',
+    key:'chair', name:'เก้าอี้มหัศจรรย์คุณตาแสวง', sub:'คลิปพร้อมจากโฟลเดอร์ พร้อม',
     shopee:'19:30', tiktok:'20:00',
-    folder:'https://drive.google.com/drive/folders/1SX1WU3Hoy4j8fiyr5R93-7kke8PwZa0W',
+    folder:READY_FOLDER,
     hashtags:'#เก้าอี้มหัศจรรย์ #คุณตาแสวง #แท่นยืนยืดเส้น #ยืดเหยียด #คนทำงาน #ShopeeVideo #TikTokAffiliate'
   },
   {
-    key:'run', name:'ลู่วิ่ง D5-Pro', sub:'ลู่วิ่ง / เดินออกกำลังกายที่บ้าน',
-    shopee:'20:00', tiktok:'19:00',
-    folder:'https://drive.google.com/drive/folders/1s70Qd1D0UUTvU_BsXp3GutJuN-bErKzR',
-    hashtags:'#ลู่วิ่งD5Pro #ลู่วิ่งไฟฟ้า #เดินออกกำลังกาย #ออกกำลังกายที่บ้าน #HomeWorkout #ShopeeVideo #TikTokAffiliate'
-  },
-  {
-    key:'table', name:'โต๊ะขาว', sub:'สินค้าใหม่ · มีคลิปดิบ',
-    shopee:'20:00', tiktok:'20:30',
-    folder:'https://drive.google.com/drive/folders/1Hb8jQcrgnHC5Wzii8RGKnSF7PsVwItqI',
-    hashtags:'#โต๊ะขาว #ของใช้ในบ้าน #รีวิวสินค้า #ShopeeVideo #TikTokAffiliate'
+    key:'sun', name:'ครีมกันแดดศิริราช', sub:'คลิปพร้อมจากโฟลเดอร์ พร้อม',
+    shopee:'20:00', tiktok:'21:00',
+    folder:READY_FOLDER,
+    hashtags:'#กันแดดศิริราช #กันแดดสีเนื้อ #PhysicalSunscreen #SPF50Plus #ShopeeVideo #TikTokAffiliate'
   }
 ];
 
 const inventory = [
   {
-    key:'sun', ready:0, review:0, edit:12, posted:6,
-    note:'คลิป Final/AI ที่ถูกนำไปใส่ในแผนก่อนหน้านี้ให้ถือว่า “โพสต์แล้ว” และจะไม่ถูกหมุนกลับมาใช้ซ้ำ ตอนนี้เหลือคลิปยาวและ MOV สำหรับตัดเป็นคอนเทนต์ใหม่'
+    key:'chair', ready:5, review:0, edit:0, posted:0,
+    note:'พบคลิปเก้าอี้คุณตาแสวงในโฟลเดอร์ “พร้อม” 5 คลิป — ระบบจะถือว่าพร้อมโพสต์ตามการคัดของคุณ และใช้วันละ 1 คลิป'
   },
   {
-    key:'chair', ready:0, review:0, edit:2, posted:5,
-    note:'คลิป Flow/Meta ที่เคยใส่ในระบบให้ย้ายเป็นประวัติโพสต์แล้ว ไม่ใช้ซ้ำ เหลือคลิปจริง IMG_1977–1978 สำหรับตัด Demo ใหม่'
-  },
-  {
-    key:'run', ready:0, review:0, edit:6, posted:0,
-    note:'มีวัตถุดิบ 6 คลิป: เดินบนลู่, รีโมต และหน้าจอควบคุม ยังไม่มี Final Export ใหม่ จึงต้องตัดก่อนโพสต์'
-  },
-  {
-    key:'table', ready:0, review:0, edit:1, posted:0,
-    note:'มี IMG_2024.MOV คลิปดิบไฟล์ใหญ่ประมาณ 1.7 GB ยังไม่มี Final Export จึงต้องตัดก่อน'
+    key:'sun', ready:11, review:0, edit:0, posted:0,
+    note:'พบคลิปกันแดดศิริราชในโฟลเดอร์ “พร้อม” 11 คลิป — ระบบจะถือว่าพร้อมโพสต์ตามการคัดของคุณ และใช้วันละ 1 คลิป'
   }
 ];
 
@@ -236,18 +218,21 @@ function fmtDate(d){
   return new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',weekday:'long',day:'numeric',month:'short',year:'numeric'}).format(d);
 }
 const salesPlan = [
-  {date:'2026-10-10',key:'run',status:'edit',file:['1HURxxYRalnPXH7eTZAMAnZfbtnhJtr7_','IMG_1971.MOV'],extra:['1q2PjXPWqz66tl9Yael5uqypF0-SXeVdC','IMG_1974.MOV'],caption:'ลู่วิ่ง D5-Pro ปรับความเร็วจากรีโมตได้ระหว่างเดิน ใช้งานสะดวก เหมาะกับคนที่อยากเดินออกกำลังกายที่บ้าน 🏃',task:'คลิปเดิมที่พร้อมโพสต์ถูกใช้ไปแล้ว วันนี้ให้ทำคอนเทนต์ใหม่: ตัด IMG_1971 ช็อตเดิน + IMG_1974 รีโมต Close-up เป็นคลิป 15–25 วิ'},
-  {date:'2026-10-11',key:'chair',status:'edit',file:['1oU6mlMfWKFxWHDbxrld94N2SXuFVOAT_','IMG_1977.MOV'],extra:['1mZwiowJpxeXTrbFCWASgH98TRYmTtABu','IMG_1978.MOV'],caption:'เก้าอี้มหัศจรรย์คุณตาแสวง หรือแท่นยืนยืดเส้น ขนาดกะทัดรัด เหมาะไว้ยืดเหยียดระหว่างวันครับ',task:'ตัดคลิปจริง 1977–1978 เป็น Demo วิธีใช้ 15–25 วิ ไม่ใช้ Flow/Meta เก่าซ้ำ'},
-  {date:'2026-10-12',key:'table',status:'edit',file:['13sdar_U_2XmihyVPtG92NDzazZHzh4c0','IMG_2024.MOV'],caption:'',task:'ตัดคลิปโต๊ะขาวจาก IMG_2024.MOV ก่อน ต้องหา Hook และจุดขายจากฟุตเทจก่อนกำหนดแคปชั่น/เวลาโพสต์'},
-  {date:'2026-10-13',key:'sun',status:'edit',file:['1Q1jISGXXiaL7kACbbldZEfpvWyg2tKAT','ป๋าเคน5.mp4'],caption:'ถ้ากำลังมองหากันแดดที่ใช้ง่ายในทุกวัน SIRIRAJ Tinted Physical Sunscreen เป็นอีกตัวที่น่าสนใจครับ',task:'ตัดคลิปยาวป๋าเคนเป็นเวอร์ชันใหม่ 8–15 วิ ห้ามใช้ช่วงที่เคยโพสต์ซ้ำ'},
-  {date:'2026-10-14',key:'sun',status:'edit',file:['1y21uR6Em6rUMaBlpvLmQ5KmVXY65q_8i','น้องเมย์.mp4'],caption:'ออกแดดบ่อยก็ต้องเลือกกันแดดที่หยิบใช้ได้ทุกวัน ☀️ กันแดดศิริราชสีเนื้อเป็นอีกตัวเลือกที่น่าสนใจค่ะ',task:'ตัดคลิปน้องเมย์ 42.8 วิเป็นเวอร์ชันใหม่ เลือก Hook/ช่วงพูดที่ยังไม่เคยใช้'},
-  {date:'2026-10-15',key:'run',status:'edit',file:['17m6tals5a5yrR_3p-q1pcJJRGavIkic1','IMG_1973.MOV'],caption:'อยากควบคุมลู่วิ่งแบบไม่ยุ่งยาก ลองดู D5-Pro ครับ โชว์หน้าจอและการสั่งงานให้เห็นแบบตรง ๆ',task:'ทำคลิปฟีเจอร์หน้าจอ/การควบคุมจาก IMG_1973'},
-  {date:'2026-10-16',key:'run',status:'edit',file:['1Uv7S6O9-F-tad8DgWfMtq62jp2Ay4D1u','IMG_1976.MOV'],caption:'วันที่ไม่อยากออกไปเดินข้างนอก เปิดลู่วิ่งแล้วเดินอยู่บ้านได้เลยครับ D5-Pro ใช้เป็น Routine เดินเบา ๆ ในบ้านได้',task:'IMG_1976 ยาวประมาณ 68 วิ เลือกช่วงเดินสวย ๆ 10–20 วิ ทำคลิป Lifestyle'},
-  {date:'2026-10-17',key:'sun',status:'edit',file:['1h37yx5AsPm961-4ZfHhRGUOazAmzrKUF','IMG_1979.MOV'],caption:'กันแดดศิริราชสีเนื้อ Physical Sunscreen SPF 50+ PA++++ ใช้ง่ายในชีวิตประจำวัน ใครชอบกันแดดสีเนื้อลองดูตัวนี้ค่ะ',task:'ตัดจากคลิปดิบ IMG_1979.MOV เป็นเวอร์ชันใหม่ โดยไม่ใช้ Final ที่เคยโพสต์'},
-  {date:'2026-10-18',key:'sun',status:'edit',file:['1ufqGzGTjmO7I1rlG-NQajyzGR9XLhvwy','IMG_1984.MOV'],caption:'ดูเนื้อและแพ็กเกจของ SIRIRAJ Tinted Physical Sunscreen แบบใกล้ ๆ ก่อนตัดสินใจได้เลยค่ะ',task:'ทำ Product Focus 8–15 วิจาก IMG_1984.MOV'},
-  {date:'2026-10-19',key:'run',status:'edit',file:['1FbizeAKAPauLmGq_1OQ5MBhxogmJET9g','IMG_1970.MOV'],extra:['1blBqYgQX6ostkwZkA0kv0A22Qy3sMXfw','IMG_1972.MOV'],caption:'ลู่วิ่ง D5-Pro ใช้งานที่บ้านได้แบบไม่ต้องเตรียมเยอะ ลองดูการควบคุมและการใช้งานจริงจากคลิปนี้ครับ',task:'ตัด IMG_1970 + IMG_1972 เป็นคลิปสาธิตชุดใหม่'},
-  {date:'2026-10-20',key:'sun',status:'edit',file:['1oWllfgv35Y04M4eLvnvspbqfuKffDHyI','IMG_1983.MOV'],caption:'ใครกำลังหากันแดดสีเนื้อสำหรับใช้ทุกวัน ลองดูตัวนี้เป็นอีกตัวเลือกได้ค่ะ',task:'ตัด IMG_1983.MOV เป็นคลิปใหม่ 8–15 วิ'},
-  {date:'2026-10-21',key:'sun',status:'edit',file:['16VmsrO_vAbNf5N42J39vaG_t41tD-CF4','IMG_1980.MOV'],caption:'SIRIRAJ Tinted Physical Sunscreen สีเนื้อ SPF 50+ PA++++ ขนาด 30 กรัม ใช้ง่ายและพกสะดวกค่ะ',task:'ตัด IMG_1980.MOV เป็นคลิป Product Detail ใหม่'}
+  {date:'2026-10-10',key:'chair',status:'ready',file:['1AYfRABxoeMq-7Huydwm624OK4YYEtU6X','ป๋าเคน Flow 3.mp4'],caption:'นั่งนานแล้วขาตึง ลองมายืนยืดกับเก้าอี้มหัศจรรย์คุณตาแสวงครับ ใช้ง่าย ขนาดไม่ใหญ่ เหมาะไว้ใช้ทั้งที่บ้านและออฟฟิศ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-11',key:'sun',status:'ready',file:['1Q1jISGXXiaL7kACbbldZEfpvWyg2tKAT','ป๋าเคน5.mp4'],caption:'กันแดดศิริราช Tinted Physical Sunscreen สีเนื้อ SPF 50+ PA++++ ใช้ง่ายในชีวิตประจำวัน ใครกำลังหากันแดดไว้ใช้ทุกวันลองดูตัวนี้ครับ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-12',key:'chair',status:'ready',file:['1rSKlxa6sBkpfHYM1gEi9Luu1NF1QrwgS','ป๋าเคน Flow 2.mp4'],caption:'ใครนั่งทำงานหรือยืนนาน ลองมีแท่นยืนยืดเส้นคุณตาแสวงไว้ใกล้ตัวครับ ใช้งานง่ายและขนาดไม่กินพื้นที่',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-13',key:'sun',status:'ready',file:['1j_ReiAU2-XPJcaNGimH7-VjMJstDd_-g','ป๋าเคน2.mp4'],caption:'SIRIRAJ Tinted Physical Sunscreen เป็นกันแดดสีเนื้อ SPF 50+ PA++++ เหมาะกับการหยิบใช้ในชีวิตประจำวันครับ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-14',key:'chair',status:'ready',file:['1gdh5EhWRYxnyOBlDRPvopdfqhOmp4VcV','ป๋าเคน Flow1.mp4'],caption:'นั่งหน้าคอมนาน ๆ แล้วอยากลุกมายืดระหว่างวัน ลองดูเก้าอี้มหัศจรรย์คุณตาแสวงตัวนี้ครับ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-15',key:'sun',status:'ready',file:['1nr7k_BeDTnAOpQrXEm5bAmHcvJw_zpvb','ป๋าเคน 4.mp4'],caption:'ใครกำลังหากันแดดสีเนื้อไว้ใช้ทุกวัน กันแดดศิริราช SPF 50+ PA++++ เป็นอีกตัวเลือกที่น่าสนใจครับ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-16',key:'chair',status:'ready',file:['1BbhpHRMS3QBT1dtsQFTwgsSaERCUAYyl','ป๋าเคน Meta 1.mp4'],caption:'เก้าอี้มหัศจรรย์คุณตาแสวง หรือแท่นยืนยืดเส้น ขนาดกะทัดรัด ใช้งานง่ายทั้งที่บ้านและออฟฟิศครับ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-17',key:'sun',status:'ready',file:['19oCkjsX5IGhDMjurluH1Wbw9UHHPxxjh','ป๋าเคน3.mp4'],caption:'กันแดดศิริราชสีเนื้อ ใช้ง่ายในทุกวัน พร้อม SPF 50+ PA++++ ใครกำลังเลือกกันแดดลองดูรายละเอียดตัวนี้ครับ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-18',key:'chair',status:'ready',file:['129YPx4BrcQLgbHQKEOZoQZNxd-ONpK59','ป๋าเคน Meta 2.mp4'],caption:'ใครอยากมีอุปกรณ์ไว้ยืดเหยียดระหว่างวัน ลองดูแท่นยืนยืดเส้นคุณตาแสวงครับ ขนาดไม่ใหญ่และเก็บง่าย',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-19',key:'sun',status:'ready',file:['1c8_lkBP_Jsg_fAS0ALCIQl58M28oxZE_','ป๋าเคน ๅ.mp4'],caption:'กันแดดศิริราช Tinted Physical Sunscreen สีเนื้อ SPF 50+ PA++++ สำหรับใครที่อยากได้กันแดดใช้ง่ายในทุกวันครับ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-20',key:'sun',status:'ready',file:['1y21uR6Em6rUMaBlpvLmQ5KmVXY65q_8i','น้องเมย์.mp4'],caption:'ออกแดดบ่อยก็ต้องมีกันแดดติดไว้ ☀️ กันแดดศิริราชสีเนื้อ SPF 50+ PA++++ ใช้ง่ายในทุกวันค่ะ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-21',key:'sun',status:'ready',file:['1rcZ-_yfSPZixqFletGNUHSc6G5DhGGK3','Woman_presenting_sunscreen_bottle_20261009133712.mp4'],caption:'กันแดดศิริราชสีเนื้อ Physical Sunscreen SPF 50+ PA++++ ใครชอบกันแดดสีเนื้อลองดูตัวนี้ค่ะ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-22',key:'sun',status:'ready',file:['1Ey7ghLaTKyc6LrNkDJLQ3z8Zn92HmisF','Woman_holding_sunscreen_at_market_20261009155605.mp4'],caption:'แดดแรงแบบนี้ ☀️ กันแดดศิริราชสีเนื้อ SPF 50+ PA++++ เป็นอีกตัวเลือกสำหรับใช้ในชีวิตประจำวันค่ะ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-23',key:'sun',status:'ready',file:['1M-C0IqECI6W4TAk_mGUqJwr4jM4lgOHs','Hand_holding_sunscreen_bottle_20261009152335.mp4'],caption:'ดูตัวสินค้าชัด ๆ ค่ะ SIRIRAJ Tinted Physical Sunscreen สีเนื้อ SPF 50+ PA++++ ขนาด 30 กรัม',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'},
+  {date:'2026-10-24',key:'sun',status:'ready',file:['1t7jMpP3cB6e4LLveNd8K9KpAf7OHCS6M','Woman_holding_sunscreen_bottle_20261009145232.mp4'],caption:'ใครกำลังหากันแดดสีเนื้อสำหรับใช้ทุกวัน ลองดู SIRIRAJ Tinted Physical Sunscreen เป็นอีกตัวเลือกได้ค่ะ',task:'พร้อมโพสต์ · ใช้คลิปเดียวกันลง TikTok และ Shopee'}
 ];
 
 const schedule = salesPlan.map((x,i)=>({
@@ -283,10 +268,7 @@ function renderInventory(){
         <h3>${escapeHtml(p.name)}</h3>
         <div class="inventory-note">${escapeHtml(x.note)}</div>
         <div class="inventory-counts">
-          <span class="badge-ready">พร้อมโพสต์ ${x.ready}</span>
-          <span class="badge-review">เช็กก่อนโพสต์ ${x.review}</span>
-          <span class="badge-edit">ต้องตัด ${x.edit}</span>
-          <span class="badge-posted">โพสต์แล้ว ${x.posted||0}</span>
+          <span class="badge-ready">พร้อมในโฟลเดอร์ ${x.ready} คลิป</span>
         </div>
         <div class="actions"><a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a></div>
       </article>`;
@@ -402,7 +384,7 @@ function render(){
           <div class="platform-status shopee">Shopee: ${done[x.id]?.shopee?'โพสต์แล้ว':'รอโพสต์'}</div>
         </div>`:''}
 
-        <div class="taskbox ${status==='edit'?'edit':''}"><b>${status==='edit'?'งานที่ต้องทำก่อนโพสต์':'QA ก่อนโพสต์'}:</b> ${escapeHtml(x.task)}</div>
+        <div class="taskbox"><b>แผนวันนี้:</b> ${escapeHtml(x.task)}</div>
 
         ${x.caption?`<div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
         <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>`:''}
