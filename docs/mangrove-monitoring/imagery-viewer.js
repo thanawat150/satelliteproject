@@ -43,7 +43,7 @@ function showError(s){if(!active.holder)return;active.holder.innerHTML='<div cla
 function indexStatBrief(item,mode){
  if(!['ndvi','ndre','ndmi','mndwi','ndwi','bsi'].includes(mode))return '';
  const st=item?.index_stats?.[mode],v=item?.index_parity?.[mode];
- if(!st)return '<div class="img-index-brief">'+(item?.preview_kind==='VISUAL_ONLY_NON_QA'?'ไม่มีดัชนี: วันภาพนี้ไม่ผ่าน QA':'รอผลตรวจดัชนีจาก TIFF รายพิกเซล')+'</div>';
+ if(!st)return '<div class="img-index-brief">'+(item?.preview_kind==='VISUAL_ONLY_NON_QA'?'ภาพดัชนีจาก TIFF ต้นฉบับ • <b>ไม่ผ่าน QA</b> ไม่ใช้คำนวณผลกระทบ':'รอผลตรวจดัชนีจาก TIFF รายพิกเซล')+'</div>';
  const fmt=x=>x==null?'—':Number(x).toFixed(4);
  return '<div class="img-index-brief" data-index-stat="'+esc(mode)+'"><b>เฉลี่ยในขอบเขต '+fmt(st.plot_mean)+'</b> · ต่ำสุด '+fmt(st.plot_min)+' · สูงสุด '+fmt(st.plot_max)+' · '+esc(st.sample_pixels)+' พิกเซล (20 ม.)'+
  (v?'<div>รายงานเดิม '+fmt(v.published_mean)+' · ส่วนต่าง '+fmt(v.difference)+' '+(v.within_0_03?'✓ ตรงกัน':'⚠ ตรวจเพิ่ม')+'</div>':'')+
@@ -148,7 +148,7 @@ function allDateGallery(items,byDate,modes){
  for(const item of [...items].reverse()){
   const layers=byDate.get(item.date)||{};
   const count=modes.filter(mode=>layers[mode]).length;
-  out+='<article class="img-history-date-card" data-history-date="'+esc(item.date)+'"><div class="img-history-meta"><div class="img-history-date"><b>'+esc(item.date)+'</b> '+statusPill(item.date)+' <span class="img-history-count">'+count+' / '+(item.preview_kind==='VISUAL_ONLY_NON_QA'?'2 ภาพสี (ไม่ผ่าน QA)':'8 ภาพ')+'</span></div>'+
+  out+='<article class="img-history-date-card" data-history-date="'+esc(item.date)+'"><div class="img-history-meta"><div class="img-history-date"><b>'+esc(item.date)+'</b> '+statusPill(item.date)+' <span class="img-history-count">'+count+' / '+(item.preview_kind==='VISUAL_ONLY_NON_QA'?'8 ภาพจาก TIFF (ไม่ผ่าน QA)':'8 ภาพ')+'</span></div>'+
    '<button type="button" class="img-history-select" data-image-jump="'+esc(item.date)+'">เลือกดูวันที่นี้บนแผนที่</button></div>';
   if(!count){
    out+='<div class="notice img-missing">วันที่นี้ยังไม่มี Raster Preview ('+esc(qa(item.date).label)+') ไม่สร้างภาพแทนจากแหล่งอื่น</div>';
@@ -172,7 +172,7 @@ const a=byDate.get(active.date)||{},b=byDate.get(active.before)||{};
 const sourceRows=active.rows.filter(x=>x.date===active.date);
 const srcMeta=sourceRows[0];
 const nav=items.length?'<label>วันภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label><label>ภาพดัชนี / สี<select id="image-mode">'+modeOptions(active.mode)+'</select></label><label>Opacity ภาพ<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label><label class="img-boundary-control"><input type="checkbox" id="image-boundary-toggle" '+(active.boundaryVisible?'checked':'')+'> ขอบเขตแปลง</label><a class="img-history-link" href="#img-all-dates">ดูภาพทุกวัน + ทุกดัชนี ↓</a>':'';
-const visualOnly=target?.preview_kind==='VISUAL_ONLY_NON_QA'?'<div class="notice img-missing"><b>ภาพสีจริงจาก TIFF ต้นฉบับ (ไม่ผ่าน QA):</b> ใช้ดูเมฆ น้ำ และสภาพวันถ่ายภาพเท่านั้น • ไม่มีดัชนีหรือ Change Detection ที่ใช้รับรองได้สำหรับวันนี้</div>':'';
+const visualOnly=target?.preview_kind==='VISUAL_ONLY_NON_QA'?'<div class="notice img-missing"><b>ภาพทั้งหมดจาก TIFF ต้นฉบับ (ไม่ผ่าน QA):</b> สีจริง สีเท็จ และดัชนีที่แสดงเป็นภาพคำนวณเพื่อดูประกอบเท่านั้น อาจมีเมฆ/หมอกปะปน • ไม่มีสถิติดัชนีหรือ Change Detection ที่ผ่านการรับรองสำหรับวันนี้</div>':'';
 const validQaRows=active.rows.filter(x=>x.analysis_status==='AUTO_VALID');
 const previewDates=new Set(items.filter(x=>x.source!=='missing').map(x=>x.date));
 const missingQa=validQaRows.filter(x=>!previewDates.has(x.date));
