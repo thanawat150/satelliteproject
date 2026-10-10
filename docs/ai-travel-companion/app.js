@@ -7,11 +7,13 @@ var CITIES=[
 ['เขาตะเกียบ','ธรรมชาติ','ชมบรรยากาศชายฝั่งและวิวเมือง','⛰️'],
 ['อุทยานราชภักดิ์','วัฒนธรรม','ชมอนุสาวรีย์และพื้นที่ประวัติศาสตร์','🏛️'],
 ['อ่างเก็บน้ำเขาเต่า','ธรรมชาติ','วิวอ่างเก็บน้ำและทิวเขา','🌿'],
-['ตลาดโต้รุ่งหัวหิน','ครอบครัว','สำรวจอาหารท้องถิ่น ตรวจวันเวลาเปิด','🍜']]},
+['ตลาดโต้รุ่งหัวหิน','ครอบครัว','สำรวจอาหารท้องถิ่น ตรวจวันเวลาเปิด','🍜'],
+['Memory House Cafe Hua Hin','คาเฟ่','คาเฟ่และมุมถ่ายรูป ตรวจเวลาบริการ','☕']]},
 {name:'ปราณบุรี',aliases:['pranburi','ปากน้ำปราณ'],lat:12.39,lng:99.93,places:[
 ['วนอุทยานปราณบุรี','ธรรมชาติ','เส้นทางศึกษาป่าชายเลน ตรวจสภาพทางเดิน','🌳'],
 ['หาดเขากะโหลก','ทะเล','หาดทรายและภูเขาหินปูน','🏝️'],
 ['ปากน้ำปราณ','ทะเล','เดินเล่นริมชายฝั่งและชุมชนประมง','🐚'],
+['Eureka Beach Cafe','คาเฟ่','คาเฟ่ริมทะเลแถวปราณบุรี ตรวจเวลาบริการ','☕'],
 ['อ่างเก็บน้ำปราณบุรี','ธรรมชาติ','แวะชมวิวอ่างเก็บน้ำ','💧']]},
 {name:'สามร้อยยอด',aliases:['sam roi yot','เขาสามร้อยยอด'],lat:12.21,lng:99.96,places:[
 ['บึงบัวสามร้อยยอด','ธรรมชาติ','สะพานไม้และพื้นที่ชุ่มน้ำ ตรวจเวลาเปิด','🌿'],
@@ -139,6 +141,7 @@ function cityPlaces(city,input,used){
 function makeTrip(input){
  var cities=input.destinations.slice();
  if(norm(input.end)!==norm(cities[cities.length-1]))cities.push(input.end);
+ if(cities.length>input.days)throw Error('จำนวนวันไม่เพียงพอสำหรับ '+cities.length+' เมือง กรุณาเพิ่มจำนวนวันหรือลดเมืองที่ต้องการไป');
  var used=new Set(),days=[],unknown=[],prev=input.origin;
  cities.forEach(function(c){if(!findCity(c)&&unknown.indexOf(c)<0)unknown.push(c);});
  if(!findCity(input.origin))unknown.push(input.origin);
@@ -316,7 +319,7 @@ function revise(){
 function addPoi(city,title){
  var p=findPlace(city,title);if(!p||!state.trip)return;
  var day=state.trip.days[state.day];
- if(day.stops.some(function(s){return s.title===title;})){warn('มีจุดนี้อยู่ในวันที่เลือกแล้ว');return;}
+ if(day.stops.some(function(s){return s.title===title;})){setTab('plan');warn('มีจุดนี้อยู่ในวันที่เลือกแล้ว');return;}
  var item=Object.assign({},p,{kind:'poi',time:'เลือกเวลาเอง'});
  day.stops.push(item);setTab('plan');warn('เพิ่ม '+title+' ในวันที่ '+(state.day+1)+' แล้ว');
 }
