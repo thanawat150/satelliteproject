@@ -1,25 +1,9 @@
 const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+const userId = process.env.LINE_USER_ID;
 
 async function run() {
-  if (!token) {
-    console.log('ONE_SHOT_LINE_TEST_SKIPPED missing token');
-    return;
-  }
-
-  const followersRes = await fetch('https://api.line.me/v2/bot/followers/ids?limit=1000', {
-    headers: { Authorization: 'Bearer ' + token }
-  });
-  const followersText = await followersRes.text();
-  if (!followersRes.ok) {
-    console.log('ONE_SHOT_LINE_TEST_SKIPPED follower lookup unavailable ' + followersRes.status);
-    return;
-  }
-
-  let data = {};
-  try { data = followersText ? JSON.parse(followersText) : {}; } catch {}
-  const ids = Array.isArray(data.userIds) ? data.userIds : [];
-  if (ids.length !== 1) {
-    console.log('ONE_SHOT_LINE_TEST_SKIPPED safe recipient count=' + ids.length);
+  if (!token || !userId) {
+    console.log('ONE_SHOT_LINE_TEST_SKIPPED missing LINE env');
     return;
   }
 
@@ -30,7 +14,7 @@ async function run() {
       Authorization: 'Bearer ' + token
     },
     body: JSON.stringify({
-      to: ids[0],
+      to: userId,
       messages: [
         { type:'text', text:'https://drive.google.com/uc?export=download&id=1AYfRABxoeMq-7Huydwm624OK4YYEtU6X' },
         { type:'text', text:'TikTok + Shopee' },
@@ -39,8 +23,9 @@ async function run() {
     })
   });
 
+  const body = await r.text();
   if (r.ok) console.log('ONE_SHOT_LINE_TEST_SENT');
-  else console.log('ONE_SHOT_LINE_TEST_FAILED ' + r.status);
+  else console.log('ONE_SHOT_LINE_TEST_FAILED ' + r.status + ' ' + body);
 }
 
-run().catch(e => console.log('ONE_SHOT_LINE_TEST_SKIPPED ' + e.message));
+run().catch(e => console.log('ONE_SHOT_LINE_TEST_FAILED ' + e.message));
