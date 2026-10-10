@@ -188,6 +188,56 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
   .side-btn{width:auto;min-width:max-content;margin:0;padding:8px 10px}
   body.has-sidebar .shell{margin:0 auto;max-width:1160px}
 }
+
+.command-center{
+  background:linear-gradient(135deg,#0f172a,#172554);color:#fff;border-radius:24px;
+  padding:20px;box-shadow:0 20px 55px rgba(15,23,42,.16)
+}
+.command-grid{display:grid;grid-template-columns:1.35fr .85fr .9fr;gap:14px}
+.command-panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:15px}
+.command-label{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#93c5fd;text-transform:uppercase}
+.command-product{font-size:22px;font-weight:800;margin:4px 0 2px}
+.command-file{font-size:12px;color:#cbd5e1;word-break:break-word}
+.command-why{margin-top:12px;font-size:12px;color:#dbeafe;background:rgba(37,99,235,.18);padding:10px 11px;border-radius:12px}
+.command-platform{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border-radius:13px;background:rgba(255,255,255,.08);margin-top:8px}
+.command-platform strong{display:block;font-size:13px}.command-platform span{font-size:11px;color:#cbd5e1}
+.command-platform .done{color:#6ee7b7}.command-platform .wait{color:#fde68a}
+.command-actions{display:grid;gap:8px;margin-top:9px}
+.command-actions .btn{width:100%}
+.command-center .btn-secondary{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.14);color:#fff}
+.command-center .btn-secondary:hover{background:rgba(255,255,255,.16)}
+.command-center .btn-primary{background:#fff;color:#172033}
+.command-center .btn-primary:hover{background:#f1f5f9}
+.command-progress{margin-top:12px}
+.command-progress-track{height:7px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+.command-progress-fill{height:100%;background:#34d399;border-radius:999px}
+.command-progress-text{font-size:11px;color:#cbd5e1;margin-top:5px}
+
+.creative-card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.creative-top{display:grid;grid-template-columns:1.05fr 1fr;gap:0}
+.creative-summary{padding:18px;border-right:1px solid var(--line)}
+.creative-summary h3{margin:4px 0 6px;font-size:20px}
+.creative-summary p{margin:0;color:var(--muted);font-size:12px}
+.creative-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.creative-tag{font-size:11px;font-weight:800;padding:6px 9px;border-radius:999px;background:#eef2ff;color:#3346a0}
+.creative-edit{padding:18px}
+.creative-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.creative-field label{display:block;font-size:10px;font-weight:800;color:var(--muted);margin-bottom:5px;letter-spacing:.5px}
+.creative-field select,.creative-field input{
+  width:100%;border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 10px;color:var(--ink)
+}
+.creative-insight{margin:0 18px 18px;padding:14px;border-radius:14px;background:#f8faff;border:1px solid #e5eaf4}
+.creative-insight strong{display:block;margin-bottom:4px}
+.creative-insight p{margin:0;font-size:12px;color:#5d6b82;line-height:1.55}
+.creative-save{margin-top:11px}
+@media(max-width:820px){
+  .command-grid{grid-template-columns:1fr}
+  .creative-top{grid-template-columns:1fr}
+  .creative-summary{border-right:0;border-bottom:1px solid var(--line)}
+}
+@media(max-width:560px){
+  .creative-form{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body class="has-sidebar">
@@ -234,6 +284,8 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
   </div>
 
   <div class="side-divider"></div>
+  <span class="side-link" data-jump="commandSection">⚡ Today Command</span>
+  <span class="side-link" data-jump="creativeSection">🧠 Creative Intelligence</span>
   <span class="side-link" data-jump="calendarSection">📅 ปฏิทิน</span>
   <span class="side-link" data-jump="affiliateSection">🛒 คลิปขายวันนี้</span>
   <span class="side-link" data-jump="scheduledSection">🗓️ คลิปตั้งเวลา</span>
@@ -259,6 +311,22 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
     <div class="metric"><span>โพสต์ครบ TikTok + Shopee</span><strong id="doneCount">0</strong></div>
     <div class="metric"><span>ตั้งเวลา Metricool</span><strong id="scheduledCount">0</strong></div>
     <div class="metric"><span>ต้องโพสต์เอง / Error</span><strong id="errorCount">0</strong></div>
+  </section>
+
+  <section id="commandSection">
+    <div class="section-head">
+      <div><div class="kicker">TODAY COMMAND CENTER</div><h2>วันนี้ต้องทำอะไร</h2></div>
+      <span class="snapshot" id="commandDate">วันนี้</span>
+    </div>
+    <div class="command-center" id="commandCenter"></div>
+  </section>
+
+  <section id="creativeSection">
+    <div class="section-head">
+      <div><div class="kicker">CREATIVE INTELLIGENCE</div><h2>โปรไฟล์ครีเอทีฟของคลิปวันนี้</h2></div>
+      <span class="snapshot">ไม่ต้องเชื่อมระบบเพิ่ม</span>
+    </div>
+    <div class="creative-card" id="creativeCard"></div>
   </section>
 
   <section id="calendarSection">
@@ -318,6 +386,7 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
 const START = new Date('2026-10-10T00:00:00+07:00');
 const DAYS = 60;
 const STORE_KEY = 'affiliate-daily-post-platform-status-v2';
+const CREATIVE_STORE_KEY = 'affiliate-creative-intelligence-v1';
 
 const READY_FOLDER='https://drive.google.com/drive/folders/1kY02WlyrCcv9q13HKn2LcArrpLGGckM4';
 
@@ -386,6 +455,7 @@ const schedule = salesPlan.map((x,i)=>({
 }));
 let range='today';
 let done=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+let creativeData=JSON.parse(localStorage.getItem(CREATIVE_STORE_KEY)||'{}');
 let calendarCursor=new Date('2026-10-01T00:00:00+07:00');
 let metricoolNetworkFilter='all';
 
@@ -400,6 +470,134 @@ async function copyText(text,msg){
 }
 
 
+function todayPlan(){
+  return schedule.find(x=>iso(x.date)===todayISO()) || null;
+}
+function postTextFor(x){
+  if(!x) return '';
+  const p=x.product;
+  return (x.caption ? x.caption+'\n\n'+p.hashtags : p.hashtags).trim();
+}
+function renderCommandCenter(){
+  const el=document.getElementById('commandCenter');
+  if(!el) return;
+  const x=todayPlan();
+  const dateEl=document.getElementById('commandDate');
+  if(dateEl) dateEl.textContent=new Intl.DateTimeFormat('th-TH',{weekday:'long',day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Bangkok'}).format(new Date());
+  if(!x){
+    el.innerHTML='<div class="empty" style="background:transparent;border-color:rgba(255,255,255,.12);color:#cbd5e1">ยังไม่มีคลิป Affiliate สำหรับวันนี้</div>';
+    return;
+  }
+  const p=x.product, st=done[x.id]||{};
+  const completeCount=(st.shopee?1:0)+(st.tiktok?1:0);
+  const pct=completeCount*50;
+  const download='https://drive.google.com/uc?export=download&id='+encodeURIComponent(x.file[0]);
+  const all=postTextFor(x);
+  el.innerHTML=`
+    <div class="command-grid">
+      <div class="command-panel">
+        <div class="command-label">คลิปขายวันนี้</div>
+        <div class="command-product">${escapeHtml(p.name)}</div>
+        <div class="command-file">${escapeHtml(x.file[1])}</div>
+        <div class="command-why"><b>เหตุผลที่อยู่ในคิว:</b> อยู่ในโฟลเดอร์ “พร้อม” และเป็นคลิปที่ระบบกำหนดให้ใช้วันนี้</div>
+        <div class="command-progress">
+          <div class="command-progress-track"><div class="command-progress-fill" style="width:${pct}%"></div></div>
+          <div class="command-progress-text">โพสต์แล้ว ${completeCount}/2 แพลตฟอร์ม</div>
+        </div>
+      </div>
+      <div class="command-panel">
+        <div class="command-label">แพลตฟอร์ม</div>
+        <div class="command-platform">
+          <div><strong>Shopee Video</strong><span>${escapeHtml(p.shopee)} น.</span></div>
+          <b class="${st.shopee?'done':'wait'}">${st.shopee?'✓ แล้ว':'รอโพสต์'}</b>
+        </div>
+        <div class="command-platform">
+          <div><strong>TikTok Affiliate</strong><span>${escapeHtml(p.tiktok)} น.</span></div>
+          <b class="${st.tiktok?'done':'wait'}">${st.tiktok?'✓ แล้ว':'รอโพสต์'}</b>
+        </div>
+      </div>
+      <div class="command-panel">
+        <div class="command-label">Quick Actions</div>
+        <div class="command-actions">
+          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">⬇ ดาวน์โหลดคลิป</a>
+          <button class="btn btn-secondary" data-command-copy="${encodeURIComponent(all)}">📋 Copy Caption + #</button>
+          <a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">📁 เปิดโฟลเดอร์พร้อม</a>
+        </div>
+      </div>
+    </div>`;
+  el.querySelector('[data-command-copy]')?.addEventListener('click',e=>copyText(decodeURIComponent(e.currentTarget.dataset.commandCopy),'คัดลอกพร้อมโพสต์แล้ว'));
+}
+function autoCreativeProfile(x){
+  if(!x) return {};
+  const name=(x.file?.[1]||'').toLowerCase();
+  const key=x.product?.key;
+  let character='ไม่ระบุ', format='Presenter / UGC', hook='Product Need', angle='Product Focus';
+  if(name.includes('ป๋าเคน')) character='ป๋าเคน';
+  else if(name.includes('น้องเมย์')) character='น้องเมย์';
+  else if(name.includes('woman')) character='AI Female Presenter';
+  else if(name.includes('hand')) {character='Product Only';format='Product Focus';}
+  if(name.includes('flow')) {format='AI UGC / Flow'; hook='Pain Point'; angle='Problem → Solution';}
+  if(name.includes('meta')) {format='AI UGC / Meta'; hook='Pain Point'; angle='Problem → Solution';}
+  if(key==='chair' && !name.includes('flow') && !name.includes('meta')) {hook='Pain Point';angle='Demo / Use Case';}
+  if(key==='sun') {hook='Product Need';angle=name.includes('hand')?'Product Detail':'Product Focus';}
+  return {hook,angle,format,character,cta:'ดูรายละเอียด / ตะกร้า',status:'Test'};
+}
+function creativeOptions(value, arr){
+  return arr.map(v=>`<option value="${escapeHtml(v)}" ${v===value?'selected':''}>${escapeHtml(v)}</option>`).join('');
+}
+function nextCreativeSuggestion(profile){
+  if(!profile || !profile.format) return 'เริ่มจากกำหนด Hook, Angle และ Format ให้คลิปก่อน';
+  if(/Presenter|UGC/.test(profile.format)) return 'คลิปถัดไปควรลอง Demo หรือ Product Focus เพื่อไม่ให้ฟีดมีแต่คนพูดหน้ากล้อง';
+  if(/Product Focus/.test(profile.format)) return 'คลิปถัดไปควรลอง Problem → Solution หรือ Demo การใช้งาน เพื่อเพิ่มบริบทก่อนขาย';
+  if(/Demo/.test(profile.format)) return 'คลิปถัดไปควรลอง Hook แบบ Curiosity หรือ Lifestyle เพื่อทดสอบวิธีเปิดเรื่องที่ต่างออกไป';
+  return 'รักษาสินค้าเดิมได้ แต่ควรเปลี่ยน Hook หรือ Angle ในคลิปถัดไปเพื่อเพิ่มความหลากหลาย';
+}
+function renderCreativeIntelligence(){
+  const el=document.getElementById('creativeCard');
+  if(!el) return;
+  const x=todayPlan();
+  if(!x){
+    el.innerHTML='<div class="empty">ยังไม่มีคลิปวันนี้ให้วิเคราะห์ Creative</div>';
+    return;
+  }
+  const fid=x.file[0];
+  const base=autoCreativeProfile(x);
+  const saved=creativeData[fid]||{};
+  const p={...base,...saved};
+  const tags=[p.hook,p.angle,p.format,p.character,p.status].filter(Boolean);
+  el.innerHTML=`
+    <div class="creative-top">
+      <div class="creative-summary">
+        <div class="command-label" style="color:#2563eb">TODAY'S CREATIVE</div>
+        <h3>${escapeHtml(x.product.name)}</h3>
+        <p>${escapeHtml(x.file[1])}</p>
+        <div class="creative-tags">${tags.map(t=>`<span class="creative-tag">${escapeHtml(t)}</span>`).join('')}</div>
+      </div>
+      <div class="creative-edit">
+        <div class="creative-form">
+          <div class="creative-field"><label>HOOK</label><select data-creative="hook">${creativeOptions(p.hook,['Pain Point','Curiosity','Product Need','Result','Question','Direct Offer'])}</select></div>
+          <div class="creative-field"><label>ANGLE</label><select data-creative="angle">${creativeOptions(p.angle,['Problem → Solution','Demo / Use Case','Product Focus','Lifestyle','Feature','Review / Testimonial','Comparison'])}</select></div>
+          <div class="creative-field"><label>FORMAT</label><select data-creative="format">${creativeOptions(p.format,['Presenter / UGC','AI UGC / Flow','AI UGC / Meta','Demo','Product Focus','Lifestyle'])}</select></div>
+          <div class="creative-field"><label>CHARACTER</label><select data-creative="character">${creativeOptions(p.character,['ป๋าเคน','น้องเมย์','AI Female Presenter','Product Only','ไม่ระบุ'])}</select></div>
+          <div class="creative-field"><label>CTA</label><select data-creative="cta">${creativeOptions(p.cta,['ดูรายละเอียด / ตะกร้า','กดดูสินค้า','ลองดูตัวนี้','เช็กโปรในตะกร้า','Soft CTA'])}</select></div>
+          <div class="creative-field"><label>CREATIVE STATUS</label><select data-creative="status">${creativeOptions(p.status,['New','Test','Winner','Retest','Retired'])}</select></div>
+        </div>
+        <button class="btn btn-primary creative-save" id="saveCreative">บันทึก Creative Profile</button>
+      </div>
+    </div>
+    <div class="creative-insight">
+      <strong>คำแนะนำ Creative Mix</strong>
+      <p>${escapeHtml(nextCreativeSuggestion(p))} <b>หมายเหตุ:</b> นี่เป็นคำแนะนำเพื่อกระจายรูปแบบคอนเทนต์ ยังไม่ใช่ผลวิเคราะห์ยอดขาย เพราะเราไม่ได้เชื่อมข้อมูลรายได้/Conversion</p>
+    </div>`;
+  document.getElementById('saveCreative')?.addEventListener('click',()=>{
+    const next={};
+    el.querySelectorAll('[data-creative]').forEach(s=>next[s.dataset.creative]=s.value);
+    creativeData[fid]=next;
+    localStorage.setItem(CREATIVE_STORE_KEY,JSON.stringify(creativeData));
+    toast('บันทึก Creative Profile แล้ว');
+    renderCreativeIntelligence();
+  });
+}
 function productShort(key){
   return key==='chair'?'เก้าอี้คุณตาแสวง':key==='sun'?'กันแดดศิริราช':'สินค้า';
 }
@@ -559,6 +757,8 @@ function visibleRows(){
   return schedule.slice(start,start+30);
 }
 function render(){
+  renderCommandCenter();
+  renderCreativeIntelligence();
   renderCalendar();
   renderInventory();
   const srows=scheduledRows();
