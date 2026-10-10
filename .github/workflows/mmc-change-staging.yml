@@ -1,0 +1,61 @@
+name: MMC Change Detection Staging (No Publish)
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/mmc_change_staging.py"
+      - ".github/workflows/mmc-change-staging.yml"
+  workflow_dispatch:
+    inputs:
+      plots:
+        description: "Space-separated plot codes"
+        required: false
+        default: "66-STC 70-STC 15-STC"
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: mmc-change-staging
+  cancel-in-progress: false
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 105
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install source TIFF analysis dependencies
+        run: python -m pip install numpy rasterio shapely pyproj pillow "gdown==6.4.2"
+      - name: Run regression tests on clipped change
+        run: python scripts/test_mmc_clipped_change.py
+      - name: Run read-only original TIFF staging
+        env:
+          PLOT_IDS: ${{ inputs.plots || '66-STC 70-STC 15-STC' }}
+        run: |
+          python scripts/mmc_change_staging.py \
+            --plots $PLOT_IDS \
+            --max-dates 3 \
+            --output work/mmc-change-staging
+      - name: Validate no-result-publishing contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("work/mmc-change-staging/staging_report.json")
+          r=json.loads(p.read_text())
+          assert r["publish_allowed"] is False
+          assert r["pass_for_publication"] is False
+          assert r["pairs_downloaded"]>0
+          assert len(r["plot_results"])>0
+          print("STAGING_VALIDATED",r["pairs_downloaded"],r["comparison_count"],len(r["errors"]))
+          PY
+          git diff --exit-code -- docs/data/nationwide
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mmc-change-staging-qa
+          path: work/mmc-change-staging/
+          if-no-files-found: warn
+          retention-days: 14
