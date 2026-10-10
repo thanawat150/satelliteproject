@@ -53,7 +53,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "100-VSD",
@@ -88,7 +88,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "100-VSD",
@@ -106,7 +106,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "100-VSD",
@@ -124,7 +124,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "102-VSD",
@@ -159,7 +159,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "102-VSD",
@@ -177,7 +177,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "102-VSD",
@@ -196,7 +196,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "13-STC",
@@ -262,7 +262,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "14(1)-STC",
@@ -280,7 +280,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "14(1)-STC",
@@ -298,7 +298,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "14-STC",
@@ -350,7 +350,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "14-STC",
@@ -434,7 +434,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "15-STC",
@@ -452,7 +452,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "15-STC",
@@ -520,7 +520,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "15-VSD",
@@ -586,7 +586,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "16-STC",
@@ -654,7 +654,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "16-VSD",
@@ -720,7 +720,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "17-STC",
@@ -786,7 +786,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "17-VSD",
@@ -854,7 +854,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "18(1)-STC",
@@ -920,7 +920,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "18-STC",
@@ -971,7 +971,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "18-VSD",
@@ -1006,7 +1006,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "19-STC",
@@ -1056,7 +1056,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "19-STC",
@@ -1109,7 +1109,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "19-VSD",
@@ -1127,7 +1127,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "19-VSD",
@@ -1145,7 +1145,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "2-VSD",
@@ -1179,7 +1179,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "20-STC",
@@ -1231,7 +1231,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "20-STC",
@@ -1301,7 +1301,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "21-STC",
@@ -1367,7 +1367,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "22(1)-STC",
@@ -1435,7 +1435,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "22-STC",
@@ -1485,7 +1485,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "22-VSD",
@@ -1503,7 +1503,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "22-VSD",
@@ -1553,7 +1553,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "23(1)-STC",
@@ -1571,7 +1571,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "23(1)-STC",
@@ -1589,7 +1589,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "23-STC",
@@ -1641,7 +1641,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "23-STC",
@@ -1659,7 +1659,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "23-VSD",
@@ -1693,7 +1693,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "23-VSD",
@@ -1711,7 +1711,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "23-VSD",
@@ -1777,7 +1777,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "25-VSD",
@@ -1861,7 +1861,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "27-VSD",
@@ -1943,7 +1943,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "28-VSD",
@@ -1978,7 +1978,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "28-VSD",
@@ -2031,7 +2031,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "29-STC",
@@ -2049,7 +2049,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "29-VSD",
@@ -2132,7 +2132,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "30-STC",
@@ -2189,7 +2189,7 @@
         "RGB_NEAR_WHITE",
         "SMALL_RGB_SAMPLE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "30-STC",
@@ -2208,7 +2208,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "SMALL_RGB_SAMPLE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "30-VSD",
@@ -2243,7 +2243,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "30-VSD",
@@ -2261,7 +2261,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "30-VSD",
@@ -2361,7 +2361,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "31-VSD",
@@ -2411,7 +2411,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "32-VSD",
@@ -2429,7 +2429,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "32-VSD",
@@ -2480,7 +2480,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "33-VSD",
@@ -2498,7 +2498,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "33-VSD",
@@ -2566,7 +2566,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "34-VSD",
@@ -2584,7 +2584,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "35-STC",
@@ -2618,7 +2618,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "35-STC",
@@ -2636,7 +2636,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "35-STC",
@@ -2687,7 +2687,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "35-VSD",
@@ -2705,7 +2705,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "35-VSD",
@@ -2787,7 +2787,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "36-VSD",
@@ -2837,7 +2837,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "37-STC",
@@ -2872,7 +2872,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "37-STC",
@@ -2890,7 +2890,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "37-STC",
@@ -2942,7 +2942,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "37-VSD",
@@ -2960,7 +2960,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "38-STC",
@@ -2994,7 +2994,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "38-STC",
@@ -3013,7 +3013,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "38-STC",
@@ -3031,7 +3031,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "38-VSD",
@@ -3069,7 +3069,7 @@
         "RGB_NEAR_WHITE",
         "SMALL_RGB_SAMPLE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "38-VSD",
@@ -3089,7 +3089,7 @@
         "RGB_NEAR_WHITE",
         "SMALL_RGB_SAMPLE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "38-VSD",
@@ -3126,7 +3126,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "39-STC",
@@ -3160,7 +3160,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "39-VSD",
@@ -3247,7 +3247,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "40-STC",
@@ -3281,7 +3281,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "40-STC",
@@ -3316,7 +3316,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "40-VSD",
@@ -3350,7 +3350,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "40-VSD",
@@ -3368,7 +3368,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "40-VSD",
@@ -3402,7 +3402,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "41-STC",
@@ -3420,7 +3420,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "41-STC",
@@ -3438,7 +3438,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "41-VSD",
@@ -3473,7 +3473,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "41-VSD",
@@ -3491,7 +3491,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "42-STC",
@@ -3509,7 +3509,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "42-STC",
@@ -3527,7 +3527,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "42-STC",
@@ -3545,7 +3545,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "42-VSD",
@@ -3579,7 +3579,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "42-VSD",
@@ -3613,7 +3613,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "43-STC",
@@ -3647,7 +3647,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "43-VSD",
@@ -3681,7 +3681,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "44-STC",
@@ -3700,7 +3700,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "44-STC",
@@ -3719,7 +3719,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "44-STC",
@@ -3737,7 +3737,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "44-VSD",
@@ -3771,7 +3771,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "44-VSD",
@@ -3822,7 +3822,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "45-STC",
@@ -3840,7 +3840,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "45-STC",
@@ -3858,7 +3858,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "46-STC",
@@ -3893,7 +3893,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "46-STC",
@@ -3927,7 +3927,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "47-STC",
@@ -3961,7 +3961,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "47-STC",
@@ -3979,7 +3979,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "48-STC",
@@ -4014,7 +4014,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "48-STC",
@@ -4033,7 +4033,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "48-STC",
@@ -4052,7 +4052,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "49-STC",
@@ -4071,7 +4071,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "49-STC",
@@ -4090,7 +4090,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "49-STC",
@@ -4108,7 +4108,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "5-VSD",
@@ -4145,7 +4145,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "50-STC",
@@ -4179,7 +4179,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "50-STC",
@@ -4198,7 +4198,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "50-STC",
@@ -4217,7 +4217,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "51-STC",
@@ -4251,7 +4251,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "51-STC",
@@ -4269,7 +4269,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "51-STC",
@@ -4287,7 +4287,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "52-STC",
@@ -4322,7 +4322,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "52-STC",
@@ -4340,7 +4340,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "52-STC",
@@ -4358,7 +4358,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "53-STC",
@@ -4392,7 +4392,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "53-STC",
@@ -4410,7 +4410,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "54-STC",
@@ -4444,7 +4444,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "54-STC",
@@ -4478,7 +4478,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "55-STC",
@@ -4513,7 +4513,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "55-STC",
@@ -4531,7 +4531,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "55-STC",
@@ -4549,7 +4549,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "59-STC",
@@ -4584,7 +4584,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "59-STC",
@@ -4602,7 +4602,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "59-STC",
@@ -4620,7 +4620,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "6-VSD",
@@ -4655,7 +4655,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "62-STC",
@@ -4690,7 +4690,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "62-STC",
@@ -4709,7 +4709,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "62-STC",
@@ -4744,7 +4744,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "63-STC",
@@ -4763,7 +4763,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "63-STC",
@@ -4814,7 +4814,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "64-STC",
@@ -4832,7 +4832,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "64-STC",
@@ -4883,7 +4883,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "65-STC",
@@ -4902,7 +4902,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "65-STC",
@@ -4953,7 +4953,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "66-STC",
@@ -4988,7 +4988,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "66-VSD",
@@ -5023,7 +5023,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "66-VSD",
@@ -5057,7 +5057,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "67-STC",
@@ -5091,7 +5091,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "67-STC",
@@ -5109,7 +5109,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "67-STC",
@@ -5127,7 +5127,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "68-STC",
@@ -5179,7 +5179,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "68-VSD",
@@ -5214,7 +5214,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "68-VSD",
@@ -5233,7 +5233,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "68-VSD",
@@ -5252,7 +5252,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "69-STC",
@@ -5334,7 +5334,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "69-VSD",
@@ -5353,7 +5353,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "7-VSD",
@@ -5423,7 +5423,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "70-STC",
@@ -5441,7 +5441,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "70-STC",
@@ -5459,7 +5459,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "70-VSD",
@@ -5494,7 +5494,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "70-VSD",
@@ -5512,7 +5512,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "70-VSD",
@@ -5531,7 +5531,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "71(1)-VSD",
@@ -5566,7 +5566,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "71(1)-VSD",
@@ -5585,7 +5585,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "71(1)-VSD",
@@ -5604,7 +5604,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "71-STC",
@@ -5654,7 +5654,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "71-STC",
@@ -5705,7 +5705,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "71-VSD",
@@ -5724,7 +5724,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "71-VSD",
@@ -5743,7 +5743,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "72-STC",
@@ -5793,7 +5793,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "72-STC",
@@ -5811,7 +5811,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "72-VSD",
@@ -5845,7 +5845,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "72-VSD",
@@ -5864,7 +5864,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "73-STC",
@@ -5898,7 +5898,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "73-STC",
@@ -5932,7 +5932,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "73-VSD",
@@ -5951,7 +5951,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "74-STC",
@@ -5985,7 +5985,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "74-VSD",
@@ -6020,7 +6020,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "74-VSD",
@@ -6038,7 +6038,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "74-VSD",
@@ -6057,7 +6057,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "75-STC",
@@ -6107,7 +6107,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "76-STC",
@@ -6158,7 +6158,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "77-STC",
@@ -6243,7 +6243,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "78-STC",
@@ -6293,7 +6293,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "79-STC",
@@ -6312,7 +6312,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "8-VSD",
@@ -6347,7 +6347,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "80-STC",
@@ -6382,7 +6382,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "80-STC",
@@ -6400,7 +6400,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "80-STC",
@@ -6419,7 +6419,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "81-STC",
@@ -6453,7 +6453,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "81-STC",
@@ -6504,7 +6504,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "85-VSD",
@@ -6522,7 +6522,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "85-VSD",
@@ -6541,7 +6541,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "86-VSD",
@@ -6576,7 +6576,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "86-VSD",
@@ -6595,7 +6595,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "86-VSD",
@@ -6614,7 +6614,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "87-VSD",
@@ -6664,7 +6664,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "87-VSD",
@@ -6683,7 +6683,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "88-STC",
@@ -6701,7 +6701,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "88-STC",
@@ -6720,7 +6720,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "88-VSD",
@@ -6754,7 +6754,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "88-VSD",
@@ -6788,7 +6788,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "89(1)-STC",
@@ -6806,7 +6806,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "89(1)-STC",
@@ -6825,7 +6825,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "89-STC",
@@ -6843,7 +6843,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "89-STC",
@@ -6862,7 +6862,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "89-VSD",
@@ -6928,7 +6928,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "90(1)-STC",
@@ -6946,7 +6946,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "90(1)-STC",
@@ -6965,7 +6965,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "90-STC",
@@ -6983,7 +6983,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "90-STC",
@@ -7002,7 +7002,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "90-VSD",
@@ -7037,7 +7037,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "91-STC",
@@ -7120,7 +7120,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "92-STC",
@@ -7251,7 +7251,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "93-STC",
@@ -7349,7 +7349,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "93-VSD",
@@ -7383,7 +7383,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "94-STC",
@@ -7465,7 +7465,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "94-VSD",
@@ -7499,7 +7499,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "95-STC",
@@ -7613,7 +7613,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "96-STC",
@@ -7812,7 +7812,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "97-VSD",
@@ -7831,7 +7831,7 @@
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
         "RGB_NEAR_WHITE"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "97-VSD",
@@ -7849,7 +7849,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "98-STC",
@@ -7931,7 +7931,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "98-VSD",
@@ -7965,7 +7965,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "99-VSD",
