@@ -271,11 +271,12 @@ const generalDecision=await page.evaluate(()=>{
 assert.equal(generalDecision.plots,19,'General monitoring report includes all 19 Rayong plots');
 assert.ok(generalDecision.first.includes('สรุปสถานการณ์')||generalDecision.first.includes('รายงานสถานภาพป่าชายเลน'),'Non-flood report must lead with a decision summary');
 assert.ok(generalDecision.first.includes('คำแนะนำสำหรับผู้บริหาร'),'Management summary must provide next steps rather than bare raster thumbnails');
+assert.ok(generalDecision.first.includes('NDVI เพิ่มร่วมกับ MNDWI ลด')&&generalDecision.first.includes('NDVI ลดร่วมกับ MNDWI เพิ่ม'),'The executive brief must explain mixed provincial trends instead of only listing the strongest numerical deltas');
 assert.ok(['NDVI','NDRE','NDMI','NDWI','MNDWI','BSI'].every(k=>generalDecision.all.includes(k)),'General monitoring report must interpret all six indices');
 assert.ok(!generalDecision.all.includes('Satellite Atlas'),'General monitoring must not become a 72-image atlas by default');
 assert.ok(generalDecision.total>=7&&generalDecision.total<=16,'General decision report should be compact: '+generalDecision.total);
 assert.ok(generalDecision.all.includes('นักลงทุน')&&generalDecision.all.includes('Auditor')&&generalDecision.all.includes('TIFF'),'Investor exposure and Audit evidence must be included');
-assert.ok(generalDecision.all.includes('วันที่ภาพก่อนหน้า')||generalDecision.all.includes('วันภาพก่อนหน้า'),'All findings must be tied to actual comparison dates');
+assert.ok(generalDecision.all.includes('ก่อนหน้า → ล่าสุดที่ผ่าน QA')||generalDecision.all.includes('ภาพก่อนหน้า'),'All findings must be tied to actual comparison dates');
 const generalMain=await page.evaluate(()=>window.MMCReportCopilot.renderPages('appendix'));
 assert.equal(generalMain.total,0,'General report appendix should be optional and empty by default');
 
