@@ -184,3 +184,9 @@ html{scroll-behavior:smooth}
 @media(max-width:380px){
  #water-daily-panel .hydro-kpis{grid-template-columns:1fr}
 }
+
+#time-series-panel .series-proof{border:1px solid #315847;background:#14332a;color:#bee3ca;border-radius:10px;padding:12px 14px;margin:11px 0;font-size:12px;line-height:1.7}
+#time-series-panel .series-source-table{border:1px solid #2e5142;border-radius:9px;margin:13px 0;overflow:hidden}
+#time-series-panel .series-source-table summary{padding:11px 14px;cursor:pointer;color:#c4e7d0;font-size:12px;font-weight:600}
+#time-series-panel .series-source-table .table-wrap{padding:0 10px 10px}
+#time-series-panel .series-source-table .tbl{font-variant-numeric:tabular-nums}
