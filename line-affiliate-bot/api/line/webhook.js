@@ -49,10 +49,20 @@ export async function POST(request) {
     if (userId) console.log('LINE_USER_ID_DISCOVERED', userId);
 
     if (event.replyToken && (event.type === 'follow' || event.type === 'message')) {
-      await reply(
-        event.replyToken,
-        'Ken Affiliate Alert เชื่อมต่อสำเร็จ ✅\nระบบพร้อมรับการแจ้งเตือนคิวโพสต์แล้ว'
-      );
+      const incoming = event?.message?.type === 'text' ? String(event.message.text || '').trim().toLowerCase() : '';
+      if (incoming === 'userid' || incoming === 'user id' || incoming === 'id') {
+        await reply(
+          event.replyToken,
+          userId
+            ? 'LINE User ID ของคุณ:\n' + userId + '\n\nนำค่านี้ไปใส่ใน Vercel Environment Variable ชื่อ LINE_USER_ID'
+            : 'ยังอ่าน LINE User ID ไม่ได้ ลองส่งข้อความใหม่อีกครั้ง'
+        );
+      } else {
+        await reply(
+          event.replyToken,
+          'Ken Affiliate Alert เชื่อมต่อสำเร็จ ✅\nระบบพร้อมรับการแจ้งเตือนคิวโพสต์แล้ว'
+        );
+      }
     }
   }
 
