@@ -29,7 +29,11 @@ def audit():
         issues=[]
         if item.get("rgb_renderer_version")!=RENDERER:issues.append("LEGACY_RGB_RENDERER")
         available=set(item.get("assets",{}))
-        if not MODES.issubset(available):issues.append("INCOMPLETE_8_MODES")
+        visual_only=item.get("preview_kind")=="VISUAL_ONLY_NON_QA"
+        if visual_only:
+            if not {"true_color","false_color"}.issubset(available):issues.append("INCOMPLETE_2_RGB_MODES")
+            issues.append("DISPLAY_ONLY_NOT_SCIENTIFIC_QA")
+        elif not MODES.issubset(available):issues.append("INCOMPLETE_8_MODES")
         for mode,url in item.get("assets",{}).items():
             if not str(url).startswith("./imagery/"):
                 bad_files.append([plot,date,mode,"unsafe preview path"]);continue
@@ -52,7 +56,8 @@ def audit():
         if (item.get("rgb_invalid_pct") or 0)>=30:issues.append("RGB_NODATA_HIGH")
         if (item.get("rgb_unclassified_scl_pct") or 0)>=20:issues.append("SCL_UNCLASSIFIED_HIGH")
         if item.get("rgb_plot_sample_pixels",999)<30:issues.append("SMALL_RGB_SAMPLE")
-        if (plot,date) not in valid:issues.append("NO_QA_VALID_MATCH")
+        if (plot,date) not in valid and not visual_only:issues.append("NO_QA_VALID_MATCH")
+        if visual_only and (plot,date) in valid:issues.append("WRONG_VISUAL_ONLY_QA_VALID_DATE")
         for issue in set(issues):totals[issue]+=1
         entries.append({
             "plot":plot,"date":date,"renderer":item.get("rgb_renderer_version","legacy"),
@@ -76,6 +81,8 @@ def audit():
             "qa_valid_pending_new_rgb":len(missing_v2),
             "published_generated_dates":len(generated),
             "archived_date_pairs":len(original),
+            "non_qa_dates_with_visual_only_rgb":sum(v.get("preview_kind")=="VISUAL_ONLY_NON_QA" for v in generated.values()),
+            "non_qa_dates_in_source":sum(x.get("analysis_status")!="AUTO_VALID" for x in results.get("scenes",[])),
             "rendered_files_with_errors":len(bad_files),
             "visual_review_flag_counts":dict(totals),
         },
@@ -96,6 +103,8 @@ def audit():
     index_entries=[];flagged=[];mode_counter=Counter()
     old_rows={(x["plot"],x["date"]):x for x in results.get("scenes",[])}
     for (plot,date),item in sorted(generated.items()):
+        if item.get("preview_kind")=="VISUAL_ONLY_NON_QA":
+            continue  # RGB-only cloudy scene; do not assert six source-derived indices.
         all_stats=item.get("index_stats") or {}
         parity=item.get("index_parity") or {}
         failures=[]
