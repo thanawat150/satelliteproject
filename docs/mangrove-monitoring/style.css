@@ -161,3 +161,26 @@ html{scroll-behavior:smooth}
  #time-series-panel .time-series-summary{grid-template-columns:1fr;gap:7px}
  #time-series-panel .time-series-summary span{padding:10px 12px}
 }
+
+
+#water-daily-panel .hydro-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#water-daily-panel .hydro-kpis .kpi{display:flex;flex-direction:column;min-width:0;min-height:137px;gap:8px;padding:17px;overflow:hidden}
+#water-daily-panel .hydro-kpis .kpi small{display:block;font-size:12px;line-height:1.35}
+#water-daily-panel .hydro-kpis .kpi strong{display:block;font-size:clamp(19px,2.3vw,29px);line-height:1.4;overflow-wrap:anywhere;margin:0}
+#water-daily-panel .hydro-kpis .kpi .foot{display:block;font-size:11px;line-height:1.6;overflow-wrap:anywhere;margin-top:auto}
+#water-daily-panel .hydro-review{border-top:1px solid #325c47;margin-top:18px;padding-top:16px}
+#water-daily-panel .hydro-review h4{font-size:16px;margin:0 0 14px}
+#water-daily-panel .hydro-status{display:flex;flex-direction:column;gap:6px;margin:9px 0;padding:13px 15px;border:1px solid #38654e;border-radius:10px}
+#water-daily-panel .hydro-status b{font-size:13px;line-height:1.5}
+#water-daily-panel .hydro-status span{font-size:12px;line-height:1.7}
+#water-daily-panel .hydro-status.attention{border-color:#986f42}
+#water-daily-panel .hydro-status.pending{border-color:#496256}
+@media(max-width:680px){
+ #water-daily-panel .hydro-kpis{gap:8px}
+ #water-daily-panel .hydro-kpis .kpi{min-height:122px;padding:12px 10px}
+ #water-daily-panel .hydro-kpis .kpi strong{font-size:clamp(17px,4.9vw,23px)}
+ #water-daily-panel .hydro-kpis .kpi .foot{font-size:10px}
+}
+@media(max-width:380px){
+ #water-daily-panel .hydro-kpis{grid-template-columns:1fr}
+}
