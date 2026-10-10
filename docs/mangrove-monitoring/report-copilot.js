@@ -471,12 +471,12 @@ function floodPlan(d){
   const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===c.date_b);
   const scA=sourceScene(r.code,c.date_a),scB=sourceScene(r.code,c.date_b);
   const before=image(r.code,c.date_a,'true_color'),after=image(r.code,c.date_b,'true_color');
-  section('04 / CASE '+(n+1),'กรณีตรวจสอบ '+r.code+' · คู่ภาพจริง',
+  section('04 / CASE '+(n+1),'หลักฐานช่วงน้ำเพิ่มเดิม · '+r.code,
    '<div class="rpt-kpis rpt-case-kpis">'+metric('น้ำเพิ่มสุทธิ',waterVal(r))+metric('พื้นที่ร่วม',num(r.area)+' ไร่')+
-   metric('สัดส่วนต่อพื้นที่ร่วม',percentVal(r))+metric('ภาพก่อนหน้า',c.date_a)+metric('ภาพปัจจุบัน',c.date_b)+'</div>'+
-   '<p><b>วันที่ภาพก่อนหน้า:</b> '+esc(c.date_a)+' · <b>วันที่ภาพปัจจุบันที่ใช้เทียบ:</b> '+esc(c.date_b)+' · <b>QA ก่อน/หลัง:</b> '+num(scA?.qa_valid_pct)+'% / '+num(scB?.qa_valid_pct)+'%</p>'+
+   metric('สัดส่วนต่อพื้นที่ร่วม',percentVal(r))+metric('ภาพก่อนหน้า',c.date_a)+metric('ภาพหลังคู่เดิม',c.date_b)+'</div>'+
+   '<p><b>วันที่ภาพก่อนหน้า:</b> '+esc(c.date_a)+' · <b>วันที่ภาพหลังในคู่เปรียบเทียบ:</b> '+esc(c.date_b)+' · <b>QA ก่อน/หลัง:</b> '+num(scA?.qa_valid_pct)+'% / '+num(scB?.qa_valid_pct)+'%</p>'+
    '<div class="rpt-pictures rpt-case-compare">'+before+after+'</div>'+
-   '<p class="rpt-caption">ก่อน (ซ้าย) เทียบหลัง (ขวา) ตามวันในผล Change Detection • ภาพจาก TIFF ที่ผ่าน QA เท่านั้น</p>'+
+   '<p class="rpt-caption">คู่ภาพประวัติ (ไม่ใช่ภาพล่าสุดเสมอไป) · กรุณาดูหน้าลำดับเหตุการณ์เพื่อดูว่าหลังจากนี้น้ำเพิ่มหรือลด</p>'+
    (imAfter?'<div class="rpt-case-index">'+picture(imAfter,indexMode)+'</div>':'<p class="rpt-empty">'+esc(indexMode.toUpperCase())+' วันหลังเหตุการณ์ไม่พร้อมสำหรับแสดงประกอบ</p>')+
    '<p class="rpt-caption">ฝน NASA POWER ก่อนวันหลังภาพ 3 วัน (UTC): '+(rain&&rain.rain_prev_3_utc_days_mm!=null?num(rain.rain_prev_3_utc_days_mm)+' มม.':'ไม่มีข้อมูลที่ตรงวัน')+'</p>'+
    waterChangeBreakdown(c)+floodFinding(r)+
