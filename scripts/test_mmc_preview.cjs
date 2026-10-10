@@ -304,6 +304,10 @@ await page.locator('#rpt-preview-button').click();
 assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('15-STC')||(await page.locator('#rpt-preview').innerText()).includes('15-STC'),'Plot selection follows preview');
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Custom report modules still render after scope changes');
 assert.ok((await page.locator('#rpt-preview').innerText()).includes('QA'),'Report includes QA evidence rather than unsupported impact claims');
+assert.ok(!(await page.locator('#rpt-preview').first().innerText()).includes('ข้อมูลสมมติ'),'Missing pairs must not be replaced by fabricated flood findings');
+await page.locator('#rpt-plot').selectOption('13-STC');
+await page.locator('#rpt-period').selectOption('180');
+await page.locator('#rpt-preview-button').click();
 
 const coverQA=await page.locator('#rpt-preview .rpt-paper').first().innerText();
 assert.ok(coverQA.includes('สรุปสถานการณ์พื้นที่น้ำ')&&coverQA.includes('คู่ภาพเทียบได้'),'Flood cover must lead with actual change-pair findings and coverage');
