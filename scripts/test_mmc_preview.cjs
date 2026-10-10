@@ -270,10 +270,10 @@ assert.ok((await page.locator('#rpt-warning-list').innerText()).includes('ไม
 
 assert.ok(await page.locator('[data-rpt-scope-switch="province"][aria-pressed="true"]').count()===1,'Scope selector visibly reflects province reports');
 assert.equal(await page.locator('#rpt-image-dates').inputValue(),'2','Province reports default to two image dates per plot');
-const provinceReport=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,head:r.pages.split('</article>')[0],hasCases:r.pages.includes('กรณีตรวจสอบ'),hasActions:r.pages.includes('ข้อเสนอแนะและการตัดสินใจ'),hasCautions:r.pages.includes('น้ำขึ้นลง'),audit:r.audit,hasAtlas:r.pages.includes('Index Atlas')}}); 
+const provinceReport=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,head:r.pages.split('</article>')[0],hasCases:r.pages.includes('หลักฐานช่วงน้ำเพิ่มเดิม'),hasActions:r.pages.includes('ข้อเสนอแนะและการตัดสินใจ'),hasCautions:r.pages.includes('น้ำขึ้นลง'),audit:r.audit,hasAtlas:r.pages.includes('Index Atlas')}}); 
 assert.ok(provinceReport.plots>1,'Province flood report must include actual plot registry');
 assert.ok(provinceReport.pages>=8&&provinceReport.pages<=24,'Decision-first province flood report includes at most a few visual comparison pages: '+provinceReport.pages);
-assert.ok(provinceReport.images>=2&&provinceReport.images<=16,'Flood brief presents selected before/after evidence, not full atlas');
+assert.ok(provinceReport.images>=8&&provinceReport.images<=36,'Flood brief presents selected before/after evidence, not full atlas');
 assert.ok(provinceReport.hasCases&&provinceReport.hasActions&&provinceReport.hasCautions,'Flood brief must explain priority cases, action plan and tide limits');
 assert.ok(!provinceReport.hasAtlas,'Flood report must not generate dozens of index atlas pages by default');
 assert.ok(provinceReport.head.includes('สรุปสถานการณ์พื้นที่น้ำ'),'Flood findings must appear on first page');
@@ -289,7 +289,7 @@ const rayong=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPage
 assert.ok(rayong.pages>=9&&rayong.pages<=24,'Exact prompt should remain a concise executive report including visual comparison pages, not 55-page atlas');
 assert.ok(rayong.qa&&rayong.qa.plots===19,'Rayong report contains exactly 19 registry plots');
 assert.ok(rayong.qa.comparable>0,'Flood brief finds QA-valid before-after pair evidence from the real dataset');
-assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Prioritized Rayong case evidence must include supported high-change plots');
+assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Selected plot histories must include both 17-STC and 13-STC');
 assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู้บริหาร'),'Executive findings appear immediately instead of page 49');
 
 assert.ok(rayong.front.includes('สถานการณ์ล่าสุดเทียบช่วงที่น้ำสูงกว่า'),'Executive cover must lead with latest receding-water evidence');
