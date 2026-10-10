@@ -183,18 +183,34 @@ function likelyCloudObscured(im){
    white!=null&&Number(white)>80||
    invalid!=null&&Number(invalid)>65;
 }
-function visualQuality(im){
+function visualQuality(im,mode='mndwi'){
  const q=allScenes().find(x=>x.plot===im.plot&&x.date===im.date);
+ const validPreview=Boolean(imageURL(im,mode));
+ if(!validPreview)return {usable:false,automatic:false,reason:'ไม่มีภาพดัชนีหรือภาพสีที่เปิดดูได้'};
+ const invalid=im?.rgb_invalid_pct,white=im?.rgb_near_white_pct,cloud=im?.rgb_cloud_pct??im?.cloud_pct;
+ const severe=invalid!=null&&Number(invalid)>=70||white!=null&&Number(white)>=70||cloud!=null&&Number(cloud)>=70;
+ // This scene's QA may read NO_DATA because SCL excludes everything, while the
+ // 20 m B3/B11 bands are finite and a source-derived MNDWI preview was created.
+ // Never treat that preview as a validated water-AREA measurement.
+ const rawIndex=mode==='mndwi'||mode==='ndwi';
+ const visualOnly=rawIndex&&im?.preview_kind==='VISUAL_ONLY_NON_QA'&&
+   Number(im.rgb_plot_sample_pixels||0)>0;
+ const sourceIndex=rawIndex&&Number(im?.index_stats?.[mode]?.sample_pixels||0)>0;
+ if((visualOnly||sourceIndex)&&(!q||q.analysis_status!=='AUTO_VALID'||Number(q.qa_valid_pct||0)===0)){
+  if(severe)return {usable:false,automatic:false,visualOnly:true,reason:'ภาพดัชนีคำนวณได้ แต่พบสัญญาณเมฆ/NoData หรือพื้นที่ว่างมากเกินไป'};
+  return {usable:true,automatic:false,visualOnly:true,
+   reason:'ภาพดัชนีที่คำนวณจากแบนด์ต้นฉบับ ใช้สังเกตเชิงภาพได้แม้ SCL/QA ของการวัดพื้นที่ไม่ผ่าน; ห้ามแปลงเป็นพื้นที่น้ำที่รับรองแล้ว'};
+ }
  if(!q)return {usable:false,automatic:false,reason:'ไม่มีผลตรวจ QA สำหรับวันภาพ'};
  if(q.analysis_status==='NO_DATA'||Number(q.qa_valid_pct||0)<=0||Number(q.usable_pixels||0)<=0)
-  return {usable:false,automatic:false,reason:'NO_DATA หรือไม่มีพิกเซลที่นำมาวิเคราะห์ได้ (QA 0%)'};
- if(likelyCloudObscured(im))return {usable:false,automatic:false,reason:'เมฆ/NoData บังพื้นที่ภาพมาก'};
+  return {usable:false,automatic:false,reason:'NO_DATA และไม่มีค่าดัชนีต้นฉบับที่ยืนยันให้แสดงเชิงภาพ'};
+ if(severe||likelyCloudObscured(im))return {usable:false,automatic:false,reason:'เมฆ/NoData บังพื้นที่ภาพมาก'};
  const pct=Number(q.qa_valid_pct);
  if(!Number.isFinite(pct)||pct<30)return {usable:false,automatic:false,reason:'พื้นที่ผ่าน QA น้อยเกินไปสำหรับการเปรียบเทียบภาพ'};
- return {usable:true,automatic:pct>=50,reason:pct>=50?'ภาพอยู่ในเกณฑ์แสดงและตรวจจับเบื้องต้น':'ภาพใช้ดูเบื้องต้นได้ แต่ไม่วงอัตโนมัติเพราะ QA ต่ำ'};
+ return {usable:true,automatic:pct>=50,visualOnly:false,reason:pct>=50?'ภาพอยู่ในเกณฑ์แสดงและตรวจจับเบื้องต้น':'ภาพใช้ดูเบื้องต้นได้ แต่ไม่วงอัตโนมัติเพราะ QA ต่ำ'};
 }
 function visualPairCard(before,after,mode='mndwi'){
- const aligned=imageryAlignment(before,after,mode),cloud=likelyCloudObscured(before)||likelyCloudObscured(after),qualityA=visualQuality(before),qualityB=visualQuality(after);
+ const aligned=imageryAlignment(before,after,mode),cloud=likelyCloudObscured(before)||likelyCloudObscured(after),qualityA=visualQuality(before,mode),qualityB=visualQuality(after,mode);
  const qaFor=im=>ctx?.scenes?.find(x=>x.plot===im.plot&&x.date===im.date);
  const badge=im=>{const q=qaFor(im);return 'วันภาพ '+esc(im.date)+' · QA '+esc(q?.analysis_status||'ไม่มีผลตรวจ')+
   ' · พิกเซลผ่าน QA '+(q?.qa_valid_pct==null?'—':num(q.qa_valid_pct)+'%');};
@@ -213,7 +229,7 @@ function visualPairCard(before,after,mode='mndwi'){
   '<div class="rpt-visual-date"><b>ภาพก่อนหน้า · '+esc(before.date)+'</b>'+beforePic+'<small>'+badge(before)+'</small></div>'+
   '<div class="rpt-visual-date"><b>ภาพปัจจุบันที่ใช้เทียบ · '+esc(after.date)+'</b>'+afterMarked+'<small>'+badge(after)+'</small></div>'+
   '</div><p class="rpt-visual-result">'+
-  (!qualityA.usable||!qualityB.usable?'ภาพที่ไม่พร้อมใช้ตามเกณฑ์ QA ถูกคัดออกจากการวงอัตโนมัติ':!qualityA.automatic||!qualityB.automatic?'แสดงให้ดูเบื้องต้นได้ แต่ QA ไม่เพียงพอสำหรับการวงอัตโนมัติ':cloud?'มีสัญญาณภาพขาว/NoData มาก ไม่วงอัตโนมัติเพราะอาจถูกเมฆหรือข้อมูลขาดบัง':
+  (!qualityA.usable||!qualityB.usable?'ภาพที่ไม่พร้อมใช้ตามเกณฑ์ถูกคัดออกจากการวงอัตโนมัติ':qualityA.visualOnly||qualityB.visualOnly?'ภาพดัชนีจาก TIFF ใช้สังเกตแนวสีน้ำได้แม้ SCL/QA ไม่ผ่าน แต่ยังไม่ใช้วาดขอบเขตหรือคำนวณพื้นที่น้ำ':!qualityA.automatic||!qualityB.automatic?'แสดงให้ดูเบื้องต้นได้ แต่ QA ไม่เพียงพอสำหรับการวงอัตโนมัติ':cloud?'มีสัญญาณภาพขาว/NoData มาก ไม่วงอัตโนมัติเพราะอาจถูกเมฆหรือข้อมูลขาดบัง':
    overlap<=.72?'ภาพสองวันซ้อนทับกันไม่พอจะระบุตำแหน่งเปลี่ยนได้ จึงแสดงให้ดูด้วยตา':
    !boundaryPath?'ยังไม่มี GIS Polygon สำหรับจำกัดการวงในแปลง จึงไม่วงบริเวณนอกแปลง':!compareOK?'รุ่นการแสดงดัชนีไม่ตรงกัน จึงไม่คำนวณสีต่างเพื่อวงตำแหน่ง':'กำลังตรวจความต่างของสีที่แสดงบนภาพดัชนี…')+
   '</p><p class="rpt-caption">วงสีส้ม = จุดสงสัยจากความต่างสีภาพดัชนีที่แสดง ไม่ใช่ขอบเขตน้ำท่วมหรือพื้นที่เปลี่ยนแปลงที่คำนวณจาก GeoTIFF · เมฆและการปรับสีอาจทำให้คลาดเคลื่อน</p></div>';
@@ -227,7 +243,7 @@ function visualScreeningPages(d){
  }
  const groups=[];
  for(const p of d.pp){
-  const items=(byPlot.get(p.code)||[]).filter(im=>visualQuality(im).usable).sort((a,b)=>a.date.localeCompare(b.date));
+  const items=(byPlot.get(p.code)||[]).filter(im=>visualQuality(im,mode).usable).sort((a,b)=>a.date.localeCompare(b.date));
   if(items.length<2)continue;
   const ts=series.get(p.code),last=items.at(-1),peak=ts&&items.find(im=>im.date===ts.peak.date);
   const before=ts?.falling&&peak&&peak.date<last.date?peak:items.at(-2);
@@ -431,7 +447,7 @@ function floodPlan(d){
  const scopeText=ui.scope==='plot'?'แปลง':ui.scope==='province'?'จังหวัด':'เครือข่าย';
  const status=recedingCount?'พบพื้นที่น้ำที่จำแนกได้ลดลงในภาพล่าสุด '+recedingCount+' แปลง หลังจากช่วงที่มีค่าสูงกว่า':comparable.length?'พบสัญญาณพื้นที่น้ำเปลี่ยนแปลง ต้องตรวจบริบทเพิ่มเติม':'ข้อมูลคู่ภาพไม่เพียงพอสำหรับสรุปการเปลี่ยนแปลงน้ำ';
  const coverVisual=priority.slice(0,2).map(r=>{
-  const im=(d.visualImages||[]).find(x=>x.plot===r.code&&x.date===r.timeline?.latest.date&&visualQuality(x).usable&&imageURL(x,'true_color'))||d.images.find(x=>x.plot===r.code&&x.date===r.pair?.date_b&&imageURL(x,'true_color'));
+  const im=(d.visualImages||[]).find(x=>x.plot===r.code&&x.date===r.timeline?.latest.date&&visualQuality(x,'true_color').usable&&imageURL(x,'true_color'))||d.images.find(x=>x.plot===r.code&&x.date===r.pair?.date_b&&imageURL(x,'true_color'));
   return im?picture(im,'true_color'):'<p class="rpt-empty">ภาพสีจริงล่าสุด '+esc(r.code)+' ยังไม่มี</p>';
  }).join('');
  const coverage='<div class="rpt-kpis rpt-flood-kpis">'+metric('แปลงในขอบเขต',rows.length)+metric('คู่ภาพเทียบได้',comparable.length+'/'+rows.length)+
@@ -465,7 +481,7 @@ function floodPlan(d){
  }
  for(const r of priority.slice(0,3)){
   const ts=r.timeline;if(!ts||!ts.all.length)continue;
-  const imgs=(d.visualImages||[]).filter(im=>im.plot===r.code&&visualQuality(im).usable&&imageURL(im,'true_color')).sort((a,b)=>a.date.localeCompare(b.date));
+  const imgs=(d.visualImages||[]).filter(im=>im.plot===r.code&&visualQuality(im,'true_color').usable&&imageURL(im,'true_color')).sort((a,b)=>a.date.localeCompare(b.date));
   const before=imgs.find(x=>x.date===ts.first.date)||imgs[0],peak=imgs.find(x=>x.date===ts.peak.date)||imgs.find(x=>x.date>=ts.peak.date),
    current=imgs.find(x=>x.date===ts.latest.date)||imgs.at(-1);
   const chosen=[before,peak,current].filter((x,i,arr)=>x&&arr.findIndex(y=>y?.date===x.date)===i);
