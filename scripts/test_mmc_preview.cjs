@@ -332,10 +332,10 @@ assert.equal(noAppendixPrint.total,rayong.pages,'Main report page count matches 
 
 
 assert.ok(!rayong.text.includes('ห่างกัน')&&!rayong.text.includes('ช่วง (วัน)'),'Flood report must not show day-distance metrics');
-assert.ok(rayong.front.includes('ภาพก่อนหน้า')&&rayong.front.includes('ภาพปัจจุบัน'),'Executive table must expose both dates instead of day gap');
+assert.ok(rayong.front.includes('ช่วงน้ำสูง')&&rayong.front.includes('ภาพล่าสุด'),'Executive table must show the high-water date and the latest acquisition instead of a day gap');
 assert.ok(rayong.text.includes('<th>ภาพก่อนหน้า</th>')&&rayong.text.includes('<th>ภาพปัจจุบัน</th>'),'Ranked evidence uses separately labeled acquisition dates');
-assert.ok(rayong.text.includes('วันที่ภาพก่อนหน้า:')&&rayong.text.includes('วันที่ภาพปัจจุบันที่ใช้เทียบ:'),'Plot before-after pages label both actual scene dates');
-assert.ok(rayong.text.includes('ภาพปัจจุบัน” หมายถึงวันภาพหลังที่ใช้เทียบ'),'Explain that comparison-current need not be latest acquisition');
+assert.ok(rayong.text.includes('วันที่ภาพก่อนหน้า:')&&rayong.text.includes('วันที่ภาพหลังในคู่เปรียบเทียบ:'),'Historical comparison pages must label the actual before/after dates without calling September current');
+assert.ok(rayong.text.includes('ไม่จำเป็นต้องเป็นภาพดาวเทียมใหม่ล่าสุดในคลัง'),'Historical comparison explicitly distinguishes its pair date from current acquisition');
 
 
 const a4Overflows=await page.evaluate(()=>{
