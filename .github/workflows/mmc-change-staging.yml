@@ -10,7 +10,7 @@ on:
       plots:
         description: "Space-separated plot codes"
         required: false
-        default: "66-STC 70-STC 15-STC"
+        default: "66-STC 70-STC 15-STC 24-VSD 30-STC"
         type: string
 permissions:
   contents: read
@@ -32,7 +32,7 @@ jobs:
         run: python scripts/test_mmc_clipped_change.py
       - name: Run read-only original TIFF staging
         env:
-          PLOT_IDS: ${{ inputs.plots || '66-STC 70-STC 15-STC' }}
+          PLOT_IDS: ${{ inputs.plots || '66-STC 70-STC 15-STC 24-VSD 30-STC' }}
         run: |
           python scripts/mmc_change_staging.py \
             --plots $PLOT_IDS \
