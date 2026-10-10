@@ -37,6 +37,25 @@ await page.locator('#water-date-select').selectOption('2026-09-29');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-09-29'&&document.querySelector('#image-mode')?.value==='mndwi',{timeout:25000});
 assert.ok((await page.locator('#water-selected-date').innerText()).includes('2026-09-29'),'Water values must follow selected date');
 assert.ok((await page.locator('#water-daily-panel').innerText()).includes('95.93'),'Rainfall for selected Sentinel day must match observed 3-day UTC window');
+assert.ok((await page.locator('#water-daily-panel').innerText()).includes('เปอร์เซ็นไทล์ 92.58'),'Three-day rain must be compared with real ten-year seasonal climatology');
+assert.ok((await page.locator('#water-daily-panel').innerText()).includes('1.23'),'Marine model daily maximum must be traceable without inventing overpass measurement');
+await page.locator('#plot-select').selectOption('13-STC');
+await page.locator('#water-date-select').selectOption('2026-09-29');
+await page.waitForFunction(()=>document.querySelector('#water-selected-date')?.textContent?.includes('2026-09-29'),null,{timeout:20000});
+const water13=await page.locator('#water-daily-panel').innerText();
+assert.ok(water13.includes('228.02')&&water13.includes('195.09'),'13-STC water classification and earlier-date difference should show two-decimal values');
+assert.ok(water13.includes('ต่ำสุด 0.15 ม.')&&water13.includes('สูงสุด 1.23 ม.'),'Modeled tide range must be labelled not mistaken for a gauge level');
+assert.ok(water13.includes('289.89')&&water13.includes('259.89'),'PDD-geometry acreage disagreement must be disclosed');
+const cardLayout=await page.locator('#water-daily-panel .hydro-kpis').evaluate(root=>
+ [...root.querySelectorAll('.kpi')].every(card=>{
+  const value=card.querySelector('strong')?.getBoundingClientRect();
+  const foot=card.querySelector('.foot')?.getBoundingClientRect();
+  const rect=card.getBoundingClientRect();
+  return value&&foot&&value.bottom<=foot.top+1&&foot.bottom<=rect.bottom+1;
+ }));
+assert.ok(cardLayout,'No water/NDWI/rain value may visually overlap its explanatory footnote');
+await page.locator('#plot-select').selectOption('16-STC');
+
 
 assert.ok((await page.locator('#plot-digital-twin').innerText()).includes('ยังไม่มีข้อมูลน้ำขึ้นน้ำลง'),'Twin must disclose lack of tidal context');
 await page.locator('[data-view="analysis"]').click();
