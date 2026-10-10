@@ -236,7 +236,8 @@ function floodPlan(d){
    table(ranked.slice(i,i+16).map(shortRow),rankingCols)+'<p class="rpt-caption">รายการที่มีคู่ภาพทั้งหมด ไม่ซ่อนแปลงท้ายรายงาน</p>');
  }
  for(let n=0;n<candidates;n++){
-  const r=priority[n],c=r.pair,imAfter=d.images.find(x=>x.plot===r.code&&x.date===c.date_b&&imageURL(x,'mndwi'));
+  const r=priority[n],c=r.pair,indexMode=['mndwi','ndwi','ndvi'].find(m=>ui.metrics.has(m))||'mndwi';
+  const imAfter=d.images.find(x=>x.plot===r.code&&x.date===c.date_b&&imageURL(x,indexMode));
   const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===c.date_b);
   const scA=sourceScene(r.code,c.date_a),scB=sourceScene(r.code,c.date_b);
   const before=image(r.code,c.date_a,'true_color'),after=image(r.code,c.date_b,'true_color');
@@ -246,7 +247,7 @@ function floodPlan(d){
    '<p><b>ช่วงภาพ:</b> '+esc(pairText(r))+' · <b>QA ก่อน/หลัง:</b> '+num(scA?.qa_valid_pct)+'% / '+num(scB?.qa_valid_pct)+'%</p>'+
    '<div class="rpt-pictures rpt-case-compare">'+before+after+'</div>'+
    '<p class="rpt-caption">ก่อน (ซ้าย) เทียบหลัง (ขวา) ตามวันในผล Change Detection • ภาพจาก TIFF ที่ผ่าน QA เท่านั้น</p>'+
-   (imAfter?'<div class="rpt-case-index">'+picture(imAfter,'mndwi')+'</div>':'<p class="rpt-empty">MNDWI วันหลังเหตุการณ์ไม่พร้อมสำหรับแสดงประกอบ</p>')+
+   (imAfter?'<div class="rpt-case-index">'+picture(imAfter,indexMode)+'</div>':'<p class="rpt-empty">'+esc(indexMode.toUpperCase())+' วันหลังเหตุการณ์ไม่พร้อมสำหรับแสดงประกอบ</p>')+
    '<p class="rpt-caption">ฝน NASA POWER ก่อนวันหลังภาพ 3 วัน (UTC): '+(rain&&rain.rain_prev_3_utc_days_mm!=null?num(rain.rain_prev_3_utc_days_mm)+' มม.':'ไม่มีข้อมูลที่ตรงวัน')+'</p>'+
    '<p class="rpt-disclaimer">ยังไม่สรุปว่าเป็นน้ำท่วม และไม่สามารถบอกผลกระทบต่อการรอดของต้นไม้จากภาพสองวันได้ ต้องตรวจน้ำขึ้นลงและพื้นที่จริง</p>');
  }
@@ -549,8 +550,9 @@ function reportChoices(){
  '<label>จำนวนวันภาพต่อแปลง<select id="rpt-image-dates">'+options([['1','วันภาพล่าสุด 1 วัน'],['2','2 วันภาพล่าสุด'],['3','3 วันภาพล่าสุด'],['4','4 วันภาพล่าสุด']],ui.imageDates)+'</select></label></div>'+ 
  '<label class="rpt-appendix-toggle"><input type="checkbox" id="rpt-appendix"'+(ui.appendix?' checked':'')+'> แนบภาพทุกแปลงเป็นภาคผนวก (รายงานจะยาวขึ้น)</label>'+ 
  '<div id="rpt-readiness" class="rpt-readiness" aria-live="polite"></div>'+
- '<div class="rpt-checkbox-grid"><fieldset><legend>เลือกหน้ารายงาน</legend>'+Object.entries(MODULES).map(([k,v])=>'<label><input type="checkbox" data-rpt-module="'+k+'"'+(ui.modules.has(k)?' checked':'')+'> '+esc(v)+'</label>').join('')+'</fieldset>'+
- '<fieldset><legend>ดัชนีที่ต้องการ</legend>'+Object.entries(METRICS).map(([k,v])=>'<label><input type="checkbox" data-rpt-metric="'+k+'"'+(ui.metrics.has(k)?' checked':'')+'> '+esc(v)+'</label>').join('')+'</fieldset></div>'+
+ '<div id="rpt-flood-guidance" class="rpt-flood-guidance" hidden>รายงานตรวจน้ำท่วมต้องมีหน้าสรุป หลักฐาน ข้อจำกัด และ Audit ครบ จึงไม่เปิดให้ตัดหน้าบังคับออก ภาคผนวกภาพเป็นตัวเลือกแยกต่างหาก</div>'+ 
+ '<div class="rpt-checkbox-grid"><fieldset id="rpt-module-picker"><legend>เลือกหน้ารายงาน</legend>'+Object.entries(MODULES).map(([k,v])=>'<label><input type="checkbox" data-rpt-module="'+k+'"'+(ui.modules.has(k)?' checked':'')+'> '+esc(v)+'</label>').join('')+'</fieldset>'+
+ '<fieldset><legend id="rpt-index-legend">ดัชนีที่ต้องการ</legend>'+Object.entries(METRICS).map(([k,v])=>'<label><input type="checkbox" data-rpt-metric="'+k+'"'+(ui.metrics.has(k)?' checked':'')+'> '+esc(v)+'</label>').join('')+'</fieldset></div>'+
  '<div class="rpt-buttons"><button type="button" class="btn primary" id="rpt-preview-button">สร้างตัวอย่างรายงาน</button><button type="button" class="btn" id="rpt-print">พิมพ์ / บันทึก PDF (A4)</button><button type="button" class="btn" id="rpt-blueprint-export">ส่งออก Blueprint JSON</button></div>'+
  '<div id="rpt-source-summary" class="rpt-source-summary"></div><div id="rpt-warning-list" class="rpt-warning-list"></div>'+
  '<details class="rpt-preview-toggle" open><summary>ดูตัวอย่างรายงานจริง · A4 แนวตั้ง</summary><div id="rpt-preview"></div></details></section>';
@@ -591,6 +593,10 @@ function syncForm(){
  }
  if($('rpt-appendix'))$('rpt-appendix').checked=Boolean(ui.appendix);
  document.querySelectorAll('[data-rpt-scope-switch]').forEach(x=>{const on=x.dataset.rptScopeSwitch===ui.scope;x.classList.toggle('active',on);x.setAttribute('aria-pressed',String(on));});
+ if($('rpt-module-picker'))$('rpt-module-picker').hidden=ui.type==='water';
+ if($('rpt-flood-guidance'))$('rpt-flood-guidance').hidden=ui.type!=='water';
+ if($('rpt-index-legend'))$('rpt-index-legend').textContent=ui.type==='water'?'ดัชนีภาพประกอบและภาคผนวก':'ดัชนีที่ต้องการ';
+ if($('rpt-appendix'))$('rpt-appendix').closest('label').hidden=ui.type!=='water';
  document.querySelectorAll('[data-rpt-module]').forEach(x=>x.checked=ui.modules.has(x.dataset.rptModule));
  document.querySelectorAll('[data-rpt-metric]').forEach(x=>x.checked=ui.metrics.has(x.dataset.rptMetric));
  showBlueprint();
