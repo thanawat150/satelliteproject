@@ -151,6 +151,18 @@ function imageryAlignment(a,b,mode){
  const x=v(aa),y=v(bb);
  return x.every((n,i)=>Number.isFinite(n)&&Number.isFinite(y[i])&&Math.abs(n-y[i])<=.000002);
 }
+function rasterBounds(im,mode){return im?.mode_bounds?.[mode]||im?.bounds;}
+function rasterOverlap(a,b,mode){
+ const u=rasterBounds(a,mode),v=rasterBounds(b,mode);
+ if(!Array.isArray(u)||!Array.isArray(v)||u.length!==2||v.length!==2)return 0;
+ const lat=(z,i)=>Number(z[i][0]),lon=(z,i)=>Number(z[i][1]);
+ const lats=[lat(u,0),lat(u,1),lat(v,0),lat(v,1)],lons=[lon(u,0),lon(u,1),lon(v,0),lon(v,1)];
+ if(![...lats,...lons].every(Number.isFinite))return 0;
+ const y1=Math.max(lats[0],lats[2]),y2=Math.min(lats[1],lats[3]),x1=Math.max(lons[0],lons[2]),x2=Math.min(lons[1],lons[3]);
+ const shared=Math.max(0,y2-y1)*Math.max(0,x2-x1);
+ const areas=[(lats[1]-lats[0])*(lons[1]-lons[0]),(lats[3]-lats[2])*(lons[3]-lons[2])];
+ return areas.every(n=>n>0)?shared/Math.min(...areas):0;
+}
 function likelyCloudObscured(im){
  const white=im?.rgb_near_white_pct,invalid=im?.rgb_invalid_pct;
  const cloud=im?.rgb_cloud_pct??im?.cloud_pct;
@@ -163,17 +175,17 @@ function visualPairCard(before,after,mode='mndwi'){
  const qaFor=im=>ctx?.scenes?.find(x=>x.plot===im.plot&&x.date===im.date);
  const badge=im=>{const q=qaFor(im);return 'วันภาพ '+esc(im.date)+' · QA '+esc(q?.analysis_status||'ไม่มีผลตรวจ')+
   ' · พิกเซลผ่าน QA '+(q?.qa_valid_pct==null?'—':num(q.qa_valid_pct)+'%');};
- const compareOK=aligned&&!cloud&&before?.index_renderer_version===after?.index_renderer_version;
+ const overlap=rasterOverlap(before,after,mode),compareOK=overlap>.72&&!cloud&&before?.index_renderer_version===after?.index_renderer_version;
  const beforePic=picture(before,mode),afterPic=picture(after,mode);
  const afterMarked=afterPic.replace('class="rpt-image-canvas"','class="rpt-image-canvas rpt-visual-current-canvas"')
    .replace('</div><figcaption>','<svg class="rpt-visual-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="วงตำแหน่งเปลี่ยนแปลงเบื้องต้น"></svg></div><figcaption>');
- return '<div class="rpt-visual-pair" data-visual-scan="'+(compareOK?'eligible':'disabled')+'" data-visual-mode="'+esc(mode)+'">'+
+ return '<div class="rpt-visual-pair" data-visual-scan="'+(compareOK?'eligible':'disabled')+'" data-visual-mode="'+esc(mode)+'" data-before-bounds="'+esc(JSON.stringify(rasterBounds(before,mode)||[]))+'" data-after-bounds="'+esc(JSON.stringify(rasterBounds(after,mode)||[]))+'">'+
   '<div class="rpt-visual-duo">'+
   '<div class="rpt-visual-date"><b>ภาพก่อนหน้า · '+esc(before.date)+'</b>'+beforePic+'<small>'+badge(before)+'</small></div>'+
   '<div class="rpt-visual-date"><b>ภาพปัจจุบันที่ใช้เทียบ · '+esc(after.date)+'</b>'+afterMarked+'<small>'+badge(after)+'</small></div>'+
   '</div><p class="rpt-visual-result">'+
   (cloud?'มีสัญญาณภาพขาว/NoData มาก ไม่วงอัตโนมัติเพราะอาจถูกเมฆหรือข้อมูลขาดบัง':
-   !aligned?'ขอบภาพสองวันไม่ตรงกัน จึงแสดงคู่ภาพให้ตรวจด้วยตา แต่ไม่วงอัตโนมัติ':
+   overlap<=.72?'ภาพสองวันซ้อนทับกันไม่พอจะระบุตำแหน่งเปลี่ยนได้ จึงแสดงให้ดูด้วยตา':
    !compareOK?'รุ่นการแสดงดัชนีไม่ตรงกัน จึงไม่คำนวณสีต่างเพื่อวงตำแหน่ง':'กำลังตรวจความต่างของสีที่แสดงบนภาพดัชนี…')+
   '</p><p class="rpt-caption">วงสีส้ม = จุดสงสัยจากความต่างสีภาพดัชนีที่แสดง ไม่ใช่ขอบเขตน้ำท่วมหรือพื้นที่เปลี่ยนแปลงที่คำนวณจาก GeoTIFF · เมฆและการปรับสีอาจทำให้คลาดเคลื่อน</p></div>';
 }
