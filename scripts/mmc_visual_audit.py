@@ -25,13 +25,23 @@ def audit():
     generated={(x["plot"],x["date"]):x for x in manifest.get("generated_items",[])}
     valid={(x["plot"],x["date"]) for x in results.get("scenes",[]) if x.get("analysis_status")=="AUTO_VALID"}
     entries=[];bad_files=[];totals=Counter()
+    # Every processed Sentinel-2 date must have eight real image files after
+    # the display-only backfill; scientific QA is still limited to AUTO_VALID.
+    source_dates={(x["plot"],x["date"]):x["analysis_status"]
+                  for x in results.get("scenes",[])}
+    for key,status in source_dates.items():
+        item=generated.get(key)
+        if item is None:
+            bad_files.append([key[0],key[1],"all","NO_RASTER_PREVIEW_FOR_SOURCE_DATE"])
+        elif not MODES.issubset(set(item.get("assets",{}))):
+            bad_files.append([key[0],key[1],"all","MISSING_SOME_OF_EIGHT_SOURCE_IMAGE_MODES"])
     for (plot,date),item in sorted(generated.items()):
         issues=[]
         if item.get("rgb_renderer_version")!=RENDERER:issues.append("LEGACY_RGB_RENDERER")
         available=set(item.get("assets",{}))
         visual_only=item.get("preview_kind")=="VISUAL_ONLY_NON_QA"
         if visual_only:
-            if not {"true_color","false_color"}.issubset(available):issues.append("INCOMPLETE_2_RGB_MODES")
+            if not MODES.issubset(available):issues.append("INCOMPLETE_8_REAL_TIFF_MODES")
             issues.append("DISPLAY_ONLY_NOT_SCIENTIFIC_QA")
         elif not MODES.issubset(available):issues.append("INCOMPLETE_8_MODES")
         for mode,url in item.get("assets",{}).items():
