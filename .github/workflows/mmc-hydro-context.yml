@@ -11,7 +11,7 @@ on:
       max_plots:
         description: "New plots to backfill per data source"
         type: string
-        default: "36"
+        default: "126"
   schedule:
     - cron: "45 1 * * *"
 permissions:
@@ -31,7 +31,7 @@ jobs:
       - run: python -m pip install "shapely>=2,<3"
       - name: Download 2016-2025 NASA POWER seasonal rainfall reference
         env:
-          MAX_PLOTS: ${{ inputs.max_plots || '36' }}
+          MAX_PLOTS: ${{ inputs.max_plots || '126' }}
         run: python scripts/mmc_rainfall_baseline.py --max-plots "$MAX_PLOTS"
       - name: Validate documented baseline
         run: |
@@ -71,7 +71,7 @@ jobs:
       - run: python -m pip install "shapely>=2,<3"
       - name: Fetch coastal sea level model with provider attribution
         env:
-          MAX_PLOTS: ${{ inputs.max_plots || '36' }}
+          MAX_PLOTS: ${{ inputs.max_plots || '126' }}
         run: python scripts/mmc_sea_level_model.py --max-plots "$MAX_PLOTS"
       - name: Verify not relabeled as tide-gauge readings
         run: |
