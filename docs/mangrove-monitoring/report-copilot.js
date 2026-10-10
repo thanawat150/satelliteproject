@@ -388,6 +388,7 @@ function floodPlan(d){
  const declining=rows.filter(r=>r.timeline?.falling).sort((a,b)=>a.timeline.delta-b.timeline.delta);
  const candidates=Math.min(3,Math.max(ordered.length,declining.length)),priority=[...declining,...ordered.filter(r=>!declining.some(d=>d.code===r.code))].slice(0,candidates);
  const recedingCount=declining.length;
+ const casePriority=[...priority.filter(r=>r.pair),...ordered.filter(r=>!priority.some(p=>p.code===r.code))].slice(0,3);
  const sourceScene=(code,date)=>d.good.find(x=>x.plot===code&&x.date===date);
  const image=(code,date,mode)=>{
   const im=d.images.find(x=>x.plot===code&&x.date===date&&imageURL(x,mode));
@@ -465,8 +466,8 @@ function floodPlan(d){
   for(let i=14;i<comparable.length;i+=16)section('03 / EVIDENCE '+(i/16+1),'ตารางหลักฐานเพิ่มเติม',
    table(ranked.slice(i,i+16).map(shortRow),rankingCols)+'<p class="rpt-caption">รายการที่มีคู่ภาพทั้งหมด ไม่ซ่อนแปลงท้ายรายงาน</p>');
  }
- for(let n=0;n<candidates;n++){
-  const r=priority[n],c=r.pair,indexMode=['mndwi','ndwi','ndvi'].find(m=>ui.metrics.has(m))||'mndwi';
+ for(let n=0;n<casePriority.length;n++){
+  const r=casePriority[n],c=r.pair,indexMode=['mndwi','ndwi','ndvi'].find(m=>ui.metrics.has(m))||'mndwi';
   const imAfter=d.images.find(x=>x.plot===r.code&&x.date===c.date_b&&imageURL(x,indexMode));
   const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===c.date_b);
   const scA=sourceScene(r.code,c.date_a),scB=sourceScene(r.code,c.date_b);
@@ -484,8 +485,9 @@ function floodPlan(d){
  }
  for(const visualPage of visualScreeningPages(d,new Set(priority.map(r=>r.code))))section(visualPage.key,visualPage.title,visualPage.body);
   const rainRows=priority.concat(ordered.slice(3,6)).map(r=>{
-  const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===r.pair.date_b);
-  return {plot:r.code,date:r.pair.date_b,rain:rain?.rain_prev_3_utc_days_mm==null?'—':num(rain.rain_prev_3_utc_days_mm),one:rain?.rain_prev_1_utc_day_mm==null?'—':num(rain.rain_prev_1_utc_day_mm),qa:rain?.data_quality||'ไม่ทราบ'};
+  const date=r.timeline?.latest.date||r.pair?.date_b;
+  const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===date);
+  return {plot:r.code,date:date||'—',rain:rain?.rain_prev_3_utc_days_mm==null?'—':num(rain.rain_prev_3_utc_days_mm),one:rain?.rain_prev_1_utc_day_mm==null?'—':num(rain.rain_prev_1_utc_day_mm),qa:rain?.data_quality||'ไม่ทราบ'};
  });
  section('05 / CONTEXT','ฝน น้ำขึ้นลง และข้อจำกัดเหตุการณ์',
   '<h3>ฝนย้อนหลังอ้างอิงวันที่ภาพหลัง (ถ้ามี)</h3>'+
@@ -508,7 +510,7 @@ function floodPlan(d){
   '<div class="rpt-kpis rpt-flood-kpis">'+metric('แปลงทั้งหมด',rows.length)+metric('แปลงมี Change Pair',comparable.length)+
   metric('วันภาพ QA ผ่าน',d.good.length+'/'+d.all.length)+metric('แปลงยังไม่มีคู่เทียบ',dataGaps.length)+'</div>'+
   '<h3>ประเด็นจำกัดคุณภาพข้อมูล</h3><ul class="rpt-findings">'+issues.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
-  '<h3>ตัวอย่างไฟล์หลักฐานต้นทางของแปลงที่ตรวจสอบก่อน</h3>'+table(priority.map(r=>({plot:r.code,beforeDate:r.pair.date_a,currentDate:r.pair.date_b,before:sourceScene(r.code,r.pair.date_a)?.original_tif10||'—',after:sourceScene(r.code,r.pair.date_b)?.original_tif10||'—'})),[['plot','แปลง'],['beforeDate','ภาพก่อนหน้า'],['currentDate','ภาพปัจจุบัน'],['before','TIFF ก่อน'],['after','TIFF หลัง']])+ 
+  '<h3>ตัวอย่างไฟล์หลักฐานต้นทางของแปลงที่ตรวจสอบก่อน</h3>'+table(casePriority.map(r=>({plot:r.code,beforeDate:r.pair.date_a,currentDate:r.pair.date_b,before:sourceScene(r.code,r.pair.date_a)?.original_tif10||'—',after:sourceScene(r.code,r.pair.date_b)?.original_tif10||'—'})),[['plot','แปลง'],['beforeDate','ภาพก่อนหน้า'],['currentDate','ภาพปัจจุบัน'],['before','TIFF ก่อน'],['after','TIFF หลัง']])+ 
   '<h3>การตรวจสอบความพร้อมก่อนใช้งาน</h3>'+
   table([{item:'ผลน้ำเปลี่ยนบน Common-clear Area',state:comparable.length?'มีข้อมูลคัดกรอง':'ไม่มีข้อมูล',owner:'ตรวจวิธีคำนวณ'},{
    item:'ภาพ TIFF และวันภาพ QA',state:d.good.length?'พบชุดข้อมูล':'ไม่มี',owner:'ตรวจ scene ID / SCL'},{
@@ -549,7 +551,7 @@ function floodPlan(d){
  }
  return {out,imageCount:out.reduce((n,p)=>n+(p.body.match(/<figure class="rpt-image"/g)||[]).length,0),
    audit:{scope,plots:rows.length,comparable:comparable.length,increases:increase.length,latestQA:latest?.date||null,
-    reviewNeeded:true,changePairCaveats:issues,priority:priority.map(r=>({plot:r.code,net_water_rai:r.water,common_clear_rai:r.area,date_a:r.pair.date_a,date_b:r.pair.date_b}))}};
+    reviewNeeded:true,changePairCaveats:issues,priority:priority.map(r=>({plot:r.code,net_water_rai:r.water,common_clear_rai:r.area,date_a:r.pair?.date_a||null,date_b:r.pair?.date_b||null,latest_observation_date:r.timeline?.latest.date||null,latest_water_rai:r.timeline?.latest.water??null,peak_water_rai:r.timeline?.peak.water??null}))}};
 }
 
 function documentPlan(d){
