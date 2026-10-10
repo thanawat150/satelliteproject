@@ -307,6 +307,10 @@ await page.waitForFunction(()=>{
 },{timeout:20000});
 assert.ok((await page.locator('#rpt-preview .rpt-visual-pair').count())>=1,'Visual evidence page is included in onscreen A4 preview');
 
+const visualDiagnostics=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-visual-pair')].map(x=>({status:x.dataset.visualScan,rings:x.querySelectorAll('.rpt-visual-overlay circle').length,note:x.querySelector('.rpt-visual-result')?.textContent?.slice(0,100)})));
+console.log('MMC_VISUAL_SCREEN_DIAGNOSTICS',JSON.stringify(visualDiagnostics));
+
+
 
 assert.ok(rayong.text.includes('ข้อค้นพบเฉพาะแปลง 17-STC')&&rayong.text.includes('ข้อค้นพบเฉพาะแปลง 13-STC'),'Rayong flood cases must include plot-specific interpretations');
 assert.ok(rayong.text.includes('เปลี่ยนเป็นน้ำ')&&rayong.text.includes('เปลี่ยนออกจากน้ำ'),'Report must show independent measured gain and loss of water, not net alone');
