@@ -367,6 +367,54 @@ def generate_visual_only(ten,output,plot,date,geometry4326=None,twenty=None):
         }
 
 
+def download_source_tiff(gdown,source_id,destination,min_bands=4):
+    """Try authenticated-free Drive URLs without accepting a download HTML page as TIFF.
+
+    Source IDs originate in the source manifest or indexed Drive folders;
+    never persist original TIFF bytes to GitHub pages.
+    """
+    import urllib.request
+    from urllib.parse import quote
+    destination=Path(destination)
+    errors=[]
+    def verify():
+        if not destination.is_file() or destination.stat().st_size<1024:
+            raise ValueError("Downloaded source is too small")
+        with rio_open(destination) as ds:
+            if not ds.crs or ds.count<min_bands:
+                raise ValueError("Source TIFF has missing CRS or bands")
+        return destination
+    for use_cookies in (False,True):
+        try:
+            got=gdown.download(id=source_id,output=str(destination),quiet=True,
+                               timeout=120,retries=3,use_cookies=use_cookies)
+            if got:return verify()
+        except Exception as exc:
+            errors.append("gdown:"+str(exc).split("\n")[0][:120])
+        destination.unlink(missing_ok=True)
+    urls=[
+        "https://drive.usercontent.google.com/download?id="+quote(source_id)+"&export=download&confirm=t",
+        "https://drive.google.com/uc?export=download&id="+quote(source_id)
+    ]
+    for url in urls:
+        try:
+            req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 MMC-source-raster"})
+            with urllib.request.urlopen(req,timeout=120) as response,open(destination,"wb") as handle:
+                header=response.headers.get("content-type","").lower()
+                if "text/html" in header:raise ValueError("Google Drive returned HTML instead of TIFF")
+                total=0
+                while True:
+                    chunk=response.read(256*1024)
+                    if not chunk:break
+                    total+=len(chunk)
+                    if total>512*1024*1024:raise ValueError("Source file exceeds 512MiB safety limit")
+                    handle.write(chunk)
+            return verify()
+        except Exception as exc:
+            errors.append("public-download:"+str(exc).split("\n")[0][:120])
+            destination.unlink(missing_ok=True)
+    raise RuntimeError("Cannot retrieve verified source TIFF: "+" | ".join(errors[-4:]))
+
 def candidates_from_result(result,plot):
     """Render every individually QA-valid Sentinel-2 scene, not only first/latest.
 
@@ -492,19 +540,13 @@ def run_shard(args):
                     ids=from_folder(gdown,plot,scene,folder_index)
                     id10,name10=ids[0]
                 tif=local/"10m.tif"
-                got=gdown.download(id=id10,output=str(tif),quiet=True,
-                                   timeout=120,retries=3,use_cookies=False)
-                if not got or not tif.exists() or tif.stat().st_size<1024:
-                    raise ValueError("Unavailable original 10m TIFF: "+str(name10))
+                download_source_tiff(gdown,id10,tif,4)
                 tif20=local/"20m.tif"
                 id20=scene.get("original_tif20_file_id")
                 if not id20:
                     ids=from_folder(gdown,plot,scene,folder_index)
                     id20=ids[1][0]
-                got20=gdown.download(id=id20,output=str(tif20),quiet=True,
-                                      timeout=120,retries=3,use_cookies=False)
-                if not got20 or not tif20.exists() or tif20.stat().st_size<1024:
-                    raise ValueError("Unavailable original 20m TIFF for visual index maps")
+                download_source_tiff(gdown,id20,tif20,7)
                 entry=generate_visual_only(tif,docs/plot/date,plot,date,geoms.get(plot),twenty=tif20)
                 entry["qa_valid_pct"]=scene.get("qa_valid_pct")
                 entry["source_qa_status"]=scene["analysis_status"]
