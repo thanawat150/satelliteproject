@@ -44,4 +44,19 @@ assert.equal(rejected.ndwi,null,'never expose unvalidated water index');
 assert.equal(rejected.rainfall_prev_1_utc_day_mm,null);
 assert.equal(rejected.tide_level_m,null,'never invent tide observations');
 assert.equal(water.daySnapshot(dates,'2026-09-30',rainDays),null,'no values for a date without a scene');
+const prior=water.priorWaterComparison([
+ {date:'2026-04-30',analysis_status:'AUTO_VALID',water_rai:32.927,pdd_area_rai:259.8925},
+ {date:'2026-09-29',analysis_status:'AUTO_VALID',water_rai:228.019,pdd_area_rai:259.8925}
+ ],'2026-09-29');
+assert.equal(prior.status,'SCREENING_TWO_DATE_CHANGE_NOT_SEASONAL_BASELINE');
+assert.ok(Math.abs(prior.water_change_rai-195.092)<0.00001);
+assert.equal(prior.not_verified_flood,true);
+const rainSample=water.rainAssessment({results:{'2026-09-29':{
+ rain_prev_1_utc_day_mm:{status:'SEASONAL_REFERENCE_READY',sample_count:310,relative_status:'LOW',percentile:19.35,reference_median_mm:11.125,reference_p95_mm:46.601},
+ rain_prev_3_utc_days_mm:{status:'SEASONAL_REFERENCE_READY',sample_count:310,relative_status:'HIGH',percentile:92.58,reference_median_mm:41.63,reference_p95_mm:109.383}
+ }}},'2026-09-29');
+assert.equal(rainSample.one_day.relative_status,'LOW');
+assert.equal(rainSample.three_days.relative_status,'HIGH');
+assert.equal(rainSample.three_days.percentile,92.58);
+assert.equal(water.rainAssessment(null,'2026-09-29').status,'BASELINE_NOT_CONNECTED');
 console.log('WATER_INTELLIGENCE_QA_PASS',result.reversals.length,result.held.length);
