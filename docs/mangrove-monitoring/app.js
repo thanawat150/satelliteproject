@@ -214,25 +214,43 @@ function initMap(where,plots,tall=false){clearMap();const div=$(where);if(!div)r
  setTimeout(()=>{try{map.invalidateSize()}catch(e){}},120);
 }
 function svgChart(rows,key,opts={}){
- const good=rows.filter(x=>qaOk(x)&&x[key]!==null&&x[key]!==undefined&&x[key]!==''&&Number.isFinite(Number(x[key])));
+ const good=rows.filter(x=>qaOk(x)&&x[key]!==null&&x[key]!==undefined&&x[key]!==''&&Number.isFinite(Number(x[key])))
+     .slice().sort((a,b)=>a.date.localeCompare(b.date));
  if(!good.length)return empty('ยังไม่มีค่าที่ใช้แสดงกราฟ','ไม่ใช้ค่า NO_DATA / PARTIAL หรือข้อมูลฝนที่ขาด');
- const v=good.map(x=>Number(x[key])),min=Math.min(...v),max=Math.max(...v);
- const minSpan=opts.unit==='ค่าดัชนี'?0.05:opts.unit==='%'?1:opts.unit==='ไร่'?0.5:2;
- const span=Math.max(max-min,minSpan);
- const base=opts.nonnegative?Math.max(0,min-span*.20):min-span*.20;
- const top=max+span*.20;
- const w=680,h=240,pad=39;
+ const vals=good.map(x=>Number(x[key])),minimum=Math.min(...vals),maximum=Math.max(...vals);
+ const smallest=opts.unit==='ค่าดัชนี'?0.05:opts.unit==='%'?1:opts.unit==='ไร่'?0.5:2;
+ const span=Math.max(maximum-minimum,smallest);
+ const low=opts.nonnegative?Math.max(0,minimum-span*.18):minimum-span*.18;
+ const high=Math.max(maximum+span*.18,low+smallest);
  const timestamps=good.map(x=>Date.parse(x.date+'T00:00:00Z'));
- const lo=Math.min(...timestamps),hi=Math.max(...timestamps);
- const xx=i=>pad+(w-2*pad)*(lo===hi?.5:(timestamps[i]-lo)/(hi-lo));
- const yy=n=>h-pad-(Number(n)-base)/(top-base)*(h-2*pad);
- const points=good.map((r,i)=>xx(i).toFixed(1)+','+yy(r[key]).toFixed(1)).join(' ');
- const numTick=n=>fmt(n,opts.decimals??3);
- const axes=[.2,.5,.8].map(q=>'<line x1="'+pad+'" y1="'+(h-pad-q*(h-2*pad))+'" x2="'+(w-pad)+'" y2="'+(h-pad-q*(h-2*pad))+'" stroke="#305747" stroke-dasharray="3 5"/><text x="'+(pad+2)+'" y="'+(h-pad-q*(h-2*pad)-7)+'" fill="#9cbdab" font-size="12">'+html(numTick(base+q*(top-base)))+'</text>').join('');
- const dots=good.map((r,i)=>'<circle cx="'+xx(i)+'" cy="'+yy(r[key])+'" r="5" fill="#99f2bc"><title>'+html(r.date)+' • '+html(opts.label||key)+': '+html(numTick(r[key]))+' '+html(opts.unit||'')+'</title></circle>').join('');
- return '<div class="mini-chart"><svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="กราฟ '+html(opts.label||key)+' '+good.length+' วันผ่าน QA หน่วย '+html(opts.unit||'')+'">'+axes+
-  '<polyline fill="none" stroke="#79dfaa" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="'+points+'"/>'+dots+
-  '</svg></div><div class="timeline-labels"><span>'+html(good[0].date)+'</span><span>'+html(good.at(-1).date)+'</span></div>';
+ const earliest=Math.min(...timestamps),latest=Math.max(...timestamps);
+ // The line uses SVG vector-effect=non-scaling-stroke, while markers/ticks
+ // are HTML. This prevents huge desktop SVGs from escaping the fixed chart
+ // and keeps axis text/point circles legible at any screen width.
+ const xpos=i=>4+92*(earliest===latest?.5:(timestamps[i]-earliest)/(latest-earliest));
+ const ypos=v=>8+84*(high-Number(v))/(high-low);
+ const points=good.map((x,i)=>(xpos(i)*10).toFixed(2)+','+(ypos(x[key])*10).toFixed(2)).join(' ');
+ const format=n=>fmt(n,opts.decimals??3);
+ const ticks=[20,50,80].map(y=>{
+  const value=low+(high-low)*(1-y/100);
+  return '<span class="ts-y-tick" style="top:'+y+'%">'+html(format(value))+'</span>';
+ }).join('');
+ const grid=[20,50,80].map(y=>'<line x1="0" y1="'+(y*10)+'" x2="1000" y2="'+(y*10)+'" class="ts-gridline" vector-effect="non-scaling-stroke"/>').join('');
+ const zero=(low<0&&high>0)?'<line x1="0" y1="'+(ypos(0)*10)+'" x2="1000" y2="'+(ypos(0)*10)+'" class="ts-zero-line" vector-effect="non-scaling-stroke"/>':'';
+ const markers=good.map((r,i)=>{
+   const tip=r.date+' · '+(opts.label||key)+' '+format(r[key])+' '+(opts.unit||'');
+   return '<span class="ts-point" role="img" tabindex="0" aria-label="'+html(tip)+'" title="'+html(tip)+'" style="left:'+xpos(i).toFixed(3)+'%;top:'+ypos(r[key]).toFixed(3)+'%"></span>';
+ }).join('');
+ const count=good.length;
+ return '<div class="ts-chart" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
+  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+'</div>'+
+  '<div class="ts-chart-layout"><div class="ts-y-axis" aria-hidden="true">'+ticks+'</div>'+
+  '<div class="ts-plot" role="group" aria-label="จุดข้อมูล '+count+' วัน มีคำอธิบายค่าที่แต่ละจุด">'+
+  '<svg class="ts-chart-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+grid+zero+
+  '<polyline class="ts-chart-line" points="'+points+'" fill="none" vector-effect="non-scaling-stroke"/></svg>'+
+  markers+'</div></div>'+
+  '<div class="ts-x-axis"><span>'+html(good[0].date)+'</span><span>'+html(good.at(-1).date)+'</span></div>'+
+  '<div class="ts-chart-footer">ข้อมูลที่ใช้วาดกราฟ '+count+' วัน • เลื่อนเมาส์หรือแตะจุดเพื่ออ่านค่าของวันนั้น</div></div>';
 }
 
 function previewCoverage(){
