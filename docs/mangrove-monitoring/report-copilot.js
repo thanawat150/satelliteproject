@@ -229,7 +229,8 @@ function floodPlan(d){
   '<p>จัดลำดับตาม <b>พื้นที่น้ำเพิ่มสุทธิที่จำแนกได้</b> ในคู่ภาพล่าสุดที่ผ่านเงื่อนไขของแต่ละแปลง ไม่ใช่อันดับน้ำท่วมจริง และไม่ได้ปรับระยะเวลาหรือน้ำขึ้นลงให้เทียบเท่ากัน</p>'+
   table(rankChunk.map(shortRow),rankingCols)+
   '<p class="rpt-caption">แสดง '+rankChunk.length+' / '+comparable.length+' แปลงที่มีคู่ภาพ · สัญญาณน้ำเพิ่ม '+increase.length+' แปลง · ไม่มีคู่ภาพ '+noPair+' แปลง</p>'+
-  '<p class="rpt-disclaimer">ช่วงเวลาต่างกัน: '+esc(variableWindows?'ห้ามตีความอันดับนี้เป็นความรุนแรงเปรียบเทียบกันได้':'ช่วงเวลาต้องตรวจสอบแยกแปลง')+' · ช่วงวันที่หลังภาพไม่จำเป็นต้องเป็นวันที่ภาพล่าสุดที่มี</p>');
+  '<p class="rpt-disclaimer">ช่วงเวลาต่างกัน: '+esc(variableWindows?'ห้ามตีความอันดับนี้เป็นความรุนแรงเปรียบเทียบกันได้':'ช่วงเวลาต้องตรวจสอบแยกแปลง')+' · ช่วงวันที่หลังภาพไม่จำเป็นต้องเป็นวันที่ภาพล่าสุดที่มี</p>'+ 
+  '<p class="rpt-caption"><b>คำอธิบาย:</b> Δ น้ำ = ผลต่างพื้นที่ที่จำแนกเป็นน้ำระหว่างภาพสองวัน; พื้นที่ร่วม = พิกเซลที่นำมาเปรียบเทียบได้ทั้งสองวัน; QA = การตรวจคุณภาพภาพสำหรับการวิเคราะห์ ไม่ใช่ความถูกต้องของการยืนยันน้ำท่วม</p>');
  if(comparable.length>14){
   for(let i=14;i<comparable.length;i+=16)section('03 / EVIDENCE '+(i/16+1),'ตารางหลักฐานเพิ่มเติม',
    table(ranked.slice(i,i+16).map(shortRow),rankingCols)+'<p class="rpt-caption">รายการที่มีคู่ภาพทั้งหมด ไม่ซ่อนแปลงท้ายรายงาน</p>');
@@ -274,6 +275,7 @@ function floodPlan(d){
   '<div class="rpt-kpis rpt-flood-kpis">'+metric('แปลงทั้งหมด',rows.length)+metric('แปลงมี Change Pair',comparable.length)+
   metric('วันภาพ QA ผ่าน',d.good.length+'/'+d.all.length)+metric('แปลงยังไม่มีคู่เทียบ',dataGaps.length)+'</div>'+
   '<h3>ประเด็นจำกัดคุณภาพข้อมูล</h3><ul class="rpt-findings">'+issues.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
+  '<h3>ตัวอย่างไฟล์หลักฐานต้นทางของแปลงที่ตรวจสอบก่อน</h3>'+table(priority.map(r=>({plot:r.code,dates:pairText(r),before:sourceScene(r.code,r.pair.date_a)?.original_tif10||'—',after:sourceScene(r.code,r.pair.date_b)?.original_tif10||'—'})),[['plot','แปลง'],['dates','วันเปรียบเทียบ'],['before','TIFF ก่อน'],['after','TIFF หลัง']])+ 
   '<h3>การตรวจสอบความพร้อมก่อนใช้งาน</h3>'+
   table([{item:'ผลน้ำเปลี่ยนบน Common-clear Area',state:comparable.length?'มีข้อมูลคัดกรอง':'ไม่มีข้อมูล',owner:'ตรวจวิธีคำนวณ'},{
    item:'ภาพ TIFF และวันภาพ QA',state:d.good.length?'พบชุดข้อมูล':'ไม่มี',owner:'ตรวจ scene ID / SCL'},{
