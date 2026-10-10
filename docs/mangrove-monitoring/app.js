@@ -79,7 +79,7 @@ function timeSeriesPanel(plot,key){
   '<div><h2 id="time-series-title">Time Series · '+html(meta[0])+'</h2>'+
   '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+' · เฉพาะ AUTO_VALID</p></div>'+
   '<label class="time-series-select">เลือกค่าที่แสดงบนกราฟ<select id="timeseries-metric-select" aria-label="เลือกค่ากราฟ Time Series">'+seriesOptions(key)+'</select></label>'+
-  '</div><div id="time-series-visual">'+svgChart(good,'series_value',{unit:seriesUnit(key),decimals:meta[1]==='index'?4:2,label:meta[0],nonnegative:meta[1]!=='index'})+'</div>'+
+  '</div><div id="time-series-visual">'+svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index'})+'</div>'+
   '<div id="time-series-details">'+timeSeriesInfo(key,good)+'</div></div>';
 }
 function changeTimeSeriesMetric(key){
@@ -91,7 +91,7 @@ function changeTimeSeriesMetric(key){
  const title=$('time-series-title'),subtitle=$('time-series-subtitle'),graphic=$('time-series-visual'),info=$('time-series-details'),kpis=$('analysis-metric-kpis');
  if(title)title.textContent='Time Series · '+meta[0];
  if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+' · เฉพาะ AUTO_VALID';
- if(graphic)graphic.innerHTML=svgChart(good,'series_value',{unit:seriesUnit(key),decimals:meta[1]==='index'?4:2,label:meta[0],nonnegative:meta[1]!=='index'});
+ if(graphic)graphic.innerHTML=svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index'});
  if(info)info.innerHTML=timeSeriesInfo(key,good);
  if(kpis)kpis.innerHTML=timeSeriesKpis(plot,key);
 }
@@ -274,8 +274,10 @@ function svgChart(rows,key,opts={}){
  const vals=good.map(x=>Number(x[key])),minimum=Math.min(...vals),maximum=Math.max(...vals);
  const smallest=opts.unit==='ค่าดัชนี'?0.05:opts.unit==='%'?1:opts.unit==='ไร่'?0.5:2;
  const span=Math.max(maximum-minimum,smallest);
- const low=opts.nonnegative?Math.max(0,minimum-span*.18):minimum-span*.18;
- const high=Math.max(maximum+span*.18,low+smallest);
+ const isStandardIndex=['ndvi','ndre','ndmi','ndwi','mndwi','bsi','gli'].includes(opts.key)
+   &&minimum>=-1&&maximum<=1;
+ const low=isStandardIndex?-1:(opts.nonnegative?Math.max(0,minimum-span*.18):minimum-span*.18);
+ const high=isStandardIndex?1:Math.max(maximum+span*.18,low+smallest);
  const timestamps=good.map(x=>Date.parse(x.date+'T00:00:00Z'));
  const earliest=Math.min(...timestamps),latest=Math.max(...timestamps);
  // The line uses SVG vector-effect=non-scaling-stroke, while markers/ticks
@@ -297,7 +299,7 @@ function svgChart(rows,key,opts={}){
  }).join('');
  const count=good.length;
  return '<div class="ts-chart" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
-  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+'</div>'+
+  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1 ถึง +1 (ไม่ขยายความต่าง)':'')+'</div>'+
   '<div class="ts-chart-layout"><div class="ts-y-axis" aria-hidden="true">'+ticks+'</div>'+
   '<div class="ts-plot" role="group" aria-label="จุดข้อมูล '+count+' วัน มีคำอธิบายค่าที่แต่ละจุด">'+
   '<svg class="ts-chart-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+grid+zero+
