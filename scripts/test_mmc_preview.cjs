@@ -271,7 +271,7 @@ assert.ok(await page.locator('[data-rpt-scope-switch="province"][aria-pressed="t
 assert.equal(await page.locator('#rpt-image-dates').inputValue(),'2','Province reports default to two image dates per plot');
 const provinceReport=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,head:r.pages.split('</article>')[0],hasCases:r.pages.includes('กรณีตรวจสอบ'),hasActions:r.pages.includes('ข้อเสนอแนะและการตัดสินใจ'),hasCautions:r.pages.includes('น้ำขึ้นลง'),audit:r.audit,hasAtlas:r.pages.includes('Index Atlas')}}); 
 assert.ok(provinceReport.plots>1,'Province flood report must include actual plot registry');
-assert.ok(provinceReport.pages>=6&&provinceReport.pages<=16,'Decision-first province flood report includes at most a few visual comparison pages: '+provinceReport.pages);
+assert.ok(provinceReport.pages>=8&&provinceReport.pages<=24,'Decision-first province flood report includes at most a few visual comparison pages: '+provinceReport.pages);
 assert.ok(provinceReport.images>=2&&provinceReport.images<=16,'Flood brief presents selected before/after evidence, not full atlas');
 assert.ok(provinceReport.hasCases&&provinceReport.hasActions&&provinceReport.hasCautions,'Flood brief must explain priority cases, action plan and tide limits');
 assert.ok(!provinceReport.hasAtlas,'Flood report must not generate dozens of index atlas pages by default');
@@ -285,11 +285,19 @@ assert.equal(await page.locator('#rpt-type').inputValue(),'water','Exact user re
 assert.equal(await page.locator('#rpt-scope').inputValue(),'province','Exact user request resolves Rayong province, not a random plot');
 assert.equal(await page.locator('#rpt-period').inputValue(),'180','No specified window uses an explicit default six-month period');
 const rayong=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,qa:r.audit,front:r.pages.split('</article>')[0],text:r.pages};});
-assert.ok(rayong.pages>=7&&rayong.pages<=16,'Exact prompt should remain a concise executive report including visual comparison pages, not 55-page atlas');
+assert.ok(rayong.pages>=9&&rayong.pages<=24,'Exact prompt should remain a concise executive report including visual comparison pages, not 55-page atlas');
 assert.ok(rayong.qa&&rayong.qa.plots===19,'Rayong report contains exactly 19 registry plots');
 assert.ok(rayong.qa.comparable>0,'Flood brief finds QA-valid before-after pair evidence from the real dataset');
 assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Prioritized Rayong case evidence must include supported high-change plots');
 assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู้บริหาร'),'Executive findings appear immediately instead of page 49');
+
+assert.ok(rayong.front.includes('สถานการณ์ล่าสุดเทียบช่วงที่น้ำสูงกว่า'),'Executive cover must lead with latest receding-water evidence');
+assert.ok(rayong.text.includes('2026-10-07 · 60.06')&&rayong.text.includes('2026-09-29 · 238.45'),'17-STC shows both high-water and later recession rather than stopping in September');
+assert.ok(rayong.text.includes('2026-10-07 · 13.75')&&rayong.text.includes('2026-09-29 · 76.01'),'21-STC recent receding water is included');
+assert.ok(rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 17-STC')&&rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 21-STC'),'Visual timeline pages prioritize dated recession examples');
+assert.ok(rayong.text.includes('วันภาพทั้งหมดที่มี Raster MNDWI'),'Review pages disclose every raster date, not only two');
+assert.ok(rayong.front.includes('น้ำลดจากช่วงสูงในภาพล่าสุด'),'Executive KPI differentiates current recession from older pair change');
+
 assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็นน้ำท่วม'),'Screening uncertainty must be explicit and unambiguous');
 
 const visualReview=await page.evaluate(()=>{
@@ -305,9 +313,9 @@ await page.waitForFunction(()=>{
  const el=document.querySelector('#rpt-preview .rpt-visual-pair[data-visual-scan="eligible"] .rpt-visual-result');
  return !el||!/กำลังตรวจ/.test(el.textContent||'');
 },{timeout:20000});
-assert.ok((await page.locator('#rpt-preview .rpt-visual-pair').count())>=1,'Visual evidence page is included in onscreen A4 preview');
+assert.ok(visualReview.visualPages>=2,'Multiple visual plot timelines exist in the full report');
 
-const visualDiagnostics=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-visual-pair')].map(x=>({status:x.dataset.visualScan,rings:x.querySelectorAll('.rpt-visual-overlay circle').length,note:x.querySelector('.rpt-visual-result')?.textContent?.slice(0,100)})));
+const visualDiagnostics=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-visual-pair')].map(x=>({status:x.dataset.visualScan,outlines:x.querySelectorAll('.rpt-visual-overlay ellipse').length,note:x.querySelector('.rpt-visual-result')?.textContent?.slice(0,100)})));
 console.log('MMC_VISUAL_SCREEN_DIAGNOSTICS',JSON.stringify(visualDiagnostics));
 
 
