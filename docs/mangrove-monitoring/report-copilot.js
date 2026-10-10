@@ -69,6 +69,7 @@ function evidence(){
  const all=allScenes().filter(x=>codes.has(x.plot)&&x.date>=threshold&&x.date<=dateNow()).sort((a,b)=>a.date.localeCompare(b.date));
  const good=all.filter(x=>x.analysis_status==='AUTO_VALID');
  const images=allImages().filter(x=>codes.has(x.plot)&&good.some(y=>y.plot===x.plot&&y.date===x.date)&&x.source==='generated').sort((a,b)=>b.date.localeCompare(a.date));
+ const visualImages=allImages().filter(x=>codes.has(x.plot)&&x.date>=threshold&&x.date<=dateNow()&&x.source==='generated'&&x.assets).sort((a,b)=>b.date.localeCompare(a.date));
  const changes=(ctx?.changes||[]).filter(c=>codes.has(c.plot)&&c.date_b>=threshold&&c.status==='AUTO_VALID'&&Number(c.common_clear_rai)>0);
  const cautions=[];
  if(!pp.length)cautions.push('ไม่มีแปลงในขอบเขตที่เลือก');
@@ -77,7 +78,7 @@ function evidence(){
  if(pp.some(x=>!x.geometry))cautions.push('บางแปลงยังไม่มีขอบเขต GIS');
  if(ui.scope!=='plot')cautions.push('ไม่เฉลี่ยค่าดัชนีของหลายแปลงข้ามพื้นที่โดยไม่มีวิธีถ่วงน้ำหนักที่ตรวจสอบได้');
  cautions.push('ข้อมูลภาพดาวเทียมใช้คัดกรอง ไม่ใช่หลักฐานยืนยันน้ำท่วม ต้นไม้ตาย หรือการบุกรุก');
- return {pp,all,good,images,changes,cautions,threshold};
+ return {pp,all,good,images,visualImages,changes,cautions,threshold};
 }
 function imageURL(scene,mode){
  const name=scene?.assets?.[mode];
