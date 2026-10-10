@@ -1,10 +1,4 @@
-const crypto = require('crypto');
-
-async function readRaw(req) {
-  const chunks = [];
-  for await (const chunk of req) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-  return Buffer.concat(chunks);
-}
+import crypto from 'node:crypto';
 
 function validSignature(raw, signature, secret) {
   if (!signature || !secret) return false;
@@ -31,28 +25,28 @@ async function reply(replyToken, text) {
   if (!r.ok) console.error('LINE reply failed', r.status, await r.text());
 }
 
-module.exports = async function handler(req, res) {
-  if (req.method === 'GET') {
-    return res.status(200).json({ ok: true, service: 'Ken Affiliate LINE webhook' });
-  }
-  if (req.method !== 'POST') return res.status(405).json({ ok: false });
+export async function GET() {
+  return Response.json({ ok: true, service: 'Ken Affiliate LINE webhook' });
+}
 
-  const raw = await readRaw(req);
-  const signature = req.headers['x-line-signature'];
+export async function POST(request) {
+  const raw = await request.text();
+  const signature = request.headers.get('x-line-signature');
+
   if (!validSignature(raw, signature, process.env.LINE_CHANNEL_SECRET)) {
-    return res.status(401).json({ ok: false, error: 'invalid signature' });
+    return Response.json({ ok: false, error: 'invalid signature' }, { status: 401 });
   }
 
   let body;
-  try { body = JSON.parse(raw.toString('utf8')); }
-  catch { return res.status(400).json({ ok: false, error: 'invalid json' }); }
+  try {
+    body = raw ? JSON.parse(raw) : {};
+  } catch {
+    return Response.json({ ok: false, error: 'invalid json' }, { status: 400 });
+  }
 
   for (const event of body.events || []) {
     const userId = event?.source?.userId;
-    if (userId) {
-      // Use Vercel Runtime Logs to retrieve this once, then store it as LINE_USER_ID.
-      console.log('LINE_USER_ID_DISCOVERED', userId);
-    }
+    if (userId) console.log('LINE_USER_ID_DISCOVERED', userId);
 
     if (event.replyToken && (event.type === 'follow' || event.type === 'message')) {
       await reply(
@@ -62,5 +56,5 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  return res.status(200).json({ ok: true });
-};
+  return Response.json({ ok: true }, { status: 200 });
+}
