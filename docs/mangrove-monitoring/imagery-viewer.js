@@ -14,13 +14,14 @@ const MODE={
  ndwi:['NDWI · น้ำผิวดิน','(B3−B8)/(B3+B8) • ติดลบในป่าเป็นปกติ']
 };
 let index=null,files=new Map(),epoch=0,map=null,boundaryMapLayer=null,boundaryResizeObserver=null;
-let active={plot:'13-STC',date:'',before:'',beforeManual:false,mode:'true_color',layout:'single',alpha:.85,geometry:null,rows:[],holder:null,existing:[],boundaryVisible:true,boundaryType:'PDD'};
+let active={plot:'13-STC',date:'',before:'',beforeManual:false,mode:'true_color',layout:'single',historyMode:'all',alpha:.85,geometry:null,rows:[],holder:null,existing:[],boundaryVisible:true,boundaryType:'PDD'};
 const $=(id)=>document.getElementById(id);
 const metricFmt=x=>x==null||x===''||!Number.isFinite(Number(x))?'—':Number(x).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,()=>String.fromCharCode(38)+'quot;').replace(/'/g,'&#39;');
 function dateRows(){return active.existing.filter(x=>x.plot===active.plot)}
 function qa(date){let r=active.rows.find(x=>x.date===date);if(!r)return {label:'QA ยังไม่ประมวลผล',kind:'noanalysis',percent:null};return {label:r.analysis_status||'ไม่ระบุ',kind:r.analysis_status||'unknown',percent:r.qa_valid_pct};}
 const modeOptions=(m)=>Object.entries(MODE).map(([k,v])=>'<option value="'+k+'" '+(k===m?'selected':'')+'>'+esc(v[0])+'</option>').join('');
+const historyOptions=(m)=>'<option value="all" '+(m==='all'?'selected':'')+'>แสดงทั้งหมด (8 ชนิด)</option>'+modeOptions(m);
 function available(item){return item?.modes||[]}
 function srcOK(x){return typeof x==='string'&&(/^data:image\/(?:png|jpeg|webp);base64,/i.test(x)||/^\.\/imagery\/[a-z0-9_()\/.\-]+(?:\?v=[a-z0-9_.\-]+)?$/i.test(x));}
 function previewSrc(row){return srcOK(row?.src)?row.src:null}
@@ -144,21 +145,24 @@ const src=previewSrc(layer);if(!src)return '<div class="mmc-img-empty">ไฟล
 return '<img loading="lazy" src="'+src+'" alt="'+esc(MODE[mode]?.[0]||mode)+' วันที่ '+esc(date)+' จากภาพดาวเทียมต้นฉบับ" draggable="false">'+overlaySvg(layer,item);}
 
 function allDateGallery(items,byDate,modes){
- const loaded=items.filter(x=>Object.keys(byDate.get(x.date)||{}).length>0).length;
- let out='<section class="img-history" id="img-all-dates"><div class="img-history-heading"><div><h3>ภาพดาวเทียมทุกวันของ '+esc(active.plot)+'</h3><p class="muted tiny">แสดงทุกวันที่มีในคลัง แยกตามวันที่และชนิดภาพ โดยมีขอบเขตสีแดงครอบภาพจริงทุกชนิด</p></div><span class="img-data-tag">'+loaded+' / '+items.length+' DATES WITH RASTER</span></div>';
+ const selected=active.historyMode==='all'?'all':(Object.prototype.hasOwnProperty.call(MODE,active.historyMode)?active.historyMode:'all');
+ const visibleModes=selected==='all'?modes:[selected];
+ const selectedName=selected==='all'?'ทุกชนิด':MODE[selected][0];
+ const loaded=items.filter(x=>visibleModes.some(mode=>Boolean(byDate.get(x.date)?.[mode]))).length;
+ let out='<section class="img-history" id="img-all-dates"><div class="img-history-heading"><div><h3>ภาพดาวเทียมทุกวันของ '+esc(active.plot)+'</h3><p class="muted tiny">แสดง '+esc(selectedName)+' ย้อนหลังทุกวันตามภาพที่มีจริง พร้อมขอบเขตแปลง • วันที่ไม่มีภาพที่เลือกจะแจ้งชัดเจน</p></div><span class="img-data-tag">'+loaded+' / '+items.length+' วันมีภาพที่เลือก</span></div>';
  for(const item of [...items].reverse()){
   const layers=byDate.get(item.date)||{};
-  const count=modes.filter(mode=>layers[mode]).length;
-  out+='<article class="img-history-date-card" data-history-date="'+esc(item.date)+'"><div class="img-history-meta"><div class="img-history-date"><b>'+esc(item.date)+'</b> '+statusPill(item.date)+' <span class="img-history-count">'+count+' / '+(item.preview_kind==='VISUAL_ONLY_NON_QA'?'8 ภาพจาก TIFF (ไม่ผ่าน QA)':'8 ภาพ')+'</span></div>'+
+  const count=visibleModes.filter(mode=>layers[mode]).length;
+  out+='<article class="img-history-date-card" data-history-date="'+esc(item.date)+'"><div class="img-history-meta"><div class="img-history-date"><b>'+esc(item.date)+'</b> '+statusPill(item.date)+' <span class="img-history-count">'+count+' / '+visibleModes.length+' ภาพ'+(item.preview_kind==='VISUAL_ONLY_NON_QA'?' (ไม่ผ่าน QA)':'')+'</span></div>'+
    '<button type="button" class="img-history-select" data-image-jump="'+esc(item.date)+'">เปิดวันนี้บนแผนที่</button></div>';
   if(!count){
-   out+='<div class="notice img-missing">วันที่นี้ยังไม่มี Raster Preview ('+esc(qa(item.date).label)+') ไม่สร้างภาพแทนจากแหล่งอื่น</div>';
+   out+='<div class="notice img-missing">วันที่นี้ยังไม่มีภาพ '+esc(selectedName)+' ('+esc(qa(item.date).label)+') ไม่ใช้ภาพชนิดอื่นหรือวันอื่นแทน</div>';
   }else{
    if(qa(item.date).kind!=='AUTO_VALID')out+='<p class="img-history-qa-caution">ภาพมีอยู่จริง แต่วันดังกล่าวไม่ผ่าน QA หรือยังไม่มีผล QA ยืนยัน จึงไม่ควรใช้สรุปผลกระทบ</p>';
    if(item.rgb_display_warning||Number(item.rgb_invalid_pct)>30||Number(item.rgb_unclassified_scl_pct)>20)out+='<p class="img-history-qa-caution">RGB QUALITY REVIEW: เกือบขาว '+metricFmt(item.rgb_near_white_pct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(item.rgb_invalid_pct)+'% · SCL 7 '+metricFmt(item.rgb_unclassified_scl_pct)+'% — ควรตรวจภาพต้นทางก่อนใช้งาน</p>';
    if(item.source==='generated'&&!item.rgb_renderer_version)out+='<p class="img-history-qa-caution">Preview รุ่นเก่า: ยังใช้การปรับสีรายภาพ ซึ่งอาจทำให้ภาพขาวหรือมีแถบดำ</p>';
-   out+='<div class="img-gallery img-history-gallery">';
-   for(const mode of modes){
+   out+='<div class="img-gallery img-history-gallery'+(visibleModes.length===1?' img-history-single':'')+'">';
+   for(const mode of visibleModes){
     out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small>'+(layers[mode]?'<button type="button" class="img-tile-open" data-image-open-mode="'+esc(mode)+'" data-image-open-date="'+esc(item.date)+'">เปิดบนแผนที่ ↗</button>':'')+indexStatBrief(item,mode)+'</div>';
    }
    out+='</div>';
@@ -179,6 +183,7 @@ const nav=items.length?
  '</div><div class="img-controls">'+
  (active.layout==='history'?'':'<label>วันที่ภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label>')+
  (active.layout==='single'||active.layout==='compare'?'<label>ชนิดภาพ<select id="image-mode">'+modeOptions(active.mode)+'</select></label>':'')+
+ (active.layout==='history'?'<label class="img-history-filter">แสดงภาพ<select id="image-history-mode" aria-label="เลือกภาพหรือดัชนีในทุกวัน">'+historyOptions(active.historyMode)+'</select></label>':'')+
  (active.layout==='compare'?'<label>เทียบกับวันก่อน<select id="image-before">'+(!active.before?'<option value="" selected disabled>ไม่มีภาพก่อนหน้าผ่าน QA</option>':'')+dateChoices(items.filter(x=>x.date<active.date),active.before)+'</select></label>':'')+
  '<details class="img-display-options"><summary>ตัวเลือกการแสดงผล</summary><div class="img-extra-controls">'+
  (active.layout==='single'?'<label>ความโปร่งใส<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label>':'')+
@@ -262,6 +267,7 @@ const change=ev=>{const t=ev.target;
 if(t.id==='image-date'){active.date=t.value;active.beforeManual=false;renderAsync();}
 if(t.id==='image-before'){active.before=t.value;active.beforeManual=true;renderAsync();}
 if(t.id==='image-mode'){active.mode=t.value;renderAsync();}
+ if(t.id==='image-history-mode'){active.historyMode=t.value==='all'||Object.prototype.hasOwnProperty.call(MODE,t.value)?t.value:'all';renderAsync();}
 
 if(t.id==='image-opacity'){active.alpha=Number(t.value)/100;if(map){map.eachLayer(layer=>{if(layer instanceof L.ImageOverlay)layer.setOpacity(active.alpha)})}}
 if(t.id==='image-boundary-toggle'){active.boundaryVisible=t.checked;hold.classList.toggle('boundary-hidden',!t.checked);if(map&&boundaryMapLayer){if(t.checked)boundaryMapLayer.addTo(map);else map.removeLayer(boundaryMapLayer);}const mapHolder=$('mmc-geo-map');if(mapHolder)mapHolder.dataset.boundaryVisible=String(Boolean(active.geometry&&t.checked));}
@@ -273,9 +279,9 @@ for(const button of hold.querySelectorAll('[data-image-jump]'))button.addEventLi
 });
 for(const button of hold.querySelectorAll('[data-image-layout]'))button.addEventListener('click',()=>{active.layout=button.dataset.imageLayout;renderAsync();});
 for(const button of hold.querySelectorAll('[data-image-open-mode]'))button.addEventListener('click',()=>{active.mode=button.dataset.imageOpenMode;active.date=button.dataset.imageOpenDate||active.date;active.layout='single';active.beforeManual=false;renderAsync();hold.scrollIntoView({block:'start',behavior:'smooth'});});
-for(const sel of ['image-date','image-before','image-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
+for(const sel of ['image-date','image-before','image-mode','image-history-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
 }catch(e){console.error('MMC imagery',e);if(id===epoch)showError(e.message||e)}}
-function mount(o){if(!o?.plot||!o?.container)return;active.layout='single';if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
+function mount(o){if(!o?.plot||!o?.container)return;active.layout='single';if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';active.historyMode='all';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
 function selectDate(date,mode){
  if(!date||!active.holder||!active.rows.some(x=>x.date===date))return false;
  if(!Object.prototype.hasOwnProperty.call(MODE,mode))mode='mndwi';
