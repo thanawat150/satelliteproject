@@ -272,8 +272,8 @@ assert.ok(await page.locator('[data-rpt-scope-switch="province"][aria-pressed="t
 assert.equal(await page.locator('#rpt-image-dates').inputValue(),'2','Province reports default to two image dates per plot');
 const provinceReport=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,head:r.pages.split('</article>')[0],hasCases:r.pages.includes('หลักฐานช่วงน้ำเพิ่มเดิม'),hasActions:r.pages.includes('ข้อเสนอแนะและการตัดสินใจ'),hasCautions:r.pages.includes('น้ำขึ้นลง'),audit:r.audit,hasAtlas:r.pages.includes('Index Atlas')}}); 
 assert.ok(provinceReport.plots>1,'Province flood report must include actual plot registry');
-assert.ok(provinceReport.pages>=8&&provinceReport.pages<=24,'Decision-first province flood report includes at most a few visual comparison pages: '+provinceReport.pages);
-assert.ok(provinceReport.images>=8&&provinceReport.images<=36,'Flood brief presents selected before/after evidence, not full atlas');
+assert.ok(provinceReport.pages>=8&&provinceReport.pages<=60,'Province decision report includes six-index evidence pages while remaining bounded: '+provinceReport.pages);
+assert.ok(provinceReport.images>=8&&provinceReport.images<=160,'Flood brief includes source-derived imagery for all six indices, not an unrestricted atlas');
 assert.ok(provinceReport.hasCases&&provinceReport.hasActions&&provinceReport.hasCautions,'Flood brief must explain priority cases, action plan and tide limits');
 assert.ok(!provinceReport.hasAtlas,'Flood report must not generate dozens of index atlas pages by default');
 assert.ok(provinceReport.head.includes('สรุปสถานการณ์พื้นที่น้ำ'),'Flood findings must appear on first page');
@@ -286,8 +286,10 @@ assert.equal(await page.locator('#rpt-type').inputValue(),'water','Exact user re
 assert.equal(await page.locator('#rpt-scope').inputValue(),'province','Exact user request resolves Rayong province, not a random plot');
 assert.equal(await page.locator('#rpt-period').inputValue(),'180','No specified window uses an explicit default six-month period');
 const rayong=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,qa:r.audit,front:r.pages.split('</article>')[0],text:r.pages};});
-assert.ok(rayong.pages>=9&&rayong.pages<=24,'Exact prompt should remain a concise executive report including visual comparison pages, not 55-page atlas');
+assert.ok(rayong.pages>=9&&rayong.pages<=60,'Exact prompt should include six-index comparison pages with a bounded report length');
 assert.ok(rayong.qa&&rayong.qa.plots===19,'Rayong report contains exactly 19 registry plots');
+assert.ok(['mndwi','ndwi','ndvi','ndre','ndmi','bsi'].every(mode=>rayong.text.includes('data-visual-mode="'+mode+'"')),'Every spectral index must be inspected via a date-matched visual comparison');
+
 assert.ok(rayong.qa.comparable>0,'Flood brief finds QA-valid before-after pair evidence from the real dataset');
 assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Selected plot histories must include both 17-STC and 13-STC');
 assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู้บริหาร'),'Executive findings appear immediately instead of page 49');
@@ -298,7 +300,7 @@ assert.ok(rayong.text.includes('−178.39')||rayong.text.includes('-178.39')||ra
 assert.ok(rayong.text.includes('rpt-water-decreased')&&rayong.text.includes('แนวโน้มล่าสุด'),'Water change chart is based on recent dates and emphasizes the decrease');
 assert.ok(rayong.text.includes('2026-10-07 · 13.75')&&rayong.text.includes('2026-09-29 · 76.01'),'21-STC recent receding water is included');
 assert.ok(rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 17-STC')&&rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 21-STC'),'Visual timeline pages prioritize dated recession examples');
-assert.ok(rayong.text.includes('วันภาพทั้งหมดที่มี Raster MNDWI'),'Review pages disclose every raster date, not only two');
+assert.ok(rayong.text.includes('วันที่และภาพดัชนีที่มี:'),'Review pages disclose every raster date, not only two');
  
 const visualOnlyQA=await page.evaluate(()=>{
  const report=window.MMCReportCopilot.renderPages();
@@ -308,9 +310,9 @@ const visualOnlyQA=await page.evaluate(()=>{
   text:p.querySelector('.rpt-visual-result')?.textContent||'',
   labels:[...p.querySelectorAll('.rpt-visual-date small')].map(x=>x.textContent||'')
  }));
- return {pairs,legend:report.pages.includes('rpt-mndwi-guide'),qaPage:report.pages.includes('ภาพที่คัดออกจากการแปลผลเชิงภาพ'),rejected:report.audit?.visualImagesRejected||0};
+ return {pairs,legend:['MNDWI','NDWI','NDVI','NDRE','NDMI','BSI'].every(name=>report.pages.includes(name)),qaPage:report.pages.includes('ภาพที่คัดออกจากการแปลผลเชิงภาพ'),rejected:report.audit?.visualImagesRejected||0};
 });
-assert.ok(visualOnlyQA.legend,'MNDWI source color palette must be explained to non-GIS readers');
+assert.ok(visualOnlyQA.legend,'Water reports must include all six actual index image modes');
 assert.ok(visualOnlyQA.pairs.length>0,'Report still has real index-pair comparisons');
 assert.ok(visualOnlyQA.pairs.filter(v=>v.labels.some(x=>/QA NO_DATA|พิกเซลผ่าน QA 0[.]00%/.test(x))).every(v=>v.scan==='disabled'),
  'Zero-SCL-QA data can be displayed as visual MNDWI but never auto-highlighted or certified');
@@ -336,7 +338,7 @@ assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็
 const visualReview=await page.evaluate(()=>{
  const rr=window.MMCReportCopilot.renderPages();
  return {pages:rr.total,visualPages:(rr.pages.match(/data-visual-scan="/g)||[]).length,
-  labels:rr.pages.includes('ภาพเปรียบเทียบจุดน้ำเปลี่ยน'),
+  labels:rr.pages.includes('ภาพดัชนีเปรียบเทียบ'),
   qa:rr.pages.includes('ไม่ผ่าน/ยังไม่มี QA'),
   cloudGate:rr.pages.includes('เมฆ')};
 });
