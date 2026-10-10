@@ -256,6 +256,12 @@ for(const button of hold.querySelectorAll('[data-image-jump]'))button.addEventLi
 for(const sel of ['image-date','image-before','image-mode','image-compare-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
 }catch(e){console.error('MMC imagery',e);if(id===epoch)showError(e.message||e)}}
 function mount(o){if(!o?.plot||!o?.container)return;if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';active.compareMode='true_color';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
+function selectDate(date,mode){
+ if(!date||!active.holder||!active.rows.some(x=>x.date===date))return false;
+ if(!Object.prototype.hasOwnProperty.call(MODE,mode))mode='mndwi';
+ active.date=date;active.mode=mode;active.beforeManual=false;
+ renderAsync();return true;
+}
 function clear(){epoch++;destroyMap();clearBoundaryLayout();active.holder=null;}
-window.MMCImagery={mount,clear,get coverage(){return index?{plots:index.plot_count,dates:index.image_dates}:null}};
+window.MMCImagery={mount,clear,selectDate,get coverage(){return index?{plots:index.plot_count,dates:index.image_dates}:null}};
 })();
