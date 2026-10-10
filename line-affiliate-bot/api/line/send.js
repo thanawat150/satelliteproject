@@ -29,8 +29,14 @@ async function pushMessages(messages) {
 function authorized(request) {
   const expected = process.env.LINE_REMINDER_SECRET;
   const auth = request.headers.get('authorization') || '';
-  const supplied = auth.replace(/^Bearer\s+/i, '');
+  const supplied = auth.replace(/^Bearer\\s+/i, '');
   return !!expected && supplied === expected;
+}
+
+function platformText(platforms) {
+  if (!platforms) return '';
+  if (Array.isArray(platforms)) return platforms.map(x => String(x).trim()).filter(Boolean).join(' + ');
+  return String(platforms).trim();
 }
 
 export async function POST(request) {
@@ -42,17 +48,19 @@ export async function POST(request) {
   try { body=await request.json(); } catch {}
 
   let messages = [];
+
   if (Array.isArray(body.messages)) {
     messages = body.messages;
-  } else if (body.download_url || body.post_text || body.info) {
-    // Message 1: download URL only, so it is clean and easy to tap.
+  } else if (body.download_url || body.platforms || body.post_text) {
+    // 1) Download link for the clip only.
     if (body.download_url) messages.push(String(body.download_url).trim());
 
-    // Message 2: caption + hashtags only. No labels or extra sentences.
-    if (body.post_text) messages.push(String(body.post_text).trim());
+    // 2) Platform(s) for this same clip, kept as a separate LINE message.
+    const p = platformText(body.platforms);
+    if (p) messages.push(p);
 
-    // Message 3: optional extra information, kept separate from the post text.
-    if (body.info) messages.push(String(body.info).trim());
+    // 3) Caption + hashtags only, ready to copy/paste.
+    if (body.post_text) messages.push(String(body.post_text).trim());
   } else if (body.text) {
     messages = [body.text];
   }
@@ -72,8 +80,8 @@ export async function GET() {
     service:'LINE push endpoint',
     format:{
       message1:'download_url only',
-      message2:'caption + hashtags only',
-      message3:'optional info'
+      message2:'platform(s) only',
+      message3:'caption + hashtags only'
     },
     method:'POST required for sending'
   });
