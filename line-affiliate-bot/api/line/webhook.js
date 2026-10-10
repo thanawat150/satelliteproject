@@ -149,16 +149,58 @@ export async function POST(request) {
         } catch {
           await reply(event.replyToken, 'อ่านคิววันนี้ไม่สำเร็จ ลองใหม่อีกครั้ง');
         }
-      } else if (incoming === 'สถานะ') {
+      } else if (incoming === 'สถานะ' || incoming === 'เช็คลิส' || incoming === 'checklist') {
         try {
-          const q = await getQueue();
-          await reply(event.replyToken,
-            'สถานะวันนี้\nTikTok: ' + (q.tiktok_posted ? 'โพสต์แล้ว ✅' : 'ยังไม่โพสต์') +
-            '\nShopee: ' + (q.shopee_posted ? 'โพสต์แล้ว ✅' : 'ยังไม่โพสต์') +
-            '\nไฟล์: ' + (q.file_name || '-')
-          );
-        } catch {
+          const s = await readChecklist();
+          await reply(event.replyToken, statusText(s));
+        } catch (e) {
+          console.error('CHECKLIST_STATUS_ERROR', e);
           await reply(event.replyToken, 'อ่านสถานะไม่สำเร็จ ลองใหม่อีกครั้ง');
+        }
+      } else if (incoming === 'ครบแล้ว' || incoming === 'ลงครบแล้ว' || incoming === 'โพสต์ครบแล้ว') {
+        try {
+          const s = await readChecklist();
+          s.tiktok_affiliate = true;
+          s.tiktok_content = true;
+          s.shopee_video = true;
+          const saved = await writeChecklist(s);
+          await reply(event.replyToken, statusText(saved, '✅ อัปเดตแล้ว'));
+        } catch (e) {
+          console.error('CHECKLIST_ALL_ERROR', e);
+          await reply(event.replyToken, 'บันทึกสถานะไม่สำเร็จ ลองใหม่อีกครั้ง');
+        }
+      } else if (incoming === 'รีเซ็ตวันนี้' || incoming === 'reset วันนี้' || incoming === 'reset') {
+        try {
+          const saved = await writeChecklist(emptyChecklist());
+          await reply(event.replyToken, statusText(saved, '🔄 รีเซ็ตวันนี้แล้ว'));
+        } catch (e) {
+          console.error('CHECKLIST_RESET_ERROR', e);
+          await reply(event.replyToken, 'รีเซ็ตสถานะไม่สำเร็จ ลองใหม่อีกครั้ง');
+        }
+      } else if (doneIntent(incoming) || undoIntent(incoming)) {
+        const target = targetFromText(incoming);
+        if (target === 'tiktok_ambiguous') {
+          await reply(event.replyToken, [
+            'TikTok วันนี้มี 2 งาน เลือกอันไหนครับ?',
+            'พิมพ์: TikTok Affiliate ลงแล้ว\nหรือ\nTikTok Content ลงแล้ว'
+          ]);
+        } else if (target) {
+          try {
+            const s = await readChecklist();
+            s[target] = doneIntent(incoming) && !undoIntent(incoming);
+            const saved = await writeChecklist(s);
+            const label = target === 'tiktok_affiliate'
+              ? 'TikTok Affiliate'
+              : target === 'tiktok_content'
+                ? 'TikTok Content'
+                : 'Shopee Video';
+            await reply(event.replyToken, statusText(saved, '✅ อัปเดต ' + label + ' แล้ว'));
+          } catch (e) {
+            console.error('CHECKLIST_UPDATE_ERROR', e);
+            await reply(event.replyToken, 'บันทึกสถานะไม่สำเร็จ ลองใหม่อีกครั้ง');
+          }
+        } else {
+          await reply(event.replyToken, menuText());
         }
       } else if (['พรุ่งนี้','พรุ่ง','tomorrow'].includes(incoming)) {
         try {
