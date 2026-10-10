@@ -621,7 +621,7 @@ function monitoringPlan(d){
  const out=[],add=(key,title,body)=>out.push({key,title,body});
  const metrics=Object.keys(METRICS),scope=ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ทุกจังหวัด';
  const valid=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
- const delta=v=>v===null?'—':(v>0?'+':'')+num(v);
+ const delta=v=>v===null?'—':Math.abs(v)<.005?'0.00':(v>0?'+':'')+num(v);
  const items=d.pp.map(p=>{
   const scenes=d.good.filter(x=>x.plot===p.code).sort((a,b)=>a.date.localeCompare(b.date));
   const last=scenes.at(-1)||null,prev=scenes.at(-2)||null,change={};
@@ -762,6 +762,16 @@ function monitoringPlan(d){
    '<p class="rpt-lead">วันภาพ '+esc(cross.imageAfter.date)+' · ทุกภาพใช้แปลงและวันเดียวกัน เพื่ออ่านสัญญาณหลายดัชนีประกอบกัน ห้ามสรุปจากสีใดสีหนึ่งลำพัง</p>'+
    '<div class="rpt-pictures rpt-photo-grid rpt-six-indices">'+matched.map(x=>picture(x.im,x.k)).join('')+'</div>'+
    '<p class="rpt-disclaimer">สีเป็นการแสดงค่าดัชนี ไม่ใช่แผนที่ยืนยันน้ำท่วม พื้นที่เสียหาย หรือการตายของต้นไม้ ควรเทียบภาพก่อนหน้าของดัชนีชนิดเดียวกันกับสถานะเมฆ/QA ด้วย</p>');
+ }
+
+ const trajectory=[...items].filter(x=>x.scenes.length>=3&&x.last).sort((a,b)=>b.last.date.localeCompare(a.last.date)||Math.abs(b.change.mndwi||0)-Math.abs(a.change.mndwi||0))[0];
+ if(trajectory){
+  const recent=trajectory.scenes.slice(-8);
+  add('05 / TIME SERIES','แนวโน้มหลายวัน · '+trajectory.code,
+   '<p class="rpt-lead">กราฟแสดงค่าเฉลี่ยดัชนีจากวันที่มีภาพผ่าน QA จริงของแปลง '+esc(trajectory.code)+' ไม่ใช่ข้อมูลต่อเนื่องทุกวัน และไม่ได้ใช้พิสูจน์สาเหตุการเปลี่ยนแปลง</p>'+
+   '<h3>NDVI · สัญญาณพืชพรรณ</h3>'+chart(recent,'ndvi')+
+   '<h3>MNDWI · สัญญาณน้ำผิวดิน</h3>'+chart(recent,'mndwi')+
+   '<p class="rpt-caption">อ่านทิศทางสองดัชนีร่วมกับภาพสีจริง NDWI NDRE NDMI BSI เมฆ และน้ำขึ้นลง ก่อนสรุปสถานการณ์ · วันที่ล่าสุด: '+esc(trajectory.last.date)+'</p>');
  }
  add('05 / DECISIONS','ข้อเสนอสำหรับผู้บริหาร นักลงทุน และ Auditor',
   '<div class="rpt-actions-list">'+[
