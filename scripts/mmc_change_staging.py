@@ -159,6 +159,7 @@ def stage(plots,out,max_dates):
         report["staged_changes"]=analysis["changes"]
         report["comparison_count"]=len(analysis["changes"])
         report["pairs_downloaded"]=len(ready)
+        report["plot_coverage"]=[{"plot":p,"qa_source_dates":len(choose(old["scenes"],p,max_dates)),"downloaded_pairs":sum(1 for code,_ in ready if code==p),"recomputed_scenes":sum(1 for x in analysis["scenes"] if x["plot"]==p),"comparable_pairs":sum(1 for x in analysis["changes"] if x["plot"]==p)} for p in plots]
         report["pass_for_publication"]=False
         write(out/"staging_report.json",report)
         print("STAGING_FINISHED",len(ready),"TIFF_PAIRS",len(analysis["changes"]),"CHANGES",len(report["errors"]),"ERRORS",len(area_review),"AREA_REVIEW_FLAGS")
