@@ -129,7 +129,8 @@ function waterDatePanel(code){
  const selected=state.waterDatePlot===plot&&scenes.some(x=>x.date===state.waterDate)
      ?state.waterDate:latest;
  const rain=cache.environment?.plots?.[plot]?.scenes||[];
- const snapshot=window.MMCWaterIntelligence?.daySnapshot(scenes,selected,rain);
+ const engine=window.MMCWaterIntelligence;
+ const snap=engine?.daySnapshot(scenes,selected,rain);
  const options=scenes.slice().reverse().map(x=>'<option value="'+html(x.date)+'" '+
       (x.date===selected?'selected':'')+'>'+html(x.date)+
       (qaOk(x)?' · ผ่าน QA':' · '+html(x.analysis_status||'ยังไม่ผ่าน QA'))+'</option>').join('');
@@ -139,32 +140,61 @@ function waterDatePanel(code){
       '</select></label>';
  const dateSelect='<label>เลือกวันภาพ Sentinel-2<select id="water-date-select" '+
       (scenes.length?'':'disabled')+'>'+options+'</select></label>';
- if(!snapshot)return '<div class="panel"><h3>ค่าน้ำรายวัน</h3>'+
+ if(!snap)return '<div class="panel" id="water-daily-panel"><h3>ค่าน้ำรายวัน</h3>'+
       '<div class="controls">'+plotSelector+dateSelect+'</div>'+
-      '<p class="muted">แปลงนี้ยังไม่มีวันภาพ Sentinel-2 ในฐานข้อมูลวิเคราะห์ PDD</p></div>';
- const ok=snapshot.analytical_values_approved_for_screening;
- const idx=(v,n=4)=>v===null?'—':fmt(v,n);
- const rain1=snapshot.rainfall_prev_1_utc_day_mm,rain3=snapshot.rainfall_prev_3_utc_days_mm;
- const status=ok?tag('ผ่าน QA · ใช้ตรวจแนวโน้มได้'):tag('ไม่ผ่าน QA · ใช้ดูภาพเท่านั้น','warn');
- const caution=ok?
-    'พื้นที่น้ำเป็นพื้นที่จำแนกในภาพของวันนั้น ไม่ใช่ระดับน้ำทะเล และยังไม่ปรับน้ำขึ้นน้ำลง':
-    'ไม่มีตัวเลขน้ำหรือดัชนีที่ผ่าน QA สำหรับวันนี้ ภาพ MNDWI/NDWI จาก TIFF เปิดดูได้ แต่ห้ามใช้สรุปน้ำท่วม';
+      '<p class="muted">แปลงนี้ยังไม่มีวันภาพ Sentinel-2 ในฐานข้อมูล PDD</p></div>';
+ const fixed=(value,unit='')=>value===null||value===undefined||!Number.isFinite(Number(value))
+   ?'—':Number(value).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})+(unit?' '+unit:'');
+ const ok=snap.analytical_values_approved_for_screening;
+ const status=ok?tag('ผ่าน QA · ใช้คัดกรองได้'):tag('ไม่ผ่าน QA · ใช้ดูภาพเท่านั้น','warn');
+ const baseline=engine?.rainAssessment(cache.rainBaseline?.plots?.[plot],selected);
+ const comparison=engine?.priorWaterComparison(scenes,selected);
+ const model=cache.seaLevelModel?.plots?.[plot]?.scenes?.[selected]||null;
+ const marineReady=model?.model_status==='AVAILABLE';
+ const modelRange=marineReady?model.daily_max_m_msl-model.daily_min_m_msl:null;
+ const classifyRain=(record,label)=>{
+  if(!record)return '<div class="hydro-status pending"><b>'+html(label)+': ยังไม่มีฐานฝนย้อนหลังที่ผ่าน QA</b><span>ยังระบุไม่ได้ว่าสูงหรือต่ำกว่าปกติ</span></div>';
+  return '<div class="hydro-status '+(record.relative_status==='HIGH'||record.relative_status==='VERY_HIGH'?'attention':'')+'"><b>'+
+   html(label)+' • '+html(record.description)+'</b><span>เปอร์เซ็นไทล์ '+fixed(record.percentile)+
+   ' · มัธยฐาน '+fixed(record.median_mm,'มม.')+
+   ' · P95 '+fixed(record.p95_mm,'มม.')+
+   ' · อ้างอิงปี 2016–2025 จำนวน '+html(record.sample_count)+' ตัวอย่าง</span></div>';
+ };
+ const waterReview=ok&&comparison?.status==='SCREENING_TWO_DATE_CHANGE_NOT_SEASONAL_BASELINE'?
+  '<div class="hydro-status attention"><b>พื้นที่น้ำเทียบกับภาพก่อนหน้า '+(comparison.water_change_rai>=0?'เพิ่ม':'ลด')+' '+fixed(Math.abs(comparison.water_change_rai),'ไร่')+'</b>'+
+  '<span>เทียบกับ '+html(comparison.previous_date)+' ('+fixed(comparison.previous_water_rai,'ไร่')+
+  ') • พื้นที่น้ำวันที่เลือก '+fixed(comparison.selected_water_pct_of_geometry,'%')+
+  ' ของขอบเขตเรขาคณิตแปลง • มีวัน QA '+html(comparison.valid_dates_used)+
+  ' วัน ยังไม่มี Baseline ฤดูกาลและระดับน้ำเวลาถ่ายภาพเพียงพอสำหรับยืนยันว่าน้ำท่วม</span></div>':
+  '<div class="hydro-status pending"><b>ข้อมูลเปรียบเทียบพื้นที่น้ำยังไม่พอ</b><span>ต้องมีวันภาพผ่าน QA ก่อนหน้าจึงคัดกรองแนวโน้มได้</span></div>';
+ const marineMessage=marineReady?
+  '<div class="hydro-status"><b>แบบจำลองน้ำทะเลรายวัน Open-Meteo • ช่วงต่าง '+fixed(modelRange,'เมตร')+'</b>'+
+  '<span>ต่ำสุด '+fixed(model.daily_min_m_msl,'ม.')+' ถึงสูงสุด '+fixed(model.daily_max_m_msl,'ม.')+
+  ' จากแบบจำลองรายชั่วโมง '+html(model.sample_hours)+' ค่า • อ้างอิง Global MSL ของแบบจำลอง ไม่ใช่ระดับสถานีจริง • ไม่ทราบระดับน้ำ ณ เวลาถ่าย Sentinel-2 และแบบจำลองอาจคลาดเคลื่อนใกล้ชายฝั่ง/ปากแม่น้ำ</span></div>':
+  '<div class="hydro-status pending"><b>ยังไม่มีระดับน้ำทะเลจากแบบจำลองในวันภาพนี้</b>'+
+  '<span>สถานีวัดระดับน้ำจริงยังต้องตรวจสิทธิ์ IOC, ตำแหน่งสถานี และ Datum • ไม่มีการแทนค่าด้วยศูนย์</span></div>';
+ const rain1=snap.rainfall_prev_1_utc_day_mm,rain3=snap.rainfall_prev_3_utc_days_mm;
  return '<div class="panel" id="water-daily-panel"><div class="panel-header"><div><h3>ค่าน้ำตามวันภาพ · '+html(plot)+'</h3>'+
-      '<p class="muted">เลือกวันที่มีภาพจริง ค่า NDWI / MNDWI / พื้นที่น้ำ / ฝน จะแสดงวันเดียวกัน</p></div>'+
-      status+'</div>'+
-      '<div class="controls">'+plotSelector+dateSelect+
-      btn('ดูภาพ MNDWI วันที่เลือก','waterimage',plot,'primary')+'</div>'+
-      '<p class="muted" id="water-selected-date">กำลังแสดงวัน '+html(selected)+' • '+html(snapshot.qa_status)+
-      ' • SCL ใช้ได้ '+idx(snapshot.qa_valid_pct,1)+'%</p>'+
-      '<div class="grid half">'+
-      kpi('พื้นที่น้ำในภาพ',idx(snapshot.water_rai,3)+(ok?' ไร่':''),'เฉพาะวันผ่าน QA • ไม่ใช่ระดับน้ำทะเล')+
-      kpi('MNDWI',idx(snapshot.mndwi),'(B3−B11)/(B3+B11)')+
-      kpi('NDWI',idx(snapshot.ndwi),'(B3−B8)/(B3+B8)')+
-      kpi('ฝนก่อนหน้า 1 วัน',rain1===null?'ไม่มีข้อมูล':fmt(rain1,2)+' มม.','NASA POWER · วัน UTC ก่อนวันภาพ')+
-      kpi('ฝนก่อนหน้า 3 วัน',rain3===null?'ไม่มีข้อมูล':fmt(rain3,2)+' มม.','NASA POWER · 3 วัน UTC ก่อนวันภาพ')+
-      kpi('ระดับน้ำทะเล','ยังไม่เชื่อม','ไม่มีสถานี / Datum ที่ตรวจสอบแล้ว')+'</div>'+
-      '<p class="muted">'+html(caution)+'</p></div>';
+  '<p class="muted">เลือกวัน Sentinel-2 แล้วแสดงค่าที่ตรงกับภาพวันนั้น พร้อมการเปรียบเทียบย้อนหลัง</p></div>'+status+'</div>'+
+  '<div class="controls">'+plotSelector+dateSelect+
+  btn('ดูภาพ MNDWI วันที่เลือก','waterimage',plot,'primary')+'</div>'+
+  '<p class="muted" id="water-selected-date">วันภาพ '+html(selected)+' • '+html(snap.qa_status)+
+  ' • SCL ใช้ได้ '+fixed(snap.qa_valid_pct,'%')+'</p>'+
+  '<div class="grid half hydro-kpis">'+
+    kpi('พื้นที่จำแนกเป็นน้ำ',fixed(snap.water_rai,'ไร่'),'ข้อมูลจากผลวิเคราะห์เดิม • ไม่ใช่ระดับน้ำทะเล')+
+    kpi('MNDWI',fixed(snap.mndwi),'ค่าดัชนีเฉลี่ย (B3−B11)/(B3+B11)')+
+    kpi('NDWI',fixed(snap.ndwi),'ค่าดัชนีเฉลี่ย (B3−B8)/(B3+B8)')+
+    kpi('ฝนก่อนหน้า 1 วัน',fixed(rain1,'มม.'),'NASA POWER • 1 วัน UTC ก่อนวันภาพ')+
+    kpi('ฝนก่อนหน้า 3 วัน',fixed(rain3,'มม.'),'NASA POWER • 3 วัน UTC ก่อนวันภาพ')+
+    kpi('น้ำทะเลจากแบบจำลอง · สูงสุดรายวัน',marineReady?fixed(model.daily_max_m_msl,'ม.'):'—',
+       'Open-Meteo Marine • MSL ไม่ใช่ค่าชั่วโมงที่ดาวเทียมถ่าย')+
+  '</div><div class="hydro-review"><h4>วิเคราะห์ว่าเยอะกว่าปกติหรือไม่</h4>'+
+  classifyRain(baseline?.one_day,'ฝน 1 วัน')+
+  classifyRain(baseline?.three_days,'ฝน 3 วัน')+
+  waterReview+marineMessage+
+  '<p class="muted tiny">การประเมินฝนอ้างอิงเฉพาะช่วงฤดูกาลเดียวกัน ±15 วันย้อนหลัง 10 ปี และเป็นค่าประมาณของ NASA POWER ไม่ใช่สถานีวัดฝน ปริมาณน้ำจำแนกในแปลงไม่ได้บ่งชี้การตายของป่าชายเลนหรืออุทกภัยโดยตรง</p></div></div>';
 }
+
 function waterIntelligencePanel(code){
  const result=waterScreen();
  if(!result)return message('Water Anomaly Engine ยังไม่พร้อม โปรดโหลดหน้าใหม่','warn');
