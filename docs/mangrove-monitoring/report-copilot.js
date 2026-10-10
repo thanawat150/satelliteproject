@@ -194,8 +194,11 @@ function documentPlan(d){
    ['ช่วงเวลา',ui.period==='all'?'ทั้งหมด':ui.period+' วัน']
   ].map(([k,v])=>'<div class="rpt-kpi"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join('')+'</div>';
   const visuals=headImages.length?'<h3>ภาพหลักฐานดาวเทียม</h3><div class="rpt-pictures rpt-cover-grid">'+headImages.slice(0,4).map(x=>thumbnail(x.im,x.mode)).join('')+'</div>':'<p class="rpt-empty">ยังไม่พบภาพ Raster ผ่าน QA ในช่วงเวลา</p>';
+  const snapshotRows=isSingle?(perPlot.get(ui.plot)?.rows||[]).slice(-5).map(x=>({code:x.date,ndvi:num(x.ndvi),water:num(x.mndwi),qa:num(x.qa_valid_pct)+'%'})):
+   d.pp.map(p=>({plot:p.code,last:perPlot.get(p.code)?.latest})).filter(x=>x.last).sort((a,b)=>b.last.date.localeCompare(a.last.date)).slice(0,6).map(x=>({code:x.plot,ndvi:num(x.last.ndvi),water:num(x.last.mndwi),qa:x.last.date}));
+  const quickEvidence='<h3>'+(isSingle?'ค่าล่าสุดที่ผ่าน QA':'ตัวอย่างแปลงที่มีภาพ QA ล่าสุด')+'</h3>'+table(snapshotRows,[['code',isSingle?'วันที่ภาพ':'แปลง'],['ndvi','NDVI'],['water','MNDWI'],['qa',isSingle?'QA SCL':'วันภาพล่าสุด']]);
   add('01 / SUMMARY','Environmental Monitoring · '+scopeLabel,
-   '<p class="rpt-lead">'+esc(ui.text||'รายงานติดตามสภาพป่าชายเลนจาก Sentinel-2')+'</p>'+facts+visuals+
+   '<p class="rpt-lead">'+esc(ui.text||'รายงานติดตามสภาพป่าชายเลนจาก Sentinel-2')+'</p>'+facts+visuals+quickEvidence+
    '<p class="rpt-caption">พื้นที่ข้างต้นเป็นผลรวมพื้นที่จาก Geometry รายแปลง '+areaPlots.length+' แปลง ไม่ใช่พื้นที่ Union ที่ตัดส่วนซ้อนทับหรือผลรับรองจากหน่วยงาน</p>');
  }
  if(ui.modules.has('location')){
