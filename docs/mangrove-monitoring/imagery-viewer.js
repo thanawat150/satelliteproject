@@ -16,6 +16,7 @@ const MODE={
 let index=null,files=new Map(),epoch=0,map=null,boundaryMapLayer=null,boundaryResizeObserver=null;
 let active={plot:'13-STC',date:'',before:'',beforeManual:false,mode:'true_color',compareMode:'true_color',alpha:.85,geometry:null,rows:[],holder:null,existing:[],boundaryVisible:true,boundaryType:'PDD'};
 const $=(id)=>document.getElementById(id);
+const metricFmt=x=>x==null||x===''||!Number.isFinite(Number(x))?'—':Number(x).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,()=>String.fromCharCode(38)+'quot;').replace(/'/g,'&#39;');
 function dateRows(){return active.existing.filter(x=>x.plot===active.plot)}
 function qa(date){let r=active.rows.find(x=>x.date===date);if(!r)return {label:'QA ยังไม่ประมวลผล',kind:'noanalysis',percent:null};return {label:r.analysis_status||'ไม่ระบุ',kind:r.analysis_status||'unknown',percent:r.qa_valid_pct};}
@@ -44,7 +45,7 @@ function indexStatBrief(item,mode){
  if(!['ndvi','ndre','ndmi','mndwi','ndwi','bsi'].includes(mode))return '';
  const st=item?.index_stats?.[mode],v=item?.index_parity?.[mode];
  if(!st)return '<div class="img-index-brief">'+(item?.preview_kind==='VISUAL_ONLY_NON_QA'?'ภาพดัชนีจาก TIFF ต้นฉบับ • <b>ไม่ผ่าน QA</b> ไม่ใช้คำนวณผลกระทบ':'รอผลตรวจดัชนีจาก TIFF รายพิกเซล')+'</div>';
- const fmt=x=>x==null?'—':Number(x).toFixed(4);
+ const fmt=metricFmt;
  return '<div class="img-index-brief" data-index-stat="'+esc(mode)+'"><b>เฉลี่ยในขอบเขต '+fmt(st.plot_mean)+'</b> · ต่ำสุด '+fmt(st.plot_min)+' · สูงสุด '+fmt(st.plot_max)+' · '+esc(st.sample_pixels)+' พิกเซล (20 ม.)'+
  (v?'<div>รายงานเดิม '+fmt(v.published_mean)+' · ส่วนต่าง '+fmt(v.difference)+' '+(v.within_0_03?'✓ ตรงกัน':'⚠ ตรวจเพิ่ม')+'</div>':'')+
  (st.source_band_rmse!=null?'<div>ตรวจ Index Band ใน TIFF · RMSE '+fmt(st.source_band_rmse)+'</div>':'')+'</div>';
@@ -52,7 +53,7 @@ function indexStatBrief(item,mode){
 function indexAuditTable(item){
  if(item?.source!=='generated'||!item.index_stats||!Object.keys(item.index_stats).length)return '<div class="notice img-missing">ไม่มีผลดัชนีสำหรับภาพนี้ • วันที่ไม่ผ่าน QA แสดงเฉพาะภาพสีจริงและสีเท็จจากต้นฉบับ ไม่ใช้คำนวณการเปลี่ยนแปลง</div>';
  const modes=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'];
- const fmt=x=>x==null?'—':Number(x).toFixed(4);
+ const fmt=metricFmt;
  const rows=modes.map(m=>{
   const st=item.index_stats[m],v=item.index_parity?.[m];if(!st)return '';
   return '<tr><td><b>'+esc(m.toUpperCase())+'</b></td><td>'+esc(st.formula)+'</td><td class="num">'+fmt(st.plot_mean)+'</td><td class="num">'+fmt(v?.published_mean)+'</td><td class="num">'+fmt(v?.difference)+'</td><td>'+esc(st.sample_pixels)+' px</td><td>'+(v?.within_0_03===false||st.embedded_tif_match===false?'⚠ ตรวจเพิ่ม':'✓ สอดคล้อง')+'</td></tr>';
@@ -70,9 +71,9 @@ function legend(item,mode){
  const grad=water?'linear-gradient(90deg,#9d5c35 0%,#e4bc67 40%,#eae0bd 50%,#6fc2c4 57.5%,#2880bb 72.5%,#0e2e75 100%)':soil?
  'linear-gradient(90deg,#1e664b 0%,#519c53 32.5%,#e0cd80 50%,#b97e4d 65%,#763d25 100%)':
  'linear-gradient(90deg,#844934 0%,#c27a46 35%,#f5dc80 50%,#9bc460 65%,#2d8655 82.5%,#074935 100%)';
- return '<div class="img-legend" data-index-legend="'+esc(mode)+'"><div class="img-legend-head">'+esc(mode.toUpperCase())+' • สีและสเกลที่ใช้จริง −1 ถึง +1</div>'+
+ return '<div class="img-legend" data-index-legend="'+esc(mode)+'"><div class="img-legend-head">'+esc(mode.toUpperCase())+' • สีและสเกลที่ใช้จริง −1.00 ถึง +1.00</div>'+
  '<div class="img-legend-ramp" style="background:'+grad+'"></div>'+
- '<div class="img-legend-ticks"><span>−1</span><span>−0.5</span><span>0</span><span>+0.5</span><span>+1</span></div>'+
+ '<div class="img-legend-ticks"><span>−1.00</span><span>−0.50</span><span>0.00</span><span>+0.50</span><span>+1.00</span></div>'+
  '<small>สูตร: '+esc(MODE[mode]?.[1]||'')+'</small>'+
  indexStatBrief(item,mode)+
  '<div class="img-legend-note">ค่าเฉลี่ยเฉพาะภายใน PDD ส่วนภาพแสดง Raster เต็มกรอบ; สีไม่ได้แปลว่าเป็นน้ำท่วมหรือป่าเสื่อม</div></div>';
@@ -154,7 +155,7 @@ function allDateGallery(items,byDate,modes){
    out+='<div class="notice img-missing">วันที่นี้ยังไม่มี Raster Preview ('+esc(qa(item.date).label)+') ไม่สร้างภาพแทนจากแหล่งอื่น</div>';
   }else{
    if(qa(item.date).kind!=='AUTO_VALID')out+='<p class="img-history-qa-caution">ภาพมีอยู่จริง แต่วันดังกล่าวไม่ผ่าน QA หรือยังไม่มีผล QA ยืนยัน จึงไม่ควรใช้สรุปผลกระทบ</p>';
-   if(item.rgb_display_warning||Number(item.rgb_invalid_pct)>30||Number(item.rgb_unclassified_scl_pct)>20)out+='<p class="img-history-qa-caution">RGB QUALITY REVIEW: เกือบขาว '+esc(String(item.rgb_near_white_pct??'ไม่ทราบ'))+'% · NoData/ไม่ผ่าน SCL '+esc(String(item.rgb_invalid_pct??'ไม่ทราบ'))+'% · SCL 7 '+esc(String(item.rgb_unclassified_scl_pct??'ไม่ทราบ'))+'% — ควรตรวจภาพต้นทางก่อนใช้งาน</p>';
+   if(item.rgb_display_warning||Number(item.rgb_invalid_pct)>30||Number(item.rgb_unclassified_scl_pct)>20)out+='<p class="img-history-qa-caution">RGB QUALITY REVIEW: เกือบขาว '+metricFmt(item.rgb_near_white_pct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(item.rgb_invalid_pct)+'% · SCL 7 '+metricFmt(item.rgb_unclassified_scl_pct)+'% — ควรตรวจภาพต้นทางก่อนใช้งาน</p>';
    if(item.source==='generated'&&!item.rgb_renderer_version)out+='<p class="img-history-qa-caution">Preview รุ่นเก่า: ยังใช้การปรับสีรายภาพ ซึ่งอาจทำให้ภาพขาวหรือมีแถบดำ</p>';
    out+='<div class="img-gallery img-history-gallery">';
    for(const mode of modes){
