@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { readChecklist, writeChecklist, emptyChecklist, statusText, doneIntent, undoIntent, targetFromText } from '../../lib/checklist.js';
 
 function validSignature(raw, signature, secret) {
   if (!signature || !secret) return false;
