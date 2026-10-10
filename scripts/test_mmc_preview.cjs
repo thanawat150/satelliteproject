@@ -266,9 +266,29 @@ assert.equal(await page.locator('#rpt-scope').inputValue(),'province','Thai inte
 assert.equal(await page.locator('#rpt-period').inputValue(),'90','Thai intent parser understands three-month window');
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'AI report blueprint generates real A4 preview');
 assert.ok((await page.locator('#rpt-warning-list').innerText()).includes('ไม่เฉลี่ยค่าดัชนี'),'Province report must not mix unweighted plot indices');
+
+assert.ok(await page.locator('[data-rpt-scope-switch="province"][aria-pressed="true"]').count()===1,'Scope selector visibly reflects province reports');
+assert.equal(await page.locator('#rpt-image-dates').inputValue(),'2','Province reports default to two image dates per plot');
+const provinceReport=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,hasIndex:r.pages.includes('Index Atlas'),hasSatellite:r.pages.includes('Satellite Atlas'),multiple:r.pages.includes('15-STC')&&r.pages.includes('13-STC')};});
+assert.ok(provinceReport.plots>1,'Province report must aggregate several actual plot codes');
+assert.ok(provinceReport.images>=2,'Province report must contain real multiple image assets');
+assert.ok(provinceReport.hasIndex&&provinceReport.hasSatellite,'Province report must include image atlases, not only a registry');
+await page.locator('[data-rpt-scope-switch="all"]').click();
+assert.equal(await page.locator('#rpt-scope').inputValue(),'all','Nationwide scope can be selected with prominent control');
+assert.equal(await page.locator('#rpt-image-dates').inputValue(),'1','Nationwide default avoids accidental unbounded per-scene reports');
+const national=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,registry:r.pages.includes('ทะเบียนแปลง'),qa:r.pages.includes('QA/QC')};});
+assert.equal(national.plots,160,'Nationwide report must cover all 160 registry plots, including missing-data cases');
+assert.ok(national.images>provinceReport.images,'Nationwide report should contain a broad actual imagery atlas');
+assert.ok(national.registry&&national.qa,'Nationwide report must retain all-plot registry and QA evidence');
+assert.ok(national.pages>provinceReport.pages,'Nationwide reporting must paginate rather than silently truncate plots');
+assert.ok(await page.locator('#rpt-preview .rpt-paper').count()<=8,'Onscreen preview stays bounded while full print report stays complete');
+assert.ok((await page.locator('#rpt-preview').innerText()).includes('PDF ฉบับเต็ม'),'Preview must disclose full-print coverage');
+
 await page.locator('#rpt-scope').selectOption('plot');
 await page.locator('#rpt-plot').selectOption('15-STC');
 await page.locator('#rpt-period').selectOption('365');
+await page.locator('#rpt-image-dates').selectOption('3');
+assert.equal(await page.locator('#rpt-image-dates').inputValue(),'3','User can request three recent scenes for image-rich report');
 await page.locator('#rpt-preview-button').click();
 assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('15-STC')||(await page.locator('#rpt-preview').innerText()).includes('15-STC'),'Plot selection follows preview');
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Custom report modules still render after scope changes');
