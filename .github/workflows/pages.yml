@@ -15,7 +15,7 @@ on:
       - ".github/workflows/pages.yml"
   workflow_dispatch:
   workflow_run:
-    workflows: ["MMC Build True Satellite RGB and Index Maps", "MMC Backfill Archived Index Maps"]
+    workflows: ["MMC Build True Satellite RGB and Index Maps", "MMC Backfill Archived Index Maps", "MMC Historical Rain and Marine Model Context", "MMC NASA Rainfall Context (Real API)"]
     types: [completed]
   # 08:15 Thailand daily; also runs automatically on website changes.
   schedule:
