@@ -124,6 +124,7 @@ def stage(plots,out,max_dates):
         if balance_review:
             report["review_required"]=True
             report["approval_status"]="REVIEW_REQUIRED"
+        report["small_comparison_samples"]=[{"plot":x["plot"],"date_a":x["date_a"],"date_b":x["date_b"],"sample_pixels":x["common_clear_pixels"]} for x in analysis["changes"] if x.get("common_clear_pixels",0)<30]
         report["staged_changes"]=analysis["changes"]
         report["comparison_count"]=len(analysis["changes"])
         report["pairs_downloaded"]=len(ready)
