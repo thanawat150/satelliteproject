@@ -46,7 +46,7 @@ const analysis=await page.locator('#view-root').innerText();
 assert.ok(analysis.includes('2026-09-29'),'Analysis must show real Sentinel-2 date');
 assert.ok(analysis.includes('AUTO_VALID'),'Analysis must show QA state');
 await page.locator('#metric-select').selectOption('mndwi');
-assert.ok(await page.locator('.mini-chart svg circle').count()>=2,'Actual QA chart has at least 2 points');
+assert.ok(await page.locator('#time-series-panel .ts-point').count()>=2,'Actual QA chart has at least 2 points');
 assert.ok(await page.locator('#timeseries-metric-select').count()===1,'Time Series must have a metric selector alongside the chart');
 await page.locator('#timeseries-metric-select').selectOption('water_rai');
 assert.ok((await page.locator('#time-series-title').innerText()).includes('พื้นที่น้ำ'),'Chart title must follow Water metric');
@@ -54,6 +54,27 @@ assert.equal(await page.locator('#metric-select').inputValue(),'water_rai','Top 
 assert.ok((await page.locator('#time-series-subtitle').innerText()).includes('ไร่'),'Water area chart uses rai rather than index unit');
 await page.locator('#timeseries-metric-select').selectOption('ndre');
 assert.ok((await page.locator('#time-series-title').innerText()).includes('NDRE'),'Red Edge trend should be selectable');
+const ndreGeometry=await page.locator('#time-series-panel').evaluate(panel=>{
+ const rect=el=>el.getBoundingClientRect();
+ const outer=rect(panel),plot=rect(panel.querySelector('.ts-plot'));
+ const svg=rect(panel.querySelector('.ts-chart-svg'));
+ const summary=rect(panel.querySelector('#time-series-details'));
+ const dates=rect(panel.querySelector('.ts-x-axis'));
+ const markers=[...panel.querySelectorAll('.ts-point')].map(rect);
+ const tickLabels=[...panel.querySelectorAll('.ts-y-tick')].map(rect);
+ return {
+  plotHeight:plot.height,
+  markersInsidePlot:markers.length>=2&&markers.every(x=>x.left>=plot.left-1&&x.right<=plot.right+1&&x.top>=plot.top-1&&x.bottom<=plot.bottom+1),
+  svgContained:svg.left>=plot.left-1&&svg.right<=plot.right+1&&svg.top>=plot.top-1&&svg.bottom<=plot.bottom+1,
+  ticksOutsidePlot:tickLabels.length===3&&tickLabels.every(x=>x.right<=plot.left+1),
+  datesBelowPlot:dates.top>=plot.bottom-1,
+  detailsBelowPlot:summary.top>=dates.bottom-1,
+  contentInPanel:summary.bottom<=outer.bottom+1
+ };
+});
+assert.ok(ndreGeometry.plotHeight>=250&&ndreGeometry.svgContained&&ndreGeometry.markersInsidePlot&&ndreGeometry.ticksOutsidePlot&&ndreGeometry.datesBelowPlot&&ndreGeometry.detailsBelowPlot&&ndreGeometry.contentInPanel,
+ 'NDRE with negative values must keep SVG, markers, tick labels, dates and summary inside chart card: '+JSON.stringify(ndreGeometry));
+
 await page.locator('#timeseries-metric-select').selectOption('rain_prev_3_utc_days_mm');
 assert.ok((await page.locator('#time-series-details').innerText()).includes('NASA POWER'),'Rainfall trend must show its real source and UTC day caveat');
 assert.ok((await page.locator('#time-series-subtitle').innerText()).includes('มม.'),'Rainfall chart must use millimeters');
@@ -264,6 +285,21 @@ await mobile.locator('[data-view="analysis"]').click();
 await mobile.waitForSelector('#timeseries-metric-select');
 await mobile.locator('#timeseries-metric-select').selectOption('mndwi');
 assert.ok((await mobile.locator('#time-series-title').innerText()).includes('MNDWI'),'Time Series dropdown must work on mobile');
+const mobileChartLayout=await mobile.locator('#time-series-panel').evaluate(panel=>{
+ const parent=panel.getBoundingClientRect();
+ const plot=panel.querySelector('.ts-plot').getBoundingClientRect();
+ const dates=panel.querySelector('.ts-x-axis').getBoundingClientRect();
+ const details=panel.querySelector('#time-series-details').getBoundingClientRect();
+ const chooser=panel.querySelector('#timeseries-metric-select').getBoundingClientRect();
+ return {width:parent.width,plotHeight:plot.height,
+   plotWithinCard:plot.left>=parent.left-1&&plot.right<=parent.right+1,
+   datesBelowPlot:dates.top>=plot.bottom-1,
+   detailsInCard:details.top>=dates.bottom-1&&details.bottom<=parent.bottom+1,
+   chooserWithinCard:chooser.left>=parent.left-1&&chooser.right<=parent.right+1};
+});
+assert.ok(mobileChartLayout.plotWithinCard&&mobileChartLayout.datesBelowPlot&&mobileChartLayout.detailsInCard&&mobileChartLayout.chooserWithinCard&&mobileChartLayout.plotHeight>=200,
+ 'Mobile Time Series chart must not overrun card: '+JSON.stringify(mobileChartLayout));
+
 const chooser=await mobile.locator('#timeseries-metric-select').boundingBox();
 assert.ok(chooser&&chooser.width>=190&&chooser.width<=390,'Chart metric selection should fit phone width');
 
