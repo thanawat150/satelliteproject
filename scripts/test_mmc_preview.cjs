@@ -79,11 +79,11 @@ for(const plot of ['13-STC','14-VSD']){
     await page.locator('#image-date').selectOption(date);
     await page.waitForFunction((d)=>
       document.querySelector('#image-date')?.value===d &&
-      document.querySelectorAll('#imagery-explorer .img-gallery img').length===8,
+      document.querySelectorAll('#imagery-explorer .img-gallery:not(.img-history-gallery) img').length===8,
       date,{timeout:30000});
-    const images=await page.locator('#imagery-explorer .img-gallery img').count();
+    const images=await page.locator('#imagery-explorer .img-gallery:not(.img-history-gallery) img').count();
     assert.equal(images,8,plot+' '+date+' should show all eight true TIFF images');
-    await page.locator('#imagery-explorer .img-gallery img').last().scrollIntoViewIfNeeded();
+    await page.locator('#imagery-explorer .img-gallery:not(.img-history-gallery) img').last().scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>{const images=[...document.querySelectorAll('#imagery-explorer .img-gallery img')];const ndwi=images.at(-1);return images.length===8&&ndwi.complete&&ndwi.naturalWidth>0;},{timeout:20000});
     assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Archive must not claim QA passed');
   }
