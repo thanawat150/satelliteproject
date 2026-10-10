@@ -294,3 +294,12 @@ html{scroll-behavior:smooth}
 .rpt-studio .rpt-input-grid label:has(#rpt-image-dates){color:#d6f8dd}
 @media(max-width:650px){.rpt-scope-switch{display:grid;grid-template-columns:1fr 1fr}.rpt-scope-switch button:last-child{grid-column:1/-1}}
 @media print{.rpt-preview-more{display:none!important}}
+
+
+/* Question-first flood report. The appendix is an explicit opt-in. */
+.rpt-appendix-toggle{display:flex;align-items:center;gap:10px;border:1px solid #47715a;border-radius:10px;background:#1b3b2b;padding:12px;color:#d5f0dc;font-size:12px;line-height:1.55;margin:8px 0}
+.rpt-appendix-toggle input{width:17px;height:17px;accent-color:#53b879;flex:none}
+.rpt-readiness{background:#352b1d;border:1px solid #b38b4b;border-radius:10px;color:#ffe8bb;padding:12px 14px;margin:13px 0}
+.rpt-readiness strong{display:block;font-size:12px}
+.rpt-readiness p{margin:5px 0 0;font-size:11px;line-height:1.7;color:#ffdfaa}
+@media print{.rpt-appendix-toggle,.rpt-readiness{display:none!important}}
