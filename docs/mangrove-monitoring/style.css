@@ -227,3 +227,18 @@ html{scroll-behavior:smooth}
  .img-layout-tabs,.img-display-options,.img-tile-open{display:none!important}
  .img-view-single .img-map-panel .img-geo-map{height:320px!important}
 }
+
+
+/* Historical imagery filter: one selected layer can span the available card width. */
+.img-history-filter{font-size:12px!important;font-weight:650;color:#daf3e2!important}
+.img-history-filter select{min-width:200px;max-width:300px}
+.img-history-gallery.img-history-single{grid-template-columns:minmax(0,440px)}
+.img-history-gallery.img-history-single .img-tile .img-frame{height:285px;min-height:220px}
+.img-history-gallery.img-history-single .img-tile{max-width:440px}
+@media(max-width:550px){
+ .img-history-filter{width:100%}
+ .img-history-filter select{min-width:0;max-width:68%;width:68%}
+ .img-history-gallery.img-history-single{grid-template-columns:minmax(0,1fr)}
+ .img-history-gallery.img-history-single .img-tile{max-width:100%}
+ .img-history-gallery.img-history-single .img-tile .img-frame{height:230px;min-height:170px}
+}
