@@ -74,6 +74,24 @@ def stage(plots,out,max_dates):
             write(out/"staging_report.json",report)
             raise RuntimeError("No verified TIFF pairs available; staging stopped without publication")
         analysis=engine.run(boundaries,inputs,plot_ready,out/"engine")
+        # Independent display/embedded index parity screening for every TIFF pair.
+        from shapely.geometry import shape
+        from mmc_mndwi_resampling_audit import audit as mndwi_audit
+        features={f["properties"]["plot"]:shape(f["geometry"])
+                  for f in load(boundaries)["features"]}
+        mndwi_results=[]
+        for plot,date in ready:
+            date_compact=date.replace("-","")
+            p10=inputs/f"{plot}_S2_{date_compact}_10m.tif"
+            p20=inputs/f"{plot}_S2_{date_compact}_20m.tif"
+            try:
+                value=mndwi_audit(p10,p20,features[plot])
+                mndwi_results.append({"plot":plot,"date":date,**value})
+            except Exception as exc:
+                mndwi_results.append({"plot":plot,"date":date,
+                                      "status":"AUDIT_ERROR","detail":str(exc)[:200]})
+        report["mndwi_resampling_audit"]=mndwi_results
+
         actual={(x["plot"],x["date"]):x for x in analysis["scenes"]}
         old_scenes={(x["plot"],x["date"]):x for x in old["scenes"]}
         for plot,date in ready:
