@@ -283,11 +283,56 @@ function floodPlotLocator(rows){
   '<p class="rpt-caption">ขอบเขตแปลงจาก Geometry จริง พร้อมหมายเลขอ้างอิงด้านล่าง • ไม่ได้แสดงขอบเขตจังหวัด ถนน หรือฐานภาพดาวเทียม • สีส้ม=น้ำเพิ่มสุทธิ, เขียว=มีคู่ภาพแต่ไม่เพิ่ม, เทา=ไม่มีคู่ภาพ</p>';
 }
 
+
+function floodTimeSeries(d){
+ const groups=new Map();
+ for(const r of d.good){
+  if(r.water_rai==null||r.water_rai===''||!Number.isFinite(Number(r.water_rai)))continue;
+  if(!groups.has(r.plot))groups.set(r.plot,[]);
+  groups.get(r.plot).push({date:r.date,water:Number(r.water_rai),qa:Number(r.qa_valid_pct),status:r.analysis_status});
+ }
+ const answers=new Map();
+ for(const [plot,arr] of groups){
+  arr.sort((a,b)=>a.date.localeCompare(b.date));
+  const peak=arr.reduce((best,x)=>x.water>best.water?x:best,arr[0]),first=arr[0],latest=arr.at(-1);
+  const delta=latest.water-peak.water;
+  const falling=peak.date<latest.date&&delta<-.5&&Math.abs(delta)>peak.water*.03;
+  const rising=first.date<latest.date&&latest.water-first.water>.5;
+  const state=falling?'น้ำที่จำแนกได้ลดจากช่วงสูงสุด':rising?'น้ำที่จำแนกได้เพิ่มจากภาพแรก':'ข้อมูลยังไม่ชี้แนวโน้มลดชัดเจน';
+  answers.set(plot,{plot,first,peak,latest,falling,rising,delta,state,all:arr});
+ }
+ return answers;
+}
+function waterTimelineRow(ts){
+ if(!ts)return {first:'—',peak:'—',current:'ไม่มีค่า QA ล่าสุด',change:'—',state:'ข้อมูลไม่เพียงพอ'};
+ return {first:ts.first.date+' · '+num(ts.first.water)+' ไร่',peak:ts.peak.date+' · '+num(ts.peak.water)+' ไร่',
+   current:ts.latest.date+' · '+num(ts.latest.water)+' ไร่',
+   change:ts.peak.date<ts.latest.date?(ts.delta>0?'+':'')+num(ts.delta)+' ไร่':'ยังไม่มีภาพหลังจุดสูงสุด',
+   state:ts.state};
+}
+function waterTimelineGraph(ts){
+ if(!ts||!ts.all.length)return '<p class="rpt-empty">ยังไม่มีภาพที่ผ่าน QA พร้อมค่าพื้นที่น้ำสำหรับแสดงแนวโน้ม</p>';
+ const width=580,height=160,lo=0,hi=Math.max(1,...ts.all.map(p=>p.water)),coords=ts.all.map((v,i)=>({
+  x:55+i/Math.max(1,ts.all.length-1)*470,
+  y:128-(v.water/hi)*98, ...v
+ }));
+ const d=coords.map((v,i)=>(i?'L':'M')+v.x.toFixed(1)+' '+v.y.toFixed(1)).join(' ');
+ return '<svg class="rpt-timeline-graph" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="แนวโน้มพื้นที่ที่จำแนกเป็นน้ำตามวันจริง">'+
+   [0,.5,1].map(n=>'<line x1="50" x2="540" y1="'+(30+n*98)+'" y2="'+(30+n*98)+'" stroke="#d9e7dd" />').join('')+
+   '<path d="'+d+'" stroke="#2b83b3" stroke-width="3.5" fill="none"/>'+
+   coords.map(v=>'<circle cx="'+v.x.toFixed(1)+'" cy="'+v.y.toFixed(1)+'" r="4.7" fill="'+(v.date===ts.latest.date?'#d3722d':'#2b83b3')+'"/>'+
+   '<text x="'+v.x.toFixed(1)+'" y="'+Math.max(12,v.y-10).toFixed(1)+'" font-size="11" text-anchor="middle" fill="#244e68">'+num(v.water)+'</text>'+
+   '<text x="'+v.x.toFixed(1)+'" y="150" font-size="10" text-anchor="middle" fill="#385748">'+esc(v.date.slice(5))+'</text>').join('')+
+   '<text x="8" y="18" font-size="10" fill="#4b6657">ไร่</text></svg>'+
+  '<p class="rpt-caption">กราฟแสดงเฉพาะวันที่ผ่าน QA และมีพื้นที่น้ำจากการจำแนกจริง — ไม่เชื่อมความหมายว่าเป็นน้ำท่วมยืนยัน</p>';
+}
+
 /* Flood brief is question-first: decision pages before optional visual evidence appendix.
    Pair changes are screening evidence only; different dates/tides must not become a flood claim. */
 function floodPlan(d){
  const out=[],section=(key,title,body)=>out.push({key,title,body});
  const latest=d.good.at(-1),pairs=new Map(),matched=new Set(d.pp.map(p=>p.code));
+ const timeline=floodTimeSeries(d);
  const validDates=new Set(d.good.map(x=>x.plot+'|'+x.date));
  const raw=d.changes.filter(c=>matched.has(c.plot)&&c.date_a&&c.date_b&&c.date_a<c.date_b&&c.date_a>=d.threshold
   &&validDates.has(c.plot+'|'+c.date_a)&&validDates.has(c.plot+'|'+c.date_b)
@@ -302,7 +347,7 @@ function floodPlan(d){
   const pct=c&&area>0?water/area*100:null;
   const raster=d.images.filter(x=>x.plot===p.code);
   return {plot:p,code:p.code,sceneCount:d.good.filter(x=>x.plot===p.code).length,
-    pair:c,water,area,pct,raster,latest:d.good.filter(x=>x.plot===p.code).at(-1)};
+    pair:c,water,area,pct,raster,timeline:timeline.get(p.code)||null,latest:d.good.filter(x=>x.plot===p.code).at(-1)};
  });
  const comparable=rows.filter(r=>r.pair),increase=comparable.filter(r=>r.water>0);
  const ordered=increase.slice().sort((a,b)=>b.water-a.water||a.code.localeCompare(b.code));
@@ -320,7 +365,9 @@ function floodPlan(d){
  if(comparable.length>3&&increase.length===comparable.length)issues.push('ทุกแปลงที่มีคู่ภาพพบพื้นที่น้ำเพิ่มสุทธิพร้อมกัน อาจมีปัจจัยร่วมของชุดภาพ/ฤดูกาล/น้ำขึ้นลง ต้องตรวจทั้งระบบก่อนระบุเหตุการณ์น้ำท่วม');
  issues.push('ยังไม่พบข้อมูลระดับน้ำขึ้นลง ณ เวลาถ่ายภาพที่ผูกกับคู่ภาพในการส่งออกรายงานนี้');
  issues.push('ยังไม่มีหลักฐานภาคสนามหรือการตรวจสอบความถูกต้องอิสระเพื่อยืนยันน้ำท่วมหรือความเสียหาย');
- const candidates=Math.min(3,ordered.length),priority=ordered.slice(0,candidates);
+ const declining=rows.filter(r=>r.timeline?.falling).sort((a,b)=>a.timeline.delta-b.timeline.delta);
+ const candidates=Math.min(3,Math.max(ordered.length,declining.length)),priority=[...declining,...ordered.filter(r=>!declining.some(d=>d.code===r.code))].slice(0,candidates);
+ const recedingCount=declining.length;
  const sourceScene=(code,date)=>d.good.find(x=>x.plot===code&&x.date===date);
  const image=(code,date,mode)=>{
   const im=d.images.find(x=>x.plot===code&&x.date===date&&imageURL(x,mode));
