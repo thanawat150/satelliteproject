@@ -14,7 +14,7 @@ const MODE={
  ndwi:['NDWI · น้ำผิวดิน','(B3−B8)/(B3+B8) • ติดลบในป่าเป็นปกติ']
 };
 let index=null,files=new Map(),epoch=0,map=null,boundaryMapLayer=null,boundaryResizeObserver=null;
-let active={plot:'13-STC',date:'',before:'',beforeManual:false,mode:'true_color',compareMode:'true_color',alpha:.85,geometry:null,rows:[],holder:null,existing:[],boundaryVisible:true,boundaryType:'PDD'};
+let active={plot:'13-STC',date:'',before:'',beforeManual:false,mode:'true_color',layout:'single',alpha:.85,geometry:null,rows:[],holder:null,existing:[],boundaryVisible:true,boundaryType:'PDD'};
 const $=(id)=>document.getElementById(id);
 const metricFmt=x=>x==null||x===''||!Number.isFinite(Number(x))?'—':Number(x).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,()=>String.fromCharCode(38)+'quot;').replace(/'/g,'&#39;');
@@ -150,7 +150,7 @@ function allDateGallery(items,byDate,modes){
   const layers=byDate.get(item.date)||{};
   const count=modes.filter(mode=>layers[mode]).length;
   out+='<article class="img-history-date-card" data-history-date="'+esc(item.date)+'"><div class="img-history-meta"><div class="img-history-date"><b>'+esc(item.date)+'</b> '+statusPill(item.date)+' <span class="img-history-count">'+count+' / '+(item.preview_kind==='VISUAL_ONLY_NON_QA'?'8 ภาพจาก TIFF (ไม่ผ่าน QA)':'8 ภาพ')+'</span></div>'+
-   '<button type="button" class="img-history-select" data-image-jump="'+esc(item.date)+'">เลือกดูวันที่นี้บนแผนที่</button></div>';
+   '<button type="button" class="img-history-select" data-image-jump="'+esc(item.date)+'">เปิดวันนี้บนแผนที่</button></div>';
   if(!count){
    out+='<div class="notice img-missing">วันที่นี้ยังไม่มี Raster Preview ('+esc(qa(item.date).label)+') ไม่สร้างภาพแทนจากแหล่งอื่น</div>';
   }else{
@@ -159,7 +159,7 @@ function allDateGallery(items,byDate,modes){
    if(item.source==='generated'&&!item.rgb_renderer_version)out+='<p class="img-history-qa-caution">Preview รุ่นเก่า: ยังใช้การปรับสีรายภาพ ซึ่งอาจทำให้ภาพขาวหรือมีแถบดำ</p>';
    out+='<div class="img-gallery img-history-gallery">';
    for(const mode of modes){
-    out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small>'+indexStatBrief(item,mode)+'</div>';
+    out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small>'+(layers[mode]?'<button type="button" class="img-tile-open" data-image-open-mode="'+esc(mode)+'" data-image-open-date="'+esc(item.date)+'">เปิดบนแผนที่ ↗</button>':'')+indexStatBrief(item,mode)+'</div>';
    }
    out+='</div>';
   }
@@ -172,7 +172,18 @@ function groupMarkup(items,byDate){const target=items.find(x=>x.date===active.da
 const a=byDate.get(active.date)||{},b=byDate.get(active.before)||{};
 const sourceRows=active.rows.filter(x=>x.date===active.date);
 const srcMeta=sourceRows[0];
-const nav=items.length?'<label>วันภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label><label>ภาพดัชนี / สี<select id="image-mode">'+modeOptions(active.mode)+'</select></label><label>Opacity ภาพ<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label><label class="img-boundary-control"><input type="checkbox" id="image-boundary-toggle" '+(active.boundaryVisible?'checked':'')+'> ขอบเขตแปลง</label><a class="img-history-link" href="#img-all-dates">ดูภาพทุกวัน + ทุกดัชนี ↓</a>':'';
+const nav=items.length?
+ '<div class="img-layout-tabs" role="group" aria-label="รูปแบบการดูภาพ">'+
+ [['single','ภาพเดียว'],['compare','ก่อน / หลัง'],['grid','ทุกดัชนีวันเดียว'],['history','ทุกวัน']].map(([id,label])=>
+ '<button type="button" class="img-layout-tab '+(active.layout===id?'active':'')+'" data-image-layout="'+id+'" aria-pressed="'+(active.layout===id)+'">'+label+'</button>').join('')+
+ '</div><div class="img-controls">'+
+ (active.layout==='history'?'':'<label>วันที่ภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label>')+
+ (active.layout==='single'||active.layout==='compare'?'<label>ชนิดภาพ<select id="image-mode">'+modeOptions(active.mode)+'</select></label>':'')+
+ (active.layout==='compare'?'<label>เทียบกับวันก่อน<select id="image-before">'+(!active.before?'<option value="" selected disabled>ไม่มีภาพก่อนหน้าผ่าน QA</option>':'')+dateChoices(items.filter(x=>x.date<active.date),active.before)+'</select></label>':'')+
+ '<details class="img-display-options"><summary>ตัวเลือกการแสดงผล</summary><div class="img-extra-controls">'+
+ (active.layout==='single'?'<label>ความโปร่งใส<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label>':'')+
+ '<label class="img-boundary-control"><input type="checkbox" id="image-boundary-toggle" '+(active.boundaryVisible?'checked':'')+'> แสดงขอบเขตแปลง</label></div></details>'+
+ '</div>':'';
 const visualOnly=target?.preview_kind==='VISUAL_ONLY_NON_QA'?'<div class="notice img-missing"><b>ภาพทั้งหมดจาก TIFF ต้นฉบับ (ไม่ผ่าน QA):</b> สีจริง สีเท็จ และดัชนีที่แสดงเป็นภาพคำนวณเพื่อดูประกอบเท่านั้น อาจมีเมฆ/หมอกปะปน • ไม่มีสถิติดัชนีหรือ Change Detection ที่ผ่านการรับรองสำหรับวันนี้</div>':'';
 const validQaRows=active.rows.filter(x=>x.analysis_status==='AUTO_VALID');
 const previewDates=new Set(items.filter(x=>x.source!=='missing').map(x=>x.date));
@@ -192,23 +203,27 @@ const rgbWarning=showRgbReview?'<div class="notice img-missing img-rgb-warning">
 const rgbMeta=rgbSource?.rgb_native_width?'<div class="img-rgb-resolution">RGB Preview '+esc(rgbSource.rgb_native_width)+' × '+esc(rgbSource.rgb_native_height)+' พิกเซล (กริดต้นทาง 10 ม.) · ดัชนีจากกริด 20 ม. · เกือบขาว '+metricFmt(whitePct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(rgbSource.rgb_invalid_pct)+'% · รุ่น '+esc(rgbSource.rgb_renderer_version||'เดิม')+'</div>':'';
 const boundaryLegend=active.geometry?'<div class="img-boundary-legend"><i></i> เส้นแดง = ขอบเขต '+esc(active.boundaryType==='PDD_136'?'PDD':active.boundaryType==='MOC3'?'MOC 3 (ยังไม่ยืนยัน)':active.boundaryType||'จากฐาน GIS')+' ที่ระบบมีอยู่ (ไม่ใช่การรับรองสิทธิ์)</div>':'<div class="notice img-missing">แปลงนี้ไม่มี Geometry ที่จับคู่ได้ จึงยังไม่สามารถวาดขอบเขตบน Raster</div>';
 const qaLegend='<div class="img-qa-explainer">การแสดงภาพ: SCL QA ระบุพิกเซลที่วิเคราะห์ได้ ไม่ใช่คะแนนความชัด • RGB ใช้การปรับสีแบบค่าการสะท้อนแสงคงที่ • ช่องลายตารางหมายถึง NoData/ไม่ผ่าน SCL ของภาพต้นฉบับ • สีขาวอาจเป็นความสว่างสูงหรือเมฆที่ต้องตรวจสอบ</div>';
-const main='<div class="img-controls">'+nav+'</div>'+boundaryLegend+qaLegend+visualOnly+noPreview+smallWarning+rgbWarning+rgbMeta+
- '<div class="img-preview-grid"><div class="img-large"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.mode],active.mode,active.date,target)+'</div><div class="img-foot">ความละเอียด: '+esc(String(a[active.mode]?.resolution_m||'—'))+' m · ภาพเต็มสี่เหลี่ยม (ไม่ clip เฉพาะ Polygon)</div></div>'+
- '<div class="img-map-panel"><div class="img-title">'+(a[active.mode]?'Raster Sentinel-2 พร้อมขอบเขต PDD':'ภาพพื้นหลัง Esri พร้อมขอบเขต PDD (ยังไม่มี Raster '+esc(active.date)+')')+'</div><div class="img-geo-map" id="mmc-geo-map"></div><div class="img-foot">'+(a[active.mode]?'ขอบเขต PDD เส้นแดง · ภาพ Sentinel-2 วันที่เลือกอ้างอิง bounds ของ Raster จริง':'ภาพนี้เป็น Basemap Esri สำหรับดูตำแหน่งเท่านั้น ไม่ใช่ภาพ Sentinel-2 วันที่ '+esc(active.date))+'</div>'
-+legend(target,active.mode)
-+'</div></div>';
-const compare='<div class="img-compare-wrap"><div class="img-compare-head"><h3>เปรียบเทียบ Before / After</h3><label>Before<select id="image-before">'+(!active.before?'<option value="" selected disabled>ไม่มีภาพ QA ผ่านก่อนวันที่เลือก</option>':'')+dateChoices(items,active.before)+'</select></label><label>ชนิด<select id="image-compare-mode">'+modeOptions(active.compareMode)+'</select></label></div>'+
- '<div class="img-compare-grid"><figure><div class="img-title">BEFORE · '+esc(active.before||'ไม่มีวันก่อนหน้าที่ผ่าน QA')+' '+(active.before?statusPill(active.before):'')+'</div><div class="img-frame">'+thumb(b[active.compareMode],active.compareMode,active.before,before)+'</div></figure><figure><div class="img-title">AFTER · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.compareMode],active.compareMode,active.date,target)+'</div></figure></div>'+
- (qa(active.before).kind!=='AUTO_VALID'?'<div class="notice img-missing">วัน Before ที่เลือกไม่ผ่าน QA จึงไม่ควรใช้เปรียบเทียบผลกระทบ โปรดเลือกวันที่ผ่าน QA</div>':'')+
- '<p class="muted tiny">แสดงภาพจากสองวันที่เลือกจริง แต่ยังไม่ใช่ผล Change Detection ที่ยืนยันแล้ว เพราะต้องตรวจ QA, พิกเซลใช้ได้ร่วมกัน และน้ำขึ้นน้ำลงก่อนตีความ</p></div>';
+const main=active.layout==='single'?
+ '<div class="img-preview-grid img-view-single"><div class="img-map-panel"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div>'+
+ '<div class="img-geo-map" id="mmc-geo-map"></div>'+
+ '<div class="img-foot">'+(a[active.mode]?'Sentinel-2 '+esc(String(a[active.mode]?.resolution_m||'—'))+' ม. · ภาพวันที่เลือกพร้อมขอบเขตบนแผนที่':'ภาพพื้นหลัง Esri แสดงตำแหน่งเท่านั้น · ไม่มี Raster '+esc(active.date))+'</div>'+
+ legend(target,active.mode)+'</div></div>':'';
+const compare=active.layout==='compare'?
+ '<div class="img-compare-wrap"><div class="img-compare-head"><h3>เปรียบเทียบวันก่อนและวันที่เลือก · '+esc(MODE[active.mode]?.[0]||active.mode)+'</h3></div>'+
+ '<div class="img-compare-grid"><figure><div class="img-title">ก่อน · '+esc(active.before||'ไม่มีวันก่อนหน้าที่ผ่าน QA')+' '+(active.before?statusPill(active.before):'')+'</div><div class="img-frame">'+thumb(b[active.mode],active.mode,active.before,before)+'</div></figure><figure><div class="img-title">หลัง · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.mode],active.mode,active.date,target)+'</div></figure></div>'+
+ (active.before&&qa(active.before).kind!=='AUTO_VALID'?'<div class="notice img-missing">วันก่อนที่เลือกไม่ผ่าน QA โปรดระวังการเปรียบเทียบผลกระทบ</div>':'')+
+ '<p class="muted tiny">ชนิดภาพเดียวกันทั้งสองวันโดยอัตโนมัติ • ยังไม่ยืนยันน้ำท่วม ต้องตรวจ QA พิกเซลร่วม และบริบทน้ำขึ้นลง</p></div>':'';
 const modes=['true_color','false_color','ndvi','ndre','ndmi','mndwi','bsi','ndwi'];
-const gallery='<h3 class="img-gallery-title">ภาพสีจริง / สีเท็จ / ดัชนีในวันที่เลือก</h3><div class="img-gallery">'+modes.map(mode=>'<div class="img-tile"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(a[mode],mode,active.date,target)+'</div><small>'+esc(MODE[mode][1])+'</small>'+indexStatBrief(target,mode)+'</div>').join('')+'</div>';
-const history=allDateGallery(items,byDate,modes);
-const indexAudit=indexAuditTable(target);
+const gallery=active.layout==='grid'?
+ '<h3 class="img-gallery-title">ภาพทั้ง 8 ชนิด · '+esc(active.date)+'</h3><p class="muted tiny">คลิกเปิดบนแผนที่ที่ภาพที่ต้องการ ไม่ต้องเลือกชนิดภาพซ้ำ</p>'+
+ '<div class="img-gallery">'+modes.map(mode=>'<div class="img-tile"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(a[mode],mode,active.date,target)+'</div><small>'+esc(MODE[mode][1])+'</small>'+(a[mode]?'<button type="button" class="img-tile-open" data-image-open-mode="'+esc(mode)+'" data-image-open-date="'+esc(active.date)+'">เปิดบนแผนที่ ↗</button>':'')+indexStatBrief(target,mode)+'</div>').join('')+'</div>':'';
+const history=active.layout==='history'?allDateGallery(items,byDate,modes):'';
+const indexAudit=target?.index_stats?
+ '<details class="img-index-audit-details"><summary>ข้อมูลตรวจสอบค่าดัชนีจาก TIFF (QA เชิงลึก)</summary>'+indexAuditTable(target)+'</details>':'';
 const source=srcMeta?'<div class="img-source"><b>Traceability</b> · Plot '+esc(active.plot)+' • วันที่ภาพ '+esc(active.date)+' • '+esc(srcMeta.algorithm||'Preview จาก TIFF')+' • QA '+esc(srcMeta.analysis_status||'ยังไม่ประมวลผล')+
  '<br><small>Original TIFF: '+esc(srcMeta.original_tif10||'รอต้นฉบับ')+' / '+esc(srcMeta.original_tif20||'รอต้นฉบับ')+'</small>'+
 '<br>'+[['10 m TIFF',srcMeta.original_tif10_file_id],['20 m TIFF / SCL',srcMeta.original_tif20_file_id]].filter(x=>x[1]).map(x=>'<a href="https://drive.google.com/file/d/'+encodeURIComponent(x[1])+'/view" target="_blank" rel="noopener noreferrer">'+esc(x[0])+' ↗</a>').join(' · ')+'</div>':'<div class="img-source">ภาพนี้มี Raster Preview แต่ยังไม่มีผล QA ที่จับคู่กับชุดวิเคราะห์ PDD เดิม จึงไม่ใช้สรุปผลกระทบ</div>';
-return head+main+compare+indexAudit+gallery+history+source;
+return head+nav+boundaryLegend+(active.layout==='single'?qaLegend:'')+visualOnly+noPreview+smallWarning+rgbWarning+rgbMeta+main+compare+gallery+history+indexAudit+source;
 }
 function destroyMap(){if(map){try{map.remove()}catch(e){}map=null;}boundaryMapLayer=null;}
 function plotBounds(geo){const c=[];function walk(a){if(!Array.isArray(a))return;if(a.length>=2&&typeof a[0]==='number'&&typeof a[1]==='number')c.push([a[1],a[0]]);else for(let p of a)walk(p);}walk(geo?.coordinates);if(!c.length)return null;return [[Math.min(...c.map(x=>x[0])),Math.min(...c.map(x=>x[1]))],[Math.max(...c.map(x=>x[0])),Math.max(...c.map(x=>x[1]))]];}
@@ -229,7 +244,8 @@ active.before=before?.date||[...items].reverse().find(x=>x.date<active.date&&qa(
 active.beforeManual=false;
 }
 const cur=items.find(x=>x.date===active.date);
-const results=await Promise.all(items.map(async item=>{
+const needed=active.layout==='history'?items:items.filter(item=>item.date===active.date||(active.layout==='compare'&&item.date===active.before));
+const results=await Promise.all(needed.map(async item=>{
  try{return {item,product:await getProduct(item)}}catch(err){
   console.warn('Raster preview could not load for '+item.plot+' '+item.date,err);
   return {item,product:null};
@@ -238,29 +254,32 @@ const results=await Promise.all(items.map(async item=>{
 if(id!==epoch)return;
 const byDate=new Map(results.map(({item,product})=>[item.date,rastersFor(item,product)]));
 hold.innerHTML=groupMarkup(items,byDate);
+ document.dispatchEvent(new CustomEvent('mmc:imagery-date-change',{detail:{plot:active.plot,date:active.date}}));
 hold.classList.toggle('boundary-hidden',!active.boundaryVisible);
 fitBoundaryOverlays(hold);
-drawMap(cur,byDate.get(active.date)?.[active.mode]||null);
+if(active.layout==='single')drawMap(cur,byDate.get(active.date)?.[active.mode]||null);
 const change=ev=>{const t=ev.target;
 if(t.id==='image-date'){active.date=t.value;active.beforeManual=false;renderAsync();}
 if(t.id==='image-before'){active.before=t.value;active.beforeManual=true;renderAsync();}
 if(t.id==='image-mode'){active.mode=t.value;renderAsync();}
-if(t.id==='image-compare-mode'){active.compareMode=t.value;renderAsync();}
+
 if(t.id==='image-opacity'){active.alpha=Number(t.value)/100;if(map){map.eachLayer(layer=>{if(layer instanceof L.ImageOverlay)layer.setOpacity(active.alpha)})}}
 if(t.id==='image-boundary-toggle'){active.boundaryVisible=t.checked;hold.classList.toggle('boundary-hidden',!t.checked);if(map&&boundaryMapLayer){if(t.checked)boundaryMapLayer.addTo(map);else map.removeLayer(boundaryMapLayer);}const mapHolder=$('mmc-geo-map');if(mapHolder)mapHolder.dataset.boundaryVisible=String(Boolean(active.geometry&&t.checked));}
 };
 const availableBtn=$('image-open-available');if(availableBtn&&latestAvailableImage(items))availableBtn.addEventListener('click',()=>{active.date=latestAvailableImage(items).date;active.beforeManual=false;renderAsync();});
 for(const button of hold.querySelectorAll('[data-image-jump]'))button.addEventListener('click',()=>{
- active.date=button.dataset.imageJump;active.beforeManual=false;renderAsync();
+ active.date=button.dataset.imageJump;active.layout='single';active.beforeManual=false;renderAsync();
  hold.scrollIntoView({block:'start',behavior:'smooth'});
 });
-for(const sel of ['image-date','image-before','image-mode','image-compare-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
+for(const button of hold.querySelectorAll('[data-image-layout]'))button.addEventListener('click',()=>{active.layout=button.dataset.imageLayout;renderAsync();});
+for(const button of hold.querySelectorAll('[data-image-open-mode]'))button.addEventListener('click',()=>{active.mode=button.dataset.imageOpenMode;active.date=button.dataset.imageOpenDate||active.date;active.layout='single';active.beforeManual=false;renderAsync();hold.scrollIntoView({block:'start',behavior:'smooth'});});
+for(const sel of ['image-date','image-before','image-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
 }catch(e){console.error('MMC imagery',e);if(id===epoch)showError(e.message||e)}}
-function mount(o){if(!o?.plot||!o?.container)return;if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';active.compareMode='true_color';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
+function mount(o){if(!o?.plot||!o?.container)return;if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';active.layout='single';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
 function selectDate(date,mode){
  if(!date||!active.holder||!active.rows.some(x=>x.date===date))return false;
  if(!Object.prototype.hasOwnProperty.call(MODE,mode))mode='mndwi';
- active.date=date;active.mode=mode;active.beforeManual=false;
+ active.date=date;active.mode=mode;active.layout='single';active.beforeManual=false;
  renderAsync();return true;
 }
 function clear(){epoch++;destroyMap();clearBoundaryLayout();active.holder=null;}
