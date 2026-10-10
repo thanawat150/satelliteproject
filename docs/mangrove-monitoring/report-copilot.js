@@ -160,6 +160,62 @@ function floodFinding(r){
  return '<div class="rpt-finding"><h3>ข้อค้นพบเฉพาะแปลง '+esc(r.code)+'</h3><ul>'+raw.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>';
 }
 
+
+/* Print-safe locator uses actual supplied plot polygons, with a numbered legend to
+   avoid the overlapping textual plot IDs of the earlier centroid-only schematic. */
+function floodPlotLocator(rows){
+ const observed=[],every=[];
+ for(const r of rows){
+  const g=r.plot.geometry,poly=g?.type==='Polygon'?[g.coordinates]:g?.type==='MultiPolygon'?g.coordinates:[];
+  const rings=[];
+  for(const part of poly)for(const ring of part||[]){
+   const pts=(ring||[]).filter(p=>Array.isArray(p)&&Number.isFinite(Number(p[0]))&&Number.isFinite(Number(p[1]))).map(p=>[Number(p[0]),Number(p[1])]);
+   if(pts.length>=3){rings.push(pts);every.push(...pts);}
+  }
+  if(rings.length){const pts=rings[0],cx=pts.reduce((n,p)=>n+p[0],0)/pts.length,cy=pts.reduce((n,p)=>n+p[1],0)/pts.length;observed.push({r,rings,cx,cy,index:rows.indexOf(r)+1});}
+ }
+ if(!every.length)return '<p class="rpt-empty">ไม่มี Geometry ที่ยืนยันพิกัดได้ จึงไม่แสดงแผนที่คาดเดา</p>';
+ const latMean=every.reduce((n,p)=>n+p[1],0)/every.length,longitudeFactor=Math.cos(latMean*Math.PI/180);
+ const west=Math.min(...every.map(p=>p[0])),east=Math.max(...every.map(p=>p[0]));
+ const south=Math.min(...every.map(p=>p[1])),north=Math.max(...every.map(p=>p[1]));
+ const xsize=Math.max(.000001,(east-west)*longitudeFactor),ysize=Math.max(.000001,north-south);
+ const scale=Math.min(510/xsize,255/ysize),ox=32+(510-xsize*scale)/2,oy=39+(255-ysize*scale)/2;
+ const xy=(lng,lat)=>[ox+(lng-west)*longitudeFactor*scale,oy+(north-lat)*scale];
+ const marks=[],pinCenters=[];
+ for(const item of observed){
+  const [cx,cy]=xy(item.cx,item.cy),candidates=[[0,0]];
+  for(const rad of [16,30,45,60])for(let t=0;t<12;t++){const theta=Math.PI*2*t/12;candidates.push([rad*Math.cos(theta),rad*Math.sin(theta)]);}
+  let target=[cx,cy];
+  for(const [dx,dy] of candidates){
+   const nx=cx+dx,ny=cy+dy;
+   if(nx<21||nx>552||ny<16||ny>319)continue;
+   if(pinCenters.every(p=>Math.hypot(p[0]-nx,p[1]-ny)>21)){target=[nx,ny];break;}
+  }
+  pinCenters.push(target);marks.push({item,cx,cy,tx:target[0],ty:target[1]});
+ }
+ const color=r=>!r.pair?'#809c8b':r.water>0?'#bc6e42':'#287b5b';
+ const polygonPaths=observed.map(({r,rings})=>{
+  const d=rings.map(ring=>ring.map((p,i)=>{const [x,y]=xy(p[0],p[1]);return (i?'L':'M')+x.toFixed(2)+','+y.toFixed(2);}).join(' ')+' Z').join(' ');
+  return '<path d="'+d+'" fill="'+color(r)+'" fill-opacity="0.20" stroke="'+color(r)+'" stroke-width="1.1" fill-rule="evenodd"/>';
+ }).join('');
+ const markerSvg=marks.map(m=>{
+  const col=color(m.item.r),nr=m.item.index;return '<line x1="'+m.cx.toFixed(1)+'" y1="'+m.cy.toFixed(1)+'" x2="'+m.tx.toFixed(1)+'" y2="'+m.ty.toFixed(1)+'" stroke="'+col+'" stroke-opacity=".6" stroke-width="1"/>'+
+   '<circle cx="'+m.tx.toFixed(1)+'" cy="'+m.ty.toFixed(1)+'" r="10" fill="'+col+'" stroke="#fff" stroke-width="1.8"/>'+
+   '<text x="'+m.tx.toFixed(1)+'" y="'+(m.ty+3.5).toFixed(1)+'" text-anchor="middle" font-size="9.3" fill="#fff" font-weight="700">'+nr+'</text>';
+ }).join('');
+ const key=rows.map((r,i)=>'<div><b style="color:'+color(r)+'">'+(i+1)+'.</b> '+esc(r.code)+' <small>'+esc(!r.pair?'ไม่มีคู่ภาพ':r.water>0?'น้ำเพิ่มสุทธิ':'ไม่มีน้ำเพิ่มสุทธิ')+'</small></div>').join('');
+ return '<div class="rpt-gis-map">'+
+  '<svg class="rpt-gis-overview" viewBox="0 0 570 339" role="img" aria-label="ขอบเขตจริงของแปลง GIS '+rows.length+' แปลง พร้อมหมายเลขแยกอ่านได้">'+
+  '<rect x="10" y="7" width="550" height="321" fill="#f3f7f3" rx="6" stroke="#b7c9ba"/>'+
+  [0,1,2,3,4].map(i=>'<line x1="'+(27+i*128)+'" x2="'+(27+i*128)+'" y1="22" y2="316" stroke="#d3e0d6" stroke-width=".6"/>').join('')+
+  [0,1,2,3].map(i=>'<line x1="21" x2="555" y1="'+(35+i*91)+'" y2="'+(35+i*91)+'" stroke="#d3e0d6" stroke-width=".6"/>').join('')+
+  polygonPaths+markerSvg+
+  '<text x="20" y="26" font-size="12" fill="#1d5e3d" font-weight="700">N ↑</text>'+
+  '<text x="540" y="318" font-size="9" text-anchor="end" fill="#597364">WGS84 · GIS polygons</text></svg>'+
+  '<div class="rpt-locator-key">'+key+'</div></div>'+
+  '<p class="rpt-caption">ขอบเขตแปลงจาก Geometry จริง พร้อมหมายเลขอ้างอิงด้านล่าง • ไม่ได้แสดงขอบเขตจังหวัด ถนน หรือฐานภาพดาวเทียม • สีส้ม=น้ำเพิ่มสุทธิ, เขียว=มีคู่ภาพแต่ไม่เพิ่ม, เทา=ไม่มีคู่ภาพ</p>';
+}
+
 /* Flood brief is question-first: decision pages before optional visual evidence appendix.
    Pair changes are screening evidence only; different dates/tides must not become a flood claim. */
 function floodPlan(d){
@@ -222,34 +278,7 @@ function floodPlan(d){
   '<div class="rpt-pictures rpt-cover-grid">'+coverVisual+'</div>'+
   '<div class="rpt-nextstep"><b>ข้อเสนอเพื่อการตัดสินใจ</b><p>ให้ตรวจสอบคู่ภาพและวิธีคำนวณของ '+esc(priority.map(r=>r.code).join(', ')||'แปลงที่มีข้อมูลครบ')+' ก่อน พร้อมตรวจน้ำขึ้นลง ณ เวลาถ่ายภาพและสภาพพื้นที่จริง ยังไม่อนุมัติการสรุปความเสียหายจากข้อมูลชุดนี้เพียงอย่างเดียว</p></div>'+ 
   '<p class="rpt-disclaimer"><b>ข้อสรุปสำหรับผู้บริหาร:</b> ยังไม่ยืนยันว่าเกิดน้ำท่วมหรือพืชตาย ต้องตรวจวันภาพ น้ำขึ้นลง ฝน และหลักฐานภาคสนามก่อนระบุผลกระทบ</p>');
- // GIS footprint as schematic plot positions, no fabricated basemap.
- const geoPoints=[];
- for(const r of rows){
-  const g=r.plot.geometry;
-  if(!g||!['Polygon','MultiPolygon'].includes(g.type))continue;
-  const flat=g.type==='Polygon'?g.coordinates.flat(1):g.coordinates.flat(2);
-  const coords=flat.filter(p=>Array.isArray(p)&&Number.isFinite(Number(p[0]))&&Number.isFinite(Number(p[1])));
-  if(!coords.length)continue;
-  const x=coords.reduce((v,p)=>v+Number(p[0]),0)/coords.length;
-  const y=coords.reduce((v,p)=>v+Number(p[1]),0)/coords.length;
-  geoPoints.push({x,y,code:r.code,signal:r.water>0,comparable:!!r.pair});
- }
- let gis='<p class="rpt-empty">ไม่มีขอบเขต GIS ที่สามารถแสดงตำแหน่งแปลงได้</p>';
- if(geoPoints.length){
-  const west=Math.min(...geoPoints.map(x=>x.x)),east=Math.max(...geoPoints.map(x=>x.x)),south=Math.min(...geoPoints.map(x=>x.y)),north=Math.max(...geoPoints.map(x=>x.y));
-  const dx=Math.max(east-west,0.01),dy=Math.max(north-south,0.01);
-  const pointMap=geoPoints.map(p=>{
-   const x=38+(p.x-west)/dx*480,y=225-(p.y-south)/dy*190;
-   const color=p.signal?'#bc6337':p.comparable?'#217758':'#8c9c91';
-   return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="5" fill="'+color+'" stroke="white" stroke-width="2"/>'+
-     '<text x="'+(x+7).toFixed(1)+'" y="'+(y-5).toFixed(1)+'" font-size="9" fill="#244a38">'+esc(p.code)+'</text>';
-  }).join('');
-  gis='<svg viewBox="0 0 570 255" class="rpt-gis-overview" role="img" aria-label="ตำแหน่งแปลงตามพิกัด GIS จริง ไม่มีแผนที่พื้นหลัง">'+
-   '<rect x="16" y="10" width="538" height="228" rx="6" fill="#eff5f0" stroke="#c9dacc"/>'+
-   [0,1,2,3,4].map(i=>'<line x1="'+(38+i*120)+'" y1="18" x2="'+(38+i*120)+'" y2="230" stroke="#d9e7dc"/>').join('')+
-   [0,1,2,3].map(i=>'<line x1="26" y1="'+(27+i*62)+'" x2="545" y2="'+(27+i*62)+'" stroke="#d9e7dc"/>').join('')+
-   pointMap+'</svg><p class="rpt-caption">ตำแหน่งเชิงแผนภาพจากพิกัด Geometry จริง ไม่ใช่แผนที่ดาวเทียมและไม่ใช่ขอบเขตการท่วม · สีส้ม=พบพื้นที่น้ำเพิ่มสุทธิ, เขียว=มีคู่ภาพแต่ไม่เพิ่ม, เทา=ไม่มีคู่ภาพ</p>';
- }
+ const gis=floodPlotLocator(rows);
  section('02 / COVERAGE','ขอบเขตศึกษาและความครอบคลุม',
   '<h3>การกระจายตัวของแปลง</h3>'+gis+coverage+
   '<p class="rpt-caption">จำนวนภาพ Sentinel-2 '+d.all.length+' รายการ · ภาพผ่าน QA '+d.good.length+' รายการ · เปรียบเทียบน้ำได้ '+comparable.length+' แปลง</p>'+
