@@ -5,8 +5,8 @@
   "window": "previous 1 and 3 complete UTC days, compared with a +/-15-day seasonal window",
   "comparison_rule": "Empirical percentile over reference samples; high >=80th, very high >=95th",
   "not_flood_confirmation": true,
-  "plots_with_reference": 48,
-  "plots_without_reference": 78,
+  "plots_with_reference": 126,
+  "plots_without_reference": 0,
   "errors": [],
   "plots": {
     "13-STC": {
@@ -2708,6 +2708,3760 @@
             "reference_median_mm": 23.57,
             "reference_p80_mm": 39.842,
             "reference_p95_mm": 63.687,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "38-STC": {
+      "plot": "38-STC",
+      "latitude": 7.821143,
+      "longitude": 99.084822,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.821143&longitude=99.084822&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 19.68,
+            "reference_median_mm": 6.79,
+            "reference_p80_mm": 16.61,
+            "reference_p95_mm": 32.25,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 6.13,
+            "reference_median_mm": 25.0,
+            "reference_p80_mm": 47.248,
+            "reference_p95_mm": 73.117,
+            "relative_status": "LOW"
+          }
+        }
+      }
+    },
+    "38-VSD": {
+      "plot": "38-VSD",
+      "latitude": 8.190131,
+      "longitude": 98.403755,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.190131&longitude=98.403755&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 17.1,
+            "reference_median_mm": 8.495,
+            "reference_p80_mm": 18.28,
+            "reference_p95_mm": 34.234,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 16.45,
+            "reference_median_mm": 28.46,
+            "reference_p80_mm": 52.808,
+            "reference_p95_mm": 78.172,
+            "relative_status": "LOW"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 43.55,
+            "reference_median_mm": 8.325,
+            "reference_p80_mm": 18.296,
+            "reference_p95_mm": 35.361,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 40.32,
+            "reference_median_mm": 28.32,
+            "reference_p80_mm": 52.578,
+            "reference_p95_mm": 82.692,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "39-STC": {
+      "plot": "39-STC",
+      "latitude": 7.813717,
+      "longitude": 99.105548,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.813717&longitude=99.105548&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.26,
+            "reference_median_mm": 7.09,
+            "reference_p80_mm": 16.364,
+            "reference_p95_mm": 30.538,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 53.87,
+            "reference_median_mm": 26.34,
+            "reference_p80_mm": 47.584,
+            "reference_p95_mm": 71.267,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "39-VSD": {
+      "plot": "39-VSD",
+      "latitude": 8.202362,
+      "longitude": 98.313639,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.202362&longitude=98.313639&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 19.03,
+            "reference_median_mm": 8.12,
+            "reference_p80_mm": 17.644,
+            "reference_p95_mm": 31.873,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 10.65,
+            "reference_median_mm": 27.575,
+            "reference_p80_mm": 49.91,
+            "reference_p95_mm": 81.128,
+            "relative_status": "LOW"
+          }
+        },
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 75.81,
+            "reference_median_mm": 8.42,
+            "reference_p80_mm": 18.252,
+            "reference_p95_mm": 34.234,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 38.71,
+            "reference_median_mm": 28.625,
+            "reference_p80_mm": 52.808,
+            "reference_p95_mm": 78.172,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-05": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 63.87,
+            "reference_median_mm": 8.235,
+            "reference_p80_mm": 18.138,
+            "reference_p95_mm": 34.564,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 99.03,
+            "reference_median_mm": 28.115,
+            "reference_p80_mm": 51.744,
+            "reference_p95_mm": 78.343,
+            "relative_status": "VERY_HIGH"
+          }
+        }
+      }
+    },
+    "4-VSD": {
+      "plot": "4-VSD",
+      "latitude": 12.161869,
+      "longitude": 102.667218,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=12.161869&longitude=102.667218&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-19": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 99.68,
+            "reference_median_mm": 14.65,
+            "reference_p80_mm": 28.208,
+            "reference_p95_mm": 47.242,
+            "relative_status": "VERY_HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 95.81,
+            "reference_median_mm": 50.455,
+            "reference_p80_mm": 79.62,
+            "reference_p95_mm": 123.837,
+            "relative_status": "VERY_HIGH"
+          }
+        }
+      }
+    },
+    "40-STC": {
+      "plot": "40-STC",
+      "latitude": 7.78814,
+      "longitude": 99.122466,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.78814&longitude=99.122466&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-03": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 12.9,
+            "reference_median_mm": 5.085,
+            "reference_p80_mm": 12.732,
+            "reference_p95_mm": 29.474,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 61.94,
+            "reference_median_mm": 19.955,
+            "reference_p80_mm": 41.028,
+            "reference_p95_mm": 67.709,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.26,
+            "reference_median_mm": 7.09,
+            "reference_p80_mm": 16.364,
+            "reference_p95_mm": 30.538,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 53.87,
+            "reference_median_mm": 26.34,
+            "reference_p80_mm": 47.584,
+            "reference_p95_mm": 71.267,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "40-VSD": {
+      "plot": "40-VSD",
+      "latitude": 8.3549,
+      "longitude": 98.547386,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.3549&longitude=98.547386&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-31": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 71.29,
+            "reference_median_mm": 5.62,
+            "reference_p80_mm": 14.37,
+            "reference_p95_mm": 31.361,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 86.13,
+            "reference_median_mm": 21.68,
+            "reference_p80_mm": 41.506,
+            "reference_p95_mm": 67.173,
+            "relative_status": "HIGH"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 73.55,
+            "reference_median_mm": 7.955,
+            "reference_p80_mm": 20.054,
+            "reference_p95_mm": 33.312,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 56.45,
+            "reference_median_mm": 28.54,
+            "reference_p80_mm": 51.08,
+            "reference_p95_mm": 74.996,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "41-VSD": {
+      "plot": "41-VSD",
+      "latitude": 8.357668,
+      "longitude": 98.536172,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.357668&longitude=98.536172&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-31": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 71.29,
+            "reference_median_mm": 5.62,
+            "reference_p80_mm": 14.37,
+            "reference_p95_mm": 31.361,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 86.13,
+            "reference_median_mm": 21.68,
+            "reference_p80_mm": 41.506,
+            "reference_p95_mm": 67.173,
+            "relative_status": "HIGH"
+          }
+        }
+      }
+    },
+    "42-VSD": {
+      "plot": "42-VSD",
+      "latitude": 8.357268,
+      "longitude": 98.532418,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.357268&longitude=98.532418&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-31": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 71.29,
+            "reference_median_mm": 5.62,
+            "reference_p80_mm": 14.37,
+            "reference_p95_mm": 31.361,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 86.13,
+            "reference_median_mm": 21.68,
+            "reference_p80_mm": 41.506,
+            "reference_p95_mm": 67.173,
+            "relative_status": "HIGH"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 73.55,
+            "reference_median_mm": 7.955,
+            "reference_p80_mm": 20.054,
+            "reference_p95_mm": 33.312,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 56.45,
+            "reference_median_mm": 28.54,
+            "reference_p80_mm": 51.08,
+            "reference_p95_mm": 74.996,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "43-STC": {
+      "plot": "43-STC",
+      "latitude": 7.963962,
+      "longitude": 99.113197,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.963962&longitude=99.113197&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.26,
+            "reference_median_mm": 7.09,
+            "reference_p80_mm": 16.364,
+            "reference_p95_mm": 30.538,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 53.87,
+            "reference_median_mm": 26.34,
+            "reference_p80_mm": 47.584,
+            "reference_p95_mm": 71.267,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "43-VSD": {
+      "plot": "43-VSD",
+      "latitude": 8.428707,
+      "longitude": 98.594206,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.428707&longitude=98.594206&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 34.19,
+            "reference_median_mm": 7.9,
+            "reference_p80_mm": 20.27,
+            "reference_p95_mm": 32.846,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 19.03,
+            "reference_median_mm": 29.855,
+            "reference_p80_mm": 51.802,
+            "reference_p95_mm": 76.9,
+            "relative_status": "LOW"
+          }
+        }
+      }
+    },
+    "44-VSD": {
+      "plot": "44-VSD",
+      "latitude": 8.386844,
+      "longitude": 98.639182,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.386844&longitude=98.639182&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-31": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 71.29,
+            "reference_median_mm": 5.62,
+            "reference_p80_mm": 14.37,
+            "reference_p95_mm": 31.361,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 86.13,
+            "reference_median_mm": 21.68,
+            "reference_p80_mm": 41.506,
+            "reference_p95_mm": 67.173,
+            "relative_status": "HIGH"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 73.55,
+            "reference_median_mm": 7.955,
+            "reference_p80_mm": 20.054,
+            "reference_p95_mm": 33.312,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 56.45,
+            "reference_median_mm": 28.54,
+            "reference_p80_mm": 51.08,
+            "reference_p95_mm": 74.996,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "45-STC": {
+      "plot": "45-STC",
+      "latitude": 7.819118,
+      "longitude": 99.147549,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.819118&longitude=99.147549&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-04-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 29.68,
+            "reference_median_mm": 2.89,
+            "reference_p80_mm": 9.1,
+            "reference_p95_mm": 22.578,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 14.135,
+            "reference_p80_mm": 30.136,
+            "reference_p95_mm": 46.858,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "46-STC": {
+      "plot": "46-STC",
+      "latitude": 7.815301,
+      "longitude": 99.102085,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.815301&longitude=99.102085&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-03": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 12.9,
+            "reference_median_mm": 5.085,
+            "reference_p80_mm": 12.732,
+            "reference_p95_mm": 29.474,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 61.94,
+            "reference_median_mm": 19.955,
+            "reference_p80_mm": 41.028,
+            "reference_p95_mm": 67.709,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.26,
+            "reference_median_mm": 7.09,
+            "reference_p80_mm": 16.364,
+            "reference_p95_mm": 30.538,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 53.87,
+            "reference_median_mm": 26.34,
+            "reference_p80_mm": 47.584,
+            "reference_p95_mm": 71.267,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "47-STC": {
+      "plot": "47-STC",
+      "latitude": 7.812658,
+      "longitude": 99.089207,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.812658&longitude=99.089207&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-03": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 12.9,
+            "reference_median_mm": 5.085,
+            "reference_p80_mm": 12.732,
+            "reference_p95_mm": 29.474,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 61.94,
+            "reference_median_mm": 19.955,
+            "reference_p80_mm": 41.028,
+            "reference_p95_mm": 67.709,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "48-STC": {
+      "plot": "48-STC",
+      "latitude": 7.82269,
+      "longitude": 99.090658,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.82269&longitude=99.090658&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-03": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 12.9,
+            "reference_median_mm": 5.085,
+            "reference_p80_mm": 12.732,
+            "reference_p95_mm": 29.474,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 61.94,
+            "reference_median_mm": 19.955,
+            "reference_p80_mm": 41.028,
+            "reference_p95_mm": 67.709,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "5-VSD": {
+      "plot": "5-VSD",
+      "latitude": 12.159353,
+      "longitude": 102.668792,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=12.159353&longitude=102.668792&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-19": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 99.68,
+            "reference_median_mm": 14.65,
+            "reference_p80_mm": 28.208,
+            "reference_p95_mm": 47.242,
+            "relative_status": "VERY_HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 95.81,
+            "reference_median_mm": 50.455,
+            "reference_p80_mm": 79.62,
+            "reference_p95_mm": 123.837,
+            "relative_status": "VERY_HIGH"
+          }
+        }
+      }
+    },
+    "50-STC": {
+      "plot": "50-STC",
+      "latitude": 7.790917,
+      "longitude": 99.089045,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.790917&longitude=99.089045&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-03": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 12.9,
+            "reference_median_mm": 5.085,
+            "reference_p80_mm": 12.732,
+            "reference_p95_mm": 29.474,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 61.94,
+            "reference_median_mm": 19.955,
+            "reference_p80_mm": 41.028,
+            "reference_p95_mm": 67.709,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "51-STC": {
+      "plot": "51-STC",
+      "latitude": 7.870732,
+      "longitude": 99.080674,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.870732&longitude=99.080674&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-28": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 17.42,
+            "reference_median_mm": 6.57,
+            "reference_p80_mm": 16.46,
+            "reference_p95_mm": 31.898,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 23.55,
+            "reference_median_mm": 24.915,
+            "reference_p80_mm": 49.164,
+            "reference_p95_mm": 72.566,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "52-STC": {
+      "plot": "52-STC",
+      "latitude": 7.885009,
+      "longitude": 99.086674,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.885009&longitude=99.086674&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-19": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 35.48,
+            "reference_median_mm": 4.21,
+            "reference_p80_mm": 13.45,
+            "reference_p95_mm": 29.722,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 23.55,
+            "reference_median_mm": 18.2,
+            "reference_p80_mm": 39.424,
+            "reference_p95_mm": 66.202,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "53-STC": {
+      "plot": "53-STC",
+      "latitude": 7.826709,
+      "longitude": 99.123694,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.826709&longitude=99.123694&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-05-25": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 86.45,
+            "reference_median_mm": 6.09,
+            "reference_p80_mm": 14.456,
+            "reference_p95_mm": 24.64,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 63.23,
+            "reference_median_mm": 22.13,
+            "reference_p80_mm": 41.7,
+            "reference_p95_mm": 55.462,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "54-STC": {
+      "plot": "54-STC",
+      "latitude": 7.845829,
+      "longitude": 99.055237,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.845829&longitude=99.055237&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-28": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 15.81,
+            "reference_median_mm": 7.2,
+            "reference_p80_mm": 17.594,
+            "reference_p95_mm": 33.237,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 32.26,
+            "reference_median_mm": 28.825,
+            "reference_p80_mm": 52.474,
+            "reference_p95_mm": 80.098,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 48.06,
+            "reference_median_mm": 7.2,
+            "reference_p80_mm": 17.524,
+            "reference_p95_mm": 31.866,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 40.0,
+            "reference_median_mm": 27.44,
+            "reference_p80_mm": 48.038,
+            "reference_p95_mm": 78.909,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "55-STC": {
+      "plot": "55-STC",
+      "latitude": 7.854549,
+      "longitude": 99.102997,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.854549&longitude=99.102997&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 22.58,
+            "reference_median_mm": 7.52,
+            "reference_p80_mm": 18.072,
+            "reference_p95_mm": 33.581,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 13.87,
+            "reference_median_mm": 27.105,
+            "reference_p80_mm": 50.824,
+            "reference_p95_mm": 74.532,
+            "relative_status": "LOW"
+          }
+        }
+      }
+    },
+    "59-STC": {
+      "plot": "59-STC",
+      "latitude": 8.051987,
+      "longitude": 98.939216,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.051987&longitude=98.939216&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-31": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 83.23,
+            "reference_median_mm": 5.135,
+            "reference_p80_mm": 14.03,
+            "reference_p95_mm": 29.769,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 83.55,
+            "reference_median_mm": 21.025,
+            "reference_p80_mm": 39.418,
+            "reference_p95_mm": 70.989,
+            "relative_status": "HIGH"
+          }
+        }
+      }
+    },
+    "6-VSD": {
+      "plot": "6-VSD",
+      "latitude": 12.288045,
+      "longitude": 102.286582,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=12.288045&longitude=102.286582&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-18": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 52.9,
+            "reference_median_mm": 10.62,
+            "reference_p80_mm": 24.602,
+            "reference_p95_mm": 41.315,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 68.06,
+            "reference_median_mm": 40.35,
+            "reference_p80_mm": 69.588,
+            "reference_p95_mm": 104.54,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "62-STC": {
+      "plot": "62-STC",
+      "latitude": 8.03593,
+      "longitude": 98.935142,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.03593&longitude=98.935142&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-31": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 83.23,
+            "reference_median_mm": 5.135,
+            "reference_p80_mm": 14.03,
+            "reference_p95_mm": 29.769,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 83.55,
+            "reference_median_mm": 21.025,
+            "reference_p80_mm": 39.418,
+            "reference_p95_mm": 70.989,
+            "relative_status": "HIGH"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.58,
+            "reference_median_mm": 7.47,
+            "reference_p80_mm": 17.524,
+            "reference_p95_mm": 33.184,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 50.97,
+            "reference_median_mm": 27.86,
+            "reference_p80_mm": 47.472,
+            "reference_p95_mm": 80.066,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "63-STC": {
+      "plot": "63-STC",
+      "latitude": 8.030612,
+      "longitude": 98.941079,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.030612&longitude=98.941079&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.58,
+            "reference_median_mm": 7.47,
+            "reference_p80_mm": 17.524,
+            "reference_p95_mm": 33.184,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 50.97,
+            "reference_median_mm": 27.86,
+            "reference_p80_mm": 47.472,
+            "reference_p95_mm": 80.066,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "64-STC": {
+      "plot": "64-STC",
+      "latitude": 8.043533,
+      "longitude": 98.941488,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.043533&longitude=98.941488&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-09": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.77,
+            "reference_median_mm": 8.215,
+            "reference_p80_mm": 18.99,
+            "reference_p95_mm": 33.237,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 15.81,
+            "reference_median_mm": 30.115,
+            "reference_p80_mm": 56.948,
+            "reference_p95_mm": 84.088,
+            "relative_status": "LOW"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.58,
+            "reference_median_mm": 7.47,
+            "reference_p80_mm": 17.524,
+            "reference_p95_mm": 33.184,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 50.97,
+            "reference_median_mm": 27.86,
+            "reference_p80_mm": 47.472,
+            "reference_p95_mm": 80.066,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "65-STC": {
+      "plot": "65-STC",
+      "latitude": 8.039617,
+      "longitude": 98.93815,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.039617&longitude=98.93815&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-31": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 83.23,
+            "reference_median_mm": 5.135,
+            "reference_p80_mm": 14.03,
+            "reference_p95_mm": 29.769,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 83.55,
+            "reference_median_mm": 21.025,
+            "reference_p80_mm": 39.418,
+            "reference_p95_mm": 70.989,
+            "relative_status": "HIGH"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.58,
+            "reference_median_mm": 7.47,
+            "reference_p80_mm": 17.524,
+            "reference_p95_mm": 33.184,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 50.97,
+            "reference_median_mm": 27.86,
+            "reference_p80_mm": 47.472,
+            "reference_p95_mm": 80.066,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "66-STC": {
+      "plot": "66-STC",
+      "latitude": 11.764947,
+      "longitude": 99.781485,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=11.764947&longitude=99.781485&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-19": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 79.68,
+            "reference_median_mm": 5.33,
+            "reference_p80_mm": 11.586,
+            "reference_p95_mm": 20.104,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.94,
+            "reference_median_mm": 19.155,
+            "reference_p80_mm": 34.324,
+            "reference_p95_mm": 59.713,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 12.58,
+            "reference_median_mm": 7.175,
+            "reference_p80_mm": 16.702,
+            "reference_p95_mm": 30.009,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 29.35,
+            "reference_median_mm": 25.375,
+            "reference_p80_mm": 47.146,
+            "reference_p95_mm": 84.887,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "66-VSD": {
+      "plot": "66-VSD",
+      "latitude": 7.349354,
+      "longitude": 99.620898,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.349354&longitude=99.620898&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-31": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 78.06,
+            "reference_median_mm": 4.685,
+            "reference_p80_mm": 12.95,
+            "reference_p95_mm": 36.418,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 73.87,
+            "reference_median_mm": 18.285,
+            "reference_p80_mm": 39.102,
+            "reference_p95_mm": 65.707,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 63.55,
+            "reference_median_mm": 7.33,
+            "reference_p80_mm": 17.658,
+            "reference_p95_mm": 30.905,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 46.13,
+            "reference_median_mm": 27.575,
+            "reference_p80_mm": 48.744,
+            "reference_p95_mm": 75.543,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "67-STC": {
+      "plot": "67-STC",
+      "latitude": 8.423299,
+      "longitude": 98.59549,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.423299&longitude=98.59549&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-11": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 93.87,
+            "reference_median_mm": 6.14,
+            "reference_p80_mm": 16.124,
+            "reference_p95_mm": 28.292,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 78.06,
+            "reference_median_mm": 24.04,
+            "reference_p80_mm": 48.756,
+            "reference_p95_mm": 71.147,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "68-STC": {
+      "plot": "68-STC",
+      "latitude": 8.203453,
+      "longitude": 98.327556,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.203453&longitude=98.327556&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-01": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 69.68,
+            "reference_median_mm": 6.86,
+            "reference_p80_mm": 14.764,
+            "reference_p95_mm": 31.29,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 75.16,
+            "reference_median_mm": 23.495,
+            "reference_p80_mm": 44.842,
+            "reference_p95_mm": 76.337,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 75.81,
+            "reference_median_mm": 8.42,
+            "reference_p80_mm": 18.252,
+            "reference_p95_mm": 34.234,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 38.71,
+            "reference_median_mm": 28.625,
+            "reference_p80_mm": 52.808,
+            "reference_p95_mm": 78.172,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "68-VSD": {
+      "plot": "68-VSD",
+      "latitude": 6.653868,
+      "longitude": 100.121542,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.653868&longitude=100.121542&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-03": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 30.97,
+            "reference_median_mm": 3.29,
+            "reference_p80_mm": 11.81,
+            "reference_p95_mm": 23.389,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 38.06,
+            "reference_median_mm": 16.61,
+            "reference_p80_mm": 34.874,
+            "reference_p95_mm": 60.764,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "69-STC": {
+      "plot": "69-STC",
+      "latitude": 8.194086,
+      "longitude": 98.324678,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.194086&longitude=98.324678&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-13": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 38.71,
+            "reference_median_mm": 7.13,
+            "reference_p80_mm": 15.136,
+            "reference_p95_mm": 33.108,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 20.97,
+            "reference_median_mm": 25.82,
+            "reference_p80_mm": 44.996,
+            "reference_p95_mm": 77.269,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 75.81,
+            "reference_median_mm": 8.42,
+            "reference_p80_mm": 18.252,
+            "reference_p95_mm": 34.234,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 38.71,
+            "reference_median_mm": 28.625,
+            "reference_p80_mm": 52.808,
+            "reference_p95_mm": 78.172,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-05": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 63.87,
+            "reference_median_mm": 8.235,
+            "reference_p80_mm": 18.138,
+            "reference_p95_mm": 34.564,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 99.03,
+            "reference_median_mm": 28.115,
+            "reference_p80_mm": 51.744,
+            "reference_p95_mm": 78.343,
+            "relative_status": "VERY_HIGH"
+          }
+        }
+      }
+    },
+    "69-VSD": {
+      "plot": "69-VSD",
+      "latitude": 6.595121,
+      "longitude": 100.078589,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.595121&longitude=100.078589&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-05-25": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 5.275,
+            "reference_p80_mm": 12.706,
+            "reference_p95_mm": 22.567,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 22.58,
+            "reference_median_mm": 20.765,
+            "reference_p80_mm": 36.82,
+            "reference_p95_mm": 49.743,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "7-VSD": {
+      "plot": "7-VSD",
+      "latitude": 12.184773,
+      "longitude": 102.506833,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=12.184773&longitude=102.506833&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-09": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 46.77,
+            "reference_median_mm": 14.295,
+            "reference_p80_mm": 28.952,
+            "reference_p95_mm": 49.874,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 29.35,
+            "reference_median_mm": 50.38,
+            "reference_p80_mm": 83.032,
+            "reference_p95_mm": 130.654,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 7.1,
+            "reference_median_mm": 13.26,
+            "reference_p80_mm": 27.156,
+            "reference_p95_mm": 50.82,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 86.45,
+            "reference_median_mm": 48.66,
+            "reference_p80_mm": 77.966,
+            "reference_p95_mm": 117.241,
+            "relative_status": "HIGH"
+          }
+        }
+      }
+    },
+    "70-STC": {
+      "plot": "70-STC",
+      "latitude": 8.441899,
+      "longitude": 98.612511,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.441899&longitude=98.612511&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-11": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 93.87,
+            "reference_median_mm": 6.14,
+            "reference_p80_mm": 16.124,
+            "reference_p95_mm": 28.292,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 78.06,
+            "reference_median_mm": 24.04,
+            "reference_p80_mm": 48.756,
+            "reference_p95_mm": 71.147,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "70-VSD": {
+      "plot": "70-VSD",
+      "latitude": 6.62615,
+      "longitude": 100.079216,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.62615&longitude=100.079216&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-09": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 39.68,
+            "reference_median_mm": 6.495,
+            "reference_p80_mm": 15.524,
+            "reference_p95_mm": 34.13,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 67.1,
+            "reference_median_mm": 23.32,
+            "reference_p80_mm": 46.58,
+            "reference_p95_mm": 81.508,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "71(1)-VSD": {
+      "plot": "71(1)-VSD",
+      "latitude": 6.645688,
+      "longitude": 100.12297,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.645688&longitude=100.12297&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-14": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 83.23,
+            "reference_median_mm": 3.94,
+            "reference_p80_mm": 9.43,
+            "reference_p95_mm": 22.617,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 41.29,
+            "reference_median_mm": 15.24,
+            "reference_p80_mm": 31.362,
+            "reference_p95_mm": 51.473,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "71-STC": {
+      "plot": "71-STC",
+      "latitude": 8.436584,
+      "longitude": 98.610273,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.436584&longitude=98.610273&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-17": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 26.13,
+            "reference_median_mm": 5.315,
+            "reference_p80_mm": 15.552,
+            "reference_p95_mm": 28.201,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 21.29,
+            "reference_median_mm": 20.35,
+            "reference_p80_mm": 41.378,
+            "reference_p95_mm": 66.225,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 34.19,
+            "reference_median_mm": 7.9,
+            "reference_p80_mm": 20.27,
+            "reference_p95_mm": 32.846,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 19.03,
+            "reference_median_mm": 29.855,
+            "reference_p80_mm": 51.802,
+            "reference_p95_mm": 76.9,
+            "relative_status": "LOW"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 73.55,
+            "reference_median_mm": 7.955,
+            "reference_p80_mm": 20.054,
+            "reference_p95_mm": 33.312,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 56.45,
+            "reference_median_mm": 28.54,
+            "reference_p80_mm": 51.08,
+            "reference_p95_mm": 74.996,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "71-VSD": {
+      "plot": "71-VSD",
+      "latitude": 6.607751,
+      "longitude": 100.135106,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.607751&longitude=100.135106&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-04-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 46.13,
+            "reference_median_mm": 4.845,
+            "reference_p80_mm": 11.188,
+            "reference_p95_mm": 18.611,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 72.58,
+            "reference_median_mm": 18.175,
+            "reference_p80_mm": 29.372,
+            "reference_p95_mm": 46.471,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "72-STC": {
+      "plot": "72-STC",
+      "latitude": 8.432979,
+      "longitude": 98.601964,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.432979&longitude=98.601964&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-04-28": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 57.74,
+            "reference_median_mm": 2.98,
+            "reference_p80_mm": 10.774,
+            "reference_p95_mm": 21.614,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 30.32,
+            "reference_median_mm": 12.79,
+            "reference_p80_mm": 29.266,
+            "reference_p95_mm": 49.731,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 34.19,
+            "reference_median_mm": 7.9,
+            "reference_p80_mm": 20.27,
+            "reference_p95_mm": 32.846,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 19.03,
+            "reference_median_mm": 29.855,
+            "reference_p80_mm": 51.802,
+            "reference_p95_mm": 76.9,
+            "relative_status": "LOW"
+          }
+        }
+      }
+    },
+    "72-VSD": {
+      "plot": "72-VSD",
+      "latitude": 6.60174,
+      "longitude": 100.079092,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.60174&longitude=100.079092&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-19": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.58,
+            "reference_median_mm": 3.545,
+            "reference_p80_mm": 8.924,
+            "reference_p95_mm": 21.363,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 79.03,
+            "reference_median_mm": 14.555,
+            "reference_p80_mm": 28.414,
+            "reference_p95_mm": 48.704,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "73-STC": {
+      "plot": "73-STC",
+      "latitude": 8.425839,
+      "longitude": 98.608559,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.425839&longitude=98.608559&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 34.19,
+            "reference_median_mm": 7.9,
+            "reference_p80_mm": 20.27,
+            "reference_p95_mm": 32.846,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 19.03,
+            "reference_median_mm": 29.855,
+            "reference_p80_mm": 51.802,
+            "reference_p95_mm": 76.9,
+            "relative_status": "LOW"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 73.55,
+            "reference_median_mm": 7.955,
+            "reference_p80_mm": 20.054,
+            "reference_p95_mm": 33.312,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 56.45,
+            "reference_median_mm": 28.54,
+            "reference_p80_mm": 51.08,
+            "reference_p95_mm": 74.996,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "74-STC": {
+      "plot": "74-STC",
+      "latitude": 8.932474,
+      "longitude": 98.356929,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.932474&longitude=98.356929&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.81,
+            "reference_median_mm": 10.795,
+            "reference_p80_mm": 24.008,
+            "reference_p95_mm": 42.415,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 10.0,
+            "reference_median_mm": 38.85,
+            "reference_p80_mm": 72.664,
+            "reference_p95_mm": 107.65,
+            "relative_status": "LOW"
+          }
+        }
+      }
+    },
+    "74-VSD": {
+      "plot": "74-VSD",
+      "latitude": 6.628173,
+      "longitude": 100.105839,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.628173&longitude=100.105839&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-14": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 83.23,
+            "reference_median_mm": 3.94,
+            "reference_p80_mm": 9.43,
+            "reference_p95_mm": 22.617,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 41.29,
+            "reference_median_mm": 15.24,
+            "reference_p80_mm": 31.362,
+            "reference_p95_mm": 51.473,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "75-STC": {
+      "plot": "75-STC",
+      "latitude": 8.921689,
+      "longitude": 98.359317,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.921689&longitude=98.359317&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-04-18": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 34.52,
+            "reference_median_mm": 2.825,
+            "reference_p80_mm": 8.486,
+            "reference_p95_mm": 20.69,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 34.19,
+            "reference_median_mm": 9.32,
+            "reference_p80_mm": 29.652,
+            "reference_p95_mm": 49.887,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.81,
+            "reference_median_mm": 10.795,
+            "reference_p80_mm": 24.008,
+            "reference_p95_mm": 42.415,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 10.0,
+            "reference_median_mm": 38.85,
+            "reference_p80_mm": 72.664,
+            "reference_p95_mm": 107.65,
+            "relative_status": "LOW"
+          }
+        }
+      }
+    },
+    "76-STC": {
+      "plot": "76-STC",
+      "latitude": 8.890044,
+      "longitude": 98.306621,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.890044&longitude=98.306621&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-25": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 18.39,
+            "reference_median_mm": 10.765,
+            "reference_p80_mm": 24.784,
+            "reference_p95_mm": 41.782,
+            "relative_status": "LOW"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 49.35,
+            "reference_median_mm": 38.85,
+            "reference_p80_mm": 71.738,
+            "reference_p95_mm": 106.489,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.81,
+            "reference_median_mm": 10.795,
+            "reference_p80_mm": 24.008,
+            "reference_p95_mm": 42.415,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 10.0,
+            "reference_median_mm": 38.85,
+            "reference_p80_mm": 72.664,
+            "reference_p95_mm": 107.65,
+            "relative_status": "LOW"
+          }
+        }
+      }
+    },
+    "77-STC": {
+      "plot": "77-STC",
+      "latitude": 8.97211,
+      "longitude": 98.33954,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.97211&longitude=98.33954&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-11": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 30.0,
+            "reference_median_mm": 9.7,
+            "reference_p80_mm": 20.488,
+            "reference_p95_mm": 36.608,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 48.06,
+            "reference_median_mm": 32.095,
+            "reference_p80_mm": 57.898,
+            "reference_p95_mm": 92.941,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.81,
+            "reference_median_mm": 10.795,
+            "reference_p80_mm": 24.008,
+            "reference_p95_mm": 42.415,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 10.0,
+            "reference_median_mm": 38.85,
+            "reference_p80_mm": 72.664,
+            "reference_p95_mm": 107.65,
+            "relative_status": "LOW"
+          }
+        },
+        "2026-10-05": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 49.35,
+            "reference_median_mm": 9.62,
+            "reference_p80_mm": 22.652,
+            "reference_p95_mm": 46.122,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 92.58,
+            "reference_median_mm": 35.2,
+            "reference_p80_mm": 69.0,
+            "reference_p95_mm": 109.028,
+            "relative_status": "HIGH"
+          }
+        }
+      }
+    },
+    "78-STC": {
+      "plot": "78-STC",
+      "latitude": 8.140704,
+      "longitude": 98.346892,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.140704&longitude=98.346892&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-12": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 56.77,
+            "reference_median_mm": 6.285,
+            "reference_p80_mm": 15.102,
+            "reference_p95_mm": 26.74,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 86.77,
+            "reference_median_mm": 23.83,
+            "reference_p80_mm": 43.746,
+            "reference_p95_mm": 72.28,
+            "relative_status": "HIGH"
+          }
+        },
+        "2026-10-05": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 63.87,
+            "reference_median_mm": 8.235,
+            "reference_p80_mm": 18.138,
+            "reference_p95_mm": 34.564,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 99.03,
+            "reference_median_mm": 28.115,
+            "reference_p80_mm": 51.744,
+            "reference_p95_mm": 78.343,
+            "relative_status": "VERY_HIGH"
+          }
+        }
+      }
+    },
+    "79-STC": {
+      "plot": "79-STC",
+      "latitude": 8.006373,
+      "longitude": 98.410362,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.006373&longitude=98.410362&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-24": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 34.84,
+            "reference_median_mm": 6.05,
+            "reference_p80_mm": 13.206,
+            "reference_p95_mm": 26.603,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 34.84,
+            "reference_median_mm": 21.135,
+            "reference_p80_mm": 38.412,
+            "reference_p95_mm": 62.117,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "8-VSD": {
+      "plot": "8-VSD",
+      "latitude": 12.157096,
+      "longitude": 102.668318,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=12.157096&longitude=102.668318&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-19": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 99.68,
+            "reference_median_mm": 14.65,
+            "reference_p80_mm": 28.208,
+            "reference_p95_mm": 47.242,
+            "relative_status": "VERY_HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 95.81,
+            "reference_median_mm": 50.455,
+            "reference_p80_mm": 79.62,
+            "reference_p95_mm": 123.837,
+            "relative_status": "VERY_HIGH"
+          }
+        }
+      }
+    },
+    "80-STC": {
+      "plot": "80-STC",
+      "latitude": 8.011664,
+      "longitude": 98.410911,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=8.011664&longitude=98.410911&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-19": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.81,
+            "reference_median_mm": 6.425,
+            "reference_p80_mm": 14.704,
+            "reference_p95_mm": 27.678,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 13.87,
+            "reference_median_mm": 21.695,
+            "reference_p80_mm": 43.304,
+            "reference_p95_mm": 72.139,
+            "relative_status": "LOW"
+          }
+        }
+      }
+    },
+    "81-STC": {
+      "plot": "81-STC",
+      "latitude": 9.961794,
+      "longitude": 98.609772,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=9.961794&longitude=98.609772&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-22": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 27.1,
+            "reference_median_mm": 9.04,
+            "reference_p80_mm": 23.51,
+            "reference_p95_mm": 42.363,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 5.48,
+            "reference_median_mm": 34.005,
+            "reference_p80_mm": 63.252,
+            "reference_p95_mm": 108.215,
+            "relative_status": "LOW"
+          }
+        },
+        "2026-10-05": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 43.55,
+            "reference_median_mm": 9.055,
+            "reference_p80_mm": 20.848,
+            "reference_p95_mm": 40.455,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 32.58,
+            "reference_median_mm": 32.23,
+            "reference_p80_mm": 60.614,
+            "reference_p95_mm": 96.939,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "85-VSD": {
+      "plot": "85-VSD",
+      "latitude": 6.459067,
+      "longitude": 100.119186,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.459067&longitude=100.119186&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-05-25": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 5.275,
+            "reference_p80_mm": 12.706,
+            "reference_p95_mm": 22.567,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 22.58,
+            "reference_median_mm": 20.765,
+            "reference_p80_mm": 36.82,
+            "reference_p95_mm": 49.743,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "86-VSD": {
+      "plot": "86-VSD",
+      "latitude": 6.574369,
+      "longitude": 100.093248,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.574369&longitude=100.093248&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-03": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 30.97,
+            "reference_median_mm": 3.29,
+            "reference_p80_mm": 11.81,
+            "reference_p95_mm": 23.389,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 38.06,
+            "reference_median_mm": 16.61,
+            "reference_p80_mm": 34.874,
+            "reference_p95_mm": 60.764,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "87-VSD": {
+      "plot": "87-VSD",
+      "latitude": 13.263257,
+      "longitude": 99.86468,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.263257&longitude=99.86468&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-08": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 50.0,
+            "reference_median_mm": 1.635,
+            "reference_p80_mm": 6.23,
+            "reference_p95_mm": 14.637,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 79.68,
+            "reference_median_mm": 8.85,
+            "reference_p80_mm": 19.728,
+            "reference_p95_mm": 32.109,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.48,
+            "reference_median_mm": 5.675,
+            "reference_p80_mm": 15.334,
+            "reference_p95_mm": 31.62,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 100.0,
+            "reference_median_mm": 21.345,
+            "reference_p80_mm": 44.748,
+            "reference_p95_mm": 69.054,
+            "relative_status": "VERY_HIGH"
+          }
+        }
+      }
+    },
+    "88-VSD": {
+      "plot": "88-VSD",
+      "latitude": 6.851477,
+      "longitude": 101.102786,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.851477&longitude=101.102786&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-16": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 65.81,
+            "reference_median_mm": 3.635,
+            "reference_p80_mm": 6.994,
+            "reference_p95_mm": 15.977,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 69.35,
+            "reference_median_mm": 11.975,
+            "reference_p80_mm": 20.854,
+            "reference_p95_mm": 36.355,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-04": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 85.48,
+            "reference_median_mm": 4.3,
+            "reference_p80_mm": 9.184,
+            "reference_p95_mm": 20.054,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 77.42,
+            "reference_median_mm": 15.59,
+            "reference_p80_mm": 28.402,
+            "reference_p95_mm": 51.29,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "89-VSD": {
+      "plot": "89-VSD",
+      "latitude": 6.869408,
+      "longitude": 101.372693,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.869408&longitude=101.372693&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-14": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 90.65,
+            "reference_median_mm": 4.845,
+            "reference_p80_mm": 10.192,
+            "reference_p95_mm": 18.335,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 71.29,
+            "reference_median_mm": 16.95,
+            "reference_p80_mm": 28.512,
+            "reference_p95_mm": 50.01,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 30.65,
+            "reference_median_mm": 4.55,
+            "reference_p80_mm": 10.164,
+            "reference_p95_mm": 21.909,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 52.26,
+            "reference_median_mm": 16.185,
+            "reference_p80_mm": 28.866,
+            "reference_p95_mm": 59.85,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-04": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 85.48,
+            "reference_median_mm": 4.3,
+            "reference_p80_mm": 9.184,
+            "reference_p95_mm": 20.054,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 77.42,
+            "reference_median_mm": 15.59,
+            "reference_p80_mm": 28.402,
+            "reference_p95_mm": 51.29,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "90-VSD": {
+      "plot": "90-VSD",
+      "latitude": 6.872401,
+      "longitude": 101.342349,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.872401&longitude=101.342349&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-10-04": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 85.48,
+            "reference_median_mm": 4.3,
+            "reference_p80_mm": 9.184,
+            "reference_p95_mm": 20.054,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 77.42,
+            "reference_median_mm": 15.59,
+            "reference_p80_mm": 28.402,
+            "reference_p95_mm": 51.29,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "91-STC": {
+      "plot": "91-STC",
+      "latitude": 13.309272,
+      "longitude": 99.964084,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.309272&longitude=99.964084&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 5.63,
+            "reference_p80_mm": 15.838,
+            "reference_p95_mm": 32.304,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 22.315,
+            "reference_p80_mm": 45.268,
+            "reference_p95_mm": 71.715,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 80.32,
+            "reference_median_mm": 5.335,
+            "reference_p80_mm": 16.102,
+            "reference_p95_mm": 32.581,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.29,
+            "reference_median_mm": 22.025,
+            "reference_p80_mm": 46.694,
+            "reference_p95_mm": 78.734,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "91-VSD": {
+      "plot": "91-VSD",
+      "latitude": 6.85889,
+      "longitude": 101.163657,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.85889&longitude=101.163657&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 60.65,
+            "reference_median_mm": 4.565,
+            "reference_p80_mm": 8.522,
+            "reference_p95_mm": 17.132,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 35.16,
+            "reference_median_mm": 15.85,
+            "reference_p80_mm": 27.082,
+            "reference_p95_mm": 42.95,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-04": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 85.48,
+            "reference_median_mm": 4.3,
+            "reference_p80_mm": 9.184,
+            "reference_p95_mm": 20.054,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 77.42,
+            "reference_median_mm": 15.59,
+            "reference_p80_mm": 28.402,
+            "reference_p95_mm": 51.29,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "92-STC": {
+      "plot": "92-STC",
+      "latitude": 13.314825,
+      "longitude": 99.97307,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.314825&longitude=99.97307&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-08": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 50.0,
+            "reference_median_mm": 1.635,
+            "reference_p80_mm": 6.23,
+            "reference_p95_mm": 14.637,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 79.68,
+            "reference_median_mm": 8.85,
+            "reference_p80_mm": 19.728,
+            "reference_p95_mm": 32.109,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.48,
+            "reference_median_mm": 5.675,
+            "reference_p80_mm": 15.334,
+            "reference_p95_mm": 31.62,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 100.0,
+            "reference_median_mm": 21.345,
+            "reference_p80_mm": 44.748,
+            "reference_p95_mm": 69.054,
+            "relative_status": "VERY_HIGH"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 5.63,
+            "reference_p80_mm": 15.838,
+            "reference_p95_mm": 32.304,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 22.315,
+            "reference_p80_mm": 45.268,
+            "reference_p95_mm": 71.715,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 80.32,
+            "reference_median_mm": 5.335,
+            "reference_p80_mm": 16.102,
+            "reference_p95_mm": 32.581,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.29,
+            "reference_median_mm": 22.025,
+            "reference_p80_mm": 46.694,
+            "reference_p95_mm": 78.734,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "92-VSD": {
+      "plot": "92-VSD",
+      "latitude": 6.858374,
+      "longitude": 101.143605,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.858374&longitude=101.143605&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-30": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 60.65,
+            "reference_median_mm": 4.565,
+            "reference_p80_mm": 8.522,
+            "reference_p95_mm": 17.132,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 35.16,
+            "reference_median_mm": 15.85,
+            "reference_p80_mm": 27.082,
+            "reference_p95_mm": 42.95,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 30.65,
+            "reference_median_mm": 4.55,
+            "reference_p80_mm": 10.164,
+            "reference_p95_mm": 21.909,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 52.26,
+            "reference_median_mm": 16.185,
+            "reference_p80_mm": 28.866,
+            "reference_p95_mm": 59.85,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-04": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 85.48,
+            "reference_median_mm": 4.3,
+            "reference_p80_mm": 9.184,
+            "reference_p95_mm": 20.054,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 77.42,
+            "reference_median_mm": 15.59,
+            "reference_p80_mm": 28.402,
+            "reference_p95_mm": 51.29,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "93-STC": {
+      "plot": "93-STC",
+      "latitude": 13.317063,
+      "longitude": 99.977985,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.317063&longitude=99.977985&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-08": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 50.0,
+            "reference_median_mm": 1.635,
+            "reference_p80_mm": 6.23,
+            "reference_p95_mm": 14.637,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 79.68,
+            "reference_median_mm": 8.85,
+            "reference_p80_mm": 19.728,
+            "reference_p95_mm": 32.109,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.48,
+            "reference_median_mm": 5.675,
+            "reference_p80_mm": 15.334,
+            "reference_p95_mm": 31.62,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 100.0,
+            "reference_median_mm": 21.345,
+            "reference_p80_mm": 44.748,
+            "reference_p95_mm": 69.054,
+            "relative_status": "VERY_HIGH"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 5.63,
+            "reference_p80_mm": 15.838,
+            "reference_p95_mm": 32.304,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 22.315,
+            "reference_p80_mm": 45.268,
+            "reference_p95_mm": 71.715,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 80.32,
+            "reference_median_mm": 5.335,
+            "reference_p80_mm": 16.102,
+            "reference_p95_mm": 32.581,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.29,
+            "reference_median_mm": 22.025,
+            "reference_p80_mm": 46.694,
+            "reference_p95_mm": 78.734,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "93-VSD": {
+      "plot": "93-VSD",
+      "latitude": 6.836199,
+      "longitude": 101.064815,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.836199&longitude=101.064815&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-24": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 94.19,
+            "reference_median_mm": 4.59,
+            "reference_p80_mm": 10.282,
+            "reference_p95_mm": 22.311,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 88.39,
+            "reference_median_mm": 16.44,
+            "reference_p80_mm": 31.102,
+            "reference_p95_mm": 60.01,
+            "relative_status": "HIGH"
+          }
+        },
+        "2026-10-04": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 85.48,
+            "reference_median_mm": 4.3,
+            "reference_p80_mm": 9.184,
+            "reference_p95_mm": 20.054,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 77.42,
+            "reference_median_mm": 15.59,
+            "reference_p80_mm": 28.402,
+            "reference_p95_mm": 51.29,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "94-STC": {
+      "plot": "94-STC",
+      "latitude": 13.322394,
+      "longitude": 99.980852,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.322394&longitude=99.980852&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.48,
+            "reference_median_mm": 5.675,
+            "reference_p80_mm": 15.334,
+            "reference_p95_mm": 31.62,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 100.0,
+            "reference_median_mm": 21.345,
+            "reference_p80_mm": 44.748,
+            "reference_p95_mm": 69.054,
+            "relative_status": "VERY_HIGH"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 5.63,
+            "reference_p80_mm": 15.838,
+            "reference_p95_mm": 32.304,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 22.315,
+            "reference_p80_mm": 45.268,
+            "reference_p95_mm": 71.715,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 80.32,
+            "reference_median_mm": 5.335,
+            "reference_p80_mm": 16.102,
+            "reference_p95_mm": 32.581,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.29,
+            "reference_median_mm": 22.025,
+            "reference_p80_mm": 46.694,
+            "reference_p95_mm": 78.734,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "94-VSD": {
+      "plot": "94-VSD",
+      "latitude": 6.836076,
+      "longitude": 101.058301,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.836076&longitude=101.058301&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-08-05": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 79.35,
+            "reference_median_mm": 3.67,
+            "reference_p80_mm": 7.576,
+            "reference_p95_mm": 13.245,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 81.94,
+            "reference_median_mm": 12.425,
+            "reference_p80_mm": 23.28,
+            "reference_p95_mm": 37.581,
+            "relative_status": "HIGH"
+          }
+        },
+        "2026-10-04": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 85.48,
+            "reference_median_mm": 4.3,
+            "reference_p80_mm": 9.184,
+            "reference_p95_mm": 20.054,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 77.42,
+            "reference_median_mm": 15.59,
+            "reference_p80_mm": 28.402,
+            "reference_p95_mm": 51.29,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "95-STC": {
+      "plot": "95-STC",
+      "latitude": 13.322314,
+      "longitude": 99.983889,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.322314&longitude=99.983889&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.48,
+            "reference_median_mm": 5.675,
+            "reference_p80_mm": 15.334,
+            "reference_p95_mm": 31.62,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 100.0,
+            "reference_median_mm": 21.345,
+            "reference_p80_mm": 44.748,
+            "reference_p95_mm": 69.054,
+            "relative_status": "VERY_HIGH"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 5.63,
+            "reference_p80_mm": 15.838,
+            "reference_p95_mm": 32.304,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 22.315,
+            "reference_p80_mm": 45.268,
+            "reference_p95_mm": 71.715,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 80.32,
+            "reference_median_mm": 5.335,
+            "reference_p80_mm": 16.102,
+            "reference_p95_mm": 32.581,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.29,
+            "reference_median_mm": 22.025,
+            "reference_p80_mm": 46.694,
+            "reference_p95_mm": 78.734,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "95-VSD": {
+      "plot": "95-VSD",
+      "latitude": 6.872133,
+      "longitude": 101.382616,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=6.872133&longitude=101.382616&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-14": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 90.65,
+            "reference_median_mm": 4.845,
+            "reference_p80_mm": 10.192,
+            "reference_p95_mm": 18.335,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 71.29,
+            "reference_median_mm": 16.95,
+            "reference_p80_mm": 28.512,
+            "reference_p95_mm": 50.01,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 30.65,
+            "reference_median_mm": 4.55,
+            "reference_p80_mm": 10.164,
+            "reference_p95_mm": 21.909,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 52.26,
+            "reference_median_mm": 16.185,
+            "reference_p80_mm": 28.866,
+            "reference_p95_mm": 59.85,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-04": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 85.48,
+            "reference_median_mm": 4.3,
+            "reference_p80_mm": 9.184,
+            "reference_p95_mm": 20.054,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 77.42,
+            "reference_median_mm": 15.59,
+            "reference_p80_mm": 28.402,
+            "reference_p95_mm": 51.29,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "96-STC": {
+      "plot": "96-STC",
+      "latitude": 13.323406,
+      "longitude": 99.985513,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.323406&longitude=99.985513&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-29": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 25.48,
+            "reference_median_mm": 5.675,
+            "reference_p80_mm": 15.334,
+            "reference_p95_mm": 31.62,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 100.0,
+            "reference_median_mm": 21.345,
+            "reference_p80_mm": 44.748,
+            "reference_p95_mm": 69.054,
+            "relative_status": "VERY_HIGH"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 5.63,
+            "reference_p80_mm": 15.838,
+            "reference_p95_mm": 32.304,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 22.315,
+            "reference_p80_mm": 45.268,
+            "reference_p95_mm": 71.715,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 80.32,
+            "reference_median_mm": 5.335,
+            "reference_p80_mm": 16.102,
+            "reference_p95_mm": 32.581,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.29,
+            "reference_median_mm": 22.025,
+            "reference_p80_mm": 46.694,
+            "reference_p95_mm": 78.734,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "96-VSD": {
+      "plot": "96-VSD",
+      "latitude": 7.811176,
+      "longitude": 99.181114,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.811176&longitude=99.181114&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-07-09": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 56.13,
+            "reference_median_mm": 4.495,
+            "reference_p80_mm": 13.286,
+            "reference_p95_mm": 29.683,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 18.71,
+            "reference_median_mm": 19.945,
+            "reference_p80_mm": 38.228,
+            "reference_p95_mm": 67.456,
+            "relative_status": "LOW"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.26,
+            "reference_median_mm": 7.09,
+            "reference_p80_mm": 16.364,
+            "reference_p95_mm": 30.538,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 53.87,
+            "reference_median_mm": 26.34,
+            "reference_p80_mm": 47.584,
+            "reference_p95_mm": 71.267,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "97-STC": {
+      "plot": "97-STC",
+      "latitude": 13.324346,
+      "longitude": 99.98705,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.324346&longitude=99.98705&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-22": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 59.03,
+            "reference_median_mm": 5.065,
+            "reference_p80_mm": 14.624,
+            "reference_p95_mm": 27.505,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 54.84,
+            "reference_median_mm": 18.865,
+            "reference_p80_mm": 39.708,
+            "reference_p95_mm": 59.631,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 5.63,
+            "reference_p80_mm": 15.838,
+            "reference_p95_mm": 32.304,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 22.315,
+            "reference_p80_mm": 45.268,
+            "reference_p95_mm": 71.715,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 80.32,
+            "reference_median_mm": 5.335,
+            "reference_p80_mm": 16.102,
+            "reference_p95_mm": 32.581,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.29,
+            "reference_median_mm": 22.025,
+            "reference_p80_mm": 46.694,
+            "reference_p95_mm": 78.734,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "97-VSD": {
+      "plot": "97-VSD",
+      "latitude": 7.905916,
+      "longitude": 99.096193,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.905916&longitude=99.096193&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-05-25": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 86.45,
+            "reference_median_mm": 6.09,
+            "reference_p80_mm": 14.456,
+            "reference_p95_mm": 24.64,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 63.23,
+            "reference_median_mm": 22.13,
+            "reference_p80_mm": 41.7,
+            "reference_p95_mm": 55.462,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "98-STC": {
+      "plot": "98-STC",
+      "latitude": 13.325378,
+      "longitude": 99.988728,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=13.325378&longitude=99.988728&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-09-22": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 59.03,
+            "reference_median_mm": 5.065,
+            "reference_p80_mm": 14.624,
+            "reference_p95_mm": 27.505,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 54.84,
+            "reference_median_mm": 18.865,
+            "reference_p80_mm": 39.708,
+            "reference_p95_mm": 59.631,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 36.13,
+            "reference_median_mm": 5.63,
+            "reference_p80_mm": 15.838,
+            "reference_p95_mm": 32.304,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 37.42,
+            "reference_median_mm": 22.315,
+            "reference_p80_mm": 45.268,
+            "reference_p95_mm": 71.715,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 80.32,
+            "reference_median_mm": 5.335,
+            "reference_p80_mm": 16.102,
+            "reference_p95_mm": 32.581,
+            "relative_status": "HIGH"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 51.29,
+            "reference_median_mm": 22.025,
+            "reference_p80_mm": 46.694,
+            "reference_p95_mm": 78.734,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "98-VSD": {
+      "plot": "98-VSD",
+      "latitude": 7.950816,
+      "longitude": 99.10525,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.950816&longitude=99.10525&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-14": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 79.35,
+            "reference_median_mm": 5.455,
+            "reference_p80_mm": 13.756,
+            "reference_p95_mm": 24.676,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 47.74,
+            "reference_median_mm": 21.495,
+            "reference_p80_mm": 39.49,
+            "reference_p95_mm": 56.944,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-02": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.26,
+            "reference_median_mm": 7.09,
+            "reference_p80_mm": 16.364,
+            "reference_p95_mm": 30.538,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 53.87,
+            "reference_median_mm": 26.34,
+            "reference_p80_mm": 47.584,
+            "reference_p95_mm": 71.267,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        }
+      }
+    },
+    "99-VSD": {
+      "plot": "99-VSD",
+      "latitude": 7.94032,
+      "longitude": 99.091687,
+      "baseline_years": "2016–2025",
+      "season_reference": "same day-of-year +/- 15 days for each historical year",
+      "day_boundary": "UTC complete days preceding scene date, NOT rolling 24h/72h",
+      "source": "NASA_POWER_PRECTOTCORR",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude=7.94032&longitude=99.091687&start=20151228&end=20251231&format=JSON&time-standard=UTC",
+      "reference_not_station_gauge": true,
+      "results": {
+        "2026-06-14": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 79.35,
+            "reference_median_mm": 5.455,
+            "reference_p80_mm": 13.756,
+            "reference_p95_mm": 24.676,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 47.74,
+            "reference_median_mm": 21.495,
+            "reference_p80_mm": 39.49,
+            "reference_p95_mm": 56.944,
+            "relative_status": "NEAR_TYPICAL"
+          }
+        },
+        "2026-10-07": {
+          "rain_prev_1_utc_day_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 62.58,
+            "reference_median_mm": 7.29,
+            "reference_p80_mm": 16.364,
+            "reference_p95_mm": 33.035,
+            "relative_status": "NEAR_TYPICAL"
+          },
+          "rain_prev_3_utc_days_mm": {
+            "status": "SEASONAL_REFERENCE_READY",
+            "sample_count": 310,
+            "percentile": 74.84,
+            "reference_median_mm": 27.425,
+            "reference_p80_mm": 47.032,
+            "reference_p95_mm": 69.115,
             "relative_status": "NEAR_TYPICAL"
           }
         }
