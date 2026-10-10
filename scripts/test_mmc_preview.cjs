@@ -24,6 +24,11 @@ assert.ok((await page.locator('#water-intelligence').innerText()).includes('น�
 assert.ok((await page.locator('#water-intelligence').innerText()).includes('NASA POWER'),'Water panel must identify source even if remote context is unavailable');
 await page.locator('#plot-select').selectOption('16-STC');
 assert.ok((await page.locator('#water-intelligence').innerText()).includes('95.93'),'Live rainfall context must expose verified 16-STC three-day NASA POWER value');
+assert.ok(await page.locator('#water-date-select option').count()>=2,'Water index must permit selecting real image dates');
+await page.locator('#water-date-select').selectOption('2026-09-29');
+await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-09-29'&&document.querySelector('#image-mode')?.value==='mndwi',{timeout:25000});
+assert.ok((await page.locator('#water-selected-date').innerText()).includes('2026-09-29'),'Water values must follow selected date');
+assert.ok((await page.locator('#water-daily-panel').innerText()).includes('95.93'),'Rainfall for selected Sentinel day must match observed 3-day UTC window');
 
 assert.ok((await page.locator('#plot-digital-twin').innerText()).includes('ยังไม่มีข้อมูลน้ำขึ้นน้ำลง'),'Twin must disclose lack of tidal context');
 await page.locator('[data-view="analysis"]').click();
