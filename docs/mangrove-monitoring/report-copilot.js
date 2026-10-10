@@ -143,6 +143,72 @@ function waterChangeBreakdown(pair){
  '<p class="rpt-water-net">น้ำเพิ่มสุทธิ = '+num(gain)+' − '+num(loss)+' = <b>'+num(net)+' ไร่</b></p>'+
  '<p class="rpt-caption">คำนวณจากพิกเซลคู่ภาพที่ผ่านเกณฑ์เดียวกัน ไม่ใช่แผนที่ตำแหน่งน้ำเพิ่ม/น้ำลดรายพิกเซล</p></div>';
 }
+
+function imageryAlignment(a,b,mode){
+ const bounds=x=>x?.mode_bounds?.[mode]||x?.bounds,aa=bounds(a),bb=bounds(b);
+ if(!Array.isArray(aa)||!Array.isArray(bb)||aa.length!==2||bb.length!==2)return false;
+ const v=x=>[Number(x[0][0]),Number(x[0][1]),Number(x[1][0]),Number(x[1][1])];
+ const x=v(aa),y=v(bb);
+ return x.every((n,i)=>Number.isFinite(n)&&Number.isFinite(y[i])&&Math.abs(n-y[i])<=.000002);
+}
+function likelyCloudObscured(im){
+ const white=im?.rgb_near_white_pct,invalid=im?.rgb_invalid_pct;
+ const cloud=im?.rgb_cloud_pct??im?.cloud_pct;
+ return cloud!=null&&Number(cloud)>55||
+   white!=null&&Number(white)>80||
+   invalid!=null&&Number(invalid)>65;
+}
+function visualPairCard(before,after,mode='mndwi'){
+ const aligned=imageryAlignment(before,after,mode),cloud=likelyCloudObscured(before)||likelyCloudObscured(after);
+ const qaFor=im=>ctx?.scenes?.find(x=>x.plot===im.plot&&x.date===im.date);
+ const badge=im=>{const q=qaFor(im);return 'วันภาพ '+esc(im.date)+' · QA '+esc(q?.analysis_status||'ไม่มีผลตรวจ')+
+  ' · พิกเซลผ่าน QA '+(q?.qa_valid_pct==null?'—':num(q.qa_valid_pct)+'%');};
+ const compareOK=aligned&&!cloud&&before?.index_renderer_version===after?.index_renderer_version;
+ const beforePic=picture(before,mode),afterPic=picture(after,mode);
+ const afterMarked=afterPic.replace('class="rpt-image-canvas"','class="rpt-image-canvas rpt-visual-current-canvas"')
+   .replace('</div><figcaption>','<svg class="rpt-visual-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="วงตำแหน่งเปลี่ยนแปลงเบื้องต้น"></svg></div><figcaption>');
+ return '<div class="rpt-visual-pair" data-visual-scan="'+(compareOK?'eligible':'disabled')+'" data-visual-mode="'+esc(mode)+'">'+
+  '<div class="rpt-visual-duo">'+
+  '<div class="rpt-visual-date"><b>ภาพก่อนหน้า · '+esc(before.date)+'</b>'+beforePic+'<small>'+badge(before)+'</small></div>'+
+  '<div class="rpt-visual-date"><b>ภาพปัจจุบันที่ใช้เทียบ · '+esc(after.date)+'</b>'+afterMarked+'<small>'+badge(after)+'</small></div>'+
+  '</div><p class="rpt-visual-result">'+
+  (cloud?'มีสัญญาณภาพขาว/NoData มาก ไม่วงอัตโนมัติเพราะอาจถูกเมฆหรือข้อมูลขาดบัง':
+   !aligned?'ขอบภาพสองวันไม่ตรงกัน จึงแสดงคู่ภาพให้ตรวจด้วยตา แต่ไม่วงอัตโนมัติ':
+   !compareOK?'รุ่นการแสดงดัชนีไม่ตรงกัน จึงไม่คำนวณสีต่างเพื่อวงตำแหน่ง':'กำลังตรวจความต่างของสีที่แสดงบนภาพดัชนี…')+
+  '</p><p class="rpt-caption">วงสีส้ม = จุดสงสัยจากความต่างสีภาพดัชนีที่แสดง ไม่ใช่ขอบเขตน้ำท่วมหรือพื้นที่เปลี่ยนแปลงที่คำนวณจาก GeoTIFF · เมฆและการปรับสีอาจทำให้คลาดเคลื่อน</p></div>';
+}
+function visualScreeningPages(d,withQaPairs){
+ const pages=[],used=new Set(withQaPairs),byPlot=new Map(),mode='mndwi';
+ for(const im of d.visualImages||[]){
+  if(!imageURL(im,mode))continue;
+  if(!byPlot.has(im.plot))byPlot.set(im.plot,[]);
+  byPlot.get(im.plot).push(im);
+ }
+ const groups=[];
+ for(const p of d.pp){
+  const items=byPlot.get(p.code)||[],clear=items.filter(x=>!likelyCloudObscured(x));
+  if(clear.length<2)continue;
+  let before=null,after=null;
+  for(let i=0;i<clear.length;i++){for(let j=i+1;j<clear.length;j++){
+    if(imageryAlignment(clear[j],clear[i],mode)&&clear[j].index_renderer_version===clear[i].index_renderer_version){
+      before=clear[j];after=clear[i];break;
+    }
+  }if(before)break;}
+  if(!before){before=clear[1];after=clear[0];}
+  const qaBefore=d.good.some(x=>x.plot===p.code&&x.date===before.date),qaAfter=d.good.some(x=>x.plot===p.code&&x.date===after.date);
+  groups.push({p,before,after,qaBefore,qaAfter,missingQa:!qaBefore||!qaAfter,priority:!used.has(p.code)});
+ }
+ groups.sort((a,b)=>(Number(b.priority)-Number(a.priority))||(Number(b.missingQa)-Number(a.missingQa))||a.p.code.localeCompare(b.p.code));
+ for(const x of groups.slice(0,2)){
+  pages.push({key:'V / VISUAL '+x.p.code,title:'จุดสังเกตจากภาพดัชนี · '+x.p.code,
+   body:'<p class="rpt-lead">ภาพนี้ใช้เพื่อคัดกรองด้วยสายตา โดยไม่บังคับว่าต้องผ่าน QA หากภาพยังเห็นผิวพื้นที่ได้ชัดเจน <b>ไม่ใช้ค่าจากภาพนี้คำนวณไร่หรือยืนยันน้ำท่วม</b></p>'+
+     '<div class="rpt-visual-qa">ภาพก่อนหน้า: '+esc(x.qaBefore?'ผ่าน QA':'ไม่ผ่าน/ยังไม่มี QA')+
+     ' · ภาพปัจจุบัน: '+esc(x.qaAfter?'ผ่าน QA':'ไม่ผ่าน/ยังไม่มี QA')+'</div>'+
+     visualPairCard(x.before,x.after,'mndwi')+
+     '<p class="rpt-disclaimer">เป็นข้อสังเกตเชิงภาพเท่านั้น สำหรับจุดที่เห็นน้ำเพิ่ม/ลดหรือพืชพรรณเปลี่ยน ให้ตรวจภาพสีจริงประกอบ แล้วใช้ GeoTIFF และ Mask ที่เชื่อถือได้ก่อนวัดพื้นที่</p>'});
+ }
+ return pages;
+}
 function floodFinding(r){
  if(!r.pair)return '<p>ยังไม่มีคู่ภาพที่เปรียบเทียบได้ จึงยังไม่จัดระดับสัญญาณพื้นที่น้ำสำหรับแปลงนี้</p>';
  const c=r.pair,raw=[];
@@ -319,7 +385,8 @@ function floodPlan(d){
    waterChangeBreakdown(c)+floodFinding(r)+
    '<p class="rpt-disclaimer">ยังไม่สรุปว่าเป็นน้ำท่วม และไม่สามารถบอกผลกระทบต่อการรอดของต้นไม้จากภาพสองวันได้ ต้องตรวจน้ำขึ้นลงและพื้นที่จริง</p>');
  }
- const rainRows=priority.concat(ordered.slice(3,6)).map(r=>{
+ for(const visualPage of visualScreeningPages(d,new Set(priority.map(r=>r.code))))section(visualPage.key,visualPage.title,visualPage.body);
+  const rainRows=priority.concat(ordered.slice(3,6)).map(r=>{
   const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===r.pair.date_b);
   return {plot:r.code,date:r.pair.date_b,rain:rain?.rain_prev_3_utc_days_mm==null?'—':num(rain.rain_prev_3_utc_days_mm),one:rain?.rain_prev_1_utc_day_mm==null?'—':num(rain.rain_prev_1_utc_day_mm),qa:rain?.data_quality||'ไม่ทราบ'};
  });
