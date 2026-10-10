@@ -1095,10 +1095,11 @@ function reviewImageCoverage(doc){
   if(!im||!path)continue;
   const run=()=>{
    if(!im.naturalWidth||!im.naturalHeight)return;
+   const owner=doc.ownerDocument||doc;
    let tag=fig.querySelector('.rpt-coverage-warning');
-   if(!tag){tag=doc.createElement('div');tag.className='rpt-coverage-warning';const c=fig.querySelector('figcaption');if(c)c.insertAdjacentElement('afterend',tag);else fig.appendChild(tag);}
+   if(!tag){tag=owner.createElement('div');tag.className='rpt-coverage-warning';const c=fig.querySelector('figcaption');if(c)c.insertAdjacentElement('afterend',tag);else fig.appendChild(tag);}
    try{
-    const canvas=doc.createElement('canvas'),w=im.naturalWidth,h=im.naturalHeight;
+    const canvas=owner.createElement('canvas'),w=im.naturalWidth,h=im.naturalHeight;
     canvas.width=w;canvas.height=h;
     const cx=canvas.getContext('2d',{willReadFrequently:true});
     cx.drawImage(im,0,0,w,h);
