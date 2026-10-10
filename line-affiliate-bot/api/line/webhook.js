@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { readChecklist, writeChecklist, emptyChecklist, statusText, doneIntent, undoIntent, targetFromText } from '../../lib/checklist.js';
+import { dayPlan, dayPlanText, sevenDayText, bkkDate as scheduleDate } from '../../lib/schedule.js';
 
 function validSignature(raw, signature, secret) {
   if (!signature || !secret) return false;
@@ -140,7 +141,14 @@ export async function POST(request) {
         );
       } else if (['เมนู','menu','ช่วย','help'].includes(incoming)) {
         await reply(event.replyToken, menuText());
-      } else if (['วันนี้','ส่ง','ส่งของวันนี้'].includes(incoming)) {
+      } else if (incoming === 'วันนี้') {
+        try {
+          const plan = await dayPlan(scheduleDate(0));
+          await reply(event.replyToken, dayPlanText(plan, 'วันนี้ต้องลง'));
+        } catch {
+          await reply(event.replyToken, 'อ่านกำหนดการวันนี้ไม่สำเร็จ ลองใหม่อีกครั้ง');
+        }
+      } else if (['ส่ง','ส่งของวันนี้'].includes(incoming)) {
         try {
           const q = await getQueue();
           await reply(event.replyToken, [
@@ -214,21 +222,16 @@ export async function POST(request) {
         }
       } else if (['พรุ่งนี้','พรุ่ง','tomorrow'].includes(incoming)) {
         try {
-          const s = await getSchedule();
-          const item = (s.items || []).find(x => x.date === bkkDate(1));
-          await reply(event.replyToken, detailText('พรุ่งนี้ต้องลง', item));
+          const plan = await dayPlan(scheduleDate(1));
+          await reply(event.replyToken, dayPlanText(plan, 'พรุ่งนี้ต้องลง'));
         } catch {
           await reply(event.replyToken, 'อ่านตารางพรุ่งนี้ไม่สำเร็จ ลองใหม่อีกครั้ง');
         }
       } else if (incoming === 'ตาราง') {
         try {
-          const s = await getSchedule();
-          const start = bkkDate(0);
-          const items = (s.items || []).filter(x => x.date >= start).slice(0,7);
-          const text = items.length
-            ? 'กำหนดการ 7 วัน\n\n' + items.map(scheduleLine).join('\n\n')
-            : 'ยังไม่มีกำหนดการล่วงหน้า';
-          await reply(event.replyToken, text);
+          const plans = [];
+          for (let i=0; i<7; i++) plans.push(await dayPlan(scheduleDate(i)));
+          await reply(event.replyToken, sevenDayText(plans));
         } catch {
           await reply(event.replyToken, 'อ่านตารางไม่สำเร็จ ลองใหม่อีกครั้ง');
         }
