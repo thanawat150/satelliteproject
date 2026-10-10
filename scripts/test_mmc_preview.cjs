@@ -281,7 +281,7 @@ assert.ok(await mobile.locator('#sidebar').evaluate(el=>el.classList.contains('o
 await mobile.locator('[data-view="satellite"]').click();
 await mobile.locator('#plot-select').selectOption('15-STC');
 await mobile.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
-await mobile.locator('#image-date').selectOption('2026-08-03');
+await mobile.locator('#image-date').selectOption('2026-10-07');
 await mobile.locator('[data-image-layout="grid"]').click();
 await mobile.waitForFunction(()=>document.querySelector('.img-gallery .img-boundary-overlay')?.style.visibility==='visible',{timeout:20000});
 const alignedMobile=await mobile.locator('.img-gallery .img-tile').first().evaluate(el=>{
