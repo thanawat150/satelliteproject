@@ -43,14 +43,14 @@ function showError(s){if(!active.holder)return;active.holder.innerHTML='<div cla
 function indexStatBrief(item,mode){
  if(!['ndvi','ndre','ndmi','mndwi','ndwi','bsi'].includes(mode))return '';
  const st=item?.index_stats?.[mode],v=item?.index_parity?.[mode];
- if(!st)return '<div class="img-index-brief">รอผลตรวจดัชนีจาก TIFF รายพิกเซล</div>';
+ if(!st)return '<div class="img-index-brief">'+(item?.preview_kind==='VISUAL_ONLY_NON_QA'?'ไม่มีดัชนี: วันภาพนี้ไม่ผ่าน QA':'รอผลตรวจดัชนีจาก TIFF รายพิกเซล')+'</div>';
  const fmt=x=>x==null?'—':Number(x).toFixed(4);
  return '<div class="img-index-brief" data-index-stat="'+esc(mode)+'"><b>เฉลี่ยในขอบเขต '+fmt(st.plot_mean)+'</b> · ต่ำสุด '+fmt(st.plot_min)+' · สูงสุด '+fmt(st.plot_max)+' · '+esc(st.sample_pixels)+' พิกเซล (20 ม.)'+
  (v?'<div>รายงานเดิม '+fmt(v.published_mean)+' · ส่วนต่าง '+fmt(v.difference)+' '+(v.within_0_03?'✓ ตรงกัน':'⚠ ตรวจเพิ่ม')+'</div>':'')+
  (st.source_band_rmse!=null?'<div>ตรวจ Index Band ใน TIFF · RMSE '+fmt(st.source_band_rmse)+'</div>':'')+'</div>';
 }
 function indexAuditTable(item){
- if(item?.source!=='generated'||!item.index_stats)return '<div class="notice img-missing">ภาพวันที่เลือกยังไม่มีผลตรวจสูตรและค่าเฉลี่ยดัชนีจาก TIFF รายแปลง</div>';
+ if(item?.source!=='generated'||!item.index_stats||!Object.keys(item.index_stats).length)return '<div class="notice img-missing">ไม่มีผลดัชนีสำหรับภาพนี้ • วันที่ไม่ผ่าน QA แสดงเฉพาะภาพสีจริงและสีเท็จจากต้นฉบับ ไม่ใช้คำนวณการเปลี่ยนแปลง</div>';
  const modes=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'];
  const fmt=x=>x==null?'—':Number(x).toFixed(4);
  const rows=modes.map(m=>{
