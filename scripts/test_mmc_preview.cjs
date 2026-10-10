@@ -252,6 +252,25 @@ assert.equal(await page.locator('#water-date-select').count(),0,'Insights date a
 await page.locator('[data-view="reports"]').click();
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
 assert.ok((await page.locator('#view-root').innerText()).includes('ภาพดาวเทียม / ภาพดัชนีประกอบรายงาน'),'Report includes single-image map');
+
+assert.ok(await page.locator('#report-copilot-root #rpt-analyze').count()===1,'Report Copilot must be mounted in Report Center');
+assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Real A4 report preview includes multiple structured pages');
+assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('ข้อมูลจริง'),'Report preview discloses actual source coverage');
+await page.locator('#rpt-text').fill('รายงานน้ำท่วมจังหวัดระยองย้อนหลัง 3 เดือน เน้น MNDWI NDVI และฝน อ่านง่าย');
+await page.locator('#rpt-analyze').click();
+assert.equal(await page.locator('#rpt-type').inputValue(),'water','Thai intent parser understands water report');
+assert.equal(await page.locator('#rpt-scope').inputValue(),'province','Thai intent parser understands province scope');
+assert.equal(await page.locator('#rpt-period').inputValue(),'90','Thai intent parser understands three-month window');
+assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'AI report blueprint generates real A4 preview');
+assert.ok((await page.locator('#rpt-warning-list').innerText()).includes('ไม่เฉลี่ยค่าดัชนี'),'Province report must not mix unweighted plot indices');
+await page.locator('#rpt-scope').selectOption('plot');
+await page.locator('#rpt-plot').selectOption('15-STC');
+await page.locator('#rpt-period').selectOption('365');
+await page.locator('#rpt-preview-button').click();
+assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('15-STC')||(await page.locator('#rpt-preview').innerText()).includes('15-STC'),'Plot selection follows preview');
+assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Custom report modules still render after scope changes');
+assert.ok((await page.locator('#rpt-preview').innerText()).includes('QA'),'Report includes QA evidence rather than unsupported impact claims');
+
 await page.locator('#image-date').selectOption('2026-08-03');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-08-03'&&!!document.querySelector('#mmc-geo-map'),null,{timeout:20000});
 const reportLayer=await page.locator('#mmc-geo-map .leaflet-image-layer').count();
@@ -345,6 +364,16 @@ const mobileWaterLayout=await mobile.locator('#water-daily-panel .hydro-kpis').e
      strong.right<=rect.right+1&&foot.right<=rect.right+1;
  }));
 assert.ok(mobileWaterLayout,'Mobile water values and provenance footnotes must not overlap or overflow');
+
+await mobile.locator('#menu-btn').click();
+await mobile.locator('[data-view="reports"]').click();
+await mobile.waitForSelector('#rpt-analyze',{timeout:20000});
+assert.ok(await mobile.locator('#rpt-preview .rpt-paper').count()>=3,'Mobile Report Studio renders portrait pages');
+await mobile.locator('#rpt-text').fill('ติดตามสภาพป่า 13-STC ย้อนหลัง 1 ปี NDVI NDMI');
+await mobile.locator('#rpt-analyze').click();
+assert.equal(await mobile.locator('#rpt-type').inputValue(),'forest','Mobile Thai interpreter recognizes forest monitoring');
+assert.equal(await mobile.locator('#rpt-period').inputValue(),'365','Mobile report parser applies annual date window');
+
 
 
 
