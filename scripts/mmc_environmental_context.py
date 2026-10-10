@@ -105,6 +105,9 @@ def run(output=TARGET,max_plots=10,all_plots=False):
         return len(grouped[code]-past)
     pending=[c for c in codes if remaining(c)>0]
     selected=pending if all_plots else pending[:max_plots]
+    if not selected and Path(output).exists():
+        print('NO_NEW_RAIN_SCENES_KEEP_LAST_VERIFIED_DATA',len(retained),flush=True)
+        return previous
     errors=[];updated=0
     for code in selected:
         lat,lon=coords[code]
