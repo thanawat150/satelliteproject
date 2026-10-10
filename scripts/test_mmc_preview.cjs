@@ -287,6 +287,16 @@ const generalOverlaps=await page.evaluate(()=>[...document.querySelectorAll('#rp
 }).filter(x=>x.content>x.footer-2));
 assert.deepEqual(generalOverlaps,[],'General decision report must fit A4 preview pages above footer: '+JSON.stringify(generalOverlaps));
 
+assert.ok(generalDecision.all.includes('NDVI')&&generalDecision.all.includes('MNDWI'),'Report must preserve multi-index dates');
+await page.locator('#rpt-text').fill('ทำรายงานติดตามแปลง 14-STC');
+await page.locator('#rpt-analyze').click();
+await page.waitForFunction(()=>[...document.querySelectorAll('#rpt-preview .rpt-image')].some(fig=>fig.dataset.rasterCoveragePct!==undefined),{timeout:30000});
+const imageCoverage=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-image')].filter(f=>f.dataset.rasterCoveragePct).map(f=>({coverage:Number(f.dataset.rasterCoveragePct),caption:f.querySelector('figcaption')?.textContent||'',warning:f.querySelector('.rpt-coverage-warning')?.textContent||''})));
+assert.ok(imageCoverage.every(x=>x.coverage<=100&&x.coverage>=0),'Image coverage checks return bounded percentages from rendered raster pixels');
+assert.ok(imageCoverage.some(x=>x.coverage<95&&x.warning.includes('NoData')),'14-STC source preview with a missing portion must be explicitly flagged before decision use: '+JSON.stringify(imageCoverage));
+assert.ok((await page.evaluate(()=>window.MMCReportCopilot.renderPages().pages)).includes('NDVI'),'14-STC still includes index evidence despite NoData warning');
+
+
 
 await page.locator('#rpt-text').fill('รายงานน้ำท่วมจังหวัดระยองย้อนหลัง 3 เดือน เน้น MNDWI NDVI และฝน อ่านง่าย');
 await page.locator('#rpt-analyze').click();
