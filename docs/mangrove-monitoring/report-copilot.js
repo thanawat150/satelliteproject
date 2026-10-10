@@ -12,10 +12,10 @@ const METRICS={ndvi:'NDVI · พืชพรรณ',ndre:'NDRE · Red Edge',ndmi
 const MODULES={summary:'Executive Summary',location:'ทะเบียนแปลง',satellite:'ภาพสีจริง',indices:'ภาพดัชนี',trend:'กราฟย้อนหลัง',change:'Change Detection',rain:'ข้อมูลฝน',qa:'QA/QC & Evidence'};
 const DEFAULT={
  plot:['summary','location','satellite','indices','trend','qa'],
- executive:['summary','location','trend','qa'],
+ executive:['summary','location','satellite','indices','trend','qa'],
  atlas:['location','satellite','indices','qa'],
  change:['summary','satellite','indices','change','qa'],
- water:['summary','indices','trend','rain','change','qa'],
+ water:['summary','satellite','indices','trend','rain','change','qa'],
  forest:['summary','satellite','indices','trend','qa'],
  audit:['summary','location','qa','indices'],
  annual:['summary','satellite','indices','trend','change','qa']
@@ -188,13 +188,13 @@ function documentPlan(d){
    ['ขอบเขต',scopeLabel],['แปลงในรายงาน',String(d.pp.length)],
    ['ผ่าน QA / วันภาพ',d.good.length+' / '+d.all.length],
    ['วันภาพผ่าน QA ล่าสุด',latest?.date||'—'],
-   ['พื้นที่มี Geometry',areaPlots.length?num(areaSum)+' ไร่':'—'],
+   ['ผลรวมพื้นที่ Geometry',areaPlots.length?num(areaSum)+' ไร่':'—'],
    ['ช่วงเวลา',ui.period==='all'?'ทั้งหมด':ui.period+' วัน']
   ].map(([k,v])=>'<div class="rpt-kpi"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join('')+'</div>';
   const visuals=headImages.length?'<h3>ภาพหลักฐานดาวเทียม</h3><div class="rpt-pictures rpt-cover-grid">'+headImages.slice(0,4).map(x=>thumbnail(x.im,x.mode)).join('')+'</div>':'<p class="rpt-empty">ยังไม่พบภาพ Raster ผ่าน QA ในช่วงเวลา</p>';
   add('01 / SUMMARY','Environmental Monitoring · '+scopeLabel,
    '<p class="rpt-lead">'+esc(ui.text||'รายงานติดตามสภาพป่าชายเลนจาก Sentinel-2')+'</p>'+facts+visuals+
-   '<p class="rpt-caption">พื้นที่รวมคำนวณจาก Geometry ของ '+areaPlots.length+' แปลงเท่านั้น ไม่ใช่ตัวเลขพื้นที่ยืนยันจากหน่วยงาน</p>');
+   '<p class="rpt-caption">พื้นที่ข้างต้นเป็นผลรวมพื้นที่จาก Geometry รายแปลง '+areaPlots.length+' แปลง ไม่ใช่พื้นที่ Union ที่ตัดส่วนซ้อนทับหรือผลรับรองจากหน่วยงาน</p>');
  }
  if(ui.modules.has('location')){
   const provinceCounts=new Map();
@@ -295,11 +295,11 @@ function paperStyle(){
  return '@page{size:A4 portrait;margin:0}*{box-sizing:border-box}body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}.rpt-paper{position:relative;margin:0 auto 14px;width:210mm;min-height:297mm;padding:16mm 15mm 24mm;background:white;box-shadow:0 4px 22px #12291b29;break-after:page;page-break-after:always;overflow:hidden}.rpt-paper:last-child{break-after:auto;page-break-after:auto}.rpt-pagehead{display:flex;justify-content:space-between;border-bottom:2px solid #256d4b;padding-bottom:9px;font-weight:700;font-size:9px;letter-spacing:1px;color:#256d4b}.rpt-eyebrow{font-size:11px;letter-spacing:1.6px;color:#287a53;margin-top:25px}.rpt-paper h2{font-size:24px;line-height:1.35;margin:9px 0 20px}.rpt-paper h3{font-size:14px;margin:16px 0 7px}.rpt-paper p,.rpt-paper li{font-size:11px;line-height:1.85}.rpt-pagefoot{position:absolute;bottom:14mm;left:15mm;right:15mm;display:flex;justify-content:space-between;color:#618171;border-top:1px solid #d1dfd5;padding-top:7px;font-size:9px}.rpt-kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:13px 0 18px}.rpt-kpi{background:#eef6f0;border-left:3px solid #36855a;padding:12px}.rpt-kpi small{display:block;font-size:10px;color:#607768}.rpt-kpi strong{display:block;font-size:17px;margin-top:3px}.rpt-caption{font-size:10px!important;color:#62796a;margin-top:8px}.rpt-disclaimer{padding:12px 14px;border-left:3px solid #bb8944;background:#fff7e9}.rpt-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:9px}.rpt-table th,.rpt-table td{padding:8px 5px;border-bottom:1px solid #dae5db;text-align:left;overflow-wrap:anywhere}.rpt-table th{background:#edf5ee;font-weight:700}.rpt-image{margin:5px 0 16px}.rpt-image-canvas{display:block;position:relative;isolation:isolate}.rpt-image img{display:block;width:100%;height:auto;max-height:175mm;object-fit:contain;background:#e9eee9}.rpt-image-boundary{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}.rpt-density-brief .rpt-image img{max-height:185mm}.rpt-density-technical .rpt-table td{font-size:8px}.rpt-image figcaption{font-size:10px;color:#52705d;margin-top:7px}.rpt-pictures{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rpt-pictures .rpt-image img{max-height:80mm}.rpt-empty{padding:18px;background:#eef4ef;border:1px dashed #b8caba;font-size:11px}.rpt-chart{width:100%;height:auto;max-height:72mm}.rpt-findings{padding-left:18px}@media print{body{background:white;print-color-adjust:exact;-webkit-print-color-adjust:exact}.rpt-paper{box-shadow:none;margin:0;width:210mm;height:297mm;min-height:297mm}}';
 }
 function renderPages(){
- const d=evidence(),items=documentPlan(d).out,total=items.length;
+ const d=evidence(),plan=documentPlan(d),items=plan.out,total=items.length;
  const pages=items.map((item,i)=>'<article class="rpt-paper" data-report-page="'+esc(item.key)+'"><header class="rpt-pagehead"><span>MANGROVE MONITORING CENTER</span><span>ENVIRONMENTAL MONITORING · DRAFT</span></header>'+
  '<div class="rpt-eyebrow">'+esc(item.key)+'</div><h2>'+esc(item.title)+'</h2>'+item.body+
  '<footer class="rpt-pagefoot"><span>'+esc(ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ALL PLOTS')+' · '+esc(dateNow())+'</span><span>'+String(i+1)+' / '+total+'</span></footer></article>').join('');
- return {pages,d,total};
+ return {pages,d,total,imageCount:plan.imageCount};
 }
 function fitImageBoundaries(doc){
  const frames=[...doc.querySelectorAll('.rpt-image-canvas')];
@@ -320,10 +320,11 @@ function fitImageBoundaries(doc){
 function updatePreview(){
  const el=$('rpt-preview');if(!el)return;
  const report=renderPages();
- el.innerHTML='<style>'+paperStyle().replace('body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}','')+'</style><div class="rpt-papers">'+report.pages+'</div>';
+ const previewCount=Math.min(8,report.total),previewPages=report.pages.split('</article>').slice(0,previewCount).map(x=>x+'</article>').join('');
+ el.innerHTML='<style>'+paperStyle().replace('body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}','')+'</style><div class="rpt-papers">'+previewPages+'</div>'+(report.total>previewCount?'<p class="rpt-preview-more">แสดงตัวอย่าง '+previewCount+' จาก '+report.total+' หน้า · PDF ฉบับเต็มจะรวมครบทุกหน้า (ภาพ '+report.imageCount+' ภาพ)</p>':'');
  fitImageBoundaries(el);
  const summary=$('rpt-source-summary');
- if(summary)summary.innerHTML='<b>ข้อมูลจริง:</b> '+report.d.pp.length+' แปลง · '+report.d.all.length+' วันภาพ · ผ่าน QA '+report.d.good.length+' วัน · Raster Preview '+report.d.images.length+' ฉาก · '+report.total+' หน้า';
+ if(summary)summary.innerHTML='<b>ข้อมูลจริง:</b> '+report.d.pp.length+' แปลง · '+report.d.all.length+' วันภาพ · ผ่าน QA '+report.d.good.length+' วัน · Raster Preview '+report.d.images.length+' ฉาก · ในรายงาน '+report.imageCount+' ภาพ / '+report.total+' หน้า';
  const note=$('rpt-warning-list');if(note)note.innerHTML=report.d.cautions.map(x=>'<p>• '+esc(x)+'</p>').join('');
 }
 function printPDF(){
@@ -336,7 +337,7 @@ function printPDF(){
 }
 function exportBlueprint(){
  const ev=evidence(),data={schema:'MMC_REPORT_BLUEPRINT_V1',interpreter:'LOCAL_RULE_BASED_NOT_LLM',created_at:new Date().toISOString(),request:ui.text,
- settings:{type:ui.type,scope:ui.scope,plot:ui.scope==='plot'?ui.plot:null,province:ui.scope==='province'?ui.province:null,period:ui.period,density:ui.density,metrics:[...ui.metrics],modules:[...ui.modules]},
+ settings:{type:ui.type,scope:ui.scope,plot:ui.scope==='plot'?ui.plot:null,province:ui.scope==='province'?ui.province:null,period:ui.period,density:ui.density,image_dates_per_plot:ui.imageDates,metrics:[...ui.metrics],modules:[...ui.modules]},
  evidence:{source_generated_at:ctx.generated_at||null,imagery_manifest_version:ctx.imagery?.version||null,plot_codes:ev.pp.map(x=>x.code),scene_count:ev.all.length,qa_valid_scene_count:ev.good.length},warnings:ev.cautions};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
  a.href=url;a.download='MMC_Report_Blueprint_'+dateNow()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
