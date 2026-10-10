@@ -20,14 +20,14 @@ const DEFAULT={
  audit:['summary','location','qa','indices'],
  annual:['summary','satellite','indices','trend','change','qa']
 };
-const ui={text:'',type:'plot',scope:'plot',plot:'13-STC',province:'ALL',period:'180',density:'standard',imageDates:'2',metrics:new Set(['ndvi','mndwi','ndmi']),modules:new Set(DEFAULT.plot),notice:[]};
+const ui={text:'',type:'plot',scope:'plot',plot:'13-STC',province:'ALL',period:'180',density:'standard',imageDates:'2',appendix:false,metrics:new Set(['ndvi','mndwi','ndmi']),modules:new Set(DEFAULT.plot),notice:[]};
 let ctx=null,started=false;
 const plotList=()=>ctx?.plots||[];
 const allScenes=()=>ctx?.scenes||[];
 const allImages=()=>ctx?.imagery?.generated_items||[];
 function provinceList(){return [...new Set(plotList().map(p=>p.province).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th'));}
 function interpret(q){
- const text=String(q||'').trim(),d={type:'plot',scope:'plot',plot:ui.plot,province:'ALL',period:'180',density:'standard',imageDates:ui.imageDates||'2',metrics:new Set(),notice:[]};
+ const text=String(q||'').trim(),d={type:'plot',scope:'plot',plot:ui.plot,province:'ALL',period:'180',density:'standard',imageDates:ui.imageDates||'2',appendix:false,metrics:new Set(),notice:[]};
  if(/audit|qa|ตรวจสอบ|ตรวจทาน|หลักฐาน|คุณภาพข้อมูล/i.test(text))d.type='audit';
  else if(/น้ำท่วม|อุทกภัย|น้ำเพิ่ม|พื้นที่น้ำ|mndwi|ndwi|water/i.test(text))d.type='water';
  else if(/เปลี่ยนแปลง|before|after|ก่อนหลัง|การบุกรุก|change/i.test(text))d.type='change';
@@ -56,6 +56,7 @@ function interpret(q){
  if(/ทุกดัชนี/.test(text))d.metrics=new Set(Object.keys(METRICS));
  const imageDays=text.match(/(?:ภาพ|วันภาพ|วันที่ภาพ)\s*(\d{1,2})\s*(?:วัน|วันที่)/);if(imageDays)d.imageDates=String(Math.min(4,Math.max(1,Number(imageDays[1]))));
  if(d.scope==='all'&&!imageDays)d.imageDates='1';
+ d.appendix=/ภาคผนวก|แนบทุกภาพ|ภาพทุกวัน|ไฟล์ภาพทั้งหมด|แนบภาพทั้งหมด/.test(text);
  if(/น้ำท่วม|ต้นไม้ตาย|บุกรุก|เสียหาย/.test(text))d.notice.push('ข้อความเกี่ยวกับผลกระทบเป็นสมมติฐานคัดกรอง ยังไม่ใช่ข้อเท็จจริงที่ยืนยัน');
  if(!text)d.notice.push('ยังไม่ได้พิมพ์คำสั่ง');
  d.modules=new Set(DEFAULT[d.type]);if(d.scope!=='plot')d.modules.add('location');
@@ -481,7 +482,7 @@ function renderPages(){
  const pages=items.map((item,i)=>'<article class="rpt-paper" data-report-page="'+esc(item.key)+'"><header class="rpt-pagehead"><span>MANGROVE MONITORING CENTER</span><span>ENVIRONMENTAL MONITORING · DRAFT</span></header>'+
  '<div class="rpt-eyebrow">'+esc(item.key)+'</div><h2>'+esc(item.title)+'</h2>'+item.body+
  '<footer class="rpt-pagefoot"><span>'+esc(ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ALL PLOTS')+' · '+esc(dateNow())+'</span><span>'+String(i+1)+' / '+total+'</span></footer></article>').join('');
- return {pages,d,total,imageCount:plan.imageCount};
+ return {pages,d,total,imageCount:plan.imageCount,audit:plan.audit||null};
 }
 function fitImageBoundaries(doc){
  const frames=[...doc.querySelectorAll('.rpt-image-canvas')];
@@ -502,6 +503,7 @@ function fitImageBoundaries(doc){
 function updatePreview(){
  const el=$('rpt-preview');if(!el)return;
  const report=renderPages();
+ const auditPanel=$('rpt-readiness');if(auditPanel){const a=report.audit;auditPanel.innerHTML=a?'<strong>ผลประเมินเอกสาร: รายงานคัดกรองเท่านั้น</strong><p>มีคู่ภาพสำหรับวิเคราะห์ '+a.comparable+' / '+a.plots+' แปลง · พบสัญญาณน้ำเพิ่ม '+a.increases+' แปลง · ยังต้องตรวจน้ำขึ้นลงและภาคสนามก่อนสรุปน้ำท่วม</p>':'<strong>Report QA:</strong> ตรวจวันภาพและแหล่งข้อมูลก่อนใช้';}
  const previewCount=Math.min(8,report.total),previewPages=report.pages.split('</article>').slice(0,previewCount).map(x=>x+'</article>').join('');
  el.innerHTML='<style>'+paperStyle().replace('body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}','')+'</style><div class="rpt-papers">'+previewPages+'</div>'+(report.total>previewCount?'<p class="rpt-preview-more">แสดงตัวอย่าง '+previewCount+' จาก '+report.total+' หน้า · PDF ฉบับเต็มจะรวมครบทุกหน้า (ภาพ '+report.imageCount+' ภาพ)</p>':'');
  fitImageBoundaries(el);
@@ -519,8 +521,8 @@ function printPDF(){
 }
 function exportBlueprint(){
  const ev=evidence(),data={schema:'MMC_REPORT_BLUEPRINT_V1',interpreter:'LOCAL_RULE_BASED_NOT_LLM',created_at:new Date().toISOString(),request:ui.text,
- settings:{type:ui.type,scope:ui.scope,plot:ui.scope==='plot'?ui.plot:null,province:ui.scope==='province'?ui.province:null,period:ui.period,density:ui.density,image_dates_per_plot:ui.imageDates,metrics:[...ui.metrics],modules:[...ui.modules]},
- evidence:{source_generated_at:ctx.generated_at||null,imagery_manifest_version:ctx.imagery?.version||null,plot_codes:ev.pp.map(x=>x.code),scene_count:ev.all.length,qa_valid_scene_count:ev.good.length},warnings:ev.cautions};
+ settings:{type:ui.type,scope:ui.scope,plot:ui.scope==='plot'?ui.plot:null,province:ui.scope==='province'?ui.province:null,period:ui.period,density:ui.density,image_dates_per_plot:ui.imageDates,include_full_appendix:ui.appendix,metrics:[...ui.metrics],modules:[...ui.modules]},
+ evidence:{source_generated_at:ctx.generated_at||null,imagery_manifest_version:ctx.imagery?.version||null,plot_codes:ev.pp.map(x=>x.code),scene_count:ev.all.length,qa_valid_scene_count:ev.good.length},decision_review:ui.type==='water'?floodPlan(ev).audit:null,warnings:ev.cautions};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
  a.href=url;a.download='MMC_Report_Blueprint_'+dateNow()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
@@ -539,7 +541,9 @@ function reportChoices(){
  '<label>จังหวัด<select id="rpt-province">'+options(provinceList().map(x=>[x,x]),ui.province)+'</select></label>'+
  '<label>ช่วงเวลา<select id="rpt-period">'+options([['30','30 วัน'],['90','90 วัน'],['180','6 เดือน'],['365','1 ปี'],['730','2 ปี'],['1825','5 ปี'],['3650','10 ปี'],['all','ทั้งหมดที่มี']],ui.period)+'</select></label>'+
  '<label>รูปแบบ<select id="rpt-density">'+options([['brief','Visual / กระชับ'],['standard','Balanced / มาตรฐาน'],['technical','Technical / เชิงลึก']],ui.density)+'</select></label>'+ 
- '<label>จำนวนวันภาพต่อแปลง<select id="rpt-image-dates">'+options([['1','วันภาพล่าสุด 1 วัน'],['2','2 วันภาพล่าสุด'],['3','3 วันภาพล่าสุด'],['4','4 วันภาพล่าสุด']],ui.imageDates)+'</select></label></div>'+
+ '<label>จำนวนวันภาพต่อแปลง<select id="rpt-image-dates">'+options([['1','วันภาพล่าสุด 1 วัน'],['2','2 วันภาพล่าสุด'],['3','3 วันภาพล่าสุด'],['4','4 วันภาพล่าสุด']],ui.imageDates)+'</select></label></div>'+ 
+ '<label class="rpt-appendix-toggle"><input type="checkbox" id="rpt-appendix"'+(ui.appendix?' checked':'')+'> แนบภาพทุกแปลงเป็นภาคผนวก (รายงานจะยาวขึ้น)</label>'+ 
+ '<div id="rpt-readiness" class="rpt-readiness" aria-live="polite"></div>'+
  '<div class="rpt-checkbox-grid"><fieldset><legend>เลือกหน้ารายงาน</legend>'+Object.entries(MODULES).map(([k,v])=>'<label><input type="checkbox" data-rpt-module="'+k+'"'+(ui.modules.has(k)?' checked':'')+'> '+esc(v)+'</label>').join('')+'</fieldset>'+
  '<fieldset><legend>ดัชนีที่ต้องการ</legend>'+Object.entries(METRICS).map(([k,v])=>'<label><input type="checkbox" data-rpt-metric="'+k+'"'+(ui.metrics.has(k)?' checked':'')+'> '+esc(v)+'</label>').join('')+'</fieldset></div>'+
  '<div class="rpt-buttons"><button type="button" class="btn primary" id="rpt-preview-button">สร้างตัวอย่างรายงาน</button><button type="button" class="btn" id="rpt-print">พิมพ์ / บันทึก PDF (A4)</button><button type="button" class="btn" id="rpt-blueprint-export">ส่งออก Blueprint JSON</button></div>'+
@@ -550,9 +554,10 @@ function reportChoices(){
  container.onchange=e=>{
   const id=e.target.id,fields={'rpt-type':'type','rpt-scope':'scope','rpt-plot':'plot','rpt-province':'province','rpt-period':'period','rpt-density':'density','rpt-image-dates':'imageDates'};
   if(fields[id]){ui[fields[id]]=e.target.value;if(id==='rpt-type')ui.modules=new Set(DEFAULT[ui.type]);if(id==='rpt-scope'){ui.imageDates=ui.scope==='all'?'1':ui.scope==='province'?'2':'3';if(ui.scope!=='plot')ui.modules.add('location');if(ui.scope==='province'&&!provinceList().includes(ui.province))ui.province=plotList().find(p=>p.code===ui.plot)?.province||provinceList()[0]||'ALL';}}
-  if(e.target.dataset.rptModule){if(e.target.checked)ui.modules.add(e.target.dataset.rptModule);else ui.modules.delete(e.target.dataset.rptModule);}
+  if(id==='rpt-appendix')ui.appendix=Boolean(e.target.checked);
+   if(e.target.dataset.rptModule){if(e.target.checked)ui.modules.add(e.target.dataset.rptModule);else ui.modules.delete(e.target.dataset.rptModule);}
   if(e.target.dataset.rptMetric){if(e.target.checked)ui.metrics.add(e.target.dataset.rptMetric);else ui.metrics.delete(e.target.dataset.rptMetric);}
-  if(id==='rpt-type'||id==='rpt-scope')syncForm();showBlueprint();updatePreview();
+  if(id==='rpt-type'||id==='rpt-scope')syncForm();showBlueprint();if(id==='rpt-type'||id==='rpt-scope'||id==='rpt-appendix')updatePreview();
  };
  container.onclick=e=>{
   const b=e.target.closest('button');if(!b)return;
@@ -563,7 +568,7 @@ function reportChoices(){
   }
   if(b.id==='rpt-analyze'){
    const val=interpret(ui.text);for(const field of ['type','scope','plot','province','period','density','imageDates'])ui[field]=val[field];
-   ui.modules=val.modules;ui.metrics=val.metrics;ui.notice=val.notice;syncForm();updatePreview();return;
+   ui.modules=val.modules;ui.metrics=val.metrics;ui.appendix=val.appendix;ui.notice=val.notice;syncForm();updatePreview();return;
   }
   if(b.id==='rpt-preview-button'){updatePreview();$('rpt-preview')?.scrollIntoView({block:'start',behavior:'smooth'});return;}
   if(b.id==='rpt-print'){printPDF();return;}
@@ -573,12 +578,13 @@ function reportChoices(){
 function showBlueprint(){
  const elem=$('rpt-blueprint');if(!elem)return;
  elem.innerHTML='<b>Report Blueprint:</b> '+esc(TYPE[ui.type])+' · '+esc(ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ทุกแปลง')+' · '+esc(ui.period==='all'?'ทุกวันภาพ':ui.period+' วัน')+
- ' · วันภาพ/แปลง '+esc(ui.imageDates)+' วัน · A4 แนวตั้ง · '+ui.modules.size+' ส่วนประกอบ <span>'+ui.notice.map(x=>esc(x)).join(' • ')+'</span>';
+ ' · A4 แนวตั้ง · '+(ui.type==='water'?'Decision Brief':'Atlas / Report')+' · '+(ui.appendix?'พร้อมภาคผนวกภาพ':'เฉพาะเนื้อหาหลัก')+' · '+ui.modules.size+' ส่วนประกอบ <span>'+ui.notice.map(x=>esc(x)).join(' • ')+'</span>';
 }
 function syncForm(){
  for(const [id,value] of [['rpt-type',ui.type],['rpt-scope',ui.scope],['rpt-plot',ui.plot],['rpt-province',ui.province],['rpt-period',ui.period],['rpt-density',ui.density],['rpt-image-dates',ui.imageDates]]){
   const el=$(id);if(el)el.value=value;
  }
+ if($('rpt-appendix'))$('rpt-appendix').checked=Boolean(ui.appendix);
  document.querySelectorAll('[data-rpt-scope-switch]').forEach(x=>{const on=x.dataset.rptScopeSwitch===ui.scope;x.classList.toggle('active',on);x.setAttribute('aria-pressed',String(on));});
  document.querySelectorAll('[data-rpt-module]').forEach(x=>x.checked=ui.modules.has(x.dataset.rptModule));
  document.querySelectorAll('[data-rpt-metric]').forEach(x=>x.checked=ui.metrics.has(x.dataset.rptMetric));
