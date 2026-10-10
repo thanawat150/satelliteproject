@@ -24,7 +24,7 @@ from PIL import Image
 GOOD_SCL=(2,4,5,6,7)
 BAD_SCL=(0,1,3,8,9,10,11)
 MIN_QA=70
-ALG='pdd-full-monitor-v1.1'
+ALG='pdd-full-monitor-v1.2-clipped-change'
 
 def safe_index(a,b):
  den=a+b
@@ -161,7 +161,7 @@ def one_scene(plot,date,files,geom_ll,meta):
    if g is not None:
     features.append(dict(type='Feature',geometry=to_lonlat(g,ds20.crs),properties={'plot':plot,'province':meta['province'],'date':date,'class':cls,'analysis_status':qual,'qa_valid_pct':round(valid_pct,2),'area_rai':round(g.area/1600,3),'source':'original Sentinel-2 GeoTIFF, clipped to native PDD MultiPolygon'}))
   preview=local_preview(ds10,inside,ds20)
-  result={'row':row,'features':features,'preview':preview,'grid':{'crs':str(ds20.crs),'transform':tuple(ds20.transform)[:6],'height':ds20.height,'width':ds20.width},'arrays':{'valid':clear.astype('uint8'),'water':water.astype('uint8'),'vegetation':veg.astype('uint8'),'bare_soil':soil.astype('uint8')}}
+  result={'row':row,'features':features,'preview':preview,'boundary_projected':clip,'grid':{'crs':str(ds20.crs),'transform':tuple(ds20.transform)[:6],'height':ds20.height,'width':ds20.width},'arrays':{'valid':clear.astype('uint8'),'water':water.astype('uint8'),'vegetation':veg.astype('uint8'),'bare_soil':soil.astype('uint8')}}
   return result
 
 def aligned_mask(ref,new_grid,key):
@@ -171,17 +171,43 @@ def aligned_mask(ref,new_grid,key):
            dst_transform=rasterio.Affine(*new_grid['transform']),dst_crs=new_grid['crs'],dst_nodata=255,resampling=Resampling.nearest)
  return out.astype(bool)
 
+def clipped_change_area(mask, grid, polygon):
+ """Area inside actual plot boundary, not an unweighted full-pixel count."""
+ if not np.any(mask):
+  return 0.0
+ class Grid:
+  transform=rasterio.Affine(*grid['transform'])
+ grid_shape=Grid()
+ geom=geom_mask_to_shape(mask,grid_shape,polygon)
+ return (geom.area/1600.0) if geom is not None else 0.0
+
 def change_summary(past,current):
  new=current['arrays'];pre={key:aligned_mask(past,current['grid'],key) for key in past['arrays']}
  overlap=(pre['valid']&new['valid'].astype(bool))
- px_rai=abs(current['grid']['transform'][0]*current['grid']['transform'][4])/1600
- data={'date_a':past['row']['date'],'date_b':current['row']['date'],'common_clear_pixels':int(overlap.sum()),'common_clear_rai':round(float(overlap.sum())*px_rai,3)}
- if not overlap.any():return {**data,'status':'NO_COMPARABLE_CLEAR_PIXELS'}
+ boundary=current['boundary_projected']
+ if past['grid']['crs']!=current['grid']['crs']:
+  # Common pixels are in the current-date grid; intersect both boundary versions.
+  past_boundary=transform(Transformer.from_crs(past['grid']['crs'],current['grid']['crs'],always_xy=True).transform,past['boundary_projected'])
+ else:
+  past_boundary=past['boundary_projected']
+ boundary=boundary.intersection(past_boundary)
+ comparable_area=clipped_change_area(overlap,current['grid'],boundary)
+ area_pdd=boundary.area/1600.0 if not boundary.is_empty else 0.0
+ data={'date_a':past['row']['date'],'date_b':current['row']['date'],
+       'common_clear_pixels':int(overlap.sum()),'common_clear_rai':round(comparable_area,3),
+       'common_clear_pct_of_plot':round(100*comparable_area/area_pdd,2) if area_pdd else 0,
+       'area_method':'polygon-clipped common valid mask on current 20m grid',
+       'tide_normalized':False,'season_normalized':False,
+       'interpretation':'SCREENING_ONLY_NO_TIDAL_OR_FIELD_VALIDATION'}
+ if not overlap.any() or comparable_area<=0:return {**data,'status':'NO_COMPARABLE_CLEAR_PIXELS'}
  for name in ['water','vegetation','bare_soil']:
   a=pre[name]&overlap;b=new[name].astype(bool)&overlap
-  data[name+'_new_rai']=round(float((~a&b).sum())*px_rai,3)
-  data[name+'_lost_rai']=round(float((a&~b).sum())*px_rai,3)
-  data[name+'_net_change_rai']=round(float((b.sum()-a.sum()))*px_rai,3)
+  new_area=clipped_change_area(~a&b&overlap,current['grid'],boundary)
+  lost_area=clipped_change_area(a&~b&overlap,current['grid'],boundary)
+  data[name+'_new_rai']=round(new_area,3)
+  data[name+'_lost_rai']=round(lost_area,3)
+  data[name+'_net_change_rai']=round(new_area-lost_area,3)
+ data['comparison_review']='SMALL_OVERLAP_REVIEW' if data['common_clear_pct_of_plot']<50 or int(overlap.sum())<30 else 'TIDE_SEASON_FIELD_REVIEW'
  data['status']='AUTO_VALID' if min(past['row']['qa_valid_pct'],current['row']['qa_valid_pct'])>=70 else 'PARTIAL'
  return data
 
