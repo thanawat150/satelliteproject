@@ -7,6 +7,6 @@
   },
   "type": "module",
   "scripts": {
-    "build": "mkdir -p public && cp index.html public/index.html"
+    "build": "node scripts/send-one-shot-test.mjs && mkdir -p public && cp index.html public/index.html"
   }
 }
