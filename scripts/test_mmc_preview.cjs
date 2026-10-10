@@ -304,7 +304,7 @@ assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็
 const visualReview=await page.evaluate(()=>{
  const rr=window.MMCReportCopilot.renderPages();
  return {pages:rr.total,visualPages:(rr.pages.match(/data-visual-scan="/g)||[]).length,
-  labels:rr.pages.includes('จุดสังเกตจากภาพดัชนี'),
+  labels:rr.pages.includes('ภาพเปรียบเทียบจุดน้ำเปลี่ยน'),
   qa:rr.pages.includes('ไม่ผ่าน/ยังไม่มี QA'),
   cloudGate:rr.pages.includes('เมฆ')};
 });
