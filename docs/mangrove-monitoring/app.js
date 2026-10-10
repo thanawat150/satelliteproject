@@ -18,6 +18,34 @@ function toast(s){const d=$('toast');d.textContent=s;d.hidden=false;clearTimeout
 function setView(view,code){if(!TITLES[view])view='overview';state.view=view;if(code)state.plot=code;state.filter='';draw();let u=new URL(location.href);u.searchParams.set('view',view);if(state.plot)u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search+u.hash);window.scrollTo({top:0,behavior:'instant'});$('sidebar').classList.remove('open');}
 function plotScenes(code){return cache.byScene.get(code)||[];}
 function plotChanges(code){return cache.changes.get(code)||[];}
+function waterScreen(){
+ const engine=window.MMCWaterIntelligence;
+ if(!engine)return null;
+ const areas=Object.fromEntries(cache.plots.map(p=>[p.code,p.geometry?p.area:null]));
+ return engine.derive(allChangesFiltered(),areas);
+}
+function waterIntelligencePanel(code){
+ const result=waterScreen();
+ if(!result)return message('Water Anomaly Engine ยังไม่พร้อม โปรดโหลดหน้าใหม่','warn');
+ const match=x=>!code||x.plot===code;
+ const reversals=result.reversals.filter(match);
+ const increases=result.water_increases.filter(match);
+ const held=result.held.filter(match);
+ const rows=reversals.slice(0,25).map(x=>'<tr><td>'+btn(x.plot,'insight',x.plot,'mini')+
+ '</td><td>'+html(x.first_date)+' → '+html(x.second_date)+'</td>'+
+ '<td class="num">+'+fmt(x.first_delta_rai,3)+'</td><td class="num">'+fmt(x.second_delta_rai,3)+'</td>'+
+ '<td>'+tag(x.status==='WATER_REVERSAL_REVIEW'?'น้ำเพิ่มแล้วลด · รอตรวจ':'ข้อมูลไม่พอ','warn')+'</td></tr>').join('');
+ return '<section class="panel" id="water-intelligence"><div class="panel-header"><div><div class="eyebrow">WATER ANOMALY INTELLIGENCE · SCREENING ONLY</div><h2>น้ำผิดปกติ / เพิ่มแล้วลดกลับ</h2><p class="muted">วิเคราะห์รูปแบบภาพย้อนหลังจากผล Change ที่เผยแพร่แล้ว ไม่ยืนยันน้ำท่วมหรือการกลับสู่สภาพปกติ</p></div></div>'+
+ '<div class="grid half">'+kpi('น้ำเพิ่ม · Candidate',increases.length,'ผ่านจำนวนพิกเซลและพื้นที่ร่วมขั้นต่ำ')+
+ kpi('น้ำเพิ่มแล้วลด · Review',reversals.length,'ยังไม่ใช่การยืนยันเหตุการณ์')+
+ kpi('หลักฐานไม่พอ',held.length,'ไม่ใช้เป็น Early Warning อัตโนมัติ')+
+ kpi('น้ำขึ้นน้ำลง / ฝน','ยังไม่เชื่อม','ไม่คาดเดาค่าหรือกล่าวว่าได้ปรับแล้ว')+'</div>'+
+ '<p class="muted">การยืนยันต้องมีเวลาถ่ายภาพจาก Scene ID, ระดับน้ำทะเลที่ตรวจสอบแหล่งและ Datum ได้, ฝนย้อนหลัง และข้อมูลภาคสนาม • การลดลงในภาพถัดไปไม่ได้แปลว่าระดับน้ำกลับสู่ปกติ</p>'+
+ '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>ช่วงภาพหลัง</th><th>น้ำเพิ่ม ไร่</th><th>น้ำลด ไร่</th><th>สถานะ</th></tr></thead><tbody>'+
+ (rows||'<tr><td colspan="5">ยังไม่พบรูปแบบน้ำเพิ่มแล้วลดที่เข้าเกณฑ์จากข้อมูลในตัวกรอง</td></tr>')+
+ '</tbody></table></div></section>';
+}
+
 function validScenes(code){return plotScenes(code).filter(qaOk);}
 function currentValid(code){return validScenes(code).slice(-1)[0]||null;}
 function plotStatus(code){const p=cache.data?.plots?.[code];if(!p)return 'UNPROCESSED';if(p.qa_valid_dates>0)return 'VALID';if(p.completed_dates>0)return 'NO_VALID';return 'UNPROCESSED';}
