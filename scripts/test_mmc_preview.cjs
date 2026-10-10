@@ -73,6 +73,13 @@ assert.equal(await page.locator('#metric-select').inputValue(),'water_rai','Top 
 assert.ok((await page.locator('#time-series-subtitle').innerText()).includes('ไร่'),'Water area chart uses rai rather than index unit');
 await page.locator('#timeseries-metric-select').selectOption('ndre');
 assert.ok((await page.locator('#time-series-title').innerText()).includes('NDRE'),'Red Edge trend should be selectable');
+assert.ok((await page.locator('#time-series-visual').innerText()).includes('แกนมาตรฐาน -1 ถึง +1'),
+ 'NDRE must use non-exaggerated fixed -1 to +1 spectral index axis');
+assert.ok((await page.locator('#time-series-details').innerText()).includes('ตรวจเทียบ Raster TIFF'),
+ 'Index trend must reveal source TIFF parity QA');
+assert.equal(await page.locator('#time-series-details .series-source-table tbody tr').count(),2,
+ 'Sparse two-observation trend must show precisely its two authentic dates');
+
 const ndreGeometry=await page.locator('#time-series-panel').evaluate(panel=>{
  const rect=el=>el.getBoundingClientRect();
  const outer=rect(panel),plot=rect(panel.querySelector('.ts-plot'));
