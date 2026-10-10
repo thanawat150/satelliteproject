@@ -14,6 +14,9 @@ on:
       - "scripts/test_monitoring_qa_alerts.cjs"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
+  workflow_run:
+    workflows: ["MMC Build True Satellite RGB and Index Maps"]
+    types: [completed]
   # 08:15 Thailand daily; also runs automatically on website changes.
   schedule:
     - cron: "15 1 * * *"
@@ -27,6 +30,7 @@ concurrency:
 
 jobs:
   publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
