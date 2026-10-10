@@ -39,6 +39,22 @@ assert.ok(analysis.includes('2026-09-29'),'Analysis must show real Sentinel-2 da
 assert.ok(analysis.includes('AUTO_VALID'),'Analysis must show QA state');
 await page.locator('#metric-select').selectOption('mndwi');
 assert.ok(await page.locator('.mini-chart svg circle').count()>=2,'Actual QA chart has at least 2 points');
+assert.ok(await page.locator('#timeseries-metric-select').count()===1,'Time Series must have a metric selector alongside the chart');
+await page.locator('#timeseries-metric-select').selectOption('water_rai');
+assert.ok((await page.locator('#time-series-title').innerText()).includes('พื้นที่น้ำ'),'Chart title must follow Water metric');
+assert.equal(await page.locator('#metric-select').inputValue(),'water_rai','Top and in-chart metric menus must remain synchronized');
+assert.ok((await page.locator('#time-series-subtitle').innerText()).includes('ไร่'),'Water area chart uses rai rather than index unit');
+await page.locator('#timeseries-metric-select').selectOption('ndre');
+assert.ok((await page.locator('#time-series-title').innerText()).includes('NDRE'),'Red Edge trend should be selectable');
+await page.locator('#timeseries-metric-select').selectOption('rain_prev_3_utc_days_mm');
+assert.ok((await page.locator('#time-series-details').innerText()).includes('NASA POWER'),'Rainfall trend must show its real source and UTC day caveat');
+assert.ok((await page.locator('#time-series-subtitle').innerText()).includes('มม.'),'Rainfall chart must use millimeters');
+await page.locator('#plot-select').selectOption('16-STC');
+assert.ok((await page.locator('#time-series-visual').innerText()).includes('2026-07-19'),'Rainfall chart must follow the plot selected');
+assert.ok((await page.locator('#time-series-visual').locator('svg title').allTextContents()).some(x=>x.includes('95.93')),'September rain series value must be actual NASA POWER source');
+await page.locator('#plot-select').selectOption('13-STC');
+await page.locator('#timeseries-metric-select').selectOption('mndwi');
+
 
 await page.waitForSelector('#image-date',{timeout:15000});
 const opts=await page.locator('#image-date option').allTextContents();
@@ -212,6 +228,14 @@ const alignedMobile=await mobile.locator('.img-large').evaluate(el=>{
  return img.naturalWidth>0&&r.width>0&&r.left>=frame.left-2&&r.right<=frame.right+2&&r.bottom<=frame.bottom+2;
 });
 assert.ok(alignedMobile,'Polygon overlay must fit contained satellite bitmap on mobile');
+await mobile.locator('#menu-btn').click();
+await mobile.locator('[data-view="analysis"]').click();
+await mobile.waitForSelector('#timeseries-metric-select');
+await mobile.locator('#timeseries-metric-select').selectOption('mndwi');
+assert.ok((await mobile.locator('#time-series-title').innerText()).includes('MNDWI'),'Time Series dropdown must work on mobile');
+const chooser=await mobile.locator('#timeseries-metric-select').boundingBox();
+assert.ok(chooser&&chooser.width>=190&&chooser.width<=390,'Chart metric selection should fit phone width');
+
 assert.deepEqual(errors,[],'Desktop JS errors: '+errors.join(' | '));assert.deepEqual(mobileErrors,[],'Mobile JS errors: '+mobileErrors.join(' | '));
 console.log('MMC_PREVIEW_PASS registry=160 qa=126 pdd=136 chart sources=actual plot 13-STC modules=26 mobile=390');
 await mobile.close();
