@@ -5,8 +5,8 @@
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const num=x=>x==null||x===''||!Number.isFinite(Number(x))?'—':Number(x).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
-const dateNow=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'});
-const daysAgo=n=>{const date=new Date(dateNow()+'T12:00:00+07:00');date.setDate(date.getDate()-n);return date.toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'});};
+const dateNow=()=>{const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(x=>[x.type,x.value]));return parts.year+'-'+parts.month+'-'+parts.day;};
+const daysAgo=n=>{const date=new Date(dateNow()+'T12:00:00Z');date.setUTCDate(date.getUTCDate()-n);return date.toISOString().slice(0,10);};
 const TYPE={plot:'Plot Monitoring',executive:'Executive Brief',atlas:'Satellite Atlas',change:'Change Detection',water:'Water Monitoring',forest:'Forest Condition',audit:'Technical & Audit',annual:'Annual Monitoring'};
 const METRICS={ndvi:'NDVI · พืชพรรณ',ndre:'NDRE · Red Edge',ndmi:'NDMI · ความชื้นพืช',ndwi:'NDWI · น้ำ',mndwi:'MNDWI · ผิวน้ำ',bsi:'BSI · ดินเปิดโล่ง'};
 const MODULES={summary:'Executive Summary',location:'ทะเบียนแปลง',satellite:'ภาพสีจริง',indices:'ภาพดัชนี',trend:'กราฟย้อนหลัง',change:'Change Detection',rain:'ข้อมูลฝน',qa:'QA/QC & Evidence'};
@@ -92,7 +92,7 @@ function picture(im,mode){
  '<p class="rpt-empty">ไม่มีภาพ '+esc(mode)+' ที่ตรงกับวันภาพและ QA</p>';
 }
 function chart(rows,metric){
- const data=rows.map(x=>({date:x.date,value:Number(x[metric])})).filter(x=>Number.isFinite(x.value)).slice(-50);
+ const data=rows.filter(x=>x[metric]!==null&&x[metric]!==undefined&&x[metric]!==''&&Number.isFinite(Number(x[metric]))).map(x=>({date:x.date,value:Number(x[metric])})).slice(-50);
  if(!data.length)return '<p class="rpt-empty">ยังไม่มีค่า '+esc(metric)+' ผ่าน QA ในช่วงที่เลือก</p>';
  const x=i=>40+480*i/Math.max(1,data.length-1),y=v=>156-(v+1)*62;
  return '<svg viewBox="0 0 560 186" class="rpt-chart" role="img" aria-label="กราฟ '+esc(metric)+'">'+
@@ -182,7 +182,7 @@ function renderPages(){
 function updatePreview(){
  const el=$('rpt-preview');if(!el)return;
  const report=renderPages();
- el.innerHTML='<style>'+paperStyle()+'</style><div class="rpt-papers">'+report.pages+'</div>';
+ el.innerHTML='<style>'+paperStyle().replace('body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}','')+'</style><div class="rpt-papers">'+report.pages+'</div>';
  const summary=$('rpt-source-summary');
  if(summary)summary.innerHTML='<b>ข้อมูลจริง:</b> '+report.d.pp.length+' แปลง · '+report.d.all.length+' วันภาพ · ผ่าน QA '+report.d.good.length+' วัน · Raster Preview '+report.d.images.length+' ฉาก · '+report.total+' หน้า';
  const note=$('rpt-warning-list');if(note)note.innerHTML=report.d.cautions.map(x=>'<p>• '+esc(x)+'</p>').join('');
@@ -192,7 +192,7 @@ function printPDF(){
  if(!popup){alert('เบราว์เซอร์บล็อกหน้าต่าง กรุณาอนุญาต Pop-ups แล้วลองอีกครั้ง');return;}
  popup.document.open();
  popup.document.write('<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><title>MMC '+esc(ui.plot)+' Report</title><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet"><style>'+paperStyle()+'</style></head><body>'+report.pages+
- '<script>window.addEventListener("load",function(){setTimeout(function(){window.print()},1000)})<\/script></body></html>');
+ '<script>window.addEventListener("load",function(){var images=Array.from(document.images);Promise.all(images.map(function(im){return im.complete?Promise.resolve():new Promise(function(resolve){im.onload=resolve;im.onerror=resolve})})).then(function(){setTimeout(function(){window.print()},350)})})<\/script></body></html>');
  popup.document.close();
 }
 function exportBlueprint(){
