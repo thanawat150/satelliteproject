@@ -137,7 +137,7 @@ function fitBoundaryOverlays(holder){
  }
 }
 
-function statusPill(date){let x=qa(date);let row=active.rows.find(r=>r.date===date);let info=x.percent!=null?' · SCL '+x.percent+'%':'';if(row?.total_pixels!=null)info+=' · '+row.total_pixels+'px';
+function statusPill(date){let x=qa(date);let row=active.rows.find(r=>r.date===date);let info=x.percent!=null?' · SCL '+metricFmt(x.percent)+'%':'';if(row?.total_pixels!=null)info+=' · '+row.total_pixels+'px';
 return '<span class="img-status '+(x.kind==='AUTO_VALID'?'ok':'warn')+'">'+esc(x.label+info)+'</span>';}
 function thumb(layer,mode,date,item){if(!layer)return '<div class="mmc-img-empty">ยังไม่มีภาพ '+esc(MODE[mode]?.[0]||mode)+' ของวันที่เลือก</div>';
 const src=previewSrc(layer);if(!src)return '<div class="mmc-img-empty">ไฟล์ภาพไม่พร้อมใช้งาน</div>';
@@ -184,12 +184,12 @@ if(!items.length)return head+'<div class="notice">ยังไม่มี Previ
 const latestAvailable=[...items].reverse().find(x=>x.source!=='missing'&&qa(x.date).kind==='AUTO_VALID');
 const openAvailable=latestAvailable&&latestAvailable.date!==active.date?'<button type="button" class="btn img-fallback-btn" id="image-open-available">ดูภาพจริงที่ผ่าน QA วันที่ '+esc(latestAvailable.date)+'</button>':'';
 const noPreview=target?.source==='missing'?'<div class="notice img-missing"><b>ภาพวันที่ '+esc(active.date)+' ยังไม่มี Raster Preview</b> แม้มีข้อมูลวันที่นี้ในผลวิเคราะห์ ('+esc(qa(active.date).label)+') กำลังรอสร้างภาพจาก GeoTIFF ต้นฉบับ ไม่ใช้ภาพ Esri หรือภาพคนละวันแทนผล Sentinel-2 '+openAvailable+'</div>':'';
-const smallWarning=active.rows.find(x=>x.date===active.date)?.total_pixels<30?'<div class="notice img-missing">แปลงมีพิกเซลสำหรับ QA น้อยกว่า 30 พิกเซลบนกริดวิเคราะห์ จึงไม่ควรตีความว่า SCL 100% หมายถึงภาพชัดหรือแม่นยำ ควรใช้ภาพต้นฉบับและข้อมูลภาคสนามตรวจทาน</div>':'';
+const smallWarning=active.rows.find(x=>x.date===active.date)?.total_pixels<30?'<div class="notice img-missing">แปลงมีพิกเซลสำหรับ QA น้อยกว่า 30 พิกเซลบนกริดวิเคราะห์ จึงไม่ควรตีความว่า SCL 100.00% หมายถึงภาพชัดหรือแม่นยำ ควรใช้ภาพต้นฉบับและข้อมูลภาคสนามตรวจทาน</div>':'';
 const rgbSource=target?.source==='generated'?target:null;
 const whitePct=rgbSource?.rgb_near_white_pct;
 const showRgbReview=!!(rgbSource&&(rgbSource.rgb_display_warning||Number(rgbSource.rgb_invalid_pct)>30||Number(rgbSource.rgb_unclassified_scl_pct)>20));
-const rgbWarning=showRgbReview?'<div class="notice img-missing img-rgb-warning"><b>RGB QUALITY REVIEW • ยังไม่รับรองภาพใส:</b> เกือบขาว '+esc(String(whitePct??'ไม่ทราบ'))+'% · NoData/ไม่ผ่าน SCL '+esc(String(rgbSource.rgb_invalid_pct??'ไม่ทราบ'))+'% · SCL 7 (ไม่จำแนก) '+esc(String(rgbSource.rgb_unclassified_scl_pct??'ไม่ทราบ'))+'% โปรดตรวจ TIFF ก่อนใช้งาน</div>':'';
-const rgbMeta=rgbSource?.rgb_native_width?'<div class="img-rgb-resolution">RGB Preview '+esc(rgbSource.rgb_native_width)+' × '+esc(rgbSource.rgb_native_height)+' พิกเซล (กริดต้นทาง 10 ม.) · ดัชนีจากกริด 20 ม. · เกือบขาว '+esc(String(whitePct??'ไม่ทราบ'))+'% · NoData/ไม่ผ่าน SCL '+esc(String(rgbSource.rgb_invalid_pct??'ไม่ทราบ'))+'% · รุ่น '+esc(rgbSource.rgb_renderer_version||'เดิม')+'</div>':'';
+const rgbWarning=showRgbReview?'<div class="notice img-missing img-rgb-warning"><b>RGB QUALITY REVIEW • ยังไม่รับรองภาพใส:</b> เกือบขาว '+metricFmt(whitePct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(rgbSource.rgb_invalid_pct)+'% · SCL 7 (ไม่จำแนก) '+metricFmt(rgbSource.rgb_unclassified_scl_pct)+'% โปรดตรวจ TIFF ก่อนใช้งาน</div>':'';
+const rgbMeta=rgbSource?.rgb_native_width?'<div class="img-rgb-resolution">RGB Preview '+esc(rgbSource.rgb_native_width)+' × '+esc(rgbSource.rgb_native_height)+' พิกเซล (กริดต้นทาง 10 ม.) · ดัชนีจากกริด 20 ม. · เกือบขาว '+metricFmt(whitePct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(rgbSource.rgb_invalid_pct)+'% · รุ่น '+esc(rgbSource.rgb_renderer_version||'เดิม')+'</div>':'';
 const boundaryLegend=active.geometry?'<div class="img-boundary-legend"><i></i> เส้นแดง = ขอบเขต '+esc(active.boundaryType==='PDD_136'?'PDD':active.boundaryType==='MOC3'?'MOC 3 (ยังไม่ยืนยัน)':active.boundaryType||'จากฐาน GIS')+' ที่ระบบมีอยู่ (ไม่ใช่การรับรองสิทธิ์)</div>':'<div class="notice img-missing">แปลงนี้ไม่มี Geometry ที่จับคู่ได้ จึงยังไม่สามารถวาดขอบเขตบน Raster</div>';
 const qaLegend='<div class="img-qa-explainer">การแสดงภาพ: SCL QA ระบุพิกเซลที่วิเคราะห์ได้ ไม่ใช่คะแนนความชัด • RGB ใช้การปรับสีแบบค่าการสะท้อนแสงคงที่ • ช่องลายตารางหมายถึง NoData/ไม่ผ่าน SCL ของภาพต้นฉบับ • สีขาวอาจเป็นความสว่างสูงหรือเมฆที่ต้องตรวจสอบ</div>';
 const main='<div class="img-controls">'+nav+'</div>'+boundaryLegend+qaLegend+visualOnly+noPreview+smallWarning+rgbWarning+rgbMeta+
