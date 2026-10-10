@@ -217,7 +217,7 @@ function svgChart(rows,key,opts={}){
  const good=rows.filter(x=>qaOk(x)&&x[key]!==null&&x[key]!==undefined&&x[key]!==''&&Number.isFinite(Number(x[key])));
  if(!good.length)return empty('ยังไม่มีค่าที่ใช้แสดงกราฟ','ไม่ใช้ค่า NO_DATA / PARTIAL หรือข้อมูลฝนที่ขาด');
  const v=good.map(x=>Number(x[key])),min=Math.min(...v),max=Math.max(...v);
- const minSpan=opts.unit==='ค่าดัชนี'?.05:opts.unit==='%'?1:opts.unit==='ไร่'?.5:2;
+ const minSpan=opts.unit==='ค่าดัชนี'?0.05:opts.unit==='%'?1:opts.unit==='ไร่'?0.5:2;
  const span=Math.max(max-min,minSpan);
  const base=opts.nonnegative?Math.max(0,min-span*.20):min-span*.20;
  const top=max+span*.20;
