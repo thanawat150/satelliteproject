@@ -189,6 +189,12 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
   body.has-sidebar .shell{margin:0 auto;max-width:1160px}
 }
 
+.content-ready-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.content-ready-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 17px;box-shadow:var(--shadow)}
+.content-ready-card h3{margin:0 0 6px;font-size:17px}
+.content-ready-meta{font-size:12px;color:var(--muted);line-height:1.55}
+.content-ready-status{display:inline-block;margin-top:10px;font-size:11px;font-weight:800;border-radius:999px;padding:6px 9px;background:#fff6df;color:#a15c00}
+@media(max-width:720px){.content-ready-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body class="has-sidebar">
@@ -288,6 +294,32 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
     </div>
   </section>
 
+  <section id="contentReadySection">
+    <div class="section-head">
+      <div><div class="kicker">CONTENT READY</div><h2>คลิป Content ใหม่จาก Google Drive</h2></div>
+      <span class="snapshot">ตรวจล่าสุด · 10 ต.ค. 2569</span>
+    </div>
+    <div class="content-ready-grid">
+      <article class="content-ready-card">
+        <h3>ผมไม่ได้โหลดภาพดาวเทียมทีละรูป — ผมให้ AI ช่วยเตรียมให้พร้อมโหลด</h3>
+        <div class="content-ready-meta">Ken Monitoring — System Stories · ไฟล์: Final<br>พบใน Google Drive วันนี้ · ยังไม่ถูกตั้งเวลาใน Metricool</div>
+        <span class="content-ready-status">พร้อม · รอตั้งเวลา</span>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://drive.google.com/uc?export=download&id=186zfRVanODoos4TY3twdGC8z_SKuYG1U">ดาวน์โหลด Final</a>
+          <a class="btn btn-secondary" href="https://docs.google.com/document/d/1wh9U_eQJ32urwo-ZDrbTAPoF4fPhQ5uI8gQGbccAsMA/edit?usp=drivesdk" target="_blank" rel="noopener">เปิด Script</a>
+        </div>
+      </article>
+      <article class="content-ready-card">
+        <h3>DEMO — System Story 006</h3>
+        <div class="content-ready-meta">ไฟล์ประกอบ/เดโมในโฟลเดอร์เดียวกัน · ไม่ถูกนับเป็นคลิปพร้อมโพสต์หลัก</div>
+        <span class="content-ready-status">Asset</span>
+        <div class="actions">
+          <a class="btn btn-secondary" href="https://drive.google.com/file/d/1sjgojUNLoQQ_Y4KePKVpW3ehzaMDA9g2/view?usp=drivesdk" target="_blank" rel="noopener">เปิด DEMO</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <section id="scheduledSection">
     <div class="section-head">
       <div><div class="kicker">METRICOOL SCHEDULE</div><h2>คลิปที่ตั้งเวลาไว้</h2></div>
@@ -345,10 +377,6 @@ const inventory = [
   {
     key:'sun', ready:10, review:0, edit:0, posted:0,
     note:'พบคลิปกันแดดศิริราชในโฟลเดอร์ “พร้อม” 10 คลิป — ระบบจะถือว่าพร้อมโพสต์ตามการคัดของคุณ และใช้วันละ 1 คลิป'
-  },
-  {
-    key:'shampoo', ready:0, review:0, edit:0, posted:0,
-    note:'ตรวจพบโฟลเดอร์สินค้าใหม่ “แชมพู ศิริราช” แล้ว แต่ขณะตรวจล่าสุดยังไม่พบไฟล์คลิปในโฟลเดอร์นี้หรือในโฟลเดอร์ “พร้อม”'
   }
 ];
 
