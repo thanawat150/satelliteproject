@@ -155,7 +155,7 @@ function waterDatePanel(code){
       [...cache.byScene].filter(([,rows])=>rows.length).map(([k])=>
       '<option value="'+html(k)+'" '+(k===plot?'selected':'')+'>'+html(k)+'</option>').join('')+
       '</select></label>';
- const dateSelect='<label>เลือกวันภาพ Sentinel-2<select id="water-date-select" '+
+ const dateSelect=code&&state.view==='insights'?'':'<label>เลือกวันภาพ Sentinel-2<select id="water-date-select" '+
       (scenes.length?'':'disabled')+'>'+options+'</select></label>';
  if(!snap)return '<div class="panel" id="water-daily-panel"><h3>ค่าน้ำรายวัน</h3>'+
       '<div class="controls">'+plotSelector+dateSelect+'</div>'+
@@ -202,8 +202,7 @@ function waterDatePanel(code){
  const rain1=snap.rainfall_prev_1_utc_day_mm,rain3=snap.rainfall_prev_3_utc_days_mm;
  return '<div class="panel" id="water-daily-panel"><div class="panel-header"><div><h3>ค่าน้ำตามวันภาพ · '+html(plot)+'</h3>'+
   '<p class="muted">เลือกวัน Sentinel-2 แล้วแสดงค่าที่ตรงกับภาพวันนั้น พร้อมการเปรียบเทียบย้อนหลัง</p></div>'+status+'</div>'+
-  '<div class="controls">'+plotSelector+dateSelect+
-  btn('ดูภาพ MNDWI วันที่เลือก','waterimage',plot,'primary')+'</div>'+
+  (dateSelect||plotSelector?'<div class="controls">'+plotSelector+dateSelect+btn('ดูภาพ MNDWI วันที่เลือก','waterimage',plot,'primary')+'</div>':'')+
   '<p class="muted" id="water-selected-date">วันภาพ '+html(selected)+' • '+html(snap.qa_status)+
   ' • SCL ใช้ได้ '+fixed(snap.qa_valid_pct,'%')+'</p>'+
   '<div class="grid half hydro-kpis">'+
@@ -396,7 +395,7 @@ function plotDecision(code){
 function insightsPage(){
  root.innerHTML=commonHead('Plot Intelligence & Decisions','หน้าสรุปแปลงสำหรับผู้บริหาร GIS นักวิชาการป่าไม้ และ Auditor ที่แยกข้อมูลสังเกตกับข้อสรุปที่ผ่านการรับรอง')+
  '<div class="controls"><label>แปลง<select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label></div>'+
- plotDecision(state.plot)+plotTwin(state.plot)+waterIntelligencePanel(state.plot)+'<section class="panel" id="imagery-explorer"></section>'+
+ '<section class="panel" id="imagery-explorer"></section>'+waterIntelligencePanel(state.plot)+plotDecision(state.plot)+plotTwin(state.plot)+
  '<div class="panel"><h2>Audit Readiness Checklist</h2><div class="grid half">'+
  ['ขอบเขต PDD / ยืนยันกรม / เวอร์ชัน','Scene ID, วันที่ภาพ, 10m / 20m และ SCL','Raw TIFF กับ Raster Preview วันที่เดียวกัน','Common-clear pixels และวิธีเปรียบเทียบ','ระดับน้ำขึ้นน้ำลงและบริบทฤดูกาล','หลักฐานสำรวจ GPS และภาพถ่าย','สูตรคำนวณและความไม่แน่นอน','ผู้ตรวจทานและรายงานล็อกเวอร์ชัน'].map(x=>'<div class="audit-item"><span>□</span> '+html(x)+'</div>').join('')+
  '</div><p class="muted">เช็กลิสต์เพื่อเตรียมตรวจสอบ ไม่ใช่ระบบอนุมัติจริงหรือใบรับรอง</p></div>';
@@ -475,7 +474,7 @@ function analysisPage(){const p=plotOf(state.plot),sc=plotScenes(state.plot);
  const key=Object.prototype.hasOwnProperty.call(SERIES,state.metric)?state.metric:'ndvi';
  const metricChoices=seriesOptions(key);
  root.innerHTML=commonHead('Environmental Analytics','วิเคราะห์จาก Sentinel-2 ดัชนีจริงในพื้นที่ PDD โดยคัดเฉพาะวันที่ QA ผ่าน',btn('Export CSV','exportscenes',state.plot,'primary'))+
- '<div class="controls"><label>แปลง <select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label><label>ค่าที่แสดง <select id="metric-select">'+metricChoices+'</select></label>'+btn('ดูแปลงบนแผนที่','setview','map')+'</div>'+
+ '<div class="controls"><label>แปลง <select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label>'+btn('ดูแปลงบนแผนที่','setview','map')+'</div>'+
  (p?'<div class="grid kpis" id="analysis-metric-kpis">'+timeSeriesKpis(state.plot,key)+'</div>':'')+
  '<section class="panel" id="imagery-explorer"></section>'+timeSeriesPanel(state.plot,key)+
  '<div class="panel"><div class="panel-header"><h2>ประวัติค่าดัชนีและคุณภาพภาพ</h2><small>NO_DATA / PARTIAL แสดง — แทนค่าที่เชื่อถือไม่ได้</small></div><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่ถ่ายภาพ</th><th>QA</th><th>% ใช้ได้</th><th>NDVI</th><th>NDRE</th><th>NDMI (B8A)</th><th>NDWI</th><th>MNDWI</th><th>BSI</th><th>Water ไร่</th><th>Vegetation ไร่</th></tr></thead><tbody>'+sc.map(x=>'<tr><td>'+html(x.date)+'</td><td>'+tag(x.analysis_status,qaOk(x)?'':x.analysis_status==='PARTIAL'?'warn':'danger')+'</td><td class="num">'+fmt(x.qa_valid_pct)+'</td>'+['ndvi','ndre','ndmi','ndwi','mndwi','bsi','water_rai','vegetation_rai'].map(k=>'<td class="num">'+(qaOk(x)?fmt(x[k],k.includes('rai')?2:4):'—')+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></div>'+
@@ -651,6 +650,12 @@ if(action==='exportvisualqa'){
  if(action==='exportchanges'){csvDownload('mmc_change_events.csv',['plot','date_a','date_b','common_clear_rai','water_net_change_rai','vegetation_net_change_rai','bare_soil_net_change_rai','status'],allChangesFiltered().map(x=>[x.plot,x.date_a,x.date_b,x.common_clear_rai,x.water_net_change_rai,x.vegetation_net_change_rai,x.bare_soil_net_change_rai,x.status]));return;}
  if(action==='template'){const schemas={field:['plot_code','survey_date','survey_type','latitude','longitude','method','sample_area_rai','observer','notes','photo_file_id','qa_status'],growth:['plot_code','survey_date','sample_plot_id','species','trees_planted','trees_alive','survival_pct','dbh_cm','height_m','sample_area_rai','method','verifier'],carbon:['plot_code','boundary_version','survey_date','stratum','species','dbh_cm','height_m','allometry_method','agb_kg','bgb_kg','carbon_fraction','uncertainty_pct','verifier']};csvDownload('mmc_'+value+'_blank_template.csv',schemas[value]||schemas.field,[]);return;}
 }
+document.addEventListener('mmc:imagery-date-change',e=>{
+ if(state.view!=='insights'||e.detail?.plot!==state.plot||!e.detail?.date)return;
+ if(state.waterDatePlot===state.plot&&state.waterDate===e.detail.date)return;
+ state.waterDate=e.detail.date;state.waterDatePlot=state.plot;
+ const panel=$('water-daily-panel');if(panel)panel.outerHTML=waterDatePanel(state.plot);
+});
 document.addEventListener('click',e=>{const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const b=e.target.closest('[data-action]');if(b){doAction(b.dataset.action,b.dataset.value||'');return;}if(e.target.id==='menu-btn')$('sidebar').classList.toggle('open');if(e.target.id==='refresh')load();});
 document.addEventListener('change',e=>{const id=e.target.id;if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
