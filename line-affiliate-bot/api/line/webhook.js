@@ -8,19 +8,18 @@ function validSignature(raw, signature, secret) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-async function reply(replyToken, text) {
+async function reply(replyToken, texts) {
   const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
   if (!replyToken || !token) return;
+  const list = Array.isArray(texts) ? texts : [texts];
+  const messages = list.slice(0,5).map(text => ({ type:'text', text:String(text).slice(0,4900) }));
   const r = await fetch('https://api.line.me/v2/bot/message/reply', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token
     },
-    body: JSON.stringify({
-      replyToken,
-      messages: [{ type: 'text', text }]
-    })
+    body: JSON.stringify({ replyToken, messages })
   });
   if (!r.ok) console.error('LINE reply failed', r.status, await r.text());
 }
@@ -50,7 +49,13 @@ export async function POST(request) {
 
     if (event.replyToken && (event.type === 'follow' || event.type === 'message')) {
       const incoming = event?.message?.type === 'text' ? String(event.message.text || '').trim().toLowerCase() : '';
-      if (incoming === 'userid' || incoming === 'user id' || incoming === 'id') {
+      if (incoming === 'testalert' || incoming === 'test alert' || incoming === 'เทส') {
+        await reply(event.replyToken, [
+          'https://drive.google.com/uc?export=download&id=1AYfRABxoeMq-7Huydwm624OK4YYEtU6X',
+          'TikTok + Shopee',
+          'นั่งนานแล้วขาตึง ลองมายืนยืดกับเก้าอี้มหัศจรรย์คุณตาแสวงครับ ใช้ง่าย ขนาดไม่ใหญ่ เหมาะไว้ใช้ทั้งที่บ้านและออฟฟิศ\n\n#เก้าอี้มหัศจรรย์ #คุณตาแสวง #แท่นยืนยืดเส้น #ยืดเหยียด #ShopeeVideo #TikTokAffiliate'
+        ]);
+      } else if (incoming === 'userid' || incoming === 'user id' || incoming === 'id') {
         await reply(
           event.replyToken,
           userId
