@@ -151,9 +151,93 @@ h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",s
   .calendar-toolbar{padding:12px}
 }
 /* SCHEDULED_POSTS_UI_END */
+
+.platform-sidebar{
+  position:fixed;left:18px;top:18px;bottom:18px;width:210px;
+  background:#0f172a;color:#fff;border-radius:22px;padding:16px;
+  box-shadow:0 18px 50px rgba(15,23,42,.18);z-index:40;overflow:auto
+}
+.platform-sidebar .side-kicker{font:800 10px "Plus Jakarta Sans",sans-serif;letter-spacing:1.5px;color:#93c5fd;text-transform:uppercase}
+.platform-sidebar h3{margin:5px 0 14px;font-size:18px}
+.side-group{margin-top:16px}
+.side-label{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:.6px;margin:0 0 7px}
+.side-btn{
+  width:100%;border:0;background:#17233a;color:#dbe4f0;border-radius:12px;
+  padding:10px 11px;margin:5px 0;text-align:left;cursor:pointer;font-weight:700;
+  display:flex;align-items:center;justify-content:space-between;gap:8px
+}
+.side-btn:hover,.side-btn.active{background:#243653;color:#fff}
+.side-btn .side-left{display:flex;align-items:center;gap:8px}
+.side-dot{width:8px;height:8px;border-radius:50%;background:#64748b;flex:0 0 auto}
+.side-dot.tiktok{background:#8b5cf6}.side-dot.shopee{background:#fb6a33}
+.side-dot.instagram{background:#ec4899}.side-dot.facebook{background:#3b82f6}.side-dot.youtube{background:#ef4444}
+.side-count{min-width:22px;text-align:center;background:#0b1220;border-radius:999px;padding:2px 7px;font-size:10px;color:#cbd5e1}
+.side-btn.active .side-count{background:#fff;color:#172033}
+.side-divider{height:1px;background:#26364d;margin:14px 0}
+.side-link{display:block;color:#cbd5e1;font-size:12px;padding:8px 4px;cursor:pointer}
+.side-link:hover{color:#fff}
+body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
+.metricool-filter-note{font-size:11px;color:var(--muted);margin:0 0 10px}
+@media(max-width:1050px){
+  .platform-sidebar{
+    position:sticky;top:0;left:auto;right:auto;bottom:auto;width:auto;border-radius:0;
+    margin:0;display:flex;gap:8px;align-items:center;overflow-x:auto;white-space:nowrap;padding:10px 12px
+  }
+  .platform-sidebar h3,.platform-sidebar .side-kicker,.side-label,.side-divider,.side-link{display:none}
+  .side-group{display:flex;gap:6px;margin:0}
+  .side-btn{width:auto;min-width:max-content;margin:0;padding:8px 10px}
+  body.has-sidebar .shell{margin:0 auto;max-width:1160px}
+}
 </style>
 </head>
-<body>
+<body class="has-sidebar">
+<aside class="platform-sidebar" id="platformSidebar">
+  <div class="side-kicker">POSTING HUB</div>
+  <h3>แพลตฟอร์มที่ต้องโพสต์</h3>
+
+  <div class="side-group">
+    <div class="side-label">AFFILIATE</div>
+    <button class="side-btn" data-side="affiliate-tiktok">
+      <span class="side-left"><i class="side-dot tiktok"></i>TikTok</span>
+      <span class="side-count" id="sideTikTok">0</span>
+    </button>
+    <button class="side-btn" data-side="affiliate-shopee">
+      <span class="side-left"><i class="side-dot shopee"></i>Shopee</span>
+      <span class="side-count" id="sideShopee">0</span>
+    </button>
+  </div>
+
+  <div class="side-divider"></div>
+
+  <div class="side-group">
+    <div class="side-label">METRICOOL</div>
+    <button class="side-btn" data-side="metricool-all">
+      <span class="side-left">ทั้งหมด</span>
+      <span class="side-count" id="sideMetricoolAll">0</span>
+    </button>
+    <button class="side-btn" data-side="instagram">
+      <span class="side-left"><i class="side-dot instagram"></i>Instagram</span>
+      <span class="side-count" id="sideInstagram">0</span>
+    </button>
+    <button class="side-btn" data-side="facebook">
+      <span class="side-left"><i class="side-dot facebook"></i>Facebook</span>
+      <span class="side-count" id="sideFacebook">0</span>
+    </button>
+    <button class="side-btn" data-side="youtube">
+      <span class="side-left"><i class="side-dot youtube"></i>YouTube</span>
+      <span class="side-count" id="sideYouTube">0</span>
+    </button>
+    <button class="side-btn" data-side="metricool-tiktok">
+      <span class="side-left"><i class="side-dot tiktok"></i>TikTok</span>
+      <span class="side-count" id="sideMetricoolTikTok">0</span>
+    </button>
+  </div>
+
+  <div class="side-divider"></div>
+  <span class="side-link" data-jump="calendarSection">📅 ปฏิทิน</span>
+  <span class="side-link" data-jump="affiliateSection">🛒 คลิปขายวันนี้</span>
+  <span class="side-link" data-jump="scheduledSection">🗓️ คลิปตั้งเวลา</span>
+</aside>
 <div class="shell">
   <section class="hero">
     <div>
@@ -208,7 +292,7 @@ h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",s
       <div><div class="kicker">METRICOOL SCHEDULE</div><h2>คลิปที่ตั้งเวลาไว้</h2></div>
       <span class="snapshot">Snapshot · 10 ต.ค. 2569</span>
     </div>
-    <div class="list scheduled-list" id="scheduledList"></div>
+    <div class="metricool-filter-note" id="metricoolFilterNote">แสดงทุกแพลตฟอร์ม</div><div class="list scheduled-list" id="scheduledList"></div>
   </section>
 
   <section id="inventorySection">
@@ -303,6 +387,7 @@ const schedule = salesPlan.map((x,i)=>({
 let range='today';
 let done=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
 let calendarCursor=new Date('2026-10-01T00:00:00+07:00');
+let metricoolNetworkFilter='all';
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
 function toast(msg){
@@ -400,10 +485,32 @@ function splitPostText(text){
 function networkLabel(n){
   return ({instagram:'Instagram',tiktok:'TikTok',youtube:'YouTube',facebook:'Facebook'})[n] || n;
 }
+
+function updateSidebarCounts(srows, arows){
+  const set=(id,n)=>{const e=document.getElementById(id);if(e)e.textContent=n;};
+  set('sideMetricoolAll',srows.length);
+  set('sideInstagram',srows.filter(x=>x.network==='instagram').length);
+  set('sideFacebook',srows.filter(x=>x.network==='facebook').length);
+  set('sideYouTube',srows.filter(x=>x.network==='youtube').length);
+  set('sideMetricoolTikTok',srows.filter(x=>x.network==='tiktok').length);
+  set('sideTikTok',arows.filter(x=>!(done[x.id]?.tiktok)).length);
+  set('sideShopee',arows.filter(x=>!(done[x.id]?.shopee)).length);
+}
+function filteredScheduledRows(rows){
+  if(metricoolNetworkFilter==='all') return rows;
+  return rows.filter(x=>x.network===metricoolNetworkFilter);
+}
 function renderScheduled(rows){
+  const allRows=rows;
+  rows=filteredScheduledRows(rows);
   const el=document.getElementById('scheduledList');
-  document.getElementById('scheduledCount').textContent=rows.length;
-  document.getElementById('errorCount').textContent=rows.filter(x=>x.status==='ERROR').length;
+  const note=document.getElementById('metricoolFilterNote');
+  if(note){
+    const labels={all:'ทุกแพลตฟอร์ม',instagram:'Instagram',facebook:'Facebook',youtube:'YouTube',tiktok:'TikTok'};
+    note.textContent='กำลังแสดง: '+(labels[metricoolNetworkFilter]||'ทุกแพลตฟอร์ม')+' · '+rows.length+' รายการ';
+  }
+  document.getElementById('scheduledCount').textContent=allRows.length;
+  document.getElementById('errorCount').textContent=allRows.filter(x=>x.status==='ERROR').length;
   if(!rows.length){
     el.innerHTML='<div class="empty">ไม่มีคลิป Metricool ในช่วงวันที่เลือก</div>'; return;
   }
@@ -455,8 +562,9 @@ function render(){
   renderCalendar();
   renderInventory();
   const srows=scheduledRows();
-  renderScheduled(srows);
   const rows=visibleRows();
+  updateSidebarCounts(srows, rows);
+  renderScheduled(srows);
   document.getElementById('count').textContent=rows.length;
   document.getElementById('doneCount').textContent=rows.filter(x=>done[x.id]?.tiktok && done[x.id]?.shopee).length;
   const el=document.getElementById('list');
@@ -521,6 +629,22 @@ function render(){
   });
 }
 
+document.querySelectorAll('[data-side]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-side]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  const v=b.dataset.side;
+  if(v==='affiliate-tiktok' || v==='affiliate-shopee'){
+    metricoolNetworkFilter='all';
+    document.getElementById('affiliateSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
+  metricoolNetworkFilter = v==='metricool-all' ? 'all' : (v==='metricool-tiktok' ? 'tiktok' : v);
+  render();
+  document.getElementById('scheduledSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+}));
+document.querySelectorAll('[data-jump]').forEach(x=>x.addEventListener('click',()=>{
+  document.getElementById(x.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'});
+}));
 document.getElementById('calPrev')?.addEventListener('click',()=>shiftCalendar(-1));
 document.getElementById('calNext')?.addEventListener('click',()=>shiftCalendar(1));
 document.getElementById('calToday')?.addEventListener('click',()=>{
