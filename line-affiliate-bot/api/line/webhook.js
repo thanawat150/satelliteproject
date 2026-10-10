@@ -25,6 +25,7 @@ async function reply(replyToken, texts) {
 }
 
 const QUEUE_URL = 'https://raw.githubusercontent.com/thanawat150/satelliteproject/main/docs/affiliate-posting/queue.json';
+const SCHEDULE_URL = 'https://raw.githubusercontent.com/thanawat150/satelliteproject/main/docs/affiliate-posting/schedule.json';
 const DASHBOARD_URL = 'https://thanawat150.github.io/satelliteproject/affiliate-posting/';
 
 async function getQueue() {
@@ -33,13 +34,50 @@ async function getQueue() {
   return r.json();
 }
 
+async function getSchedule() {
+  const r = await fetch(SCHEDULE_URL, { cache:'no-store' });
+  if (!r.ok) throw new Error('schedule fetch failed');
+  return r.json();
+}
+
+function bkkDate(offsetDays=0) {
+  const d = new Date(Date.now() + offsetDays * 86400000);
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone:'Asia/Bangkok',
+    year:'numeric', month:'2-digit', day:'2-digit'
+  }).format(d);
+}
+
+function shortDate(iso) {
+  const d = new Date(iso + 'T00:00:00+07:00');
+  return new Intl.DateTimeFormat('th-TH', {
+    timeZone:'Asia/Bangkok',
+    weekday:'short', day:'numeric', month:'short'
+  }).format(d);
+}
+
+function scheduleLine(x) {
+  return shortDate(x.date) + ' — ' + x.product +
+    '\nShopee ' + x.shopee + ' | TikTok ' + x.tiktok;
+}
+
+function detailText(label, x) {
+  if (!x) return label + ': ยังไม่มีคิว';
+  return label + ' (' + shortDate(x.date) + ')' +
+    '\nสินค้า: ' + x.product +
+    '\nคลิป: ' + x.file +
+    '\nPlatform: TikTok + Shopee' +
+    '\nShopee ' + x.shopee + ' | TikTok ' + x.tiktok;
+}
+
 function menuText() {
   return [
     'คำสั่งสั้น ๆ',
     'วันนี้ — ดูของที่ต้องลงวันนี้',
+    'พรุ่งนี้ — ดูว่าพรุ่งนี้ต้องลงอะไร',
+    'ตาราง — ดูกำหนดการ 7 วันในแชต',
     'ส่ง — ส่งลิงก์คลิป + Platform + Caption',
     'สถานะ — เช็กว่าโพสต์แล้วหรือยัง',
-    'ตาราง — เปิดตารางทั้งหมด',
     'พร้อม — เปิดโฟลเดอร์คลิปพร้อม',
     'เมนู — ดูคำสั่งทั้งหมด'
   ].join('\n');
@@ -116,7 +154,27 @@ export async function POST(request) {
         } catch {
           await reply(event.replyToken, 'อ่านสถานะไม่สำเร็จ ลองใหม่อีกครั้ง');
         }
-      } else if (incoming === 'ตาราง' || incoming === 'dashboard' || incoming === 'แดชบอร์ด') {
+      } else if (['พรุ่งนี้','พรุ่ง','tomorrow'].includes(incoming)) {
+        try {
+          const s = await getSchedule();
+          const item = (s.items || []).find(x => x.date === bkkDate(1));
+          await reply(event.replyToken, detailText('พรุ่งนี้ต้องลง', item));
+        } catch {
+          await reply(event.replyToken, 'อ่านตารางพรุ่งนี้ไม่สำเร็จ ลองใหม่อีกครั้ง');
+        }
+      } else if (incoming === 'ตาราง') {
+        try {
+          const s = await getSchedule();
+          const start = bkkDate(0);
+          const items = (s.items || []).filter(x => x.date >= start).slice(0,7);
+          const text = items.length
+            ? 'กำหนดการ 7 วัน\n\n' + items.map(scheduleLine).join('\n\n')
+            : 'ยังไม่มีกำหนดการล่วงหน้า';
+          await reply(event.replyToken, text);
+        } catch {
+          await reply(event.replyToken, 'อ่านตารางไม่สำเร็จ ลองใหม่อีกครั้ง');
+        }
+      } else if (incoming === 'dashboard' || incoming === 'แดชบอร์ด') {
         await reply(event.replyToken, DASHBOARD_URL);
       } else if (incoming === 'พร้อม') {
         try {
