@@ -255,7 +255,7 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         }
 
 
-def generate_visual_only(ten,output,plot,date,geometry4326=None):
+def generate_visual_only(ten,output,plot,date,geometry4326=None,twenty=None):
     """Display actual native RGB for non-QA scenes, including clouds.
 
     Only source NoData is transparent.  Never create index layers, analytical
@@ -295,26 +295,75 @@ def generate_visual_only(ten,output,plot,date,geometry4326=None):
         for mode,image in [("true_color",rgb),("false_color",false)]:
             name=mode+".webp";image.save(out/name,"WEBP",quality=90,method=4)
             files[mode]="./imagery/"+plot+"/"+date+"/"+name
+        # Spectral index maps from the ACTUAL source 10m/20m bands.
+        # No SCL mask or plot statistics: these are visual-only cloudy/hazy
+        # scenes. Missing/invalid reflectance is transparent, never zero-filled.
+        index_bounds=None
+        index_dimensions=None
+        if twenty is not None and Path(twenty).is_file():
+            with rio_open(twenty) as ds20:
+                if ds20.crs is None or ds20.count<7:
+                    raise ValueError("20m source missing CRS or required bands")
+                scale20=min(1.0,MAX_DIM/max(ds20.width,ds20.height))
+                w20=max(2,round(ds20.width*scale20))
+                h20=max(2,round(ds20.height*scale20))
+                t20=ds20.transform*Affine.scale(ds20.width/w20,ds20.height/h20)
+                def warp10(name,i):
+                    with WarpedVRT(ds,crs=ds20.crs,transform=t20,width=w20,height=h20,
+                                   resampling=Resampling.bilinear) as vt:
+                        return vt.read(bands(ds,name,i),masked=True).astype(np.float32).filled(np.nan)
+                def native20(name,i):
+                    return ds20.read(bands(ds20,name,i),out_shape=(h20,w20),
+                                     resampling=Resampling.bilinear,
+                                     masked=True).astype(np.float32).filled(np.nan)
+                b2_20,b3_20,b4_20,b8_20=(warp10("B2",1),warp10("B3",2),
+                                           warp10("B4",3),warp10("B8",4))
+                b5,b8a,b11=(native20("B5",1),native20("B8A",4),native20("B11",5))
+                raw_mask=(np.isfinite(b2_20)&np.isfinite(b3_20)&
+                          np.isfinite(b4_20)&np.isfinite(b8_20)&
+                          np.isfinite(b5)&np.isfinite(b8a)&np.isfinite(b11)&
+                          (b2_20>0)&(b3_20>0)&(b4_20>0)&
+                          (b8_20>0)&(b5>0)&(b8a>0)&(b11>0))
+                if int(raw_mask.sum())<2:
+                    raise ValueError("Source 20m TIFF has no valid reflectance for real index previews")
+                values={
+                    "ndvi":index(b8_20,b4_20),
+                    "ndre":index(b8a,b5),
+                    "ndmi":index(b8a,b11),
+                    "ndwi":index(b3_20,b8_20),
+                    "mndwi":index(b3_20,b11),
+                    "bsi":index(b11+b4_20,b8_20+b2_20)
+                }
+                for mode,value in values.items():
+                    png=out/(mode+".png")
+                    colorize(value,raw_mask,mode).save(png,"PNG",optimize=True)
+                    files[mode]="./imagery/"+plot+"/"+date+"/"+png.name
+                x0,y0,x1,y1=transform_bounds(ds20.crs,"EPSG:4326",*ds20.bounds,densify_pts=21)
+                index_bounds=[[y0,x0],[y1,x1]]
+                index_dimensions=[w20,h20]
         left,bottom,right,top=transform_bounds(ds.crs,"EPSG:4326",*ds.bounds,densify_pts=21)
         bounds=[[bottom,left],[top,right]]
         return {
             "plot":plot,"date":date,"source":"generated",
             "preview_kind":"VISUAL_ONLY_NON_QA",
-            "modes":["true_color","false_color"],"assets":files,
-            "bounds":bounds,"mode_bounds":{"true_color":bounds,"false_color":bounds},
-            "mode_dimensions":{"true_color":[w,h],"false_color":[w,h]},
+            "modes":list(files),"assets":files,
+            "bounds":index_bounds or bounds,
+            "mode_bounds":{"true_color":bounds,"false_color":bounds,
+                           **({mode:index_bounds for mode in ("ndvi","ndre","ndmi","ndwi","mndwi","bsi")} if index_bounds else {})},
+            "mode_dimensions":{"true_color":[w,h],"false_color":[w,h],
+                               **({"indices_20m":index_dimensions} if index_dimensions else {})},
             "rgb_native_width":w,"rgb_native_height":h,"width":w,"height":h,
-            "source_resolution_m":{"rgb":10},
+            "source_resolution_m":{"rgb":10,"spectral_indices_20m":20 if index_bounds else None},
             "rgb_renderer_version":"mmc-rgb-fixed-reflectance-v2",
-            "rgb_visual_only_version":"mmc-visual-only-cloud-preserved-v1",
+            "rgb_visual_only_version":"mmc-visual-only-source-indices-v2",
             "rgb_quality_scope":mask_scope,"rgb_plot_sample_pixels":n,
             "rgb_near_white_pct":white_pct,"rgb_invalid_pct":invalid_pct,
             "rgb_unclassified_scl_pct":None,
             "rgb_display_warning":bool(white_pct is not None and white_pct>=30),
             "index_stats":{},"index_parity":{},"index_parity_warnings":[],
-            "display_grid":"Original 10m RGB grid; may include clouds, haze and water",
-            "qa_note":"DISPLAY_ONLY: NO_DATA/PARTIAL; clouds visible, only NoData transparent; no index interpretation",
-            "source_bands":"Original Sentinel-2 10m B2/B3/B4/B8"
+            "display_grid":"Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+            "qa_note":"DISPLAY_ONLY: NO_DATA/PARTIAL; source-computed indices may reflect clouds/haze; NEVER use for quantitative change, flood or habitat certification",
+            "source_bands":"Original Sentinel-2 10m B2/B3/B4/B8 + 20m B5/B8A/B11 when available"
         }
 
 
@@ -432,7 +481,7 @@ def run_shard(args):
         for date,scene in sorted(date_map.items()):
             old=previous_generated.get((plot,date))
             force=plot in refresh_plots or "ALL" in refresh_plots
-            if old and old.get("rgb_visual_only_version")=="mmc-visual-only-cloud-preserved-v1" and not force:
+            if old and old.get("rgb_visual_only_version")=="mmc-visual-only-source-indices-v2" and not force:
                 continue
             local=out/"tmp"/plot/date
             local.mkdir(parents=True,exist_ok=True)
@@ -447,12 +496,21 @@ def run_shard(args):
                                    timeout=120,retries=3,use_cookies=False)
                 if not got or not tif.exists() or tif.stat().st_size<1024:
                     raise ValueError("Unavailable original 10m TIFF: "+str(name10))
-                entry=generate_visual_only(tif,docs/plot/date,plot,date,geoms.get(plot))
+                tif20=local/"20m.tif"
+                id20=scene.get("original_tif20_file_id")
+                if not id20:
+                    ids=from_folder(gdown,plot,scene,folder_index)
+                    id20=ids[1][0]
+                got20=gdown.download(id=id20,output=str(tif20),quiet=True,
+                                      timeout=120,retries=3,use_cookies=False)
+                if not got20 or not tif20.exists() or tif20.stat().st_size<1024:
+                    raise ValueError("Unavailable original 20m TIFF for visual index maps")
+                entry=generate_visual_only(tif,docs/plot/date,plot,date,geoms.get(plot),twenty=tif20)
                 entry["qa_valid_pct"]=scene.get("qa_valid_pct")
                 entry["source_qa_status"]=scene["analysis_status"]
                 entry["algorithm"]=scene.get("algorithm") or "ORIGINAL_10M_DISPLAY_ONLY"
                 entry["original_tif10_file_id"]=id10
-                entry["original_tif20_file_id"]=scene.get("original_tif20_file_id")
+                entry["original_tif20_file_id"]=id20
                 images.append(entry)
                 print("RENDER_VISUAL_ONLY",plot,date,entry["width"],entry["height"],flush=True)
             except Exception as exc:
