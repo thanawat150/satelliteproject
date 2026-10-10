@@ -59,6 +59,38 @@ function missingQaRecords(){
  const available=previewCoverage();if(!available)return [];
  return (cache.data.scenes||[]).filter(x=>qaOk(x)&&!available.has(x.plot+'|'+x.date)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 }
+function twinQuality(code){
+ const images=(cache.imagery?.generated_items||[]).filter(x=>x.plot===code);
+ const scenes=plotScenes(code),valid=scenes.filter(qaOk),latest=valid.at(-1);
+ const missing=valid.filter(x=>!images.some(y=>y.date===x.date));
+ const reviewIndex=images.filter(x=>(x.index_parity_warnings||[]).length);
+ const reviewVisual=images.filter(x=>x.rgb_display_warning||Number(x.rgb_invalid_pct)>=30||Number(x.rgb_unclassified_scl_pct)>=20);
+ const changes=plotChanges(code),comparable=changes.filter(x=>x.status==='AUTO_VALID'&&Number(x.common_clear_rai)>0);
+ const issues=[];
+ if(!plotOf(code)?.geometry)issues.push('ไม่มีขอบเขต GIS');
+ if(!valid.length)issues.push('ไม่มีวันภาพผ่าน QA');
+ if(missing.length)issues.push('ขาดภาพ Preview '+missing.length+' วัน');
+ if(reviewIndex.length)issues.push('Index QA ต้องทบทวน '+reviewIndex.length+' วัน');
+ if(reviewVisual.length)issues.push('Visual QA ต้องทบทวน '+reviewVisual.length+' วัน');
+ if(latest&&Number(latest.total_pixels)<30)issues.push('พิกเซลวิเคราะห์ต่ำกว่า 30');
+ if(valid.length>1&&!comparable.length)issues.push('ยังไม่มี Pixel Change ที่เปรียบเทียบได้');
+ return {images,scenes,valid,latest,missing,reviewIndex,reviewVisual,changes,comparable,issues};
+}
+function plotTwin(code){
+ const q=twinQuality(code),latest=q.latest;
+ const imgs=q.images.filter(x=>x.date===latest?.date),idx=imgs[0]?.index_stats||{};
+ const metric=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>{
+  const v=idx[k],raw=latest?.[k],n=v?.plot_mean??raw;
+  return '<tr><td>'+html(k.toUpperCase())+'</td><td class="num">'+(n==null?'—':fmt(n,4))+'</td><td>'+html(v?.formula||'ดูวิธีคำนวณใน Index QA')+'</td></tr>';
+ }).join('');
+ const changes=q.comparable.slice(-3).reverse().map(c=>'<tr><td>'+html(c.date_a)+' → '+html(c.date_b)+'</td><td>'+fmt(c.common_clear_rai,3)+'</td><td>'+fmt(c.water_net_change_rai,3)+'</td><td>'+fmt(c.vegetation_net_change_rai,3)+'</td><td>'+html(c.comparison_review||c.comparison_confidence||'Screening only')+'</td></tr>').join('');
+ const alert=q.issues.length?'<p class="muted">ประเด็นต้องตรวจ: '+q.issues.map(html).join(' • ')+'</p>':'<p class="muted">ไม่พบประเด็น QA ตามเกณฑ์คัดกรองอัตโนมัติ แต่ยังไม่ยืนยันผลภาคสนาม</p>';
+ return '<section class="panel" id="plot-digital-twin"><div class="panel-header"><div><div class="eyebrow">READ-ONLY PLOT DIGITAL TWIN</div><h2>'+html(code)+' · ภาพรวมหลักฐานเชิงพื้นที่</h2><p class="muted">รวม QA ภาพ ดัชนี การเปลี่ยนแปลง และข้อจำกัด โดยไม่อ้างว่าได้รับการรับรอง</p></div>'+btn('Export Evidence','exportevidence',code,'primary')+'</div>'+
+ '<div class="grid half">'+kpi('วันภาพผ่าน QA',q.valid.length+' / '+q.scenes.length,'รายการผลวิเคราะห์')+kpi('Visual / Index Review',q.reviewVisual.length+' / '+q.reviewIndex.length,'จำนวนวันที่มีข้อสังเกต')+kpi('Preview ที่ขาด',q.missing.length,'เทียบวันผ่าน QA')+kpi('Pixel Change ที่ใช้เปรียบเทียบ',q.comparable.length,'ไม่ใช่การยืนยันน้ำท่วมหรือป่าเสื่อมโทรม')+'</div>'+alert+
+ '<h3>ดัชนีล่าสุดจาก TIFF / ผลวิเคราะห์</h3><div class="table-wrap"><table class="tbl"><thead><tr><th>ดัชนี</th><th>ค่าเฉลี่ยในแปลง</th><th>สูตร/แหล่งอ้างอิง</th></tr></thead><tbody>'+metric+'</tbody></table></div>'+
+ '<h3>Pixel Change จากคู่วันที่ผ่าน QA</h3><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่</th><th>พื้นที่ร่วม (ไร่)</th><th>น้ำ Δ ไร่</th><th>พืช Δ ไร่</th><th>ข้อควรระวัง</th></tr></thead><tbody>'+(changes||'<tr><td colspan="5">ยังไม่มีคู่วันที่ประมวลผล Pixel Change ที่เปรียบเทียบได้</td></tr>')+'</tbody></table></div>'+
+ '<p class="muted tiny">ยังไม่มีข้อมูลน้ำขึ้นน้ำลง/ฤดูกาล ภาคสนาม และผู้อนุมัติที่ผูกกับแปลง จึงเป็น Digital Twin สำหรับคัดกรองและตรวจหลักฐานเท่านั้น</p></section>';
+}
 function plotDecision(code){
  const p=plotOf(code),rows=plotScenes(code),good=validScenes(code),last=good.at(-1),prev=good.at(-2),available=previewCoverage();
  if(!p)return empty('ยังไม่มีข้อมูลแปลง','เลือกจากทะเบียน');
@@ -81,7 +113,7 @@ function plotDecision(code){
 function insightsPage(){
  root.innerHTML=commonHead('Plot Intelligence & Decisions','หน้าสรุปแปลงสำหรับผู้บริหาร GIS นักวิชาการป่าไม้ และ Auditor ที่แยกข้อมูลสังเกตกับข้อสรุปที่ผ่านการรับรอง')+
  '<div class="controls"><label>แปลง<select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label></div>'+
- plotDecision(state.plot)+'<section class="panel" id="imagery-explorer"></section>'+
+ plotDecision(state.plot)+plotTwin(state.plot)+'<section class="panel" id="imagery-explorer"></section>'+
  '<div class="panel"><h2>Audit Readiness Checklist</h2><div class="grid half">'+
  ['ขอบเขต PDD / ยืนยันกรม / เวอร์ชัน','Scene ID, วันที่ภาพ, 10m / 20m และ SCL','Raw TIFF กับ Raster Preview วันที่เดียวกัน','Common-clear pixels และวิธีเปรียบเทียบ','ระดับน้ำขึ้นน้ำลงและบริบทฤดูกาล','หลักฐานสำรวจ GPS และภาพถ่าย','สูตรคำนวณและความไม่แน่นอน','ผู้ตรวจทานและรายงานล็อกเวอร์ชัน'].map(x=>'<div class="audit-item"><span>□</span> '+html(x)+'</div>').join('')+
  '</div><p class="muted">เช็กลิสต์เพื่อเตรียมตรวจสอบ ไม่ใช่ระบบอนุมัติจริงหรือใบรับรอง</p></div>';
