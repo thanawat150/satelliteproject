@@ -728,7 +728,7 @@ function monitoringPlan(d){
    code:x.code,before:x.prev?.date||'—',after:x.last?.date||'—',
    a:delta(x.change[group[0]]),b:delta(x.change[group[1]]),c:delta(x.change[group[2]])
   }));
-  const batches=Math.ceil(detail.length/2),balanced=Math.ceil(detail.length/Math.max(1,batches));
+  const pageCount=Math.ceil(detail.length/10),balanced=Math.ceil(detail.length/Math.max(1,pageCount));
   for(let i=0;i<detail.length;i+=balanced){
    add('03 / INDICES '+group[0]+' '+(Math.floor(i/balanced)+1),'อ่านทุกดัชนีร่วมกัน · '+group.map(m=>m.toUpperCase()).join(' / '),
     '<p class="rpt-lead">ผลต่างจากภาพก่อนหน้าและภาพปัจจุบันภายในแปลงเดียวกัน ค่า +/− เป็นทิศทางของดัชนี ไม่ใช่การยืนยันผลกระทบ</p>'+
@@ -738,12 +738,14 @@ function monitoringPlan(d){
  }
  // Show matched before/after images rather than six unrelated thumbnail scenes.
  let cases=0;
+ const displayedCases=new Set();
  for(const x of [...waterReceding.filter(v=>v.last.date===latestQA),...waterConcern,...ordered]){
+  if(displayedCases.has(x.code))continue;
   if(cases>=(ui.density==='brief'?1:ui.density==='technical'?3:2))break;
   if(!x.imageBefore||!x.imageAfter)continue;
   const m=['true_color','mndwi','ndvi'].filter(k=>imageURL(x.imageBefore,k)&&imageURL(x.imageAfter,k)).slice(0,3);
   if(!m.length)continue;
-  cases++;
+  cases++;displayedCases.add(x.code);
   add('04 / EVIDENCE '+x.code,'อ่านภาพก่อน–หลังเฉพาะแปลง · '+x.code,
    '<p class="rpt-lead"><b>ภาพก่อนหน้า:</b> '+esc(x.prev.date)+' · <b>ภาพปัจจุบัน:</b> '+esc(x.last.date)+'</p>'+
    '<div class="rpt-pictures rpt-cover-grid rpt-monitor-pair">'+m.map(k=>picture(x.imageBefore,k)+picture(x.imageAfter,k)).join('')+'</div>'+ 
