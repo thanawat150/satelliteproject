@@ -308,6 +308,7 @@ assert.deepEqual(a4Overflows,[],'Rayong executive report sections must fit above
 
 
 assert.equal(await page.locator('#rpt-appendix').isChecked(),false,'Large image appendix must default OFF');
+assert.equal(await page.locator('#rpt-module-picker').isVisible(),false,'Mandatory flood report sections are not presented as removable modules');
 await page.locator('#rpt-appendix').check();
 const withAppendix=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,hasAppendix:r.pages.includes('ภาคผนวก Raster Evidence')}}); 
 assert.ok(withAppendix.pages>provinceReport.pages&&withAppendix.images>provinceReport.images,'Explicit appendix adds real TIFF imagery pages');
@@ -327,8 +328,11 @@ assert.ok((await page.locator('#rpt-preview').innerText()).includes('PDF ฉบ�
 await page.locator('#rpt-scope').selectOption('plot');
 await page.locator('#rpt-plot').selectOption('15-STC');
 await page.locator('#rpt-period').selectOption('365');
+assert.equal(await page.locator('#rpt-image-dates').isVisible(),false,'Scene-day selector remains hidden when flood appendix is off');
+await page.locator('#rpt-appendix').check();
 await page.locator('#rpt-image-dates').selectOption('3');
-assert.equal(await page.locator('#rpt-image-dates').inputValue(),'3','User can request three recent scenes for image-rich report');
+assert.equal(await page.locator('#rpt-image-dates').inputValue(),'3','Image-rich appendix can include three scene days');
+await page.locator('#rpt-appendix').uncheck();
 await page.locator('#rpt-preview-button').click();
 assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('15-STC')||(await page.locator('#rpt-preview').innerText()).includes('15-STC'),'Plot selection follows preview');
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Custom report modules still render after scope changes');
