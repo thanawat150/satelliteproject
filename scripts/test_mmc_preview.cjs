@@ -269,20 +269,31 @@ assert.ok((await page.locator('#rpt-warning-list').innerText()).includes('ไม
 
 assert.ok(await page.locator('[data-rpt-scope-switch="province"][aria-pressed="true"]').count()===1,'Scope selector visibly reflects province reports');
 assert.equal(await page.locator('#rpt-image-dates').inputValue(),'2','Province reports default to two image dates per plot');
-const provinceReport=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,hasIndex:r.pages.includes('Index Atlas'),hasSatellite:r.pages.includes('Satellite Atlas'),multiple:r.pages.includes('15-STC')&&r.pages.includes('13-STC')};});
-assert.ok(provinceReport.plots>1,'Province report must aggregate several actual plot codes');
-assert.ok(provinceReport.images>=2,'Province report must contain real multiple image assets');
-assert.ok(provinceReport.hasIndex&&provinceReport.hasSatellite,'Province report must include image atlases, not only a registry');
+const provinceReport=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,head:r.pages.split('</article>')[0],hasCases:r.pages.includes('กรณีตรวจสอบ'),hasActions:r.pages.includes('ข้อเสนอแนะและการตัดสินใจ'),hasCautions:r.pages.includes('น้ำขึ้นลง'),audit:r.audit,hasAtlas:r.pages.includes('Index Atlas')}}); 
+assert.ok(provinceReport.plots>1,'Province flood report must include actual plot registry');
+assert.ok(provinceReport.pages>=6&&provinceReport.pages<=12,'Decision-first province flood report must not bury conclusions across 55 pages: '+provinceReport.pages);
+assert.ok(provinceReport.images>=2&&provinceReport.images<=16,'Flood brief presents selected before/after evidence, not full atlas');
+assert.ok(provinceReport.hasCases&&provinceReport.hasActions&&provinceReport.hasCautions,'Flood brief must explain priority cases, action plan and tide limits');
+assert.ok(!provinceReport.hasAtlas,'Flood report must not generate dozens of index atlas pages by default');
+assert.ok(provinceReport.head.includes('สรุปสถานการณ์พื้นที่น้ำ'),'Flood findings must appear on first page');
+assert.ok(provinceReport.audit&&provinceReport.audit.reviewNeeded===true,'Flood report is screening only, never falsely approved');
+assert.ok((await page.locator('#rpt-readiness').innerText()).includes('รายงานคัดกรองเท่านั้น'),'UI must disclose non-confirmation');
+assert.equal(await page.locator('#rpt-appendix').isChecked(),false,'Large image appendix must default OFF');
+await page.locator('#rpt-appendix').check();
+const withAppendix=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,hasAppendix:r.pages.includes('ภาคผนวก Raster Evidence')}}); 
+assert.ok(withAppendix.pages>provinceReport.pages&&withAppendix.images>provinceReport.images,'Explicit appendix adds real TIFF imagery pages');
+assert.ok(withAppendix.hasAppendix,'TIFF appendix must be clearly marked as supporting evidence');
+await page.locator('#rpt-appendix').uncheck();
 await page.locator('[data-rpt-scope-switch="all"]').click();
 assert.equal(await page.locator('#rpt-scope').inputValue(),'all','Nationwide scope can be selected with prominent control');
-assert.equal(await page.locator('#rpt-image-dates').inputValue(),'1','Nationwide default avoids accidental unbounded per-scene reports');
-const national=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,registry:r.pages.includes('ทะเบียนแปลง'),qa:r.pages.includes('QA/QC')};});
-assert.equal(national.plots,160,'Nationwide report must cover all 160 registry plots, including missing-data cases');
-assert.ok(national.images>provinceReport.images,'Nationwide report should contain a broad actual imagery atlas');
-assert.ok(national.registry&&national.qa,'Nationwide report must retain all-plot registry and QA evidence');
-assert.ok(national.pages>provinceReport.pages,'Nationwide reporting must paginate rather than silently truncate plots');
-assert.ok(await page.locator('#rpt-preview .rpt-paper').count()<=8,'Onscreen preview stays bounded while full print report stays complete');
-assert.ok((await page.locator('#rpt-preview').innerText()).includes('PDF ฉบับเต็ม'),'Preview must disclose full-print coverage');
+assert.equal(await page.locator('#rpt-image-dates').inputValue(),'1','Nationwide default avoids an accidental massive appendix');
+const national=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,audit:r.audit,qa:r.pages.includes('QA/QC'),summary:r.pages.includes('สรุปสถานการณ์พื้นที่น้ำ')}}); 
+assert.equal(national.plots,160,'National brief includes all 160 plots, including no-data plots');
+assert.ok(national.summary&&national.qa,'National flood brief has executive findings and traceability');
+assert.ok(national.audit&&national.audit.plots===160,'National audit coverage must account for all registered plots');
+assert.ok(national.pages<55,'National flood executive brief should remain shorter than 55-page Rayong raw atlas');
+assert.ok(await page.locator('#rpt-preview .rpt-paper').count()<=8,'Onscreen preview remains bounded even for national report');
+assert.ok((await page.locator('#rpt-preview').innerText()).includes('PDF ฉบับเต็ม')||national.pages<=8,'Preview must disclose complete print page count');
 
 await page.locator('#rpt-scope').selectOption('plot');
 await page.locator('#rpt-plot').selectOption('15-STC');
@@ -295,14 +306,13 @@ assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Custom repor
 assert.ok((await page.locator('#rpt-preview').innerText()).includes('QA'),'Report includes QA evidence rather than unsupported impact claims');
 
 const coverQA=await page.locator('#rpt-preview .rpt-paper').first().innerText();
-assert.ok(coverQA.includes('ค่าล่าสุดที่ผ่าน QA'),'Dense cover now includes a real QA-linked index snapshot table');
-const imageLayout=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-paper')].filter(p=>p.querySelector('.rpt-photo-grid')).map(p=>{
- const evidence=p.querySelector('.rpt-gallery-evidence'),footer=p.querySelector('.rpt-pagefoot');
+assert.ok(coverQA.includes('สรุปสถานการณ์พื้นที่น้ำ')&&coverQA.includes('คู่ภาพเทียบได้'),'Flood cover must lead with actual change-pair findings and coverage');
+const decisionPages=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-paper')].filter(p=>p.querySelector('.rpt-case-compare')).map(p=>{
+ const evidence=p.querySelector('.rpt-case-compare'),footer=p.querySelector('.rpt-pagefoot');
  return {last:evidence?.getBoundingClientRect().bottom,footer:footer?.getBoundingClientRect().top};
 }));
-assert.ok(imageLayout.length>0,'Report preview must contain actual paginated satellite/index image galleries');
-assert.ok(imageLayout.every(x=>x.last!=null&&x.footer!=null&&x.last<x.footer-3),'Atlas gallery table must not overlap A4 footer: '+JSON.stringify(imageLayout));
-
+assert.ok(decisionPages.length>0,'Water report must contain real pairwise before-after evidence pages');
+assert.ok(decisionPages.every(x=>x.last!=null&&x.footer!=null&&x.last<x.footer-3),'Water pair imagery must not overlap A4 footer: '+JSON.stringify(decisionPages));
 
 const borderCount=await page.locator('#rpt-preview .rpt-image-boundary').count();
 assert.ok(borderCount>=1,'Report preview with authentic index Raster must include a real GIS boundary overlay');
