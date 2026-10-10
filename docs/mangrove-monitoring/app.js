@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const root=$('view-root');
 const DATA='../data/nationwide/';
-const state={view:(new URLSearchParams(location.search).get('view')||'overview'),plot:(new URLSearchParams(location.search).get('plot')||'13-STC'),company:'ALL',province:'ALL',metric:'ndvi',riskKind:'water',riskThreshold:10,riskUnit:'percent',map:null,mapLayers:null,filter:'',showValidOnly:true};
+const state={view:(new URLSearchParams(location.search).get('view')||'overview'),plot:(new URLSearchParams(location.search).get('plot')||'13-STC'),company:'ALL',province:'ALL',metric:'ndvi',riskKind:'water',riskThreshold:10,riskUnit:'percent',waterDate:'',waterDatePlot:'',waterPlot:'',map:null,mapLayers:null,filter:'',showValidOnly:true};
 const cache={data:null,plots:[],byCode:new Map(),byScene:new Map(),changes:new Map(),canonical:new Set(),status:null,when:null,imagery:null,environment:null};
 const TITLES={overview:'Nationwide Overview',map:'GIS Map Center',plots:'Plot Registry & Details',insights:'Plot Intelligence & Decisions',analysis:'Environmental Analytics',change:'Change Detection',satellite:'Satellite Catalog',alerts:'Early Warning',field:'Field Operations & Growth',carbon:'Carbon & MRV',qa:'Data Quality & Boundaries',reports:'Report Center',modules:'All 26 Modules'};
 const METRICS={ndvi:['NDVI','ดัชนีพืช'],ndre:['NDRE','คลอโรฟิลล์ / Red Edge'],evi:['EVI','สัญญาณเรือนยอด'],savi:['SAVI','พืชปรับผลดิน'],ndmi:['NDMI','ความชื้นพืช'],ndwi:['NDWI','สัญญาณน้ำ'],mndwi:['MNDWI','ผิวน้ำ'],bsi:['BSI','ดินเปิดโล่ง'],gli:['GLI','ดัชนีสีเขียว'],water_rai:['Water (rai)','พื้นที่น้ำ ไร่'],vegetation_rai:['Vegetation (rai)','พื้นที่พืช ไร่'],bare_soil_rai:['Bare soil (rai)','พื้นที่ดิน ไร่'],wetness_rai:['Wetness (rai)','พื้นที่ชื้น ไร่']};
@@ -49,6 +49,49 @@ function rainfallEvidencePanel(code){
  (rows||'<tr><td colspan="5">แปลงนี้ยังไม่มีข้อมูลฝนที่เชื่อมแล้ว</td></tr>')+'</tbody></table></div>'+
  '<p class="muted tiny">แหล่งข้อมูล: NASA POWER / PRECTOTCORR (ค่าประมาณจากแบบจำลอง/ข้อมูลผสาน ไม่ใช่สถานีวัดฝนหรือ GPM IMERG) • ใช้วัน UTC ก่อนวันถ่ายภาพ ไม่ใช่ฝนย้อนหลัง 24/72 ชั่วโมงจากเวลาที่ถ่ายจริง • ระดับน้ำทะเลยังไม่เชื่อมและยังไม่มี datum/สถานียืนยัน</p></div>';
 }
+function waterDatePanel(code){
+ const plot=code||state.waterPlot||state.plot;
+ const scenes=plotScenes(plot);
+ const latest=scenes.at(-1)?.date||'';
+ const selected=state.waterDatePlot===plot&&scenes.some(x=>x.date===state.waterDate)
+     ?state.waterDate:latest;
+ const rain=cache.environment?.plots?.[plot]?.scenes||[];
+ const snapshot=window.MMCWaterIntelligence?.daySnapshot(scenes,selected,rain);
+ const options=scenes.slice().reverse().map(x=>'<option value="'+html(x.date)+'" '+
+      (x.date===selected?'selected':'')+'>'+html(x.date)+
+      (qaOk(x)?' · ผ่าน QA':' · '+html(x.analysis_status||'ยังไม่ผ่าน QA'))+'</option>').join('');
+ const plotSelector=code?'':'<label>เลือกแปลงน้ำ<select id="water-plot-select">'+
+      [...cache.byScene].filter(([,rows])=>rows.length).map(([k])=>
+      '<option value="'+html(k)+'" '+(k===plot?'selected':'')+'>'+html(k)+'</option>').join('')+
+      '</select></label>';
+ const dateSelect='<label>เลือกวันภาพ Sentinel-2<select id="water-date-select" '+
+      (scenes.length?'':'disabled')+'>'+options+'</select></label>';
+ if(!snapshot)return '<div class="panel"><h3>ค่าน้ำรายวัน</h3>'+
+      '<div class="controls">'+plotSelector+dateSelect+'</div>'+
+      '<p class="muted">แปลงนี้ยังไม่มีวันภาพ Sentinel-2 ในฐานข้อมูลวิเคราะห์ PDD</p></div>';
+ const ok=snapshot.analytical_values_approved_for_screening;
+ const idx=(v,n=4)=>v===null?'—':fmt(v,n);
+ const rain1=snapshot.rainfall_prev_1_utc_day_mm,rain3=snapshot.rainfall_prev_3_utc_days_mm;
+ const status=ok?tag('ผ่าน QA · ใช้ตรวจแนวโน้มได้'):tag('ไม่ผ่าน QA · ใช้ดูภาพเท่านั้น','warn');
+ const caution=ok?
+    'พื้นที่น้ำเป็นพื้นที่จำแนกในภาพของวันนั้น ไม่ใช่ระดับน้ำทะเล และยังไม่ปรับน้ำขึ้นน้ำลง':
+    'ไม่มีตัวเลขน้ำหรือดัชนีที่ผ่าน QA สำหรับวันนี้ ภาพ MNDWI/NDWI จาก TIFF เปิดดูได้ แต่ห้ามใช้สรุปน้ำท่วม';
+ return '<div class="panel" id="water-daily-panel"><div class="panel-header"><div><h3>ค่าน้ำตามวันภาพ · '+html(plot)+'</h3>'+
+      '<p class="muted">เลือกวันที่มีภาพจริง ค่า NDWI / MNDWI / พื้นที่น้ำ / ฝน จะแสดงวันเดียวกัน</p></div>'+
+      status+'</div>'+
+      '<div class="controls">'+plotSelector+dateSelect+
+      btn('ดูภาพ MNDWI วันที่เลือก','waterimage',plot,'primary')+'</div>'+
+      '<p class="muted" id="water-selected-date">กำลังแสดงวัน '+html(selected)+' • '+html(snapshot.qa_status)+
+      ' • SCL ใช้ได้ '+idx(snapshot.qa_valid_pct,1)+'%</p>'+
+      '<div class="grid half">'+
+      kpi('พื้นที่น้ำในภาพ',idx(snapshot.water_rai,3)+(ok?' ไร่':''),'เฉพาะวันผ่าน QA • ไม่ใช่ระดับน้ำทะเล')+
+      kpi('MNDWI',idx(snapshot.mndwi),'(B3−B11)/(B3+B11)')+
+      kpi('NDWI',idx(snapshot.ndwi),'(B3−B8)/(B3+B8)')+
+      kpi('ฝนก่อนหน้า 1 วัน',rain1===null?'ไม่มีข้อมูล':fmt(rain1,2)+' มม.','NASA POWER · วัน UTC ก่อนวันภาพ')+
+      kpi('ฝนก่อนหน้า 3 วัน',rain3===null?'ไม่มีข้อมูล':fmt(rain3,2)+' มม.','NASA POWER · 3 วัน UTC ก่อนวันภาพ')+
+      kpi('ระดับน้ำทะเล','ยังไม่เชื่อม','ไม่มีสถานี / Datum ที่ตรวจสอบแล้ว')+'</div>'+
+      '<p class="muted">'+html(caution)+'</p></div>';
+}
 function waterIntelligencePanel(code){
  const result=waterScreen();
  if(!result)return message('Water Anomaly Engine ยังไม่พร้อม โปรดโหลดหน้าใหม่','warn');
@@ -61,6 +104,7 @@ function waterIntelligencePanel(code){
  '<td class="num">+'+fmt(x.first_delta_rai,3)+'</td><td class="num">'+fmt(x.second_delta_rai,3)+'</td>'+
  '<td>'+tag(x.status==='WATER_REVERSAL_REVIEW'?'น้ำเพิ่มแล้วลด · รอตรวจ':'ข้อมูลไม่พอ','warn')+'</td></tr>').join('');
  return '<section class="panel" id="water-intelligence"><div class="panel-header"><div><div class="eyebrow">WATER ANOMALY INTELLIGENCE · SCREENING ONLY</div><h2>น้ำผิดปกติ / เพิ่มแล้วลดกลับ</h2><p class="muted">วิเคราะห์รูปแบบภาพย้อนหลังจากผล Change ที่เผยแพร่แล้ว ไม่ยืนยันน้ำท่วมหรือการกลับสู่สภาพปกติ</p></div></div>'+
+ waterDatePanel(code)+
  '<div class="grid half">'+kpi('น้ำเพิ่ม · Candidate',increases.length,'ผ่านจำนวนพิกเซลและพื้นที่ร่วมขั้นต่ำ')+
  kpi('น้ำเพิ่มแล้วลด · Review',reversals.length,'ยังไม่ใช่การยืนยันเหตุการณ์')+
  kpi('หลักฐานไม่พอ',held.length,'ไม่ใช้เป็น Early Warning อัตโนมัติ')+
@@ -391,7 +435,7 @@ async function load(){clearMap();root.innerHTML='<div class="loading"><span clas
  }catch(e){console.error(e);root.innerHTML=message('<b>เชื่อมข้อมูลไม่สำเร็จ</b> • '+html(e.message)+'<br>ลองเปิดหน้าใหม่ หรือดูข้อมูลต้นฉบับที่ SatelliteProject')+'<a class="btn" href="../nationwide.html">เปิด SatelliteProject</a>';toast('มีข้อผิดพลาดในการดึงข้อมูล');}}
 function csvDownload(filename,headers,rows){const safe=x=>{let s=String(x??'');if(/^[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};const body='\uFEFF'+[headers,...rows].map(r=>r.map(safe).join(',')).join('\r\n');download(filename,body,'text/csv;charset=utf-8');}
 function download(name,content,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);}
-function doAction(action,value){if(action==='setview'){setView(value);return;}if(action==='plot'){setView('plots',value);return;}if(action==='analyse'){setView('analysis',value);return;}if(action==='insight'){setView('insights',value);return;}if(action==='print'){window.print();return;}if(action==='external'){window.open(new URL(value,location.href).href,'_blank','noopener');return;}
+function doAction(action,value){if(action==='waterimage'){const plot=value||state.waterPlot||state.plot;setView('insights',plot);window.MMCImagery?.selectDate(state.waterDatePlot===plot?state.waterDate:plotScenes(plot).at(-1)?.date,'mndwi');return;}if(action==='setview'){setView(value);return;}if(action==='plot'){setView('plots',value);return;}if(action==='analyse'){setView('analysis',value);return;}if(action==='insight'){setView('insights',value);return;}if(action==='print'){window.print();return;}if(action==='external'){window.open(new URL(value,location.href).href,'_blank','noopener');return;}
  if(action==='exportgeo'){const arr=value==='filter'?filtered().filter(x=>x.geometry):[plotOf(value)].filter(x=>x&&x.geometry);if(!arr.length){toast('แปลงนี้ไม่มี Boundary ที่สามารถส่งออกได้');return;}download(value==='filter'?'mmc_filtered_plots.geojson':value+'_boundary.geojson',JSON.stringify({type:'FeatureCollection',features:arr.map(x=>({type:'Feature',properties:{plot:x.code,province:x.province,boundary_source:x.group},geometry:x.geometry}))}),'application/geo+json');return;}
  if(action==='exportindexqa'){
  const modes=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'];
@@ -433,6 +477,6 @@ if(action==='exportvisualqa'){
  if(action==='template'){const schemas={field:['plot_code','survey_date','survey_type','latitude','longitude','method','sample_area_rai','observer','notes','photo_file_id','qa_status'],growth:['plot_code','survey_date','sample_plot_id','species','trees_planted','trees_alive','survival_pct','dbh_cm','height_m','sample_area_rai','method','verifier'],carbon:['plot_code','boundary_version','survey_date','stratum','species','dbh_cm','height_m','allometry_method','agb_kg','bgb_kg','carbon_fraction','uncertainty_pct','verifier']};csvDownload('mmc_'+value+'_blank_template.csv',schemas[value]||schemas.field,[]);return;}
 }
 document.addEventListener('click',e=>{const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const b=e.target.closest('[data-action]');if(b){doAction(b.dataset.action,b.dataset.value||'');return;}if(e.target.id==='menu-btn')$('sidebar').classList.toggle('open');if(e.target.id==='refresh')load();});
-document.addEventListener('change',e=>{const id=e.target.id;if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='plot-select'){state.plot=e.target.value;draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'){state.metric=e.target.value;draw();}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
+document.addEventListener('change',e=>{const id=e.target.id;if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'){state.metric=e.target.value;draw();}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
 })();
