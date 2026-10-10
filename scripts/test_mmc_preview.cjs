@@ -279,6 +279,14 @@ assert.ok(generalDecision.all.includes('วันที่ภาพก่อน�
 const generalMain=await page.evaluate(()=>window.MMCReportCopilot.renderPages('appendix'));
 assert.equal(generalMain.total,0,'General report appendix should be optional and empty by default');
 
+const generalOverlaps=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-paper')].map((paper,i)=>{
+ const bottom=paper.querySelector('.rpt-pagefoot')?.getBoundingClientRect().top||Infinity;
+ const content=Math.max(...[...paper.children].filter(x=>!x.classList.contains('rpt-pagefoot')).map(x=>x.getBoundingClientRect().bottom));
+ return {page:i+1,content,footer:bottom};
+}).filter(x=>x.content>x.footer-2));
+assert.deepEqual(generalOverlaps,[],'General decision report must fit A4 preview pages above footer: '+JSON.stringify(generalOverlaps));
+
+
 await page.locator('#rpt-text').fill('รายงานน้ำท่วมจังหวัดระยองย้อนหลัง 3 เดือน เน้น MNDWI NDVI และฝน อ่านง่าย');
 await page.locator('#rpt-analyze').click();
 assert.equal(await page.locator('#rpt-type').inputValue(),'water','Thai intent parser understands water report');
