@@ -301,7 +301,7 @@ function svgChart(rows,key,opts={}){
  }).join('');
  const count=good.length;
  return '<div class="ts-chart" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
-  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1 ถึง +1 (ไม่ขยายความต่าง)':'')+'</div>'+
+  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1.00 ถึง +1.00 (ไม่ขยายความต่าง)':'')+'</div>'+
   '<div class="ts-chart-layout"><div class="ts-y-axis" aria-hidden="true">'+ticks+'</div>'+
   '<div class="ts-plot" role="group" aria-label="จุดข้อมูล '+count+' วัน มีคำอธิบายค่าที่แต่ละจุด">'+
   '<svg class="ts-chart-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+grid+zero+
