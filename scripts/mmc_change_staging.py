@@ -127,6 +127,15 @@ def stage(plots,out,max_dates):
             flag["pct_of_plot"]=round(100*abs(flag["difference_rai"])/area,2) if area else None
             flag["review_category"]="AREA_METHOD_OR_PIXEL_MASK_DISCREPANCY"
             flag["review_status"]="UNRESOLVED_REQUIRES_INDEPENDENT_GIS_CHECK"
+        index_review=[]
+        for item in report["plot_results"]:
+            for key in ("ndvi","ndre","ndmi","ndwi","mndwi","bsi"):
+                delta=item["index_and_area_differences"][key]["delta"]
+                if delta is not None and abs(delta)>0.03:
+                    index_review.append({"plot":item["plot"],"date":item["date"],
+                                         "index":key,"delta":delta,"status":"REVIEW_INDEX_MEAN_DRIFT"})
+        report["index_drift_flags"]=index_review
+        report["index_drift_count"]=len(index_review)
         report["area_review_flags"]=area_review
         report["area_review_count"]=len(area_review)
         report["review_required"]=bool(area_review or report["errors"])
