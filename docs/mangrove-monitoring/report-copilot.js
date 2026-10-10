@@ -118,18 +118,33 @@ function picture(im,mode){
  '<p class="rpt-empty">ไม่มีภาพ '+esc(mode)+' ที่ตรงกับวันภาพและ QA</p>';
 }
 function chart(rows,metric){
- const data=rows.filter(x=>x[metric]!==null&&x[metric]!==undefined&&x[metric]!==''&&Number.isFinite(Number(x[metric]))).map(x=>({date:x.date,value:Number(x[metric])})).slice(-50);
+ const data=rows.filter(x=>x[metric]!==null&&x[metric]!==undefined&&x[metric]!==''&&Number.isFinite(Number(x[metric])))
+  .map(x=>({date:x.date,value:Number(x[metric])})).sort((a,b)=>a.date.localeCompare(b.date)).slice(-16);
  if(!data.length)return '<p class="rpt-empty">ยังไม่มีค่า '+esc(metric)+' ผ่าน QA ในช่วงที่เลือก</p>';
- const x=i=>40+480*i/Math.max(1,data.length-1),y=v=>156-(v+1)*62;
- return '<svg viewBox="0 0 560 186" class="rpt-chart" role="img" aria-label="กราฟ '+esc(metric)+'">'+
- '<line x1="40" x2="530" y1="94" y2="94" stroke="#dce7dd" />'+
- '<path d="'+data.map((r,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(r.value).toFixed(1)).join(' ')+'" stroke="#167a52" stroke-width="2.5" fill="none"/>'+
- data.map((r,i)=>'<circle cx="'+x(i).toFixed(1)+'" cy="'+y(r.value).toFixed(1)+'" r="3" fill="#167a52"/>').join('')+
- '<text x="40" y="179" font-size="11">'+esc(data[0].date)+'</text><text x="530" y="179" text-anchor="end" font-size="11">'+esc(data.at(-1).date)+'</text></svg>';
+ const dates=data.map(r=>Date.parse(r.date+'T00:00:00Z')),span=Math.max(1,dates.at(-1)-dates[0]);
+ const lo=Math.min(...data.map(r=>r.value)),hi=Math.max(...data.map(r=>r.value));
+ const pad=Math.max(.06,(hi-lo)*.24),yMin=Math.max(-1,lo-pad),yMax=Math.min(1,hi+pad);
+ const boundMin=yMax>yMin?yMin:lo-.05,boundMax=yMax>yMin?yMax:hi+.05;
+ const x=i=>data.length===1?275:48+(dates[i]-dates[0])/span*463;
+ const y=v=>141-(v-boundMin)/(boundMax-boundMin)*111;
+ const ticks=Array.from({length:4},(_,i)=>boundMin+(boundMax-boundMin)*i/3);
+ const axes=ticks.map(v=>'<line x1="48" x2="520" y1="'+y(v).toFixed(1)+'" y2="'+y(v).toFixed(1)+'" stroke="#dae6dd" stroke-dasharray="3 4"/>'+
+  '<text x="43" y="'+(y(v)+3).toFixed(1)+'" font-size="9" text-anchor="end" fill="#546a5b">'+num(v)+'</text>').join('');
+ const path=data.map((r,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(r.value).toFixed(1)).join(' ');
+ const every=Math.max(1,Math.ceil(data.length/5));
+ const dots=data.map((r,i)=>'<g data-rpt-date="'+esc(r.date)+'" data-rpt-value="'+esc(num(r.value))+'">'+
+  '<circle cx="'+x(i).toFixed(1)+'" cy="'+y(r.value).toFixed(1)+'" r="3.8" fill="#197552" stroke="#fff" stroke-width="1"/>'+
+  '<text x="'+x(i).toFixed(1)+'" y="'+Math.max(12,y(r.value)-9-(i%2)*10).toFixed(1)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#1d694b">'+num(r.value)+'</text>'+
+  ((i%every===0||i===data.length-1)?'<text x="'+x(i).toFixed(1)+'" y="162" text-anchor="middle" font-size="8.8" fill="#375c48">'+esc(r.date.slice(5))+'</text>':'')+'</g>').join('');
+ const last=data.at(-1),previous=data.at(-2),movement=previous?last.value-previous.value:null;
+ const desc=previous?'จาก '+previous.date+' ถึง '+last.date+' ค่า '+metric.toUpperCase()+' '+(movement>0?'เพิ่ม':movement<0?'ลด':'คงเดิม')+
+   ' '+num(Math.abs(movement))+' ('+num(previous.value)+' → '+num(last.value)+')':'มีค่าดัชนีเพียงวันเดียว ไม่อาจสรุปแนวโน้ม';
+ return '<svg viewBox="0 0 560 178" class="rpt-chart rpt-audit-chart" role="img" aria-label="'+esc(metric.toUpperCase()+' จากข้อมูลภาพจริง '+desc)+'">'+
+  '<text x="48" y="13" font-size="10" fill="#456958">'+esc(metric.toUpperCase())+' · ค่าดัชนี (−1 ถึง +1)</text>'+
+  axes+'<path d="'+path+'" stroke="#197552" stroke-width="2.5" fill="none"/>'+dots+
+  '<text x="520" y="176" text-anchor="end" font-size="9" fill="#52665c">วันที่บันทึกภาพ (2026 หรือปีที่ระบุในข้อความ)</text></svg>'+
+  '<p class="rpt-chart-summary">'+esc(desc)+' · ค่าทุกจุดแสดงบนกราฟ วันที่แกน X เป็นวันภาพที่มีข้อมูลจริง</p>';
 }
-
-
-
 function waterChangeBreakdown(pair,ts=null){
  const value=(x)=>x==null||!Number.isFinite(Number(x))?null:Number(x),gain=value(pair?.water_new_rai),loss=value(pair?.water_lost_rai),net=value(pair?.water_net_change_rai);
  const historical=pair&&net!==null?'<p class="rpt-history-pair"><b>ข้อมูลย้อนหลังที่คำนวณจากพิกเซลร่วม:</b> '+
