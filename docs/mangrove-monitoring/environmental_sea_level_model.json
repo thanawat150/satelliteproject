@@ -1,0 +1,371 @@
+{
+  "schema_version": "mmc-sea-level-model-v1",
+  "provider": "Open-Meteo Marine",
+  "type": "NUMERICAL_MODEL_NOT_TIDE_GAUGE",
+  "datum": "Global mean sea level, not local chart datum",
+  "limitations": "Coastal and estuary grid error; no overpass-time level without scene timestamp",
+  "gauge_status": "NOT_CONNECTED_IOC_API_KEY_REQUIRED",
+  "plots": {
+    "13-STC": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.709677&longitude=101.692429&hourly=sea_level_height_msl&start_date=2026-09-29&end_date=2026-09-29&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-09-29": {
+          "date": "2026-09-29",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.15,
+          "daily_max_m_msl": 1.23,
+          "daily_mean_m_msl": 0.807,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.625,
+            "longitude": 101.70836
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "16-STC": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.729862&longitude=101.71764&hourly=sea_level_height_msl&start_date=2026-07-19&end_date=2026-10-07&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-07-19": {
+          "date": "2026-07-19",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": -0.06,
+          "daily_max_m_msl": 1.07,
+          "daily_mean_m_msl": 0.624,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-09-29": {
+          "date": "2026-09-29",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.15,
+          "daily_max_m_msl": 1.23,
+          "daily_mean_m_msl": 0.807,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-10-07": {
+          "date": "2026-10-07",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.18,
+          "daily_max_m_msl": 1.34,
+          "daily_mean_m_msl": 0.835,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "1-VSD": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.169914&longitude=102.66681&hourly=sea_level_height_msl&start_date=2026-09-19&end_date=2026-09-19&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-09-19": {
+          "date": "2026-09-19",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.27,
+          "daily_max_m_msl": 1.53,
+          "daily_mean_m_msl": 0.853,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.208336,
+            "longitude": 102.70836
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "14(1)-STC": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.691554&longitude=101.672701&hourly=sea_level_height_msl&start_date=2026-07-19&end_date=2026-07-19&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-07-19": {
+          "date": "2026-07-19",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": -0.06,
+          "daily_max_m_msl": 1.07,
+          "daily_mean_m_msl": 0.624,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.625,
+            "longitude": 101.70836
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "14-STC": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.710638&longitude=101.700343&hourly=sea_level_height_msl&start_date=2026-08-03&end_date=2026-10-07&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-08-03": {
+          "date": "2026-08-03",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.23,
+          "daily_max_m_msl": 1.15,
+          "daily_mean_m_msl": 0.781,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.625,
+            "longitude": 101.70836
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-09-29": {
+          "date": "2026-09-29",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.15,
+          "daily_max_m_msl": 1.23,
+          "daily_mean_m_msl": 0.807,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.625,
+            "longitude": 101.70836
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-10-07": {
+          "date": "2026-10-07",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.18,
+          "daily_max_m_msl": 1.34,
+          "daily_mean_m_msl": 0.835,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.625,
+            "longitude": 101.70836
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "14-VSD": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.719541&longitude=101.708253&hourly=sea_level_height_msl&start_date=2026-08-03&end_date=2026-09-29&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-08-03": {
+          "date": "2026-08-03",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.23,
+          "daily_max_m_msl": 1.15,
+          "daily_mean_m_msl": 0.781,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-09-29": {
+          "date": "2026-09-29",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.15,
+          "daily_max_m_msl": 1.23,
+          "daily_mean_m_msl": 0.807,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "15-STC": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.739986&longitude=101.788467&hourly=sea_level_height_msl&start_date=2026-08-03&end_date=2026-10-07&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-08-03": {
+          "date": "2026-08-03",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.23,
+          "daily_max_m_msl": 1.15,
+          "daily_mean_m_msl": 0.784,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-10-07": {
+          "date": "2026-10-07",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.18,
+          "daily_max_m_msl": 1.33,
+          "daily_mean_m_msl": 0.835,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "15-VSD": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.727262&longitude=101.708347&hourly=sea_level_height_msl&start_date=2026-09-29&end_date=2026-10-07&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-09-29": {
+          "date": "2026-09-29",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.15,
+          "daily_max_m_msl": 1.23,
+          "daily_mean_m_msl": 0.807,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-10-07": {
+          "date": "2026-10-07",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.18,
+          "daily_max_m_msl": 1.34,
+          "daily_mean_m_msl": 0.835,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "16-VSD": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.729466&longitude=101.700734&hourly=sea_level_height_msl&start_date=2026-07-19&end_date=2026-10-07&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-07-19": {
+          "date": "2026-07-19",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": -0.06,
+          "daily_max_m_msl": 1.07,
+          "daily_mean_m_msl": 0.624,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-09-29": {
+          "date": "2026-09-29",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.15,
+          "daily_max_m_msl": 1.23,
+          "daily_mean_m_msl": 0.807,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-10-07": {
+          "date": "2026-10-07",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.18,
+          "daily_max_m_msl": 1.34,
+          "daily_mean_m_msl": 0.835,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.708336,
+            "longitude": 101.79167
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    },
+    "17-STC": {
+      "source": "Open-Meteo Marine sea_level_height_msl",
+      "url": "https://marine-api.open-meteo.com/v1/marine?latitude=12.723722&longitude=101.678159&hourly=sea_level_height_msl&start_date=2026-09-29&end_date=2026-10-07&timezone=UTC&cell_selection=sea",
+      "scenes": {
+        "2026-09-29": {
+          "date": "2026-09-29",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.15,
+          "daily_max_m_msl": 1.23,
+          "daily_mean_m_msl": 0.807,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.625,
+            "longitude": 101.70836
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        },
+        "2026-10-07": {
+          "date": "2026-10-07",
+          "model_status": "AVAILABLE",
+          "sample_hours": 24,
+          "daily_min_m_msl": 0.18,
+          "daily_max_m_msl": 1.34,
+          "daily_mean_m_msl": 0.835,
+          "level_at_overpass_m": null,
+          "overpass_utc": null,
+          "model_grid": {
+            "latitude": 12.625,
+            "longitude": 101.70836
+          },
+          "datum": "MODEL_GLOBAL_MEAN_SEA_LEVEL"
+        }
+      }
+    }
+  },
+  "errors": []
+}
