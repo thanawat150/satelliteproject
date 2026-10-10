@@ -24,6 +24,41 @@ async function reply(replyToken, texts) {
   if (!r.ok) console.error('LINE reply failed', r.status, await r.text());
 }
 
+const QUEUE_URL = 'https://raw.githubusercontent.com/thanawat150/satelliteproject/main/docs/affiliate-posting/queue.json';
+const DASHBOARD_URL = 'https://thanawat150.github.io/satelliteproject/affiliate-posting/';
+
+async function getQueue() {
+  const r = await fetch(QUEUE_URL, { cache:'no-store' });
+  if (!r.ok) throw new Error('queue fetch failed');
+  return r.json();
+}
+
+function menuText() {
+  return [
+    'คำสั่งสั้น ๆ',
+    'วันนี้ — ดูของที่ต้องลงวันนี้',
+    'ส่ง — ส่งลิงก์คลิป + Platform + Caption',
+    'สถานะ — เช็กว่าโพสต์แล้วหรือยัง',
+    'ตาราง — เปิดตารางทั้งหมด',
+    'พร้อม — เปิดโฟลเดอร์คลิปพร้อม',
+    'เมนู — ดูคำสั่งทั้งหมด'
+  ].join('\n');
+}
+
+function platformText(q) {
+  const p=[];
+  if (q?.tiktok_time) p.push('TikTok');
+  if (q?.shopee_time) p.push('Shopee');
+  return p.join(' + ') || 'TikTok + Shopee';
+}
+
+function timeText(q) {
+  const x=[];
+  if (q?.shopee_time) x.push('Shopee ' + q.shopee_time);
+  if (q?.tiktok_time) x.push('TikTok ' + q.tiktok_time);
+  return x.join(' | ');
+}
+
 export async function GET() {
   return Response.json({ ok: true, service: 'Ken Affiliate LINE webhook' });
 }
@@ -49,24 +84,49 @@ export async function POST(request) {
 
     if (event.replyToken && (event.type === 'follow' || event.type === 'message')) {
       const incoming = event?.message?.type === 'text' ? String(event.message.text || '').trim().toLowerCase() : '';
-      if (incoming === 'testalert' || incoming === 'test alert' || incoming === 'เทส') {
-        await reply(event.replyToken, [
-          'https://drive.google.com/uc?export=download&id=1AYfRABxoeMq-7Huydwm624OK4YYEtU6X',
-          'TikTok + Shopee',
-          'นั่งนานแล้วขาตึง ลองมายืนยืดกับเก้าอี้มหัศจรรย์คุณตาแสวงครับ ใช้ง่าย ขนาดไม่ใหญ่ เหมาะไว้ใช้ทั้งที่บ้านและออฟฟิศ\n\n#เก้าอี้มหัศจรรย์ #คุณตาแสวง #แท่นยืนยืดเส้น #ยืดเหยียด #ShopeeVideo #TikTokAffiliate'
-        ]);
-      } else if (incoming === 'userid' || incoming === 'user id' || incoming === 'id') {
+      if (incoming === 'userid' || incoming === 'user id' || incoming === 'id') {
         await reply(
           event.replyToken,
           userId
             ? 'LINE User ID ของคุณ:\n' + userId + '\n\nนำค่านี้ไปใส่ใน Vercel Environment Variable ชื่อ LINE_USER_ID'
             : 'ยังอ่าน LINE User ID ไม่ได้ ลองส่งข้อความใหม่อีกครั้ง'
         );
+      } else if (['เมนู','menu','ช่วย','help'].includes(incoming)) {
+        await reply(event.replyToken, menuText());
+      } else if (['วันนี้','ส่ง','ส่งของวันนี้'].includes(incoming)) {
+        try {
+          const q = await getQueue();
+          await reply(event.replyToken, [
+            q.download_url || q.drive_url || 'ยังไม่มีลิงก์คลิป',
+            platformText(q),
+            q.post_text || [q.caption,q.hashtags].filter(Boolean).join('\n\n'),
+            timeText(q) || 'ยังไม่ได้ตั้งเวลาโพสต์'
+          ]);
+        } catch {
+          await reply(event.replyToken, 'อ่านคิววันนี้ไม่สำเร็จ ลองใหม่อีกครั้ง');
+        }
+      } else if (incoming === 'สถานะ') {
+        try {
+          const q = await getQueue();
+          await reply(event.replyToken,
+            'สถานะวันนี้\nTikTok: ' + (q.tiktok_posted ? 'โพสต์แล้ว ✅' : 'ยังไม่โพสต์') +
+            '\nShopee: ' + (q.shopee_posted ? 'โพสต์แล้ว ✅' : 'ยังไม่โพสต์') +
+            '\nไฟล์: ' + (q.file_name || '-')
+          );
+        } catch {
+          await reply(event.replyToken, 'อ่านสถานะไม่สำเร็จ ลองใหม่อีกครั้ง');
+        }
+      } else if (incoming === 'ตาราง' || incoming === 'dashboard' || incoming === 'แดชบอร์ด') {
+        await reply(event.replyToken, DASHBOARD_URL);
+      } else if (incoming === 'พร้อม') {
+        try {
+          const q = await getQueue();
+          await reply(event.replyToken, q?.source_folder?.url || DASHBOARD_URL);
+        } catch {
+          await reply(event.replyToken, DASHBOARD_URL);
+        }
       } else {
-        await reply(
-          event.replyToken,
-          'Ken Affiliate Alert เชื่อมต่อสำเร็จ ✅\nระบบพร้อมรับการแจ้งเตือนคิวโพสต์แล้ว'
-        );
+        await reply(event.replyToken, menuText());
       }
     }
   }
