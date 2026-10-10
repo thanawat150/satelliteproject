@@ -1,0 +1,71 @@
+name: MMC NASA Rainfall Context (Real API)
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/mmc_environmental_context.py"
+      - "scripts/test_mmc_environmental_context.py"
+      - ".github/workflows/mmc-environmental-context.yml"
+  workflow_dispatch:
+    inputs:
+      max_plots:
+        description: "Max number of incomplete PDD plots to update using NASA POWER"
+        required: false
+        default: "10"
+        type: string
+  schedule:
+    - cron: "25 2 * * *"
+permissions:
+  contents: write
+concurrency:
+  group: mmc-environmental-context
+  cancel-in-progress: false
+jobs:
+  fetch-nasa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install geometry dependency
+        run: python -m pip install "shapely>=2,<3"
+      - name: Validate date windows, sample locations and NoData
+        run: python -m unittest discover -s scripts -p 'test_mmc_environmental_context.py' -v
+      - name: Download NASA POWER daily rainfall for PDD plot dates
+        env:
+          MAX_PLOTS: ${{ inputs.max_plots || '10' }}
+        run: |
+          python scripts/mmc_environmental_context.py --max-plots "$MAX_PLOTS"
+      - name: Verify real provider metadata and null tidal gaps
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path("docs/mangrove-monitoring/environmental_context.json").read_text())
+          assert j["source"]=="NASA POWER Daily API"
+          assert j["gpm_imerg"]["status"].startswith("NOT_CONNECTED")
+          assert j["tide"]["status"].startswith("NOT_CONNECTED")
+          assert j["scenes_with_complete_rain"]>0,"Zero verified precipitation observations"
+          for p in j["plots"].values():
+              assert p["rain_source"]=="NASA_POWER_PRECTOTCORR"
+              assert p["sample_geometry"]=="interior_point_of_PDD_polygon_WGS84"
+              for scene in p["scenes"]:
+                  assert scene["observation_time_utc"] is None
+                  assert scene["tide"]["level_m"] is None
+                  for key in ("rain_prev_1_utc_day_mm","rain_prev_3_utc_days_mm"):
+                      value=scene[key]
+                      assert value is None or 0<=value<=3000,(p["plot"],scene["date"],key)
+          print("NASA_POWER_REAL_DATA_VALIDATED",j["plot_count"],j["scenes_with_complete_rain"])
+          PY
+      - name: Publish measured weather context only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/mangrove-monitoring/environmental_context.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(mmc): update source-documented NASA POWER rainfall context"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
