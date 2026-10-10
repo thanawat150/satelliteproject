@@ -84,7 +84,7 @@ for(const plot of ['13-STC','14-VSD']){
     const images=await page.locator('#imagery-explorer .img-gallery:not(.img-history-gallery) img').count();
     assert.equal(images,8,plot+' '+date+' should show all eight true TIFF images');
     await page.locator('#imagery-explorer .img-gallery:not(.img-history-gallery) img').last().scrollIntoViewIfNeeded();
-    await page.waitForFunction(()=>{const images=[...document.querySelectorAll('#imagery-explorer .img-gallery img')];const ndwi=images.at(-1);return images.length===8&&ndwi.complete&&ndwi.naturalWidth>0;},{timeout:20000});
+    await page.waitForFunction(()=>{const images=[...document.querySelectorAll('#imagery-explorer .img-gallery:not(.img-history-gallery) img')];const ndwi=images.at(-1);return images.length===8&&ndwi.complete&&ndwi.naturalWidth>0;},null,{timeout:20000});
     assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Archive must not claim QA passed');
   }
 }
