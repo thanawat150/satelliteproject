@@ -292,6 +292,16 @@ assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Priori
 assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู้บริหาร'),'Executive findings appear immediately instead of page 49');
 assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็นน้ำท่วม'),'Screening uncertainty must be explicit and unambiguous');
 
+assert.ok(rayong.text.includes('ข้อค้นพบเฉพาะแปลง 17-STC')&&rayong.text.includes('ข้อค้นพบเฉพาะแปลง 13-STC'),'Rayong flood cases must include plot-specific interpretations');
+assert.ok(rayong.text.includes('เปลี่ยนเป็นน้ำ')&&rayong.text.includes('เปลี่ยนออกจากน้ำ'),'Report must show independent measured gain and loss of water, not net alone');
+assert.ok(rayong.text.includes('rpt-locator-key')&&rayong.text.includes('WGS84 · GIS polygons'),'Location page uses actual polygon geometry and number-keyed labels');
+assert.ok(rayong.text.includes('พื้นที่พิกเซลร่วมเกินพื้นที่ Geometry'),'Flag known area/geometry mismatches as an audit issue');
+assert.ok(rayong.text.includes('ทุกแปลงที่มีคู่ภาพพบพื้นที่น้ำเพิ่มสุทธิพร้อมกัน'),'Unusually universal water increase triggers systemic QA notice');
+assert.ok(rayong.text.includes('ยังไม่มีข้อมูลระดับน้ำขึ้นลง'),'Never imply tide normalization is ready');
+const noAppendixPrint=await page.evaluate(()=>window.MMCReportCopilot.renderPages('main'));
+assert.equal(noAppendixPrint.total,rayong.pages,'Main report page count matches the decision brief with appendix disabled');
+
+
 assert.ok(!rayong.text.includes('ห่างกัน')&&!rayong.text.includes('ช่วง (วัน)'),'Flood report must not show day-distance metrics');
 assert.ok(rayong.front.includes('ภาพก่อนหน้า')&&rayong.front.includes('ภาพปัจจุบัน'),'Executive table must expose both dates instead of day gap');
 assert.ok(rayong.text.includes('<th>ภาพก่อนหน้า</th>')&&rayong.text.includes('<th>ภาพปัจจุบัน</th>'),'Ranked evidence uses separately labeled acquisition dates');
@@ -320,6 +330,13 @@ await page.locator('#rpt-appendix').check();
 const withAppendix=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,hasAppendix:r.pages.includes('ภาคผนวก Raster Evidence')}}); 
 assert.ok(withAppendix.pages>provinceReport.pages&&withAppendix.images>provinceReport.images,'Explicit appendix adds real TIFF imagery pages');
 assert.ok(withAppendix.hasAppendix,'TIFF appendix must be clearly marked as supporting evidence');
+
+const printParts=await page.evaluate(()=>{const mm=window.MMCReportCopilot;return {main:mm.renderPages('main'),appendix:mm.renderPages('appendix')}});
+assert.equal(printParts.main.total,rayong.pages,'Decision PDF excludes appendix even when selected');
+assert.equal(printParts.appendix.total,withAppendix.pages-rayong.pages,'Raster evidence is a standalone PDF without duplicated decision pages');
+assert.ok(printParts.appendix.pages.includes('ภาคผนวก Raster Evidence')&&!printParts.appendix.pages.includes('สรุปสถานการณ์พื้นที่น้ำ'),'Separate appendix has only supporting rasters');
+assert.equal(await page.locator('#rpt-print-appendix').isVisible(),true,'Appendix PDF button only appears when requested');
+
 await page.locator('#rpt-appendix').uncheck();
 await page.locator('[data-rpt-scope-switch="all"]').click();
 assert.equal(await page.locator('#rpt-scope').inputValue(),'all','Nationwide scope can be selected with prominent control');
