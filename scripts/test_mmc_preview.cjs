@@ -168,6 +168,7 @@ await page.locator('#plot-select').selectOption('13-STC');
 assert.ok(await page.locator('a[href*="drive.google.com"]').count()>=1,'Source assets can be inspected');
 await page.locator('[data-view="alerts"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('Candidate'),'Alert must remain candidate rather than confirmed flood');
+assert.ok((await page.locator('#view-root').innerText()).includes('พักแจ้งเตือนอัตโนมัติ'),'QA-limited change events must have a visible separate queue');
 assert.equal(await page.locator('#risk-unit').inputValue(),'percent','Alert default must be normalized by comparable area');
 await page.locator('#risk-unit').selectOption('rai');
 assert.equal(await page.locator('#risk-threshold').inputValue(),'1','Changing risk unit should reset threshold');
