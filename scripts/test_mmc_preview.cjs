@@ -292,6 +292,13 @@ assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Priori
 assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู้บริหาร'),'Executive findings appear immediately instead of page 49');
 assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็นน้ำท่วม'),'Screening uncertainty must be explicit and unambiguous');
 
+assert.ok(!rayong.text.includes('ห่างกัน')&&!rayong.text.includes('ช่วง (วัน)'),'Flood report must not show day-distance metrics');
+assert.ok(rayong.front.includes('ภาพก่อนหน้า')&&rayong.front.includes('ภาพปัจจุบัน'),'Executive table must expose both dates instead of day gap');
+assert.ok(rayong.text.includes('<th>ภาพก่อนหน้า</th>')&&rayong.text.includes('<th>ภาพปัจจุบัน</th>'),'Ranked evidence uses separately labeled acquisition dates');
+assert.ok(rayong.text.includes('วันที่ภาพก่อนหน้า:')&&rayong.text.includes('วันที่ภาพปัจจุบันที่ใช้เทียบ:'),'Plot before-after pages label both actual scene dates');
+assert.ok(rayong.text.includes('ภาพปัจจุบัน” หมายถึงวันภาพหลังที่ใช้เทียบ'),'Explain that comparison-current need not be latest acquisition');
+
+
 const a4Overflows=await page.evaluate(()=>{
  const host=document.createElement('div');
  host.style.cssText='position:absolute;left:-15000px;top:0;width:210mm;pointer-events:none';
