@@ -91,6 +91,7 @@ def stage(plots,out,max_dates):
                 mndwi_results.append({"plot":plot,"date":date,
                                       "status":"AUDIT_ERROR","detail":str(exc)[:200]})
         report["mndwi_resampling_audit"]=mndwi_results
+        report["mndwi_threshold_review"]=[{"plot":x["plot"],"date":x["date"],"near_zero_pixels":x["methods"]["average"].get("pixels_within_mndwi_pm_0_05"),"valid_pixels":x["methods"]["average"].get("sample_pixels")} for x in mndwi_results if x.get("methods",{}).get("average",{}).get("pixels_within_mndwi_pm_0_05",0)>0]
 
         actual={(x["plot"],x["date"]):x for x in analysis["scenes"]}
         old_scenes={(x["plot"],x["date"]):x for x in old["scenes"]}
