@@ -318,6 +318,19 @@ const mobileChartLayout=await mobile.locator('#time-series-panel').evaluate(pane
 });
 assert.ok(mobileChartLayout.plotWithinCard&&mobileChartLayout.datesBelowPlot&&mobileChartLayout.detailsInCard&&mobileChartLayout.chooserWithinCard&&mobileChartLayout.plotHeight>=200,
  'Mobile Time Series chart must not overrun card: '+JSON.stringify(mobileChartLayout));
+await mobile.locator('#menu-btn').click();
+await mobile.locator('[data-view="insights"]').click();
+await mobile.locator('#plot-select').selectOption('13-STC');
+await mobile.locator('#water-date-select').selectOption('2026-09-29');
+const mobileWaterLayout=await mobile.locator('#water-daily-panel .hydro-kpis').evaluate(grid=>
+ [...grid.querySelectorAll('.kpi')].every(card=>{
+   const rect=card.getBoundingClientRect(),strong=card.querySelector('strong')?.getBoundingClientRect(),
+     foot=card.querySelector('.foot')?.getBoundingClientRect();
+   return !!strong&&!!foot&&strong.bottom<=foot.top+1&&foot.bottom<=rect.bottom+1 &&
+     strong.right<=rect.right+1&&foot.right<=rect.right+1;
+ }));
+assert.ok(mobileWaterLayout,'Mobile water values and provenance footnotes must not overlap or overflow');
+
 
 const chooser=await mobile.locator('#timeseries-metric-select').boundingBox();
 assert.ok(chooser&&chooser.width>=190&&chooser.width<=390,'Chart metric selection should fit phone width');
