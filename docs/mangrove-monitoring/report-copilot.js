@@ -672,7 +672,8 @@ async function markVisualChanges(root){
    }
    const area=validAll?changedAll/validAll:0;
    if(validAll<count*count*.24){caption.textContent='พิกเซลที่อ่านเทียบได้มีน้อย อาจมีเมฆ/NoData — ไม่วงอัตโนมัติ';continue;}
-   if(area>.68){caption.textContent='ภาพสีเปลี่ยนกว้างมากทั้งภาพ อาจเกิดจากเมฆหรือการเรนเดอร์ — ไม่ระบุจุดเปลี่ยนแปลงโดยอัตโนมัติ';continue;}
+   const widespread=area>.68;
+   if(area>.93){caption.textContent='ภาพสีเปลี่ยนแทบทั้งภาพ อาจเกิดจากเมฆหรือการเรนเดอร์ — ไม่ระบุจุดเปลี่ยนแปลงโดยอัตโนมัติ';continue;}
    if(area<.015||!cells.length){caption.textContent='ยังไม่พบความต่างของสีดัชนีที่เด่นพอจะวงอัตโนมัติ สามารถดูคู่ภาพเปรียบเทียบด้วยตาได้';continue;}
    cells.sort((a,b)=>b.score-a.score);
    const hits=[];
@@ -686,7 +687,7 @@ async function markVisualChanges(root){
     '<circle cx="'+p.cx.toFixed(1)+'" cy="'+p.cy.toFixed(1)+'" r="93" fill="none" stroke="#ef8a1b" stroke-width="7" stroke-dasharray="13 9"/>'+
     '<circle cx="'+(p.cx+72).toFixed(1)+'" cy="'+(p.cy-72).toFixed(1)+'" r="24" fill="#ef8a1b" stroke="white" stroke-width="3"/>'+
     '<text x="'+(p.cx+72).toFixed(1)+'" y="'+(p.cy-63).toFixed(1)+'" text-anchor="middle" fill="#fff" font-size="25" font-weight="700">'+(i+1)+'</text>').join('');
-   caption.textContent='วงจุดสังเกตเบื้องต้น '+hits.length+' จุด จากความต่างของสีภาพดัชนีสองวัน (ไม่ใช่ขอบเขตน้ำท่วมหรือผลวัดพื้นที่)';
+   caption.textContent='วงจุดสังเกตเบื้องต้น '+hits.length+' จุด '+(widespread?'(สีต่างกันกว้างมาก ควรตรวจเมฆและการเรนเดอร์) ':'')+'จากความต่างของสีภาพดัชนีสองวัน (ไม่ใช่ขอบเขตน้ำท่วมหรือผลวัดพื้นที่)';
   }catch(e){caption.textContent='ไม่สามารถประมวลผลการเปรียบเทียบสีภาพได้ จึงไม่วงจุดโดยคาดเดา';}
  }
 }
