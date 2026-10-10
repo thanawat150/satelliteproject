@@ -239,6 +239,7 @@ await page.locator('[data-view="reports"]').click();
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
 assert.ok((await page.locator('#view-root').innerText()).includes('ภาพดาวเทียม / ภาพดัชนีประกอบรายงาน'),'Report includes single-image map');
 await page.locator('#image-date').selectOption('2026-08-03');
+await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-08-03'&&!!document.querySelector('#mmc-geo-map .leaflet-image-layer'),{timeout:20000});
 assert.ok(await page.locator('#mmc-geo-map .leaflet-image-layer').count()>=1,'Historical report image overlays GIS correctly');
 await page.locator('[data-image-layout="compare"]').click();
 assert.ok(await page.locator('.img-compare-grid .img-boundary-line').count()>=1,'Report compare images retain source boundaries');
