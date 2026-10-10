@@ -247,7 +247,10 @@ function floodPlan(d){
  issues.push('ใช้คู่ภาพที่ทั้งวันก่อนและวันหลังอยู่ในช่วงเวลาที่เลือกและมี Scene ผ่าน QA ในทะเบียนเท่านั้น');
  if(variableWindows)issues.push('คู่วันที่ภาพของแต่ละแปลงไม่ตรงกัน จึงไม่ใช้ลำดับพื้นที่น้ำเพิ่มเพื่อยืนยันความรุนแรงที่เปรียบเทียบกันได้');
  const geodiff=comparable.filter(r=>r.plot.geometry&&r.plot.area!=null&&r.area>Number(r.plot.area)+0.1);
+ const balanceReview=comparable.filter(r=>r.pair.water_new_rai!=null&&r.pair.water_lost_rai!=null&&Math.abs(Number(r.pair.water_new_rai)-Number(r.pair.water_lost_rai)-Number(r.pair.water_net_change_rai))>0.01);
  if(geodiff.length)issues.push('พื้นที่พิกเซลร่วมมากกว่าพื้นที่ Geometry ใน '+geodiff.length+' แปลง: อาจต่างจาก Rasterization ต้องตรวจการคำนวณก่อน Audit');
+ if(balanceReview.length)issues.push('พบค่า Δ น้ำไม่ตรงกับผลต่างน้ำเพิ่มและน้ำลดใน '+balanceReview.length+' แปลง ควรระงับการใช้ผลจนกว่าจะตรวจสูตร/ข้อมูลต้นทาง');
+ if(comparable.length>3&&increase.length===comparable.length)issues.push('ทุกแปลงที่มีคู่ภาพพบพื้นที่น้ำเพิ่มสุทธิพร้อมกัน อาจมีปัจจัยร่วมของชุดภาพ/ฤดูกาล/น้ำขึ้นลง ต้องตรวจทั้งระบบก่อนระบุเหตุการณ์น้ำท่วม');
  issues.push('ยังไม่พบข้อมูลระดับน้ำขึ้นลง ณ เวลาถ่ายภาพที่ผูกกับคู่ภาพในการส่งออกรายงานนี้');
  issues.push('ยังไม่มีหลักฐานภาคสนามหรือการตรวจสอบความถูกต้องอิสระเพื่อยืนยันน้ำท่วมหรือความเสียหาย');
  const candidates=Math.min(3,ordered.length),priority=ordered.slice(0,candidates);
@@ -273,6 +276,7 @@ function floodPlan(d){
  const top3=table(ordered.slice(0,3).map(shortRow),[['code','แปลง'],['water','น้ำเปลี่ยน'],['pct','% พื้นที่ร่วม'],['before','ภาพก่อนหน้า'],['current','ภาพปัจจุบัน']]);
  section('01 / DECISION','สรุปสถานการณ์พื้นที่น้ำ · '+scope,
   '<div class="rpt-flood-status"><strong>ผลคัดกรอง:</strong> '+esc(status)+'</div>'+
+  (comparable.length>3&&increase.length===comparable.length?'<p class="rpt-cross-scene"><strong>จุดสังเกตระดับจังหวัด:</strong> แปลงที่มีคู่ภาพทั้งหมด '+increase.length+' แปลงแสดงพื้นที่น้ำเพิ่มสุทธิพร้อมกัน จึงควรตรวจวันภาพ การประมวลผล ฤดูกาล และอิทธิพลน้ำขึ้นลงร่วมกันก่อนจัดเป็นเหตุการณ์น้ำท่วม</p>':'')+
   '<p class="rpt-lead">วิเคราะห์ '+esc(scopeText)+' '+esc(scope)+' จาก Sentinel-2 และคู่ภาพ Change Detection ที่ผ่านเกณฑ์ข้อมูลในช่วง '+esc(ui.period==='all'?'ทุกวันที่มีข้อมูล':ui.period+' วันย้อนหลัง')+'. ค่าที่เห็นเป็นการเปลี่ยนแปลงการจำแนกน้ำ ไม่ใช่พื้นที่น้ำท่วมยืนยัน</p>'+
   coverage+'<h3>แปลงที่มีพื้นที่น้ำเพิ่มสุทธิสูงสุดในชุดที่ตรวจได้</h3>'+top3+
   '<div class="rpt-pictures rpt-cover-grid">'+coverVisual+'</div>'+
@@ -334,7 +338,7 @@ function floodPlan(d){
   '<div><b>3. ตรวจแปลงภาคสนาม</b><p>หากมีหลักฐานเพิ่ม ให้เลือกจุดสำรวจ ตรวจการท่วมขัง การรอดของต้นไม้ และสภาพพื้นที่ บันทึกภาพพร้อมพิกัดและวันเวลา</p></div>'+
   '<div><b>4. อนุมัติรายงานผลกระทบ</b><p>ยกระดับเป็นผลยืนยันได้เฉพาะเมื่อมีหลักฐานอย่างเป็นอิสระ และผู้ตรวจทานรับรองสมมติฐาน/วิธีคำนวณ</p></div></div>'+
   '<h3>ข้อสรุปที่ยังตอบไม่ได้</h3><p class="rpt-disclaimer">ยังสรุปไม่ได้ว่ามีน้ำท่วมจริงกี่ไร่ เกิดวันใด ทำให้ต้นไม้เสียหายกี่ต้น หรือเกิดมูลค่าความเสียหายเท่าไร</p>');
- const dates=new Set(d.good.map(x=>x.date)),dataGaps=d.pp.filter(p=>!pairs.has(p.code)).map(p=>p.code);
+ const dataGaps=d.pp.filter(p=>!pairs.has(p.code)).map(p=>p.code);
  section('07 / AUDIT','หลักฐาน QA/QC และความพร้อมการตรวจสอบ',
   '<div class="rpt-kpis rpt-flood-kpis">'+metric('แปลงทั้งหมด',rows.length)+metric('แปลงมี Change Pair',comparable.length)+
   metric('วันภาพ QA ผ่าน',d.good.length+'/'+d.all.length)+metric('แปลงยังไม่มีคู่เทียบ',dataGaps.length)+'</div>'+
@@ -348,6 +352,17 @@ function floodPlan(d){
    [['item','หัวข้อ'],['state','สถานะ'],['owner','สิ่งที่ต้องทำ']])+
   '<p class="rpt-disclaimer">สถานะรายงาน: DRAFT / SCREENING ONLY · ไม่ผ่านเกณฑ์ยืนยันผลกระทบด้านน้ำท่วมและต้นไม้ โดยไม่มีหลักฐานเพิ่ม</p>'+
   '<p class="rpt-caption">ที่มา: ขอบเขตโครงการ, Sentinel-2 GeoTIFF, ผล Change Detection ที่ผ่าน AUTO_VALID และข้อมูล NASA POWER เมื่อมี · สร้าง '+esc(dateNow())+'</p>');
+  if(geodiff.length||balanceReview.length||dataGaps.length){
+   const areaRows=geodiff.map(r=>({plot:r.code,geometry:num(r.plot.area),clear:num(r.area),diff:'+'+num(r.area-Number(r.plot.area))}));
+   section('08 / QA REVIEW','รายการตรวจสอบที่ยังไม่ผ่าน QA',
+    '<p class="rpt-lead">ต้องตรวจแก้ข้อแตกต่างของพื้นที่ หรืออธิบายวิธีคำนวณก่อนนำผลไปใช้อ้างอิงในเอกสารรับรอง</p>'+
+    '<h3>พื้นที่พิกเซลร่วมเกินพื้นที่ Geometry</h3>'+
+    table(areaRows,[['plot','แปลง'],['geometry','Geometry (ไร่)'],['clear','พิกเซลร่วม (ไร่)'],['diff','ผลต่าง (ไร่)']])+
+    '<p class="rpt-caption">ขนาดพื้นที่อาจต่างจากการ Rasterization / ขอบเขตพิกเซล ไม่ถือว่าค่าใดผิดจนกว่าจะตรวจวิธีคำนวณและ CRS</p>'+
+    (balanceReview.length?'<h3>ผลน้ำสุทธิที่ไม่ตรงกับน้ำเพิ่มลบน้ำลด</h3>'+table(balanceReview.map(r=>({plot:r.code,new:num(r.pair.water_new_rai),lost:num(r.pair.water_lost_rai),net:num(r.water)})),[['plot','แปลง'],['new','น้ำเพิ่ม'],['lost','น้ำลด'],['net','สุทธิ']]):'')+
+    '<h3>แปลงที่ยังไม่มีคู่ภาพพร้อมเปรียบเทียบ</h3><p>'+esc(dataGaps.length?dataGaps.join(', '):'ทุกแปลงมีคู่ภาพ')+'</p>'+
+    '<div class="rpt-disclaimer">Data Quality Gate: ยังไม่พร้อมรับรองผลกระทบ • เปิดรายงานคัดกรองเพื่อชี้เป้าตรวจสอบเพิ่มเติมได้เท่านั้น</div>');
+  }
  if(ui.appendix){
   const modes=ui.modules.has('indices')?[...ui.metrics].filter(m=>METRICS[m]).slice(0,3):[];
   const cards=[];
