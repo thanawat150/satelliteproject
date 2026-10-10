@@ -104,8 +104,8 @@ const boundary=await page.locator('#imagery-explorer').evaluate(el=>{
 });
 assert.ok(boundary.count>=8&&boundary.main&&boundary.bounds,'Actual polygon must overlay RGB/index thumbnails without distortion');
 const imageStatus=await page.locator('#imagery-explorer').evaluate(el=>({
-  realImages:[...el.querySelectorAll('img[src^="data:image/"]')].length,
-  validLoaded:[...el.querySelectorAll('img[src^="data:image/"]')].filter(x=>x.complete&&x.naturalWidth>0).length,
+  realImages:[...el.querySelectorAll('img')].filter(x=>x.src.startsWith('data:image/')||x.src.includes('/imagery/')).length,
+  validLoaded:[...el.querySelectorAll('img')].filter(x=>(x.src.startsWith('data:image/')||x.src.includes('/imagery/'))&&x.complete&&x.naturalWidth>0).length,
   qa:el.innerText.includes('AUTO_VALID'),
   before:el.innerText.includes('BEFORE'),
   after:el.innerText.includes('AFTER')
