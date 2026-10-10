@@ -369,14 +369,14 @@ function reportChoices(){
  container.oninput=e=>{if(e.target.id==='rpt-text')ui.text=e.target.value;};
  container.onchange=e=>{
   const id=e.target.id,fields={'rpt-type':'type','rpt-scope':'scope','rpt-plot':'plot','rpt-province':'province','rpt-period':'period','rpt-density':'density','rpt-image-dates':'imageDates'};
-  if(fields[id]){ui[fields[id]]=e.target.value;if(id==='rpt-type')ui.modules=new Set(DEFAULT[ui.type]);if(id==='rpt-scope')ui.imageDates=ui.scope==='all'?'1':ui.scope==='province'?'2':'3';}
+  if(fields[id]){ui[fields[id]]=e.target.value;if(id==='rpt-type')ui.modules=new Set(DEFAULT[ui.type]);if(id==='rpt-scope'){ui.imageDates=ui.scope==='all'?'1':ui.scope==='province'?'2':'3';if(ui.scope==='province'&&!provinceList().includes(ui.province))ui.province=plotList().find(p=>p.code===ui.plot)?.province||provinceList()[0]||'ALL';}}
   if(e.target.dataset.rptModule){if(e.target.checked)ui.modules.add(e.target.dataset.rptModule);else ui.modules.delete(e.target.dataset.rptModule);}
   if(e.target.dataset.rptMetric){if(e.target.checked)ui.metrics.add(e.target.dataset.rptMetric);else ui.metrics.delete(e.target.dataset.rptMetric);}
   if(id==='rpt-type'||id==='rpt-scope')syncForm();showBlueprint();updatePreview();
  };
  container.onclick=e=>{
   const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.rptScopeSwitch){ui.scope=b.dataset.rptScopeSwitch;ui.imageDates=ui.scope==='all'?'1':ui.scope==='province'?'2':'3';syncForm();updatePreview();return;}
+  if(b.dataset.rptScopeSwitch){ui.scope=b.dataset.rptScopeSwitch;ui.imageDates=ui.scope==='all'?'1':ui.scope==='province'?'2':'3';if(ui.scope==='province'&&!provinceList().includes(ui.province))ui.province=plotList().find(p=>p.code===ui.plot)?.province||provinceList()[0]||'ALL';syncForm();updatePreview();return;}
   if(b.dataset.rptSample){
    const example={water:'รายงานแปลง '+ui.plot+' ย้อนหลัง 6 เดือน เน้นพื้นที่น้ำเพิ่ม MNDWI NDWI และฝน ภาพใหญ่',forest:'ดูสภาพป่าชายเลนแปลง '+ui.plot+' ย้อนหลัง 1 ปี เน้น NDVI NDRE NDMI และกราฟ',executive:'ทำรายงานจังหวัดระยองสำหรับผู้บริหาร ย้อนหลัง 3 เดือน เน้นภาพ ไม่เอาตารางเยอะ',audit:'ทำรายงานตรวจสอบ QA/QC และหลักฐานแปลง '+ui.plot+' ย้อนหลัง 1 ปี รายละเอียดทางเทคนิค'};
    ui.text=example[b.dataset.rptSample];$('rpt-text').value=ui.text;return;
