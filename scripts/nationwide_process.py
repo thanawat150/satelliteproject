@@ -116,7 +116,7 @@ def one_scene(plot,date,files,geom_ll,meta):
   ndvi=safe_index(b8,b4)
   ndre=safe_index(b8a,b5)
   ndmi=safe_index(b8a,b11)
-  mndwi=safe_index(b3,b11)
+  mndwi=safe_index(regrid(ds10,band(ds10,'B3',2),ds20,how=Resampling.average),b11)
   ndwi=safe_index(b3,b8)
   bsi=safe_index(b11+b4,b8+b2)
   savi=np.divide(1.5*(b8-b4),(b8+b4+0.5*10000),out=np.full_like(b8,np.nan),where=np.isfinite(b8+b4))
