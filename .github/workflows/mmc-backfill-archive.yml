@@ -1,0 +1,67 @@
+name: MMC Backfill Archived Index Maps
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/mmc_backfill_archived_previews.py"
+      - "scripts/mmc_validate_all_previews.py"
+      - ".github/workflows/mmc-backfill-archive.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mmc-render-original-s2
+  cancel-in-progress: false
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install TIFF processing libraries
+        run: python -m pip install "gdown==6.4.2" numpy rasterio pillow
+      - name: Reconstruct four legacy plot-dates from actual original 10m and 20m TIFFs
+        run: python scripts/mmc_backfill_archived_previews.py
+      - name: Validate ALL archive and generated preview dates, image modes, and PNG/WebP bytes
+        run: python scripts/mmc_validate_all_previews.py
+      - name: Run independent RGB and spectral index display QA
+        run: python scripts/mmc_visual_audit.py
+      - name: Enforce no fabricated analysis and no missing image modes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("docs/mangrove-monitoring")
+          m=json.loads((root/"imagery_manifest.json").read_text())
+          qa=json.loads((root/"all_preview_coverage_audit.json").read_text())
+          assert qa["archive_only_dates"]==0
+          assert qa["incomplete_images"]==0
+          assert qa["total_plot_dates"]==466
+          for plot,date in (("13-STC","2026-10-02"),("13-STC","2026-10-07"),("14-VSD","2026-10-02"),("14-VSD","2026-10-07")):
+              item=next(x for x in m["generated_items"] if x["plot"]==plot and x["date"]==date)
+              assert item["archive_backfill"] is True
+              assert item["preview_kind"]=="VISUAL_ONLY_NON_QA"
+              assert item["source_qa_status"]=="UNPROCESSED"
+              assert item["index_stats"]=={}
+              assert item["index_parity"]=={}
+              assert len(item["assets"])==8 and "ndwi" in item["assets"]
+          print("MMC_ARCHIVE_REAL_TIFF_BACKFILL_ACCEPTED",qa["total_plot_dates"],qa["required_preview_images"])
+          PY
+          git diff --exit-code -- docs/data/nationwide/nationwide_results.json
+      - name: Publish only static preview imagery and QA evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/mangrove-monitoring/imagery/ \
+            docs/mangrove-monitoring/imagery_manifest.json \
+            docs/mangrove-monitoring/all_preview_coverage_audit.json \
+            docs/mangrove-monitoring/rgb_quality_audit.json \
+            docs/mangrove-monitoring/index_quality_audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(mmc): publish complete archived TIFF-derived index preview modes"
+            git pull --rebase -X theirs origin main
+            git push origin HEAD:main
+          fi
