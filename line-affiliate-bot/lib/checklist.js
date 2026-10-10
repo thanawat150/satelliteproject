@@ -20,6 +20,9 @@ export function emptyChecklist(date = bkkDate()) {
     tiktok_affiliate: false,
     tiktok_content: false,
     shopee_video: false,
+    instagram: false,
+    facebook: false,
+    youtube: false,
     updated_at: new Date().toISOString()
   };
 }
@@ -59,16 +62,19 @@ export async function writeChecklist(state) {
 
 export function statusText(s, heading = '📋 สถานะวันนี้') {
   const rows = [
-    ['TikTok Affiliate', !!s.tiktok_affiliate],
-    ['TikTok Content', !!s.tiktok_content],
-    ['Shopee Video', !!s.shopee_video]
+    ['TikTok ขาย', !!s.tiktok_affiliate],
+    ['TikTok คลิป', !!s.tiktok_content],
+    ['Shopee Video', !!s.shopee_video],
+    ['Instagram', !!s.instagram],
+    ['Facebook', !!s.facebook],
+    ['YouTube', !!s.youtube]
   ];
   const done = rows.filter(([, value]) => value).length;
 
   return heading + '\n' +
     rows.map(([name, value]) => (value ? '✅ ' : '⬜ ') + name).join('\n') +
-    '\n\nความคืบหน้า ' + done + '/3' +
-    (done === 3 ? '\n🎉 วันนี้ครบแล้ว' : '');
+    '\n\nความคืบหน้า ' + done + '/6' +
+    (done === 6 ? '\n🎉 วันนี้ครบแล้ว' : '');
 }
 
 export function doneIntent(text) {
@@ -88,6 +94,15 @@ export function targetFromText(text) {
   }
   if (/(shopee|ช้อปปี้|ช็อปปี้|ชอปปี้)/i.test(text)) {
     return 'shopee_video';
+  }
+  if (/(instagram|ig|อินสตาแกรม|ไอจี)/i.test(text)) {
+    return 'instagram';
+  }
+  if (/(facebook|fb|เฟซบุ๊ก|เฟสบุ๊ก)/i.test(text)) {
+    return 'facebook';
+  }
+  if (/(youtube|yt|ยูทูบ|ยูทูป)/i.test(text)) {
+    return 'youtube';
   }
   if (/(tiktok|ติ๊กต็อก|ติ๊กต๊อก)/i.test(text)) {
     return 'tiktok_ambiguous';
