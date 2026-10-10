@@ -5,14 +5,14 @@
     "total_qa_valid_dates": 241,
     "qa_valid_with_new_rgb": 241,
     "qa_valid_pending_new_rgb": 0,
-    "published_generated_dates": 462,
+    "published_generated_dates": 466,
     "archived_date_pairs": 65,
-    "non_qa_dates_with_visual_only_rgb": 221,
+    "non_qa_dates_with_visual_only_rgb": 225,
     "non_qa_dates_in_source": 221,
     "rendered_files_with_errors": 0,
     "visual_review_flag_counts": {
-      "DISPLAY_ONLY_NOT_SCIENTIFIC_QA": 221,
-      "RGB_NEAR_WHITE": 85,
+      "DISPLAY_ONLY_NOT_SCIENTIFIC_QA": 225,
+      "RGB_NEAR_WHITE": 86,
       "SCL_UNCLASSIFIED_HIGH": 24,
       "SMALL_RGB_SAMPLE": 8,
       "RGB_NODATA_HIGH": 1
@@ -231,6 +231,42 @@
       "image_assets": 8
     },
     {
+      "plot": "13-STC",
+      "date": "2026-10-02",
+      "renderer": "mmc-rgb-fixed-reflectance-v2",
+      "scl_valid_pct": null,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_plot_sample_pixels": 4165,
+      "rgb_image_dimensions": [
+        108,
+        109
+      ],
+      "issues": [
+        "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
+      ],
+      "image_assets": 8
+    },
+    {
+      "plot": "13-STC",
+      "date": "2026-10-07",
+      "renderer": "mmc-rgb-fixed-reflectance-v2",
+      "scl_valid_pct": null,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_plot_sample_pixels": 4165,
+      "rgb_image_dimensions": [
+        107,
+        108
+      ],
+      "issues": [
+        "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
+      ],
+      "image_assets": 8
+    },
+    {
       "plot": "14(1)-STC",
       "date": "2026-07-19",
       "renderer": "mmc-rgb-fixed-reflectance-v2",
@@ -398,6 +434,43 @@
         32
       ],
       "issues": [],
+      "image_assets": 8
+    },
+    {
+      "plot": "14-VSD",
+      "date": "2026-10-02",
+      "renderer": "mmc-rgb-fixed-reflectance-v2",
+      "scl_valid_pct": null,
+      "rgb_near_white_pct": 86.6,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_plot_sample_pixels": 626,
+      "rgb_image_dimensions": [
+        55,
+        32
+      ],
+      "issues": [
+        "DISPLAY_ONLY_NOT_SCIENTIFIC_QA",
+        "RGB_NEAR_WHITE"
+      ],
+      "image_assets": 8
+    },
+    {
+      "plot": "14-VSD",
+      "date": "2026-10-07",
+      "renderer": "mmc-rgb-fixed-reflectance-v2",
+      "scl_valid_pct": null,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_plot_sample_pixels": 626,
+      "rgb_image_dimensions": [
+        54,
+        31
+      ],
+      "issues": [
+        "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
+      ],
       "image_assets": 8
     },
     {

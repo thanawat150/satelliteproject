@@ -88123,6 +88123,650 @@
       "algorithm": "pdd-full-monitor-v1.0",
       "original_tif10_file_id": "1F_wumBGUV6e5AKBQyuJAnxu5qE_BawWk",
       "original_tif20_file_id": "1qhbur5ueQf9G3bWnY5XcHMCsxamMRK7q"
+    },
+    {
+      "plot": "13-STC",
+      "date": "2026-10-02",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/13-STC/2026-10-02/true_color.webp",
+        "false_color": "./imagery/13-STC/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/13-STC/2026-10-02/ndvi.png",
+        "ndre": "./imagery/13-STC/2026-10-02/ndre.png",
+        "ndmi": "./imagery/13-STC/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/13-STC/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/13-STC/2026-10-02/mndwi.png",
+        "bsi": "./imagery/13-STC/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          12.705262889532984,
+          101.68756019296525
+        ],
+        [
+          12.715301865521614,
+          101.69778577400872
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.70526382560155,
+            101.68765219932284
+          ],
+          [
+            12.715210603129789,
+            101.697692810645
+          ]
+        ],
+        "false_color": [
+          [
+            12.70526382560155,
+            101.68765219932284
+          ],
+          [
+            12.715210603129789,
+            101.697692810645
+          ]
+        ],
+        "ndvi": [
+          [
+            12.705262889532984,
+            101.68756019296525
+          ],
+          [
+            12.715301865521614,
+            101.69778577400872
+          ]
+        ],
+        "ndre": [
+          [
+            12.705262889532984,
+            101.68756019296525
+          ],
+          [
+            12.715301865521614,
+            101.69778577400872
+          ]
+        ],
+        "ndmi": [
+          [
+            12.705262889532984,
+            101.68756019296525
+          ],
+          [
+            12.715301865521614,
+            101.69778577400872
+          ]
+        ],
+        "ndwi": [
+          [
+            12.705262889532984,
+            101.68756019296525
+          ],
+          [
+            12.715301865521614,
+            101.69778577400872
+          ]
+        ],
+        "mndwi": [
+          [
+            12.705262889532984,
+            101.68756019296525
+          ],
+          [
+            12.715301865521614,
+            101.69778577400872
+          ]
+        ],
+        "bsi": [
+          [
+            12.705262889532984,
+            101.68756019296525
+          ],
+          [
+            12.715301865521614,
+            101.69778577400872
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          108,
+          109
+        ],
+        "false_color": [
+          108,
+          109
+        ],
+        "indices_20m": [
+          55,
+          55
+        ]
+      },
+      "rgb_native_width": 108,
+      "rgb_native_height": 109,
+      "width": 108,
+      "height": 109,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": 20
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 4165,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "ARCHIVE ONLY: source-TIFF-based RGB and 6 indices, no SCL analysis approval; not valid for water/forest change statistics",
+      "source_bands": "Original Sentinel-2 10m B2/B3/B4/B8 + 20m B5/B8A/B11 when available",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_DISPLAY_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "original_tif10_file_id": "1W62EIqfDmBJqp3ZgislhMRELD5B3Vddq",
+      "original_tif20_file_id": "1sxVdkTua61AftlxzY7cwCQMEK2GXRyOO",
+      "archive_backfill": true,
+      "original_archive_has_ndwi": false
+    },
+    {
+      "plot": "13-STC",
+      "date": "2026-10-07",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/13-STC/2026-10-07/true_color.webp",
+        "false_color": "./imagery/13-STC/2026-10-07/false_color.webp",
+        "ndvi": "./imagery/13-STC/2026-10-07/ndvi.png",
+        "ndre": "./imagery/13-STC/2026-10-07/ndre.png",
+        "ndmi": "./imagery/13-STC/2026-10-07/ndmi.png",
+        "ndwi": "./imagery/13-STC/2026-10-07/ndwi.png",
+        "mndwi": "./imagery/13-STC/2026-10-07/mndwi.png",
+        "bsi": "./imagery/13-STC/2026-10-07/bsi.png"
+      },
+      "bounds": [
+        [
+          12.705262889532984,
+          101.68774420567313
+        ],
+        [
+          12.715119340719108,
+          101.69778386547752
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.70526382560155,
+            101.68774420567313
+          ],
+          [
+            12.715119340719108,
+            101.69769185641552
+          ]
+        ],
+        "false_color": [
+          [
+            12.70526382560155,
+            101.68774420567313
+          ],
+          [
+            12.715119340719108,
+            101.69769185641552
+          ]
+        ],
+        "ndvi": [
+          [
+            12.705262889532984,
+            101.68774420567313
+          ],
+          [
+            12.715119340719108,
+            101.69778386547752
+          ]
+        ],
+        "ndre": [
+          [
+            12.705262889532984,
+            101.68774420567313
+          ],
+          [
+            12.715119340719108,
+            101.69778386547752
+          ]
+        ],
+        "ndmi": [
+          [
+            12.705262889532984,
+            101.68774420567313
+          ],
+          [
+            12.715119340719108,
+            101.69778386547752
+          ]
+        ],
+        "ndwi": [
+          [
+            12.705262889532984,
+            101.68774420567313
+          ],
+          [
+            12.715119340719108,
+            101.69778386547752
+          ]
+        ],
+        "mndwi": [
+          [
+            12.705262889532984,
+            101.68774420567313
+          ],
+          [
+            12.715119340719108,
+            101.69778386547752
+          ]
+        ],
+        "bsi": [
+          [
+            12.705262889532984,
+            101.68774420567313
+          ],
+          [
+            12.715119340719108,
+            101.69778386547752
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          107,
+          108
+        ],
+        "false_color": [
+          107,
+          108
+        ],
+        "indices_20m": [
+          54,
+          54
+        ]
+      },
+      "rgb_native_width": 107,
+      "rgb_native_height": 108,
+      "width": 107,
+      "height": 108,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": 20
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 4165,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "ARCHIVE ONLY: source-TIFF-based RGB and 6 indices, no SCL analysis approval; not valid for water/forest change statistics",
+      "source_bands": "Original Sentinel-2 10m B2/B3/B4/B8 + 20m B5/B8A/B11 when available",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_DISPLAY_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "original_tif10_file_id": "1gZqqXLwgOt5ArjsnSJkaMo3deEK5bRiG",
+      "original_tif20_file_id": "1PsUYH2YKjSC1xb3wNzzylKIrY0luCk5H",
+      "archive_backfill": true,
+      "original_archive_has_ndwi": false
+    },
+    {
+      "plot": "14-VSD",
+      "date": "2026-10-02",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/14-VSD/2026-10-02/true_color.webp",
+        "false_color": "./imagery/14-VSD/2026-10-02/false_color.webp",
+        "ndvi": "./imagery/14-VSD/2026-10-02/ndvi.png",
+        "ndre": "./imagery/14-VSD/2026-10-02/ndre.png",
+        "ndmi": "./imagery/14-VSD/2026-10-02/ndmi.png",
+        "ndwi": "./imagery/14-VSD/2026-10-02/ndwi.png",
+        "mndwi": "./imagery/14-VSD/2026-10-02/mndwi.png",
+        "bsi": "./imagery/14-VSD/2026-10-02/bsi.png"
+      },
+      "bounds": [
+        [
+          12.718149960902283,
+          101.70444294080485
+        ],
+        [
+          12.721273759413798,
+          101.70962807159262
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.718241229433684,
+            101.70444389766806
+          ],
+          [
+            12.721183431662752,
+            101.70953510230879
+          ]
+        ],
+        "false_color": [
+          [
+            12.718241229433684,
+            101.70444389766806
+          ],
+          [
+            12.721183431662752,
+            101.70953510230879
+          ]
+        ],
+        "ndvi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721273759413798,
+            101.70962807159262
+          ]
+        ],
+        "ndre": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721273759413798,
+            101.70962807159262
+          ]
+        ],
+        "ndmi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721273759413798,
+            101.70962807159262
+          ]
+        ],
+        "ndwi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721273759413798,
+            101.70962807159262
+          ]
+        ],
+        "mndwi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721273759413798,
+            101.70962807159262
+          ]
+        ],
+        "bsi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721273759413798,
+            101.70962807159262
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          55,
+          32
+        ],
+        "false_color": [
+          55,
+          32
+        ],
+        "indices_20m": [
+          28,
+          17
+        ]
+      },
+      "rgb_native_width": 55,
+      "rgb_native_height": 32,
+      "width": 55,
+      "height": 32,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": 20
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 626,
+      "rgb_near_white_pct": 86.6,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": true,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "ARCHIVE ONLY: source-TIFF-based RGB and 6 indices, no SCL analysis approval; not valid for water/forest change statistics",
+      "source_bands": "Original Sentinel-2 10m B2/B3/B4/B8 + 20m B5/B8A/B11 when available",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_DISPLAY_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "original_tif10_file_id": "1oiogDsdmhgsFNtoZE-qyFXsLtz3mEr3v",
+      "original_tif20_file_id": "12_lVLdVhMy9XhW6Ab76Vz-NSeGKmhDeu",
+      "archive_backfill": true,
+      "original_archive_has_ndwi": false
+    },
+    {
+      "plot": "14-VSD",
+      "date": "2026-10-07",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
+      ],
+      "assets": {
+        "true_color": "./imagery/14-VSD/2026-10-07/true_color.webp",
+        "false_color": "./imagery/14-VSD/2026-10-07/false_color.webp",
+        "ndvi": "./imagery/14-VSD/2026-10-07/ndvi.png",
+        "ndre": "./imagery/14-VSD/2026-10-07/ndre.png",
+        "ndmi": "./imagery/14-VSD/2026-10-07/ndmi.png",
+        "ndwi": "./imagery/14-VSD/2026-10-07/ndwi.png",
+        "mndwi": "./imagery/14-VSD/2026-10-07/mndwi.png",
+        "bsi": "./imagery/14-VSD/2026-10-07/bsi.png"
+      },
+      "bounds": [
+        [
+          12.718149960902283,
+          101.70444294080485
+        ],
+        [
+          12.721093103911024,
+          101.70962615375167
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.718241229433684,
+            101.70453590739419
+          ],
+          [
+            12.721092164306404,
+            101.70953414342446
+          ]
+        ],
+        "false_color": [
+          [
+            12.718241229433684,
+            101.70453590739419
+          ],
+          [
+            12.721092164306404,
+            101.70953414342446
+          ]
+        ],
+        "ndvi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721093103911024,
+            101.70962615375167
+          ]
+        ],
+        "ndre": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721093103911024,
+            101.70962615375167
+          ]
+        ],
+        "ndmi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721093103911024,
+            101.70962615375167
+          ]
+        ],
+        "ndwi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721093103911024,
+            101.70962615375167
+          ]
+        ],
+        "mndwi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721093103911024,
+            101.70962615375167
+          ]
+        ],
+        "bsi": [
+          [
+            12.718149960902283,
+            101.70444294080485
+          ],
+          [
+            12.721093103911024,
+            101.70962615375167
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          54,
+          31
+        ],
+        "false_color": [
+          54,
+          31
+        ],
+        "indices_20m": [
+          28,
+          16
+        ]
+      },
+      "rgb_native_width": 54,
+      "rgb_native_height": 31,
+      "width": 54,
+      "height": 31,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": 20
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 626,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "ARCHIVE ONLY: source-TIFF-based RGB and 6 indices, no SCL analysis approval; not valid for water/forest change statistics",
+      "source_bands": "Original Sentinel-2 10m B2/B3/B4/B8 + 20m B5/B8A/B11 when available",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_DISPLAY_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "original_tif10_file_id": "1nwxJKVudLL6O-o0Hrg5J5Wj17jbO7h8K",
+      "original_tif20_file_id": "1nlqHhAsjhw5iuDUtAQNIsnReD7rZ-h6X",
+      "archive_backfill": true,
+      "original_archive_has_ndwi": false
     }
   ],
   "render_status": {
@@ -88131,5 +88775,13 @@
     "new_errors": 0,
     "preserved_existing_19_plots": true,
     "product_note": "Original Sentinel-2 10m/20m GeoTIFF via matching Drive IDs; render QA-valid dates only"
+  },
+  "archive_backfill_qa": {
+    "source": "original matching 10m+20m TIFF pairs in plot/date Drive folders",
+    "date_count": 4,
+    "rendered_this_run": 4,
+    "legacy_missing_ndwi_replaced_with_source_computation": true,
+    "scientific_status": "VISUAL_ONLY_NOT_QUALITY_VALIDATED",
+    "archive_missing_modes": 0
   }
 }
