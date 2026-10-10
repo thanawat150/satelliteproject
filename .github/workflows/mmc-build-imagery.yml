@@ -12,6 +12,8 @@ on:
     branches: [main]
     paths:
       - "scripts/mmc_render_imagery.py"
+      - "scripts/mmc_visual_audit.py"
+      - "scripts/test_mmc_rgb_renderer.py"
       - ".github/workflows/mmc-build-imagery.yml"
 
 permissions:
