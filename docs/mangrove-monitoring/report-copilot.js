@@ -402,6 +402,35 @@ function floodPlan(d){
   '<h3>การกระจายตัวของแปลง</h3>'+gis+coverage+
   '<p class="rpt-caption">จำนวนภาพ Sentinel-2 '+d.all.length+' รายการ · ภาพผ่าน QA '+d.good.length+' รายการ · เปรียบเทียบน้ำได้ '+comparable.length+' แปลง</p>'+
   '<p class="rpt-disclaimer">แผนผังแสดงพิกัดแปลง ไม่ยืนยันพื้นที่ท่วม ระดับน้ำ หรือระดับความเสียหาย</p>');
+
+ const trackRows=rows.map(r=>{
+  const t=waterTimelineRow(r.timeline);
+  return {code:r.code,peak:t.peak,now:t.current,delta:t.change,state:t.state};
+ });
+ for(let k=0;k<trackRows.length;k+=8){
+  section('02A / CURRENT '+(Math.floor(k/8)+1),'ติดตามน้ำถึงภาพล่าสุด · ทุกแปลง',
+   '<p class="rpt-lead">เปรียบเทียบค่าสูงสุดกับภาพล่าสุดที่ผ่าน QA ของแต่ละแปลง แยกจากคู่ภาพเปรียบเทียบเดิม</p>'+
+   table(trackRows.slice(k,k+8),[['code','แปลง'],['peak','ช่วงน้ำสูง'],['now','ภาพล่าสุด'],['delta','เปลี่ยนจากสูงสุด'],['state','แนวโน้ม']])+
+   '<p class="rpt-caption">ไม่มีค่า QA หลังช่วงน้ำสูง = ยังสรุปการลดลงไม่ได้ · ค่าในตารางเป็นพื้นที่น้ำที่จำแนกจาก Sentinel-2 ไม่ใช่พื้นที่ท่วมยืนยัน</p>');
+ }
+ for(const r of priority.slice(0,3)){
+  const ts=r.timeline;if(!ts||!ts.all.length)continue;
+  const imgs=(d.visualImages||[]).filter(im=>im.plot===r.code&&imageURL(im,'true_color')).sort((a,b)=>a.date.localeCompare(b.date));
+  const before=imgs.find(x=>x.date===ts.first.date)||imgs[0],peak=imgs.find(x=>x.date===ts.peak.date)||imgs.find(x=>x.date>=ts.peak.date),
+   current=imgs.find(x=>x.date===ts.latest.date)||imgs.at(-1);
+  const chosen=[before,peak,current].filter((x,i,arr)=>x&&arr.findIndex(y=>y?.date===x.date)===i);
+  const labels=new Map([[ts.first.date,'ก่อนน้ำเพิ่ม'],[ts.peak.date,'ช่วงน้ำสูง'],[ts.latest.date,'ภาพล่าสุด']]);
+  section('02B / TIMELINE '+r.code,'ลำดับภาพและแนวโน้มน้ำ · '+r.code,
+   '<div class="rpt-kpis rpt-timeline-kpis">'+
+    metric('ภาพแรก',ts.first.date+' · '+num(ts.first.water)+' ไร่')+
+    metric('ช่วงค่าสูงสุด',ts.peak.date+' · '+num(ts.peak.water)+' ไร่')+
+    metric('ภาพล่าสุดผ่าน QA',ts.latest.date+' · '+num(ts.latest.water)+' ไร่')+'</div>'+
+   waterTimelineGraph(ts)+
+   '<div class="rpt-timeline-gallery">'+chosen.map(x=>'<div><b>'+esc(labels.get(x.date)||'วันภาพเพิ่มเติม')+' · '+esc(x.date)+'</b>'+picture(x,'true_color')+'</div>').join('')+'</div>'+
+   '<p class="rpt-caption"><b>ข้อค้นพบ:</b> '+esc(ts.state)+(ts.falling?' · ลดจากช่วงค่าสูงสุด '+num(Math.abs(ts.delta))+' ไร่':'')+'. มีภาพวันที่ '+esc(ts.all.map(y=>y.date).join(' / '))+' จากข้อมูลที่ผ่าน QA</p>'+
+   '<p class="rpt-caption">ภาพจากข้อมูลจริง เรียงตามวันบันทึก; ภาพที่ไม่มี Raster สำหรับวันนั้นจะไม่สร้างขึ้นแทน</p>');
+ }
+
  const ranked=comparable.slice().sort((a,b)=>(b.water??-Infinity)-(a.water??-Infinity));
  const rankingCols=[['code','แปลง'],['water','Δ น้ำ ไร่'],['pct','% พื้นที่ร่วม'],['before','ภาพก่อนหน้า'],['current','ภาพปัจจุบัน']];
  const rankChunk=ranked.slice(0,14);
