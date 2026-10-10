@@ -18,21 +18,29 @@ async function pushText(text) {
   if (!r.ok) throw new Error('LINE push failed: ' + r.status + ' ' + await r.text());
 }
 
-module.exports = async function handler(req, res) {
-  if (!['GET','POST'].includes(req.method)) return res.status(405).json({ ok:false });
-
+function authorized(request) {
   const expected = process.env.LINE_REMINDER_SECRET;
-  const supplied = req.headers.authorization?.replace(/^Bearer\s+/i,'') || req.query?.key;
-  if (!expected || supplied !== expected) return res.status(401).json({ ok:false, error:'unauthorized' });
+  const auth = request.headers.get('authorization') || '';
+  const supplied = auth.replace(/^Bearer\s+/i, '');
+  return !!expected && supplied === expected;
+}
 
-  const text = req.method === 'POST' ? req.body?.text : req.query?.text;
-  if (!text) return res.status(400).json({ ok:false, error:'text required' });
+export async function POST(request) {
+  if (!authorized(request)) return Response.json({ ok:false, error:'unauthorized' }, { status:401 });
+
+  let body={};
+  try { body=await request.json(); } catch {}
+  if (!body.text) return Response.json({ ok:false, error:'text required' }, { status:400 });
 
   try {
-    await pushText(String(text).slice(0, 4900));
-    return res.status(200).json({ ok:true });
+    await pushText(String(body.text).slice(0,4900));
+    return Response.json({ ok:true });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ ok:false, error:e.message });
+    return Response.json({ ok:false, error:e.message }, { status:500 });
   }
-};
+}
+
+export async function GET() {
+  return Response.json({ ok:true, service:'LINE push endpoint', method:'POST required for sending' });
+}
