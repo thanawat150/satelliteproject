@@ -14,7 +14,7 @@ on:
         default: "200"
         type: string
   schedule:
-    - cron: "25 2 * * *"
+    - cron: "20 0 * * *"
 permissions:
   contents: write
 concurrency:
