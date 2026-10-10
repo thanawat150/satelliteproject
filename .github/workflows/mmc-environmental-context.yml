@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       max_plots:
-        description: "Max number of incomplete PDD plots to update using NASA POWER"
+        description: "Max incomplete QA-valid PDD plots to update (200 covers full registry)"
         required: false
-        default: "10"
+        default: "200"
         type: string
   schedule:
     - cron: "25 2 * * *"
@@ -35,7 +35,7 @@ jobs:
         run: python -m unittest discover -s scripts -p 'test_mmc_environmental_context.py' -v
       - name: Download NASA POWER daily rainfall for PDD plot dates
         env:
-          MAX_PLOTS: ${{ inputs.max_plots || '10' }}
+          MAX_PLOTS: ${{ inputs.max_plots || '200' }}
         run: |
           python scripts/mmc_environmental_context.py --max-plots "$MAX_PLOTS"
       - name: Verify real provider metadata and null tidal gaps
