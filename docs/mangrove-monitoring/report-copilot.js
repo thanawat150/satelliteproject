@@ -564,7 +564,7 @@ function reportChoices(){
   if(id==='rpt-appendix')ui.appendix=Boolean(e.target.checked);
    if(e.target.dataset.rptModule){if(e.target.checked)ui.modules.add(e.target.dataset.rptModule);else ui.modules.delete(e.target.dataset.rptModule);}
   if(e.target.dataset.rptMetric){if(e.target.checked)ui.metrics.add(e.target.dataset.rptMetric);else ui.metrics.delete(e.target.dataset.rptMetric);}
-  if(id==='rpt-type'||id==='rpt-scope')syncForm();showBlueprint();if(id==='rpt-type'||id==='rpt-scope'||id==='rpt-appendix')updatePreview();
+  if(id==='rpt-type'||id==='rpt-scope'||id==='rpt-appendix')syncForm();showBlueprint();if(id==='rpt-type'||id==='rpt-scope'||id==='rpt-appendix')updatePreview();
  };
  container.onclick=e=>{
   const b=e.target.closest('button');if(!b)return;
@@ -597,6 +597,7 @@ function syncForm(){
  if($('rpt-flood-guidance'))$('rpt-flood-guidance').hidden=ui.type!=='water';
  if($('rpt-index-legend'))$('rpt-index-legend').textContent=ui.type==='water'?'ดัชนีภาพประกอบและภาคผนวก':'ดัชนีที่ต้องการ';
  if($('rpt-appendix'))$('rpt-appendix').closest('label').hidden=ui.type!=='water';
+ if($('rpt-image-dates'))$('rpt-image-dates').closest('label').hidden=ui.type==='water'&&!ui.appendix;
  document.querySelectorAll('[data-rpt-module]').forEach(x=>x.checked=ui.modules.has(x.dataset.rptModule));
  document.querySelectorAll('[data-rpt-metric]').forEach(x=>x.checked=ui.metrics.has(x.dataset.rptMetric));
  showBlueprint();
