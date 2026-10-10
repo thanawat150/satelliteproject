@@ -202,10 +202,27 @@ function renderPages(){
  '<footer class="rpt-pagefoot"><span>'+esc(ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ALL PLOTS')+' · '+esc(dateNow())+'</span><span>'+String(i+1)+' / '+total+'</span></footer></article>').join('');
  return {pages,d,total};
 }
+function fitImageBoundaries(doc){
+ const frames=[...doc.querySelectorAll('.rpt-image-canvas')];
+ for(const frame of frames){
+  const img=frame.querySelector('img'),svg=frame.querySelector('.rpt-image-boundary');
+  if(!img||!svg)continue;
+  const adjust=()=>{
+   const iw=img.clientWidth,ih=img.clientHeight,nw=img.naturalWidth,nh=img.naturalHeight;
+   if(!iw||!ih||!nw||!nh){svg.style.visibility='hidden';return;}
+   const scale=Math.min(iw/nw,ih/nh),w=nw*scale,h=nh*scale;
+   svg.style.left=((iw-w)/2)+'px';svg.style.top=((ih-h)/2)+'px';
+   svg.style.width=w+'px';svg.style.height=h+'px';svg.style.visibility='visible';
+  };
+  img.addEventListener('load',adjust,{once:true});
+  adjust();
+ }
+}
 function updatePreview(){
  const el=$('rpt-preview');if(!el)return;
  const report=renderPages();
  el.innerHTML='<style>'+paperStyle().replace('body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}','')+'</style><div class="rpt-papers">'+report.pages+'</div>';
+ fitImageBoundaries(el);
  const summary=$('rpt-source-summary');
  if(summary)summary.innerHTML='<b>ข้อมูลจริง:</b> '+report.d.pp.length+' แปลง · '+report.d.all.length+' วันภาพ · ผ่าน QA '+report.d.good.length+' วัน · Raster Preview '+report.d.images.length+' ฉาก · '+report.total+' หน้า';
  const note=$('rpt-warning-list');if(note)note.innerHTML=report.d.cautions.map(x=>'<p>• '+esc(x)+'</p>').join('');
@@ -215,7 +232,7 @@ function printPDF(){
  if(!popup){alert('เบราว์เซอร์บล็อกหน้าต่าง กรุณาอนุญาต Pop-ups แล้วลองอีกครั้ง');return;}
  popup.document.open();
  popup.document.write('<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><title>MMC '+esc(ui.plot)+' Report</title><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet"><style>'+paperStyle()+'</style></head><body>'+report.pages+
- '<script>window.addEventListener("load",function(){var images=Array.from(document.images);Promise.all(images.map(function(im){return im.complete?Promise.resolve():new Promise(function(resolve){im.onload=resolve;im.onerror=resolve})})).then(function(){setTimeout(function(){window.print()},350)})})<\/script></body></html>');
+ '<script>window.addEventListener("load",function(){var images=Array.from(document.images);Promise.all(images.map(function(im){return im.complete?Promise.resolve():new Promise(function(resolve){im.onload=resolve;im.onerror=resolve})})).then(function(){document.querySelectorAll(".rpt-image-canvas").forEach(function(frame){var im=frame.querySelector("img"),svg=frame.querySelector("svg");if(!svg||!im.naturalWidth)return;var iw=im.clientWidth,ih=im.clientHeight,scale=Math.min(iw/im.naturalWidth,ih/im.naturalHeight),w=im.naturalWidth*scale,h=im.naturalHeight*scale;svg.style.left=(iw-w)/2+"px";svg.style.top=(ih-h)/2+"px";svg.style.width=w+"px";svg.style.height=h+"px"});setTimeout(function(){window.print()},350)})})<\/script></body></html>');
  popup.document.close();
 }
 function exportBlueprint(){
