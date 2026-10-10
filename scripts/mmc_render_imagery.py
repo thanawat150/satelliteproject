@@ -423,6 +423,46 @@ def run_shard(args):
                 print("RENDER_ERROR",plot,date,str(e)[:150],flush=True)
             finally:
                 shutil.rmtree(local,ignore_errors=True)
+    # Display-only imagery is intentionally separate from QA-valid index products.
+    # This recovers actual cloudy/latest TIFF dates without fabricating indices.
+    for plot in assigned:
+        visual_scenes=[x for x in data["scenes"] if x["plot"]==plot and
+                       x["analysis_status"]!="AUTO_VALID"]
+        date_map={x["date"]:x for x in visual_scenes}
+        for date,scene in sorted(date_map.items()):
+            old=previous_generated.get((plot,date))
+            force=plot in refresh_plots or "ALL" in refresh_plots
+            if old and old.get("rgb_visual_only_version")=="mmc-visual-only-cloud-preserved-v1" and not force:
+                continue
+            local=out/"tmp"/plot/date
+            local.mkdir(parents=True,exist_ok=True)
+            try:
+                id10=scene.get("original_tif10_file_id")
+                name10=scene.get("original_tif10") or "10m.tif"
+                if not id10:
+                    ids=from_folder(gdown,plot,scene,folder_index)
+                    id10,name10=ids[0]
+                tif=local/"10m.tif"
+                got=gdown.download(id=id10,output=str(tif),quiet=True,
+                                   timeout=120,retries=3,use_cookies=False)
+                if not got or not tif.exists() or tif.stat().st_size<1024:
+                    raise ValueError("Unavailable original 10m TIFF: "+str(name10))
+                entry=generate_visual_only(tif,docs/plot/date,plot,date,geoms.get(plot))
+                entry["qa_valid_pct"]=scene.get("qa_valid_pct")
+                entry["source_qa_status"]=scene["analysis_status"]
+                entry["algorithm"]=scene.get("algorithm") or "ORIGINAL_10M_DISPLAY_ONLY"
+                entry["original_tif10_file_id"]=id10
+                entry["original_tif20_file_id"]=scene.get("original_tif20_file_id")
+                images.append(entry)
+                print("RENDER_VISUAL_ONLY",plot,date,entry["width"],entry["height"],flush=True)
+            except Exception as exc:
+                errors.append({"plot":plot,"date":date,
+                               "status":scene["analysis_status"],
+                               "kind":"VISUAL_ONLY",
+                               "error":str(exc)[:300]})
+                print("RENDER_VISUAL_ONLY_ERROR",plot,date,str(exc)[:130],flush=True)
+            finally:
+                shutil.rmtree(local,ignore_errors=True)
     json_write(out/"generated_shard.json",{"shard":args.shard,"plots":assigned,"items":images,"errors":errors})
     print("SHARD_END",args.shard,"plots",len(assigned),"image_dates",len(images),"errors",len(errors),flush=True)
 
