@@ -50,4 +50,23 @@ with tempfile.TemporaryDirectory() as td:
         rgba=np.asarray(preview.convert("RGBA"))
         assert rgba[0,0,3]==0,"NoData must be transparent"
         assert rgba[1,1,3]==255,"Bright or cloudy real pixels must remain visible"
-print("MMC_NONQA_VISUAL_RGB_PASS original unvalidated scene renders as display-only")
+    p20=Path(td)/"S2_20261007_20m.tif"
+    with rasterio.open(p20,"w",driver="GTiff",width=2,height=2,count=7,
+            dtype="float32",crs="EPSG:32647",transform=from_origin(500000,1500000,20,20),
+            nodata=-9999) as ds:
+        for i in range(1,8):
+            ds.write(np.full((2,2),2000+300*i,dtype=np.float32),i)
+        for i,name in [(1,"B5"),(4,"B8A"),(5,"B11"),(7,"SCL")]:
+            ds.set_band_description(i,name)
+    full=mod.generate_visual_only(src,Path(td)/"imagery8","VISUAL-STC","2026-10-07",twenty=p20)
+    assert full["preview_kind"]=="VISUAL_ONLY_NON_QA"
+    assert len(full["modes"])==8,full["modes"]
+    assert not full["index_stats"] and not full["index_parity"]
+    assert full["mode_bounds"]["ndvi"] and full["mode_dimensions"]["indices_20m"]==[2,2]
+    for mode in ("ndvi","ndre","ndmi","mndwi","bsi","ndwi"):
+        path=Path(td)/"imagery8"/(mode+".png")
+        assert path.exists(),path
+        with Image.open(path) as im:
+            assert im.size==(2,2)
+            assert np.any(np.asarray(im.convert("RGBA"))[...,3]==255)
+print("MMC_NONQA_VISUAL_RGB_PASS all 8 source images for cloudy display-only scenes; no unvalidated index stats")
