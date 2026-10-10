@@ -21,8 +21,8 @@ def sample(valid,water,vegetation,soil,polygon,day):
 
 class TestGeometryClippedChange(unittest.TestCase):
     def test_half_cell_is_not_full_cell_area(self):
-        # Polygon intersects half of each pixel in its left column: 200m2 total.
-        boundary=box(0,0,10,40)
+        # Polygon intersects one quarter of each pixel in its left column: 200m2 total.
+        boundary=box(0,0,5,40)
         a=sample([[1,0],[1,0]],[[0,0],[0,0]],[[1,0],[1,0]],[[0,0],[0,0]],boundary,"2026-01-01")
         b=sample([[1,0],[1,0]],[[1,0],[1,0]],[[0,0],[0,0]],[[0,0],[0,0]],boundary,"2026-02-01")
         change=mod.change_summary(a,b)
