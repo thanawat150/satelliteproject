@@ -93,5 +93,38 @@
         :'Non-QA image day: only visual maps, do not present quantitative indices as validated'
     };
   }
-  return Object.freeze({derive,quality,substantive,daySnapshot,QA_MIN_PIXELS,MIN_COVERAGE_PCT});
+  function priorWaterComparison(scenes,date){
+    const current=(scenes||[]).find(x=>x.date===date&&x.analysis_status==='AUTO_VALID');
+    if(!current||num(current.water_rai)===null)return {status:'NO_QA_WATER_AREA'};
+    const earlier=(scenes||[]).filter(x=>x.date<date&&x.analysis_status==='AUTO_VALID'&&num(x.water_rai)!==null)
+      .sort((a,b)=>b.date.localeCompare(a.date));
+    if(!earlier.length)return {status:'NO_PREVIOUS_QA_SCENE'};
+    const previous=earlier[0],delta=num(current.water_rai)-num(previous.water_rai);
+    const area=num(current.pdd_area_rai);
+    const material=Math.abs(delta)>=0.25 || (area>0&&Math.abs(delta)/area>=.05);
+    return {status:'SCREENING_TWO_DATE_CHANGE_NOT_SEASONAL_BASELINE',
+      previous_date:previous.date,previous_water_rai:num(previous.water_rai),
+      selected_water_rai:num(current.water_rai),water_change_rai:delta,
+      selected_water_pct_of_geometry:area>0?100*num(current.water_rai)/area:null,
+      material_change:material,valid_dates_used:earlier.length+1,
+      needs_tide_context:true,not_verified_flood:true};
+  }
+  function rainAssessment(baseline,selectedDate){
+    const scene=baseline?.results?.[selectedDate];
+    if(!scene)return {status:'BASELINE_NOT_CONNECTED'};
+    const labels={VERY_HIGH:'สูงมากเมื่อเทียบกับฤดูกาล',HIGH:'สูงกว่าปกติของฤดูกาล',
+      NEAR_TYPICAL:'อยู่ในช่วงที่พบได้ตามฤดูกาล',LOW:'ต่ำกว่าช่วงทั่วไป'};
+    const output={status:'CLIMATOLOGY_COMPARISON',source:'NASA_POWER_2016_2025'};
+    for(const [key,name] of [['rain_prev_1_utc_day_mm','one_day'],
+                             ['rain_prev_3_utc_days_mm','three_days']]){
+      const row=scene[key];
+      output[name]=row?.status==='SEASONAL_REFERENCE_READY'
+        ?{relative_status:row.relative_status,description:labels[row.relative_status]||'ไม่ทราบ',
+          percentile:num(row.percentile),sample_count:num(row.sample_count),
+          median_mm:num(row.reference_median_mm),p95_mm:num(row.reference_p95_mm)}
+        :null;
+    }
+    return output;
+  }
+  return Object.freeze({derive,quality,substantive,daySnapshot,priorWaterComparison,rainAssessment,QA_MIN_PIXELS,MIN_COVERAGE_PCT});
 });
