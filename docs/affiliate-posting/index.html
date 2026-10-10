@@ -610,7 +610,8 @@ function render(){
         <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>`:''}
 
         <div class="actions">
-          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">${status==='edit'?'⬇ ดาวน์โหลดวัตถุดิบ':'⬇ ดาวน์โหลดคลิป'} · ${escapeHtml(fileName)}</a>
+          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">${status==='edit'?'⬇ ดาวน์โหลดวัตถุดิบจาก Google Drive':'⬇ ดาวน์โหลดจาก Google Drive'} · ${escapeHtml(fileName)}</a>
+          <a class="btn btn-secondary" href="https://drive.google.com/file/d/${encodeURIComponent(fileId)}/view" target="_blank" rel="noopener">เปิดไฟล์ใน Google Drive</a>
           ${x.extra?`<a class="btn btn-secondary" href="https://drive.google.com/uc?export=download&id=${encodeURIComponent(x.extra[0])}" target="_blank" rel="noopener">⬇ วัตถุดิบเพิ่ม · ${escapeHtml(x.extra[1])}</a>`:''}
           <a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a>
         </div>
