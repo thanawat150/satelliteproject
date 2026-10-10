@@ -159,8 +159,8 @@ function allDateGallery(items,byDate,modes){
    out+='<div class="notice img-missing">วันที่นี้ยังไม่มีภาพ '+esc(selectedName)+' ('+esc(qa(item.date).label)+') ไม่ใช้ภาพชนิดอื่นหรือวันอื่นแทน</div>';
   }else{
    if(qa(item.date).kind!=='AUTO_VALID')out+='<p class="img-history-qa-caution">ภาพมีอยู่จริง แต่วันดังกล่าวไม่ผ่าน QA หรือยังไม่มีผล QA ยืนยัน จึงไม่ควรใช้สรุปผลกระทบ</p>';
-   if(item.rgb_display_warning||Number(item.rgb_invalid_pct)>30||Number(item.rgb_unclassified_scl_pct)>20)out+='<p class="img-history-qa-caution">RGB QUALITY REVIEW: เกือบขาว '+metricFmt(item.rgb_near_white_pct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(item.rgb_invalid_pct)+'% · SCL 7 '+metricFmt(item.rgb_unclassified_scl_pct)+'% — ควรตรวจภาพต้นทางก่อนใช้งาน</p>';
-   if(item.source==='generated'&&!item.rgb_renderer_version)out+='<p class="img-history-qa-caution">Preview รุ่นเก่า: ยังใช้การปรับสีรายภาพ ซึ่งอาจทำให้ภาพขาวหรือมีแถบดำ</p>';
+   if((selected==='all'||selected==='true_color'||selected==='false_color')&&(item.rgb_display_warning||Number(item.rgb_invalid_pct)>30||Number(item.rgb_unclassified_scl_pct)>20))out+='<p class="img-history-qa-caution">RGB QUALITY REVIEW: เกือบขาว '+metricFmt(item.rgb_near_white_pct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(item.rgb_invalid_pct)+'% · SCL 7 '+metricFmt(item.rgb_unclassified_scl_pct)+'% — ควรตรวจภาพต้นทางก่อนใช้งาน</p>';
+   if((selected==='all'||selected==='true_color'||selected==='false_color')&&item.source==='generated'&&!item.rgb_renderer_version)out+='<p class="img-history-qa-caution">Preview รุ่นเก่า: ยังใช้การปรับสีรายภาพ ซึ่งอาจทำให้ภาพขาวหรือมีแถบดำ</p>';
    out+='<div class="img-gallery img-history-gallery'+(visibleModes.length===1?' img-history-single':'')+'">';
    for(const mode of visibleModes){
     out+='<div class="img-tile" data-history-mode="'+esc(mode)+'"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(layers[mode],mode,item.date,item)+'</div><small>'+esc(MODE[mode][1])+'</small>'+(layers[mode]?'<button type="button" class="img-tile-open" data-image-open-mode="'+esc(mode)+'" data-image-open-date="'+esc(item.date)+'">เปิดบนแผนที่ ↗</button>':'')+indexStatBrief(item,mode)+'</div>';
@@ -228,7 +228,7 @@ const indexAudit=target?.index_stats?
 const source=srcMeta?'<div class="img-source"><b>Traceability</b> · Plot '+esc(active.plot)+' • วันที่ภาพ '+esc(active.date)+' • '+esc(srcMeta.algorithm||'Preview จาก TIFF')+' • QA '+esc(srcMeta.analysis_status||'ยังไม่ประมวลผล')+
  '<br><small>Original TIFF: '+esc(srcMeta.original_tif10||'รอต้นฉบับ')+' / '+esc(srcMeta.original_tif20||'รอต้นฉบับ')+'</small>'+
 '<br>'+[['10 m TIFF',srcMeta.original_tif10_file_id],['20 m TIFF / SCL',srcMeta.original_tif20_file_id]].filter(x=>x[1]).map(x=>'<a href="https://drive.google.com/file/d/'+encodeURIComponent(x[1])+'/view" target="_blank" rel="noopener noreferrer">'+esc(x[0])+' ↗</a>').join(' · ')+'</div>':'<div class="img-source">ภาพนี้มี Raster Preview แต่ยังไม่มีผล QA ที่จับคู่กับชุดวิเคราะห์ PDD เดิม จึงไม่ใช้สรุปผลกระทบ</div>';
-return head+nav+boundaryLegend+(active.layout==='single'?qaLegend:'')+visualOnly+noPreview+smallWarning+rgbWarning+rgbMeta+main+compare+gallery+history+indexAudit+source;
+return head+nav+boundaryLegend+(active.layout==='single'?qaLegend:'')+(active.layout==='history'?'':visualOnly+noPreview+smallWarning+rgbWarning+rgbMeta)+main+compare+gallery+history+(active.layout==='history'?'':indexAudit+source);
 }
 function destroyMap(){if(map){try{map.remove()}catch(e){}map=null;}boundaryMapLayer=null;}
 function plotBounds(geo){const c=[];function walk(a){if(!Array.isArray(a))return;if(a.length>=2&&typeof a[0]==='number'&&typeof a[1]==='number')c.push([a[1],a[0]]);else for(let p of a)walk(p);}walk(geo?.coordinates);if(!c.length)return null;return [[Math.min(...c.map(x=>x[0])),Math.min(...c.map(x=>x[1]))],[Math.max(...c.map(x=>x[0])),Math.max(...c.map(x=>x[1]))]];}
