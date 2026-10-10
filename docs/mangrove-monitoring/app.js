@@ -167,6 +167,15 @@ function waterDatePanel(code){
   ' ของขอบเขตเรขาคณิตแปลง • มีวัน QA '+html(comparison.valid_dates_used)+
   ' วัน ยังไม่มี Baseline ฤดูกาลและระดับน้ำเวลาถ่ายภาพเพียงพอสำหรับยืนยันว่าน้ำท่วม</span></div>':
   '<div class="hydro-status pending"><b>ข้อมูลเปรียบเทียบพื้นที่น้ำยังไม่พอ</b><span>ต้องมีวันภาพผ่าน QA ก่อนหน้าจึงคัดกรองแนวโน้มได้</span></div>';
+ const registry=plotOf(plot),declaredArea=Number(registry?.props?.pdd_area_rai),
+       actualArea=Number(registry?.area);
+ const geomMismatch=Number.isFinite(declaredArea)&&declaredArea>0&&
+                    Number.isFinite(actualArea)&&actualArea>0&&
+                    Math.abs(declaredArea-actualArea)/declaredArea>=0.05?
+  '<div class="hydro-status attention"><b>ตรวจสอบขอบเขตพื้นที่แปลง</b>'+
+  '<span>พื้นที่ PDD ในทะเบียน '+fixed(declaredArea,'ไร่')+
+  ' แตกต่างจากพื้นที่ Polygon ที่คำนวณได้ '+fixed(actualArea,'ไร่')+
+  ' • ตัวหารเปอร์เซ็นต์พื้นที่น้ำในระบบใช้ Polygon ไม่ใช่ตัวเลขเอกสาร • ต้องตรวจ Geometry ก่อนรับรองพื้นที่น้ำ</span></div>':'';
  const marineMessage=marineReady?
   '<div class="hydro-status"><b>แบบจำลองน้ำทะเลรายวัน Open-Meteo • ช่วงต่าง '+fixed(modelRange,'เมตร')+'</b>'+
   '<span>ต่ำสุด '+fixed(model.daily_min_m_msl,'ม.')+' ถึงสูงสุด '+fixed(model.daily_max_m_msl,'ม.')+
@@ -191,7 +200,7 @@ function waterDatePanel(code){
   '</div><div class="hydro-review"><h4>วิเคราะห์ว่าเยอะกว่าปกติหรือไม่</h4>'+
   classifyRain(baseline?.one_day,'ฝน 1 วัน')+
   classifyRain(baseline?.three_days,'ฝน 3 วัน')+
-  waterReview+marineMessage+
+  waterReview+geomMismatch+marineMessage+
   '<p class="muted tiny">การประเมินฝนอ้างอิงเฉพาะช่วงฤดูกาลเดียวกัน ±15 วันย้อนหลัง 10 ปี และเป็นค่าประมาณของ NASA POWER ไม่ใช่สถานีวัดฝน ปริมาณน้ำจำแนกในแปลงไม่ได้บ่งชี้การตายของป่าชายเลนหรืออุทกภัยโดยตรง</p></div></div>';
 }
 
