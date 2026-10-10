@@ -3,6 +3,7 @@
 import importlib.util
 from pathlib import Path
 import unittest
+from test_mmc_mndwi_audit import TestMNDWI
 import numpy as np
 from rasterio import Affine
 from shapely.geometry import box
