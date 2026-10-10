@@ -121,6 +121,35 @@ h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",s
 .platform-status.tiktok{background:#eef2ff;color:#243d9c}
 .platform-status.shopee{background:#fff0e9;color:#d45226}
 @media(max-width:720px){.platform-grid{grid-template-columns:1fr}}
+
+.calendar-card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;border-bottom:1px solid var(--line)}
+.calendar-title{font-weight:800;font-size:18px}
+.calendar-nav{display:flex;gap:8px}
+.cal-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;cursor:pointer;font-weight:800;color:#526078}
+.calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.calendar-weekdays div{padding:9px 6px;text-align:center;font-size:11px;font-weight:800;color:var(--muted);border-bottom:1px solid var(--line)}
+.cal-day{min-height:112px;padding:9px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;background:#fff;transition:.15s}
+.cal-day:nth-child(7n){border-right:0}
+.cal-day.other{background:#fafbfc;color:#aab2c0}
+.cal-day.today{box-shadow:inset 0 0 0 2px var(--blue)}
+.cal-day.has-post:hover{background:#f8faff}
+.cal-num{font:800 13px "Plus Jakarta Sans",sans-serif;margin-bottom:7px}
+.cal-item{border-radius:10px;padding:7px 8px;margin-top:5px;font-size:10px;line-height:1.35;background:#f4f7fb;color:#40516d}
+.cal-item.chair{background:#eef5ff;color:#175cd3}
+.cal-item.sun{background:#fff4e8;color:#a84b12}
+.cal-name{font-weight:800;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-times{display:block;margin-top:3px;opacity:.82}
+.cal-done{display:block;margin-top:4px;font-weight:800;color:#087b5a}
+.calendar-legend{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;background:#fbfcfe;font-size:11px;color:var(--muted)}
+.legend-dot{display:inline-block;width:9px;height:9px;border-radius:999px;margin-right:5px;vertical-align:-1px}
+.legend-chair{background:#7aa7ff}.legend-sun{background:#ffb36b}
+@media(max-width:720px){
+  .cal-day{min-height:86px;padding:6px}
+  .cal-item{padding:5px 6px;font-size:9px}
+  .cal-times{display:none}
+  .calendar-toolbar{padding:12px}
+}
 /* SCHEDULED_POSTS_UI_END */
 </style>
 </head>
@@ -146,6 +175,32 @@ h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",s
     <div class="metric"><span>โพสต์ครบ TikTok + Shopee</span><strong id="doneCount">0</strong></div>
     <div class="metric"><span>ตั้งเวลา Metricool</span><strong id="scheduledCount">0</strong></div>
     <div class="metric"><span>ต้องโพสต์เอง / Error</span><strong id="errorCount">0</strong></div>
+  </section>
+
+  <section id="calendarSection">
+    <div class="section-head">
+      <div><div class="kicker">CONTENT CALENDAR</div><h2>ปฏิทินโพสต์ Affiliate</h2></div>
+      <span class="snapshot">TikTok + Shopee</span>
+    </div>
+    <div class="calendar-card">
+      <div class="calendar-toolbar">
+        <button class="cal-btn" id="calPrev">‹</button>
+        <div class="calendar-title" id="calendarTitle">—</div>
+        <div class="calendar-nav">
+          <button class="cal-btn" id="calToday">วันนี้</button>
+          <button class="cal-btn" id="calNext">›</button>
+        </div>
+      </div>
+      <div class="calendar-weekdays">
+        <div>อา.</div><div>จ.</div><div>อ.</div><div>พ.</div><div>พฤ.</div><div>ศ.</div><div>ส.</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="calendar-legend">
+        <span><i class="legend-dot legend-chair"></i>เก้าอี้คุณตาแสวง</span>
+        <span><i class="legend-dot legend-sun"></i>กันแดดศิริราช</span>
+        <span>คลิกวันที่เพื่อดูรายละเอียดโพสต์ของวันนั้น</span>
+      </div>
+    </div>
   </section>
 
   <section id="scheduledSection">
@@ -247,6 +302,7 @@ const schedule = salesPlan.map((x,i)=>({
 }));
 let range='today';
 let done=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+let calendarCursor=new Date('2026-10-01T00:00:00+07:00');
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
 function toast(msg){
@@ -259,6 +315,52 @@ async function copyText(text,msg){
 }
 
 
+function productShort(key){
+  return key==='chair'?'เก้าอี้คุณตาแสวง':key==='sun'?'กันแดดศิริราช':'สินค้า';
+}
+function renderCalendar(){
+  const grid=document.getElementById('calendarGrid');
+  if(!grid) return;
+  const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
+  document.getElementById('calendarTitle').textContent=new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric',timeZone:'Asia/Bangkok'}).format(calendarCursor);
+  const first=new Date(y,m,1);
+  const start=new Date(y,m,1-first.getDay());
+  const cells=[];
+  for(let i=0;i<42;i++){
+    const d=new Date(start); d.setDate(start.getDate()+i);
+    const ds=iso(d);
+    const plan=schedule.find(x=>iso(x.date)===ds);
+    const isToday=ds===todayISO();
+    const isOther=d.getMonth()!==m;
+    let item='';
+    if(plan){
+      const p=plan.product;
+      const st=done[plan.id]||{};
+      const complete=!!(st.tiktok&&st.shopee);
+      item=`<div class="cal-item ${p.key}">
+        <span class="cal-name">${escapeHtml(productShort(p.key))}</span>
+        <span class="cal-times">Shopee ${escapeHtml(p.shopee)} · TikTok ${escapeHtml(p.tiktok)}</span>
+        ${complete?'<span class="cal-done">✓ โพสต์ครบแล้ว</span>':''}
+      </div>`;
+    }
+    cells.push(`<div class="cal-day ${isOther?'other':''} ${isToday?'today':''} ${plan?'has-post':''}" data-cal-date="${ds}">
+      <div class="cal-num">${d.getDate()}</div>${item}
+    </div>`);
+  }
+  grid.innerHTML=cells.join('');
+  document.querySelectorAll('[data-cal-date]').forEach(el=>el.onclick=()=>{
+    const ds=el.dataset.calDate;
+    if(!schedule.some(x=>iso(x.date)===ds)) return;
+    range='date:'+ds;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    render();
+    document.getElementById('affiliateSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+function shiftCalendar(delta){
+  calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);
+  renderCalendar();
+}
 function renderInventory(){
   const el=document.getElementById('inventoryGrid');
   el.innerHTML=inventory.map(x=>{
@@ -277,6 +379,10 @@ function renderInventory(){
 
 function scheduledRows(){
   const now=todayISO();
+  if(range.startsWith('date:')){
+    const ds=range.slice(5);
+    return scheduledPosts.filter(x=>x.date.slice(0,10)===ds);
+  }
   const horizon = range==='today' ? 1 : (range==='7' ? 7 : 30);
   const start = new Date(now+'T00:00:00+07:00');
   const end = addDays(start,horizon);
@@ -335,6 +441,10 @@ function renderScheduled(rows){
 
 function visibleRows(){
   const now=todayISO();
+  if(range.startsWith('date:')){
+    const ds=range.slice(5);
+    return schedule.filter(x=>iso(x.date)===ds).slice(0,1);
+  }
   const idx=schedule.findIndex(x=>iso(x.date)>=now);
   const start=Math.max(0,idx<0?schedule.length-1:idx);
   if(range==='today') return schedule.filter(x=>iso(x.date)===now).slice(0,1);
@@ -342,6 +452,7 @@ function visibleRows(){
   return schedule.slice(start,start+30);
 }
 function render(){
+  renderCalendar();
   renderInventory();
   const srows=scheduledRows();
   renderScheduled(srows);
@@ -410,6 +521,16 @@ function render(){
   });
 }
 
+document.getElementById('calPrev')?.addEventListener('click',()=>shiftCalendar(-1));
+document.getElementById('calNext')?.addEventListener('click',()=>shiftCalendar(1));
+document.getElementById('calToday')?.addEventListener('click',()=>{
+  const n=new Date();
+  calendarCursor=new Date(n.getFullYear(),n.getMonth(),1);
+  range='today';
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.tab[data-range="today"]')?.classList.add('active');
+  render();
+});
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   b.classList.add('active'); range=b.dataset.range; render();
