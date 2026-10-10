@@ -275,7 +275,7 @@ for(const button of hold.querySelectorAll('[data-image-layout]'))button.addEvent
 for(const button of hold.querySelectorAll('[data-image-open-mode]'))button.addEventListener('click',()=>{active.mode=button.dataset.imageOpenMode;active.date=button.dataset.imageOpenDate||active.date;active.layout='single';active.beforeManual=false;renderAsync();hold.scrollIntoView({block:'start',behavior:'smooth'});});
 for(const sel of ['image-date','image-before','image-mode','image-opacity','image-boundary-toggle']){const node=$(sel);if(node)node.addEventListener(sel==='image-opacity'?'input':'change',change);}
 }catch(e){console.error('MMC imagery',e);if(id===epoch)showError(e.message||e)}}
-function mount(o){if(!o?.plot||!o?.container)return;if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';active.layout='single';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
+function mount(o){if(!o?.plot||!o?.container)return;active.layout='single';if(active.plot!==o.plot){active.date='';active.before='';active.beforeManual=false;active.mode='true_color';}active.plot=o.plot;active.rows=o.sceneRows||[];active.geometry=o.geometry||null;active.boundaryType=o.boundaryType||'GIS';active.holder=document.getElementById(o.container);if(!active.holder)return;renderAsync();}
 function selectDate(date,mode){
  if(!date||!active.holder||!active.rows.some(x=>x.date===date))return false;
  if(!Object.prototype.hasOwnProperty.call(MODE,mode))mode='mndwi';
