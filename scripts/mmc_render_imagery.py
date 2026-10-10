@@ -255,6 +255,69 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         }
 
 
+def generate_visual_only(ten,output,plot,date,geometry4326=None):
+    """Display actual native RGB for non-QA scenes, including clouds.
+
+    Only source NoData is transparent.  Never create index layers, analytical
+    classification, or claim cloud/scene quality approval from these pixels.
+    """
+    from rasterio.features import geometry_mask
+    from rasterio.warp import transform_geom
+    with rio_open(ten) as ds:
+        if not ds.crs or ds.count<4:
+            raise ValueError("No source CRS or four 10m bands")
+        scale=min(1.0,MAX_DIM/max(ds.width,ds.height))
+        w=max(2,round(ds.width*scale));h=max(2,round(ds.height*scale))
+        transform10=ds.transform*Affine.scale(ds.width/w,ds.height/h)
+        def read(name,i):
+            return ds.read(bands(ds,name,i),out_shape=(h,w),
+                    resampling=Resampling.bilinear,masked=True).astype(np.float32).filled(np.nan)
+        b2,b3,b4,b8=(read("B2",1),read("B3",2),read("B4",3),read("B8",4))
+        visible=(np.isfinite(b2)&np.isfinite(b3)&np.isfinite(b4)&np.isfinite(b8)&
+                 (b2>0)&(b3>0)&(b4>0)&(b8>0))
+        if visible.sum()<2:
+            raise ValueError("No finite four-band RGB pixels in original 10m TIFF")
+        plotmask=np.ones((h,w),dtype=bool)
+        mask_scope="raster_rectangle"
+        if geometry4326:
+            local=transform_geom("EPSG:4326",ds.crs,geometry4326)
+            p=geometry_mask([local],out_shape=(h,w),transform=transform10,invert=True)
+            if p.any():plotmask=p;mask_scope="plot_polygon"
+        sample=visible&plotmask
+        rgb=stretched_rgb([b4,b3,b2],visible)
+        false=stretched_rgb([b8,b4,b3],visible)
+        n=int(sample.sum())
+        near_white=int(np.count_nonzero((np.min(np.asarray(rgb)[...,:3],axis=2)>=235)&sample))
+        white_pct=round(100*near_white/n,1) if n else None
+        invalid_pct=round(100*(1-n/max(1,int(plotmask.sum()))),1)
+        out=Path(output);out.mkdir(parents=True,exist_ok=True)
+        files={}
+        for mode,image in [("true_color",rgb),("false_color",false)]:
+            name=mode+".webp";image.save(out/name,"WEBP",quality=90,method=4)
+            files[mode]="./imagery/"+plot+"/"+date+"/"+name
+        left,bottom,right,top=transform_bounds(ds.crs,"EPSG:4326",*ds.bounds,densify_pts=21)
+        bounds=[[bottom,left],[top,right]]
+        return {
+            "plot":plot,"date":date,"source":"generated",
+            "preview_kind":"VISUAL_ONLY_NON_QA",
+            "modes":["true_color","false_color"],"assets":files,
+            "bounds":bounds,"mode_bounds":{"true_color":bounds,"false_color":bounds},
+            "mode_dimensions":{"true_color":[w,h],"false_color":[w,h]},
+            "rgb_native_width":w,"rgb_native_height":h,"width":w,"height":h,
+            "source_resolution_m":{"rgb":10},
+            "rgb_renderer_version":"mmc-rgb-fixed-reflectance-v2",
+            "rgb_visual_only_version":"mmc-visual-only-cloud-preserved-v1",
+            "rgb_quality_scope":mask_scope,"rgb_plot_sample_pixels":n,
+            "rgb_near_white_pct":white_pct,"rgb_invalid_pct":invalid_pct,
+            "rgb_unclassified_scl_pct":None,
+            "rgb_display_warning":bool(white_pct is not None and white_pct>=30),
+            "index_stats":{},"index_parity":{},"index_parity_warnings":[],
+            "display_grid":"Original 10m RGB grid; may include clouds, haze and water",
+            "qa_note":"DISPLAY_ONLY: NO_DATA/PARTIAL; clouds visible, only NoData transparent; no index interpretation",
+            "source_bands":"Original Sentinel-2 10m B2/B3/B4/B8"
+        }
+
+
 def candidates_from_result(result,plot):
     """Render every individually QA-valid Sentinel-2 scene, not only first/latest.
 
