@@ -271,7 +271,7 @@ assert.ok(await page.locator('[data-rpt-scope-switch="province"][aria-pressed="t
 assert.equal(await page.locator('#rpt-image-dates').inputValue(),'2','Province reports default to two image dates per plot');
 const provinceReport=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {plots:r.d.pp.length,pages:r.total,images:r.imageCount,head:r.pages.split('</article>')[0],hasCases:r.pages.includes('กรณีตรวจสอบ'),hasActions:r.pages.includes('ข้อเสนอแนะและการตัดสินใจ'),hasCautions:r.pages.includes('น้ำขึ้นลง'),audit:r.audit,hasAtlas:r.pages.includes('Index Atlas')}}); 
 assert.ok(provinceReport.plots>1,'Province flood report must include actual plot registry');
-assert.ok(provinceReport.pages>=6&&provinceReport.pages<=12,'Decision-first province flood report must not bury conclusions across 55 pages: '+provinceReport.pages);
+assert.ok(provinceReport.pages>=6&&provinceReport.pages<=16,'Decision-first province flood report includes at most a few visual comparison pages: '+provinceReport.pages);
 assert.ok(provinceReport.images>=2&&provinceReport.images<=16,'Flood brief presents selected before/after evidence, not full atlas');
 assert.ok(provinceReport.hasCases&&provinceReport.hasActions&&provinceReport.hasCautions,'Flood brief must explain priority cases, action plan and tide limits');
 assert.ok(!provinceReport.hasAtlas,'Flood report must not generate dozens of index atlas pages by default');
@@ -285,12 +285,28 @@ assert.equal(await page.locator('#rpt-type').inputValue(),'water','Exact user re
 assert.equal(await page.locator('#rpt-scope').inputValue(),'province','Exact user request resolves Rayong province, not a random plot');
 assert.equal(await page.locator('#rpt-period').inputValue(),'180','No specified window uses an explicit default six-month period');
 const rayong=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,qa:r.audit,front:r.pages.split('</article>')[0],text:r.pages};});
-assert.ok(rayong.pages>=7&&rayong.pages<=12,'Exact prompt should produce compact executive report, not 55-page image atlas');
+assert.ok(rayong.pages>=7&&rayong.pages<=16,'Exact prompt should remain a concise executive report including visual comparison pages, not 55-page atlas');
 assert.ok(rayong.qa&&rayong.qa.plots===19,'Rayong report contains exactly 19 registry plots');
 assert.ok(rayong.qa.comparable>0,'Flood brief finds QA-valid before-after pair evidence from the real dataset');
 assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Prioritized Rayong case evidence must include supported high-change plots');
 assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู้บริหาร'),'Executive findings appear immediately instead of page 49');
 assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็นน้ำท่วม'),'Screening uncertainty must be explicit and unambiguous');
+
+const visualReview=await page.evaluate(()=>{
+ const rr=window.MMCReportCopilot.renderPages();
+ return {pages:rr.total,visualPages:(rr.pages.match(/data-visual-scan="/g)||[]).length,
+  labels:rr.pages.includes('จุดสังเกตจากภาพดัชนี'),
+  qa:rr.pages.includes('ไม่ผ่าน/ยังไม่มี QA'),
+  cloudGate:rr.pages.includes('เมฆ')};
+});
+assert.ok(visualReview.visualPages>=1,'Rayong report must show georeferenced before/after visual screening even without QA approval');
+assert.ok(visualReview.labels&&visualReview.cloudGate,'Visual screening must explain approximate observations and cloud limitations');
+await page.waitForFunction(()=>{
+ const el=document.querySelector('#rpt-preview .rpt-visual-pair[data-visual-scan="eligible"] .rpt-visual-result');
+ return !el||!/กำลังตรวจ/.test(el.textContent||'');
+},{timeout:20000});
+assert.ok((await page.locator('#rpt-preview .rpt-visual-pair').count())>=1,'Visual evidence page is included in onscreen A4 preview');
+
 
 assert.ok(rayong.text.includes('ข้อค้นพบเฉพาะแปลง 17-STC')&&rayong.text.includes('ข้อค้นพบเฉพาะแปลง 13-STC'),'Rayong flood cases must include plot-specific interpretations');
 assert.ok(rayong.text.includes('เปลี่ยนเป็นน้ำ')&&rayong.text.includes('เปลี่ยนออกจากน้ำ'),'Report must show independent measured gain and loss of water, not net alone');
