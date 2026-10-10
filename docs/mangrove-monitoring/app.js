@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const root=$('view-root');
 const DATA='../data/nationwide/';
 const state={view:(new URLSearchParams(location.search).get('view')||'overview'),plot:(new URLSearchParams(location.search).get('plot')||'13-STC'),company:'ALL',province:'ALL',metric:'ndvi',riskKind:'water',riskThreshold:10,riskUnit:'percent',waterDate:'',waterDatePlot:'',waterPlot:'',map:null,mapLayers:null,filter:'',showValidOnly:true};
-const cache={data:null,plots:[],byCode:new Map(),byScene:new Map(),changes:new Map(),canonical:new Set(),status:null,when:null,imagery:null,environment:null};
+const cache={data:null,plots:[],byCode:new Map(),byScene:new Map(),changes:new Map(),canonical:new Set(),status:null,when:null,imagery:null,environment:null,rainBaseline:null,seaLevelModel:null};
 const TITLES={overview:'Nationwide Overview',map:'GIS Map Center',plots:'Plot Registry & Details',insights:'Plot Intelligence & Decisions',analysis:'Environmental Analytics',change:'Change Detection',satellite:'Satellite Catalog',alerts:'Early Warning',field:'Field Operations & Growth',carbon:'Carbon & MRV',qa:'Data Quality & Boundaries',reports:'Report Center',modules:'All 26 Modules'};
 const METRICS={ndvi:['NDVI','ดัชนีพืช'],ndre:['NDRE','คลอโรฟิลล์ / Red Edge'],evi:['EVI','สัญญาณเรือนยอด'],savi:['SAVI','พืชปรับผลดิน'],ndmi:['NDMI','ความชื้นพืช'],ndwi:['NDWI','สัญญาณน้ำ'],mndwi:['MNDWI','ผิวน้ำ'],bsi:['BSI','ดินเปิดโล่ง'],gli:['GLI','ดัชนีสีเขียว'],water_rai:['Water (rai)','พื้นที่น้ำ ไร่'],vegetation_rai:['Vegetation (rai)','พื้นที่พืช ไร่'],bare_soil_rai:['Bare soil (rai)','พื้นที่ดิน ไร่'],wetness_rai:['Wetness (rai)','พื้นที่ชื้น ไร่']};
 const SERIES={
@@ -21,7 +21,7 @@ const SERIES={
 };
 function seriesMeta(key){return SERIES[key]||SERIES.ndvi;}
 function seriesUnit(key){return {index:'ค่าดัชนี',rai:'ไร่',percent:'%',mm:'มม.'}[seriesMeta(key)[1]];}
-function seriesFmt(key,v){return fmt(v,seriesMeta(key)[1]==='index'?4:2);}
+function seriesFmt(key,v){return Number.isFinite(Number(v))&&v!==null?Number(v).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';}
 function seriesOptions(selected){
  const groups=new Map();
  for(const [key,[label,unit,group]] of Object.entries(SERIES)){
@@ -230,7 +230,7 @@ function svgChart(rows,key,opts={}){
  const xpos=i=>4+92*(earliest===latest ? 0.5 : (timestamps[i]-earliest)/(latest-earliest));
  const ypos=v=>8+84*(high-Number(v))/(high-low);
  const points=good.map((x,i)=>(xpos(i)*10).toFixed(2)+','+(ypos(x[key])*10).toFixed(2)).join(' ');
- const format=n=>fmt(n,opts.decimals??3);
+ const format=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
  const ticks=[20,50,80].map(y=>{
   const value=high-(high-low)*((y-8)/84);
   return '<span class="ts-y-tick" style="top:'+y+'%">'+html(format(value))+'</span>';
@@ -544,7 +544,11 @@ async function load(){clearMap();root.innerHTML='<div class="loading"><span clas
  const paths=['boundaries_pdd_all.geojson','boundaries_pdd_136.geojson','nationwide_results.json','nationwide_run_status.json'];
  const manifest=fetch('./imagery_manifest.json?v=20261010-archive466-v1',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Raster manifest HTTP '+r.status);return r.json();}).catch(e=>{console.warn('No Raster Manifest',e);return null;});
  const env=fetch('./environmental_context.json?refresh=rain1',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
- const a=await Promise.all([...paths.map(async f=>{const r=await fetch(DATA+f+'?v=mmc1');if(!r.ok)throw new Error('Cannot load '+f+': HTTP '+r.status);return r.json();}),manifest,env]);cache.imagery=a[4];cache.environment=a[5];parseData(a[0],a[1],a[2],a[3]);
+ const fetchOptional=path=>fetch('./'+path+'?v=hydro20261010',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
+ const a=await Promise.all([...paths.map(async f=>{const r=await fetch(DATA+f+'?v=mmc1');if(!r.ok)throw new Error('Cannot load '+f+': HTTP '+r.status);return r.json();}),manifest,env,
+   fetchOptional('environmental_rain_baselines.json'),fetchOptional('environmental_sea_level_model.json')]);
+ cache.imagery=a[4];cache.environment=a[5];cache.rainBaseline=a[6];cache.seaLevelModel=a[7];
+ parseData(a[0],a[1],a[2],a[3]);
  }catch(e){console.error(e);root.innerHTML=message('<b>เชื่อมข้อมูลไม่สำเร็จ</b> • '+html(e.message)+'<br>ลองเปิดหน้าใหม่ หรือดูข้อมูลต้นฉบับที่ SatelliteProject')+'<a class="btn" href="../nationwide.html">เปิด SatelliteProject</a>';toast('มีข้อผิดพลาดในการดึงข้อมูล');}}
 function csvDownload(filename,headers,rows){const safe=x=>{let s=String(x??'');if(/^[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};const body='\uFEFF'+[headers,...rows].map(r=>r.map(safe).join(',')).join('\r\n');download(filename,body,'text/csv;charset=utf-8');}
 function download(name,content,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);}
