@@ -65871,16 +65871,28 @@
       "preview_kind": "VISUAL_ONLY_NON_QA",
       "modes": [
         "true_color",
-        "false_color"
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
       ],
       "assets": {
         "true_color": "./imagery/96-VSD/2026-09-29/true_color.webp",
-        "false_color": "./imagery/96-VSD/2026-09-29/false_color.webp"
+        "false_color": "./imagery/96-VSD/2026-09-29/false_color.webp",
+        "ndvi": "./imagery/96-VSD/2026-09-29/ndvi.png",
+        "ndre": "./imagery/96-VSD/2026-09-29/ndre.png",
+        "ndmi": "./imagery/96-VSD/2026-09-29/ndmi.png",
+        "ndwi": "./imagery/96-VSD/2026-09-29/ndwi.png",
+        "mndwi": "./imagery/96-VSD/2026-09-29/mndwi.png",
+        "bsi": "./imagery/96-VSD/2026-09-29/bsi.png"
       },
       "bounds": [
         [
-          7.809931937288134,
-          99.17886654181999
+          7.809841481389761,
+          99.17886650334265
         ],
         [
           7.812195042362792,
@@ -65907,6 +65919,66 @@
             7.812195042362792,
             99.18285844867101
           ]
+        ],
+        "ndvi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "ndre": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "ndmi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "ndwi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "mndwi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "bsi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
         ]
       },
       "mode_dimensions": {
@@ -65917,6 +65989,10 @@
         "false_color": [
           44,
           25
+        ],
+        "indices_20m": [
+          22,
+          13
         ]
       },
       "rgb_native_width": 44,
@@ -65924,10 +66000,11 @@
       "width": 44,
       "height": 25,
       "source_resolution_m": {
-        "rgb": 10
+        "rgb": 10,
+        "spectral_indices_20m": 20
       },
       "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
-      "rgb_visual_only_version": "mmc-visual-only-cloud-preserved-v1",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
       "rgb_quality_scope": "plot_polygon",
       "rgb_plot_sample_pixels": 461,
       "rgb_near_white_pct": 0.0,
@@ -65937,14 +66014,14 @@
       "index_stats": {},
       "index_parity": {},
       "index_parity_warnings": [],
-      "display_grid": "Original 10m RGB grid; may include clouds, haze and water",
-      "qa_note": "DISPLAY_ONLY: NO_DATA/PARTIAL; clouds visible, only NoData transparent; no index interpretation",
-      "source_bands": "Original Sentinel-2 10m B2/B3/B4/B8",
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "DISPLAY_ONLY: NO_DATA/PARTIAL; source-computed indices may reflect clouds/haze; NEVER use for quantitative change, flood or habitat certification",
+      "source_bands": "Original Sentinel-2 10m B2/B3/B4/B8 + 20m B5/B8A/B11 when available",
       "qa_valid_pct": 0.0,
       "source_qa_status": "NO_DATA",
       "algorithm": "pdd-full-monitor-v1.0",
       "original_tif10_file_id": "1HgE3Bwzhm49xLCttlBK9N8MBMePbMdWh",
-      "original_tif20_file_id": null
+      "original_tif20_file_id": "1r-I4zXI93IlLsAiUpNCAeDU_K6FdR3mk"
     },
     {
       "plot": "96-VSD",
@@ -65953,16 +66030,28 @@
       "preview_kind": "VISUAL_ONLY_NON_QA",
       "modes": [
         "true_color",
-        "false_color"
+        "false_color",
+        "ndvi",
+        "ndre",
+        "ndmi",
+        "ndwi",
+        "mndwi",
+        "bsi"
       ],
       "assets": {
         "true_color": "./imagery/96-VSD/2026-10-07/true_color.webp",
-        "false_color": "./imagery/96-VSD/2026-10-07/false_color.webp"
+        "false_color": "./imagery/96-VSD/2026-10-07/false_color.webp",
+        "ndvi": "./imagery/96-VSD/2026-10-07/ndvi.png",
+        "ndre": "./imagery/96-VSD/2026-10-07/ndre.png",
+        "ndmi": "./imagery/96-VSD/2026-10-07/ndmi.png",
+        "ndwi": "./imagery/96-VSD/2026-10-07/ndwi.png",
+        "mndwi": "./imagery/96-VSD/2026-10-07/mndwi.png",
+        "bsi": "./imagery/96-VSD/2026-10-07/bsi.png"
       },
       "bounds": [
         [
-          7.809931937288134,
-          99.17886654181999
+          7.809841481389761,
+          99.17886650334265
         ],
         [
           7.812195042362792,
@@ -65989,6 +66078,66 @@
             7.812195042362792,
             99.18285844867101
           ]
+        ],
+        "ndvi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "ndre": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "ndmi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "ndwi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "mndwi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
+        ],
+        "bsi": [
+          [
+            7.809841481389761,
+            99.17886650334265
+          ],
+          [
+            7.812195042362792,
+            99.18285844867101
+          ]
         ]
       },
       "mode_dimensions": {
@@ -65999,6 +66148,10 @@
         "false_color": [
           44,
           25
+        ],
+        "indices_20m": [
+          22,
+          13
         ]
       },
       "rgb_native_width": 44,
@@ -66006,10 +66159,11 @@
       "width": 44,
       "height": 25,
       "source_resolution_m": {
-        "rgb": 10
+        "rgb": 10,
+        "spectral_indices_20m": 20
       },
       "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
-      "rgb_visual_only_version": "mmc-visual-only-cloud-preserved-v1",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
       "rgb_quality_scope": "plot_polygon",
       "rgb_plot_sample_pixels": 461,
       "rgb_near_white_pct": 2.6,
@@ -66019,14 +66173,14 @@
       "index_stats": {},
       "index_parity": {},
       "index_parity_warnings": [],
-      "display_grid": "Original 10m RGB grid; may include clouds, haze and water",
-      "qa_note": "DISPLAY_ONLY: NO_DATA/PARTIAL; clouds visible, only NoData transparent; no index interpretation",
-      "source_bands": "Original Sentinel-2 10m B2/B3/B4/B8",
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "DISPLAY_ONLY: NO_DATA/PARTIAL; source-computed indices may reflect clouds/haze; NEVER use for quantitative change, flood or habitat certification",
+      "source_bands": "Original Sentinel-2 10m B2/B3/B4/B8 + 20m B5/B8A/B11 when available",
       "qa_valid_pct": 0.0,
       "source_qa_status": "NO_DATA",
       "algorithm": "pdd-full-monitor-v1.0",
       "original_tif10_file_id": "1TkYTTPMS1FG7qvMPKQjKP7zSKZQJ_myB",
-      "original_tif20_file_id": null
+      "original_tif20_file_id": "12k3ZbRZQJav1ZLOpsals-d0SceUv8Xks"
     },
     {
       "plot": "100-VSD",
@@ -87972,9 +88126,9 @@
     }
   ],
   "render_status": {
-    "rendered_image_dates": 219,
+    "rendered_image_dates": 2,
     "generated_plot_count": 136,
-    "new_errors": 2,
+    "new_errors": 0,
     "preserved_existing_19_plots": true,
     "product_note": "Original Sentinel-2 10m/20m GeoTIFF via matching Drive IDs; render QA-valid dates only"
   }

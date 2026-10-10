@@ -7695,7 +7695,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "96-VSD",
@@ -7729,7 +7729,7 @@
       "issues": [
         "DISPLAY_ONLY_NOT_SCIENTIFIC_QA"
       ],
-      "image_assets": 2
+      "image_assets": 8
     },
     {
       "plot": "97-STC",

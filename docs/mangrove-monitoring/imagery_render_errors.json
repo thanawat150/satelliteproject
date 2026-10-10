@@ -1,18 +1,3 @@
 {
-  "errors": [
-    {
-      "plot": "96-VSD",
-      "date": "2026-09-29",
-      "status": "NO_DATA",
-      "kind": "VISUAL_ONLY",
-      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
-    },
-    {
-      "plot": "96-VSD",
-      "date": "2026-10-07",
-      "status": "NO_DATA",
-      "kind": "VISUAL_ONLY",
-      "error": "Failed to retrieve file url:\n\n\tCannot retrieve the public link of the file. You may need to change\n\tthe permission to 'Anyone with the link', or have had many accesses.\n\tCheck FAQ in https://github.com/wkentaro/gdown?tab=readme-ov-file#faq.\n\nYou may still be able to access the file from the browser:"
-    }
-  ]
+  "errors": []
 }
