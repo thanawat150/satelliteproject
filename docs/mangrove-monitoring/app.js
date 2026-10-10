@@ -222,8 +222,16 @@ function changeSignal(x,kind){
  return kind==='water'?w:kind==='vegetation'?v:kind==='soil'?soil:Math.max(w,v,soil);
 }
 function signalPercent(x,kind){const area=Number(x.common_clear_rai)||0;return area>0?100*changeSignal(x,kind)/area:0;}
+function comparisonQuality(x){
+ const reasons=[],pixels=Number(x.common_clear_pixels),area=Number(x.common_clear_rai);
+ const plotArea=Number(plotOf(x.plot)?.area);
+ if(!Number.isFinite(pixels)||pixels<30)reasons.push('ตัวอย่างพิกเซลร่วมต่ำกว่า 30');
+ if(!Number.isFinite(area)||area<=0)reasons.push('ไม่มีพื้นที่ภาพที่เทียบร่วมกันได้');
+ if(Number.isFinite(plotArea)&&plotArea>0&&area/plotArea<0.5)reasons.push('พื้นที่ร่วมต่ำกว่า 50% ของแปลง');
+ return reasons;
+}
 function alertRows(){
- return allChangesFiltered().filter(x=>x.status==='AUTO_VALID'&&Number(x.common_clear_rai)>0).filter(x=>{
+ return allChangesFiltered().filter(x=>x.status==='AUTO_VALID'&&Number(x.common_clear_rai)>0&&!comparisonQuality(x).length).filter(x=>{
   const score=state.riskUnit==='percent'?signalPercent(x,state.riskKind):changeSignal(x,state.riskKind);
   return score>=state.riskThreshold;
  });
