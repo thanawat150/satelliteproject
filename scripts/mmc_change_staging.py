@@ -111,6 +111,17 @@ def stage(plots,out,max_dates):
         report["area_review_count"]=len(area_review)
         report["review_required"]=bool(area_review or report["errors"])
         report["approval_status"]="REVIEW_REQUIRED" if report["review_required"] else "NOT_APPROVED"
+        balance_review=[]
+        for item in report["plot_results"]:
+            val=item.get("area_balance_error_rai")
+            if val is not None and abs(val)>0.01:
+                balance_review.append({"plot":item["plot"],"date":item["date"],
+                    "balance_error_rai":val,"status":"REVIEW_AREA_CLASS_SUM_VS_COMMON_VALID"})
+        report["area_balance_flags"]=balance_review
+        report["area_balance_count"]=len(balance_review)
+        if balance_review:
+            report["review_required"]=True
+            report["approval_status"]="REVIEW_REQUIRED"
         report["staged_changes"]=analysis["changes"]
         report["comparison_count"]=len(analysis["changes"])
         report["pairs_downloaded"]=len(ready)
