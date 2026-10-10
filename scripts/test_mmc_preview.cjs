@@ -432,11 +432,11 @@ await page.locator('#rpt-preview-button').click();
 
 const coverQA=await page.locator('#rpt-preview .rpt-paper').first().innerText();
 assert.ok(coverQA.includes('สรุปสถานการณ์พื้นที่น้ำ')&&coverQA.includes('คู่ภาพเทียบได้'),'Flood cover must lead with actual change-pair findings and coverage');
-const decisionPages=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-paper')].filter(p=>p.querySelector('.rpt-case-compare')).map(p=>{
- const evidence=p.querySelector('.rpt-case-compare'),footer=p.querySelector('.rpt-pagefoot');
+const decisionPages=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-paper')].filter(p=>p.querySelector('.rpt-visual-pair')).map(p=>{
+ const evidence=p.querySelector('.rpt-visual-pair'),footer=p.querySelector('.rpt-pagefoot');
  return {last:evidence?.getBoundingClientRect().bottom,footer:footer?.getBoundingClientRect().top};
 }));
-assert.ok(decisionPages.length>0,'Water report must contain real pairwise before-after evidence pages');
+assert.ok(decisionPages.length>0,'Water report must show real all-index image comparison pages within the bounded preview');
 assert.ok(decisionPages.every(x=>x.last!=null&&x.footer!=null&&x.last<x.footer-3),'Water pair imagery must not overlap A4 footer: '+JSON.stringify(decisionPages));
 
 const borderCount=await page.locator('#rpt-preview .rpt-image-boundary').count();
