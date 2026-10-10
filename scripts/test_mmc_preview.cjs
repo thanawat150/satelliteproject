@@ -294,6 +294,16 @@ assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('15-S
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Custom report modules still render after scope changes');
 assert.ok((await page.locator('#rpt-preview').innerText()).includes('QA'),'Report includes QA evidence rather than unsupported impact claims');
 
+const coverQA=await page.locator('#rpt-preview .rpt-paper').first().innerText();
+assert.ok(coverQA.includes('ค่าล่าสุดที่ผ่าน QA'),'Dense cover now includes a real QA-linked index snapshot table');
+const imageLayout=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-paper')].filter(p=>p.querySelector('.rpt-photo-grid')).map(p=>{
+ const evidence=p.querySelector('.rpt-gallery-evidence'),footer=p.querySelector('.rpt-pagefoot');
+ return {last:evidence?.getBoundingClientRect().bottom,footer:footer?.getBoundingClientRect().top};
+}));
+assert.ok(imageLayout.length>0,'Report preview must contain actual paginated satellite/index image galleries');
+assert.ok(imageLayout.every(x=>x.last!=null&&x.footer!=null&&x.last<x.footer-3),'Atlas gallery table must not overlap A4 footer: '+JSON.stringify(imageLayout));
+
+
 const borderCount=await page.locator('#rpt-preview .rpt-image-boundary').count();
 assert.ok(borderCount>=1,'Report preview with authentic index Raster must include a real GIS boundary overlay');
 const printWindow=page.waitForEvent('popup',{timeout:15000});
