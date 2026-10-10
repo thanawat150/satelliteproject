@@ -250,6 +250,9 @@ assert.ok(decision.includes('15-STC')&&decision.includes('2026-10-07'),'Plot Int
 assert.ok(decision.includes('Small Plot Warning'),'Small plot caveat persists');
 assert.equal(await page.locator('#water-date-select').count(),0,'Insights date appears only in image picker');
 await page.locator('[data-view="reports"]').click();
+await page.waitForSelector('#rpt-analyze',{timeout:20000});
+assert.equal(await page.locator('#image-date').count(),0,'Legacy images are not loaded before expanding classic report');
+await page.locator('#report-legacy > summary').click();
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
 assert.ok((await page.locator('#view-root').innerText()).includes('ภาพดาวเทียม / ภาพดัชนีประกอบรายงาน'),'Report includes single-image map');
 
