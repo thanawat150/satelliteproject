@@ -95,7 +95,8 @@ function waterDatePanel(code){
 function waterIntelligencePanel(code){
  const result=waterScreen();
  if(!result)return message('Water Anomaly Engine ยังไม่พร้อม โปรดโหลดหน้าใหม่','warn');
- const match=x=>!code||x.plot===code;
+ const viewedPlot=code||state.waterPlot||state.plot;
+ const match=x=>x.plot===viewedPlot;
  const reversals=result.reversals.filter(match);
  const increases=result.water_increases.filter(match);
  const held=result.held.filter(match);
@@ -112,7 +113,7 @@ function waterIntelligencePanel(code){
  '<p class="muted">การยืนยันต้องมีเวลาถ่ายภาพจาก Scene ID, ระดับน้ำทะเลที่ตรวจสอบแหล่งและ Datum ได้, ฝนย้อนหลัง และข้อมูลภาคสนาม • การลดลงในภาพถัดไปไม่ได้แปลว่าระดับน้ำกลับสู่ปกติ</p>'+
  '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>ช่วงภาพหลัง</th><th>น้ำเพิ่ม ไร่</th><th>น้ำลด ไร่</th><th>สถานะ</th></tr></thead><tbody>'+
  (rows||'<tr><td colspan="5">ยังไม่พบรูปแบบน้ำเพิ่มแล้วลดที่เข้าเกณฑ์จากข้อมูลในตัวกรอง</td></tr>')+
- '</tbody></table></div>'+rainfallEvidencePanel(code)+'</section>';
+ '</tbody></table></div>'+rainfallEvidencePanel(viewedPlot)+'</section>';
 }
 
 function validScenes(code){return plotScenes(code).filter(qaOk);}
