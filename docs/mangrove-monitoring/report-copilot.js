@@ -188,18 +188,24 @@ function visualPairCard(before,after,mode='mndwi'){
  const qaFor=im=>ctx?.scenes?.find(x=>x.plot===im.plot&&x.date===im.date);
  const badge=im=>{const q=qaFor(im);return 'วันภาพ '+esc(im.date)+' · QA '+esc(q?.analysis_status||'ไม่มีผลตรวจ')+
   ' · พิกเซลผ่าน QA '+(q?.qa_valid_pct==null?'—':num(q.qa_valid_pct)+'%');};
- const overlap=rasterOverlap(before,after,mode),compareOK=overlap>.72&&!cloud&&before?.index_renderer_version===after?.index_renderer_version;
+ const geometry=plotList().find(p=>p.code===after.plot)?.geometry||null;
+ const boundarySvg=reportBoundary(after,mode),boundaryPath=boundarySvg.match(/<path d="([^"]+)"/)?.[1]||'';
+ const overlayId='rpt-visual-clip-'+[after.plot,before.date,after.date,mode].join('-').replace(/[^a-z0-9_-]/gi,'_');
+ const overlap=rasterOverlap(before,after,mode),compareOK=overlap>.72&&!cloud&&before?.index_renderer_version===after?.index_renderer_version&&Boolean(boundaryPath);
  const beforePic=picture(before,mode),afterPic=picture(after,mode);
+ const mask='<svg class="rpt-visual-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="ขอบเขตพื้นที่ดัชนีที่เปลี่ยนเฉพาะภายในแปลง">'+
+  '<defs><clipPath id="'+overlayId+'" clipPathUnits="userSpaceOnUse"><path class="rpt-visual-polygon" d="'+esc(boundaryPath)+'" clip-rule="evenodd"/></clipPath></defs>'+
+  '<g class="rpt-visual-candidates" clip-path="url(#'+overlayId+')"></g></svg>';
  const afterMarked=afterPic.replace('class="rpt-image-canvas"','class="rpt-image-canvas rpt-visual-current-canvas"')
-   .replace('</div><figcaption>','<svg class="rpt-visual-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-label="วงตำแหน่งเปลี่ยนแปลงเบื้องต้น"></svg></div><figcaption>');
- return '<div class="rpt-visual-pair" data-visual-scan="'+(compareOK?'eligible':'disabled')+'" data-visual-mode="'+esc(mode)+'" data-before-bounds="'+esc(JSON.stringify(rasterBounds(before,mode)||[]))+'" data-after-bounds="'+esc(JSON.stringify(rasterBounds(after,mode)||[]))+'">'+
+   .replace('</div><figcaption>',mask+'</div><figcaption>');
+ return '<div class="rpt-visual-pair" data-visual-scan="'+(compareOK?'eligible':'disabled')+'" data-visual-mode="'+esc(mode)+'" data-visual-geometry="'+esc(JSON.stringify(geometry||{}))+'" data-before-bounds="'+esc(JSON.stringify(rasterBounds(before,mode)||[]))+'" data-after-bounds="'+esc(JSON.stringify(rasterBounds(after,mode)||[]))+'">'+
   '<div class="rpt-visual-duo">'+
   '<div class="rpt-visual-date"><b>ภาพก่อนหน้า · '+esc(before.date)+'</b>'+beforePic+'<small>'+badge(before)+'</small></div>'+
   '<div class="rpt-visual-date"><b>ภาพปัจจุบันที่ใช้เทียบ · '+esc(after.date)+'</b>'+afterMarked+'<small>'+badge(after)+'</small></div>'+
   '</div><p class="rpt-visual-result">'+
   (cloud?'มีสัญญาณภาพขาว/NoData มาก ไม่วงอัตโนมัติเพราะอาจถูกเมฆหรือข้อมูลขาดบัง':
    overlap<=.72?'ภาพสองวันซ้อนทับกันไม่พอจะระบุตำแหน่งเปลี่ยนได้ จึงแสดงให้ดูด้วยตา':
-   !compareOK?'รุ่นการแสดงดัชนีไม่ตรงกัน จึงไม่คำนวณสีต่างเพื่อวงตำแหน่ง':'กำลังตรวจความต่างของสีที่แสดงบนภาพดัชนี…')+
+   !boundaryPath?'ยังไม่มี GIS Polygon สำหรับจำกัดการวงในแปลง จึงไม่วงบริเวณนอกแปลง':!compareOK?'รุ่นการแสดงดัชนีไม่ตรงกัน จึงไม่คำนวณสีต่างเพื่อวงตำแหน่ง':'กำลังตรวจความต่างของสีที่แสดงบนภาพดัชนี…')+
   '</p><p class="rpt-caption">วงสีส้ม = จุดสงสัยจากความต่างสีภาพดัชนีที่แสดง ไม่ใช่ขอบเขตน้ำท่วมหรือพื้นที่เปลี่ยนแปลงที่คำนวณจาก GeoTIFF · เมฆและการปรับสีอาจทำให้คลาดเคลื่อน</p></div>';
 }
 function visualScreeningPages(d){
