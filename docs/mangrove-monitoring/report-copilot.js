@@ -128,6 +128,38 @@ function chart(rows,metric){
 }
 
 
+
+function waterChangeBreakdown(pair){
+ if(!pair)return '<p class="rpt-empty">ไม่มีคู่ภาพที่ใช้คำนวณการเปลี่ยนแปลง</p>';
+ const gain=pair.water_new_rai==null?null:Number(pair.water_new_rai);
+ const loss=pair.water_lost_rai==null?null:Number(pair.water_lost_rai);
+ const net=pair.water_net_change_rai==null?null:Number(pair.water_net_change_rai);
+ if(!Number.isFinite(gain)||!Number.isFinite(loss)||!Number.isFinite(net))return '<p class="rpt-empty">ไม่มีตัวเลขน้ำเพิ่ม/น้ำลดจากผลการวิเคราะห์เดิมครบทุกตัว จึงไม่สร้างค่าทดแทน</p>';
+ const mx=Math.max(gain,loss,.25),bar=(label,val,klass)=>
+  '<div class="rpt-water-row"><span>'+esc(label)+'</span><div class="rpt-water-bar"><div class="'+klass+'" style="width:'+Math.min(100,Math.max(0,val/mx*100)).toFixed(2)+'%"></div></div><b>'+num(val)+' ไร่</b></div>';
+ return '<div class="rpt-water-breakdown"><h3>จำแนกการเปลี่ยนแปลงพื้นที่น้ำจากคู่ภาพ</h3>'+
+ bar('เปลี่ยนเป็นน้ำ',gain,'rpt-water-gain')+bar('เปลี่ยนออกจากน้ำ',loss,'rpt-water-loss')+
+ '<p class="rpt-water-net">น้ำเพิ่มสุทธิ = '+num(gain)+' − '+num(loss)+' = <b>'+num(net)+' ไร่</b></p>'+
+ '<p class="rpt-caption">คำนวณจากพิกเซลคู่ภาพที่ผ่านเกณฑ์เดียวกัน ไม่ใช่แผนที่ตำแหน่งน้ำเพิ่ม/น้ำลดรายพิกเซล</p></div>';
+}
+function floodFinding(r){
+ if(!r.pair)return '<p>ยังไม่มีคู่ภาพที่เปรียบเทียบได้ จึงยังไม่จัดระดับสัญญาณพื้นที่น้ำสำหรับแปลงนี้</p>';
+ const c=r.pair,raw=[];
+ const pos=(v)=>Number.isFinite(Number(v))?Number(v):null;
+ const gain=pos(c.water_new_rai),loss=pos(c.water_lost_rai),net=pos(c.water_net_change_rai);
+ if(net!==null&&r.area>0){
+  raw.push(net>0?('น้ำที่จำแนกได้เพิ่มสุทธิ '+num(net)+' ไร่ คิดเป็น '+num(net/r.area*100)+'% ของพื้นที่พิกเซลร่วม'):net<0?
+   ('น้ำที่จำแนกได้ลดสุทธิ '+num(Math.abs(net))+' ไร่'):('พื้นที่น้ำสุทธิไม่เปลี่ยนแปลงในคู่ภาพนี้'));
+ }
+ if(gain!==null&&loss!==null&&gain>0&&loss>0)raw.push('พบทั้งพิกเซลที่เปลี่ยนเป็นน้ำและพิกเซลที่เปลี่ยนออกจากน้ำในแปลงเดียวกัน');
+ if(r.pct!=null&&r.pct>=50)raw.push('สัดส่วนการจำแนกน้ำเปลี่ยนสูงมาก ต้องตรวจ Raster/เกณฑ์ MNDWI และความต่างของภาพก่อนตีความ');
+ const veg=pos(c.vegetation_net_change_rai);
+ if(veg!==null&&veg<0)raw.push('การจำแนกพื้นที่พืชลดสุทธิ '+num(Math.abs(veg))+' ไร่ร่วมด้วย แต่ยังไม่ใช่หลักฐานว่าต้นไม้ตาย');
+ if(r.plot.geometry&&r.plot.area!=null&&r.area>Number(r.plot.area)+.1)raw.push('พื้นที่พิกเซลร่วมมากกว่าพื้นที่ Geometry '+num(r.area-Number(r.plot.area))+' ไร่ ต้องตรวจวิธี Rasterization ก่อนรับรองค่า');
+ if(!raw.length)raw.push('มีข้อมูลคู่ภาพสำหรับคัดกรอง แต่ยังไม่พอระบุสาเหตุของการเปลี่ยนแปลง');
+ return '<div class="rpt-finding"><h3>ข้อค้นพบเฉพาะแปลง '+esc(r.code)+'</h3><ul>'+raw.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>';
+}
+
 /* Flood brief is question-first: decision pages before optional visual evidence appendix.
    Pair changes are screening evidence only; different dates/tides must not become a flood claim. */
 function floodPlan(d){
@@ -188,6 +220,7 @@ function floodPlan(d){
   '<p class="rpt-lead">วิเคราะห์ '+esc(scopeText)+' '+esc(scope)+' จาก Sentinel-2 และคู่ภาพ Change Detection ที่ผ่านเกณฑ์ข้อมูลในช่วง '+esc(ui.period==='all'?'ทุกวันที่มีข้อมูล':ui.period+' วันย้อนหลัง')+'. ค่าที่เห็นเป็นการเปลี่ยนแปลงการจำแนกน้ำ ไม่ใช่พื้นที่น้ำท่วมยืนยัน</p>'+
   coverage+'<h3>แปลงที่มีพื้นที่น้ำเพิ่มสุทธิสูงสุดในชุดที่ตรวจได้</h3>'+top3+
   '<div class="rpt-pictures rpt-cover-grid">'+coverVisual+'</div>'+
+  '<div class="rpt-nextstep"><b>ข้อเสนอเพื่อการตัดสินใจ</b><p>ให้ตรวจสอบคู่ภาพและวิธีคำนวณของ '+esc(priority.map(r=>r.code).join(', ')||'แปลงที่มีข้อมูลครบ')+' ก่อน พร้อมตรวจน้ำขึ้นลง ณ เวลาถ่ายภาพและสภาพพื้นที่จริง ยังไม่อนุมัติการสรุปความเสียหายจากข้อมูลชุดนี้เพียงอย่างเดียว</p></div>'+ 
   '<p class="rpt-disclaimer"><b>ข้อสรุปสำหรับผู้บริหาร:</b> ยังไม่ยืนยันว่าเกิดน้ำท่วมหรือพืชตาย ต้องตรวจวันภาพ น้ำขึ้นลง ฝน และหลักฐานภาคสนามก่อนระบุผลกระทบ</p>');
  // GIS footprint as schematic plot positions, no fabricated basemap.
  const geoPoints=[];
@@ -227,7 +260,8 @@ function floodPlan(d){
  section('03 / EVIDENCE','แปลงที่ควรตรวจสอบก่อน',
   '<p>จัดลำดับตาม <b>พื้นที่น้ำเพิ่มสุทธิที่จำแนกได้</b> ในคู่ภาพล่าสุดที่ผ่านเงื่อนไขของแต่ละแปลง ไม่ใช่อันดับน้ำท่วมจริง และไม่ได้ปรับระยะเวลาหรือน้ำขึ้นลงให้เทียบเท่ากัน</p>'+
   table(rankChunk.map(shortRow),rankingCols)+
-  '<p class="rpt-caption">แสดง '+rankChunk.length+' / '+comparable.length+' แปลงที่มีคู่ภาพ · สัญญาณน้ำเพิ่ม '+increase.length+' แปลง · ไม่มีคู่ภาพ '+noPair+' แปลง</p>'+
+  waterChangeBreakdown(ordered[0]?.pair)+'<p class="rpt-caption">ภาพสรุปด้านบนเป็นรายละเอียดของ '+esc(ordered[0]?.code||'แปลงที่มีคู่ภาพ')+' เท่านั้น ไม่ใช่ผลรวมรายจังหวัด</p>'+ 
+   '<p class="rpt-caption">แสดง '+rankChunk.length+' / '+comparable.length+' แปลงที่มีคู่ภาพ · สัญญาณน้ำเพิ่ม '+increase.length+' แปลง · ไม่มีคู่ภาพ '+noPair+' แปลง</p>'+
   '<p class="rpt-disclaimer">'+esc(variableWindows?'แต่ละแปลงใช้คู่วันที่ภาพต่างกัน ไม่ควรตีความอันดับนี้ว่าเป็นความรุนแรงที่เปรียบเทียบกันได้':'ต้องตรวจปัจจัยต่าง ๆ ของคู่ภาพก่อนตีความผล')+' · คำว่า “ภาพปัจจุบัน” หมายถึงวันภาพหลังที่ใช้เทียบ ไม่จำเป็นต้องเป็นภาพดาวเทียมใหม่ล่าสุดในคลัง</p>'+ 
   '<p class="rpt-caption"><b>คำอธิบาย:</b> Δ น้ำ = ผลต่างพื้นที่ที่จำแนกเป็นน้ำระหว่างภาพสองวัน; พื้นที่ร่วม = พิกเซลที่นำมาเปรียบเทียบได้ทั้งสองวัน; QA = การตรวจคุณภาพภาพสำหรับการวิเคราะห์ ไม่ใช่ความถูกต้องของการยืนยันน้ำท่วม</p>');
  if(comparable.length>14){
@@ -248,6 +282,7 @@ function floodPlan(d){
    '<p class="rpt-caption">ก่อน (ซ้าย) เทียบหลัง (ขวา) ตามวันในผล Change Detection • ภาพจาก TIFF ที่ผ่าน QA เท่านั้น</p>'+
    (imAfter?'<div class="rpt-case-index">'+picture(imAfter,indexMode)+'</div>':'<p class="rpt-empty">'+esc(indexMode.toUpperCase())+' วันหลังเหตุการณ์ไม่พร้อมสำหรับแสดงประกอบ</p>')+
    '<p class="rpt-caption">ฝน NASA POWER ก่อนวันหลังภาพ 3 วัน (UTC): '+(rain&&rain.rain_prev_3_utc_days_mm!=null?num(rain.rain_prev_3_utc_days_mm)+' มม.':'ไม่มีข้อมูลที่ตรงวัน')+'</p>'+
+   waterChangeBreakdown(c)+floodFinding(r)+
    '<p class="rpt-disclaimer">ยังไม่สรุปว่าเป็นน้ำท่วม และไม่สามารถบอกผลกระทบต่อการรอดของต้นไม้จากภาพสองวันได้ ต้องตรวจน้ำขึ้นลงและพื้นที่จริง</p>');
  }
  const rainRows=priority.concat(ordered.slice(3,6)).map(r=>{
