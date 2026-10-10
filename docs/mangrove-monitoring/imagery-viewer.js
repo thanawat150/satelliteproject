@@ -215,7 +215,7 @@ const compare=active.layout==='compare'?
  '<p class="muted tiny">ชนิดภาพเดียวกันทั้งสองวันโดยอัตโนมัติ • ยังไม่ยืนยันน้ำท่วม ต้องตรวจ QA พิกเซลร่วม และบริบทน้ำขึ้นลง</p></div>':'';
 const modes=['true_color','false_color','ndvi','ndre','ndmi','mndwi','bsi','ndwi'];
 const gallery=active.layout==='grid'?
- '<h3 class="img-gallery-title">ภาพทั้ง 8 ชนิด · '+esc(active.date)+'</h3><p class="muted tiny">คลิกเปิดบนแผนที่ที่ภาพที่ต้องการ ไม่ต้องเลือกชนิดภาพซ้ำ</p>'+
+ '<h3 class="img-gallery-title">ภาพทั้ง 8 ชนิด · '+esc(active.date)+'</h3><div class="img-selected-qa">'+statusPill(active.date)+'</div><p class="muted tiny">คลิกเปิดบนแผนที่ที่ภาพที่ต้องการ ไม่ต้องเลือกชนิดภาพซ้ำ</p>'+
  '<div class="img-gallery">'+modes.map(mode=>'<div class="img-tile"><div class="img-title">'+esc(MODE[mode][0])+'</div><div class="img-frame">'+thumb(a[mode],mode,active.date,target)+'</div><small>'+esc(MODE[mode][1])+'</small>'+(a[mode]?'<button type="button" class="img-tile-open" data-image-open-mode="'+esc(mode)+'" data-image-open-date="'+esc(active.date)+'">เปิดบนแผนที่ ↗</button>':'')+indexStatBrief(target,mode)+'</div>').join('')+'</div>':'';
 const history=active.layout==='history'?allDateGallery(items,byDate,modes):'';
 const indexAudit=target?.index_stats?
