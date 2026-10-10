@@ -161,7 +161,7 @@ await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2
 assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Cloudy latest image is marked as display-only');
 await page.locator('[data-image-layout="grid"]').click();
 assert.equal(await page.locator('.img-gallery .img-frame img').count(),8,'All eight bands of cloudy 30-STC may be inspected on request');
-assert.ok((await page.locator('.img-gallery').innerText()).includes('ไม่มีผลดัชนี'),'Cloudy TIFF must not claim validated index statistics');
+assert.equal(await page.locator('.img-gallery [data-index-stat]').count(),0,'Cloudy TIFF must not show approved numerical index statistics');
 await page.locator('#image-date').selectOption('2026-09-30');
 await page.waitForFunction(()=>{const im=document.querySelector('.img-gallery .img-frame img');return im?.complete&&im.naturalWidth===9&&im.naturalHeight===13;},{timeout:20000});
 const rgb30=await page.locator('#imagery-explorer').innerText();
