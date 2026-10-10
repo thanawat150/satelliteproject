@@ -7,6 +7,14 @@ const page=await browser.newPage({viewport:{width:1366,height:900}});
 const errors=[];page.on('pageerror',x=>errors.push(x.stack||x.message));page.setDefaultTimeout(45000);
 await page.goto('http://127.0.0.1:8877/mangrove-monitoring/',{waitUntil:'domcontentloaded'});
 await page.waitForFunction(()=>document.querySelector('#updated')?.textContent?.includes('ข้อมูลดาวเทียม'),{timeout:60000});
+const archiveCoverage=await page.evaluate(async()=>{
+ const r=await fetch('./all_preview_coverage_audit.json');
+ return r.ok?r.json():null;
+});
+assert.ok(archiveCoverage,'Archived image coverage audit must be published');
+assert.equal(archiveCoverage.total_plot_dates,466);
+assert.equal(archiveCoverage.required_preview_images,3728);
+assert.equal(archiveCoverage.incomplete_images,0);
 assert.ok((await page.locator('#view-root').innerText()).includes('136 / 136'),'Overview should preserve original PDD cohort');
 assert.ok((await page.locator('#view-root').innerText()).includes('126 / 136'),'Overview should keep QA count');
 assert.ok((await page.locator('#view-root').innerText()).includes('160'),'Must show 160-register total');
@@ -75,7 +83,8 @@ for(const plot of ['13-STC','14-VSD']){
       date,{timeout:30000});
     const images=await page.locator('#imagery-explorer .img-gallery img').count();
     assert.equal(images,8,plot+' '+date+' should show all eight true TIFF images');
-    const ndwi=page.locator('#imagery-explorer .img-gallery .img-tile').filter({has:page.locator('.img-title', {hasText:'NDWI'})}).last();
+    await page.locator('#imagery-explorer .img-gallery img').last().scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>{const images=[...document.querySelectorAll('#imagery-explorer .img-gallery img')];const ndwi=images.at(-1);return images.length===8&&ndwi.complete&&ndwi.naturalWidth>0;},{timeout:20000});
     assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Archive must not claim QA passed');
   }
 }
