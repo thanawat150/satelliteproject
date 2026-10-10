@@ -247,7 +247,7 @@ function visualScreeningPages(d){
   groups.push({p,items,ts,score:(ts?.falling?1000:0)+(ts?.all.length||0)*35+items.length*10});
  }
  groups.sort((a,b)=>b.score-a.score||a.p.code.localeCompare(b.p.code));
- for(const x of groups.slice(0,ui.scope==='plot'?1:5)){
+ for(const x of groups.slice(0,ui.scope==='plot'?1:ui.scope==='all'?2:5)){
   const peak=x.ts&&x.items.find(z=>z.date===x.ts.peak.date),start=x.items[0],end=x.items.at(-1);
   const dates=[...new Set([start.date,peak?.date,end.date].filter(Boolean))];
   const photo=dates.flatMap(date=>{
