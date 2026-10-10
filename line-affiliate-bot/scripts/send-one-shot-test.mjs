@@ -2,10 +2,8 @@ const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 const userId = process.env.LINE_USER_ID;
 
 async function run() {
-  if (!token || !userId) {
-    console.log('ONE_SHOT_LINE_TEST_SKIPPED missing LINE env');
-    return;
-  }
+  if (!token) throw new Error('LINE_CHANNEL_ACCESS_TOKEN is missing');
+  if (!userId) throw new Error('LINE_USER_ID is missing');
 
   const r = await fetch('https://api.line.me/v2/bot/message/push', {
     method: 'POST',
@@ -24,8 +22,11 @@ async function run() {
   });
 
   const body = await r.text();
-  if (r.ok) console.log('ONE_SHOT_LINE_TEST_SENT');
-  else console.log('ONE_SHOT_LINE_TEST_FAILED ' + r.status + ' ' + body);
+  if (!r.ok) throw new Error('LINE push failed ' + r.status + ' ' + body);
+  console.log('ONE_SHOT_LINE_TEST_SENT');
 }
 
-run().catch(e => console.log('ONE_SHOT_LINE_TEST_FAILED ' + e.message));
+run().catch(err => {
+  console.error(err.message);
+  process.exit(1);
+});
