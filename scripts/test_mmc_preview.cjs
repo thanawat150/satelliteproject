@@ -80,7 +80,7 @@ assert.ok((await page.locator('#time-series-details').innerText()).includes('NAS
 assert.ok((await page.locator('#time-series-subtitle').innerText()).includes('มม.'),'Rainfall chart must use millimeters');
 await page.locator('#plot-select').selectOption('16-STC');
 assert.ok((await page.locator('#time-series-visual').innerText()).includes('2026-07-19'),'Rainfall chart must follow the plot selected');
-assert.ok((await page.locator('#time-series-visual').locator('svg title').allTextContents()).some(x=>x.includes('95.93')),'September rain series value must be actual NASA POWER source');
+assert.ok((await page.locator('#time-series-visual .ts-point').evaluateAll(nodes=>nodes.map(x=>x.getAttribute('aria-label')||''))).some(x=>x.includes('95.93')),'September rain series value must be actual NASA POWER source');
 await page.locator('#plot-select').selectOption('13-STC');
 await page.locator('#timeseries-metric-select').selectOption('mndwi');
 
