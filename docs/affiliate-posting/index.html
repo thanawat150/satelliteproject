@@ -96,6 +96,19 @@ h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",s
   .snapshot{white-space:nowrap}
   .scheduled-top{display:block}.chips{justify-content:flex-start;margin-top:9px}
 }
+
+.inventory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.inventory-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 17px;box-shadow:var(--shadow)}
+.inventory-card h3{margin:0;font-size:17px}
+.inventory-note{font-size:12px;color:var(--muted);margin:5px 0 12px;line-height:1.55}
+.inventory-counts{display:flex;gap:7px;flex-wrap:wrap}
+.badge-ready,.badge-review,.badge-edit{font-size:11px;font-weight:800;border-radius:999px;padding:6px 9px}
+.badge-ready{background:#e7f7ef;color:#087b5a}.badge-review{background:#fff6df;color:#a15c00}.badge-edit{background:#feecec;color:#b42318}
+.status-ready{background:#e7f7ef;color:#087b5a}.status-review{background:#fff6df;color:#a15c00}.status-edit{background:#feecec;color:#b42318}
+.day.review{border-color:#f7d995}.day.edit{border-color:#fecaca}
+.taskbox{margin:12px 0 0;padding:12px 13px;border-radius:12px;background:#fff8e8;color:#7a4b00;font-size:12px;border:1px solid #f6dfaa}
+.taskbox.edit{background:#fff4f4;color:#8d1d1d;border-color:#fecaca}
+@media(max-width:720px){.inventory-grid{grid-template-columns:1fr}}
 /* SCHEDULED_POSTS_UI_END */
 </style>
 </head>
@@ -131,9 +144,17 @@ h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",s
     <div class="list scheduled-list" id="scheduledList"></div>
   </section>
 
+  <section id="inventorySection">
+    <div class="section-head">
+      <div><div class="kicker">ขายของ · DRIVE AUDIT</div><h2>สถานะคลิปสินค้า</h2></div>
+      <span class="snapshot">ตรวจไฟล์ · 10 ต.ค. 2569</span>
+    </div>
+    <div class="inventory-grid" id="inventoryGrid"></div>
+  </section>
+
   <section id="affiliateSection">
     <div class="section-head affiliate-head">
-      <div><div class="kicker">AFFILIATE MANUAL QUEUE</div><h2>คลิป Affiliate ที่ต้องโพสต์เอง</h2></div>
+      <div><div class="kicker">DAILY SALES PLAN</div><h2>วันนี้ขายอะไร / ต้องเตรียมอะไร</h2></div>
     </div>
     <main class="list" id="list"></main>
   </section>
@@ -149,69 +170,47 @@ const STORE_KEY = 'affiliate-daily-post-done-v1';
 
 const products = [
   {
-    key:'sun',
-    name:'ครีมกันแดดศิริราช',
-    sub:'SIRIRAJ TINTED PHYSICAL SUNSCREEN',
-    shopee:'20:00',
-    tiktok:'21:00',
+    key:'sun', name:'ครีมกันแดดศิริราช', sub:'SIRIRAJ TINTED PHYSICAL SUNSCREEN',
+    shopee:'20:00', tiktok:'21:00',
     folder:'https://drive.google.com/drive/folders/1pYXNSp8T9zykrWwwk0mmXt66y464nsP3',
-    files:[
-      ['13igBswTDFZeNbmfXCb_hLCBuuacgAXny','Shopee_Sunscreen_NongMay_10s_Ready.mp4'],
-      ['1h37yx5AsPm961-4ZfHhRGUOazAmzrKUF','IMG_1979.MOV'],
-      ['1ufqGzGTjmO7I1rlG-NQajyzGR9XLhvwy','IMG_1984.MOV'],
-      ['1oWllfgv35Y04M4eLvnvspbqfuKffDHyI','IMG_1983.MOV'],
-      ['16VmsrO_vAbNf5N42J39vaG_t41tD-CF4','IMG_1980.MOV'],
-      ['1A_nedEAZ5U-LuVIqFqPxy3zyA_XmkjZe','IMG_1981.MOV']
-    ],
-    captions:[
-      '☀️ แดดแรงแค่ไหนก็ต้องมีตัวช่วย กันแดดศิริราชสีเนื้อ ใช้ง่ายในทุกวัน เหมาะกับคนที่กำลังมองหากันแดดสำหรับผิวบอบบาง 💙',
-      'กันแดดศิริราชสีเนื้อ Physical Sunscreen SPF 50+ PA++++ ใช้ง่ายในชีวิตประจำวัน ใครชอบกันแดดสีเนื้อลองดูตัวนี้ค่ะ',
-      'จุดที่น่าสนใจของตัวนี้คือเป็นกันแดดสีเนื้อ พร้อม SPF 50+ PA++++ และสูตรไม่มีน้ำหอม ไม่มีพาราเบน',
-      'ใครกำลังหากันแดดสำหรับใช้ทุกวัน ตัวนี้เป็น Physical Sunscreen สีเนื้อ ดูเป็นธรรมชาติและพกง่าย 30 กรัม 💙'
-    ],
     hashtags:'#กันแดดศิริราช #กันแดดสีเนื้อ #PhysicalSunscreen #SPF50Plus #ผิวบอบบาง #ShopeeVideo #TikTokAffiliate'
   },
   {
-    key:'chair',
-    name:'เก้าอี้มหัศจรรย์คุณตาแสวง',
-    sub:'แท่นยืนยืดเส้น / ไม้ยืนเพื่อสุขภาพ',
-    shopee:'19:30',
-    tiktok:'20:00',
+    key:'chair', name:'เก้าอี้มหัศจรรย์คุณตาแสวง', sub:'แท่นยืนยืดเส้น / ไม้ยืนเพื่อสุขภาพ',
+    shopee:'19:30', tiktok:'20:00',
     folder:'https://drive.google.com/drive/folders/1SX1WU3Hoy4j8fiyr5R93-7kke8PwZa0W',
-    files:[
-      ['1oU6mlMfWKFxWHDbxrld94N2SXuFVOAT_','IMG_1977.MOV'],
-      ['1mZwiowJpxeXTrbFCWASgH98TRYmTtABu','IMG_1978.MOV']
-    ],
-    captions:[
-      'นั่งทำงานนาน ๆ แล้วอยากยืดเหยียดระหว่างวัน ลองดูแท่นยืนยืดเส้นคุณตาแสวงครับ ใช้ได้ทั้งที่บ้านและออฟฟิศ',
-      'ของชิ้นไม่ใหญ่ แต่เหมาะสำหรับวางไว้ข้างโต๊ะทำงาน เวลานั่งหรือยืนนาน ๆ ก็หยิบมาใช้ยืดเหยียดได้สะดวกครับ',
-      'เก้าอี้มหัศจรรย์คุณตาแสวง หรือแท่นยืนยืดเส้น ขนาดกะทัดรัด ใช้งานง่ายและเก็บไม่กินพื้นที่',
-      'ใครนั่งหน้าคอมนานหรือยืนนาน ลองมีอุปกรณ์สำหรับยืดเหยียดไว้ใกล้ตัวแบบนี้ครับ'
-    ],
     hashtags:'#เก้าอี้มหัศจรรย์ #คุณตาแสวง #แท่นยืนยืดเส้น #ยืดเหยียด #คนทำงาน #ShopeeVideo #TikTokAffiliate'
   },
   {
-    key:'run',
-    name:'ลู่วิ่ง D5-Pro',
-    sub:'เดินออกกำลังกายที่บ้าน',
-    shopee:'20:00',
-    tiktok:'19:00',
+    key:'run', name:'ลู่วิ่ง D5-Pro', sub:'ลู่วิ่ง / เดินออกกำลังกายที่บ้าน',
+    shopee:'20:00', tiktok:'19:00',
     folder:'https://drive.google.com/drive/folders/1s70Qd1D0UUTvU_BsXp3GutJuN-bErKzR',
-    files:[
-      ['1Uv7S6O9-F-tad8DgWfMtq62jp2Ay4D1u','IMG_1976.MOV'],
-      ['1HURxxYRalnPXH7eTZAMAnZfbtnhJtr7_','IMG_1971.MOV'],
-      ['17m6tals5a5yrR_3p-q1pcJJRGavIkic1','IMG_1973.MOV'],
-      ['1q2PjXPWqz66tl9Yael5uqypF0-SXeVdC','IMG_1974.MOV'],
-      ['1FbizeAKAPauLmGq_1OQ5MBhxogmJET9g','IMG_1970.MOV'],
-      ['1blBqYgQX6ostkwZkA0kv0A22Qy3sMXfw','IMG_1972.MOV']
-    ],
-    captions:[
-      'ลู่วิ่ง D5-Pro ปรับความเร็วจากรีโมตได้ระหว่างเดิน ใช้งานสะดวก เหมาะกับคนที่อยากเดินออกกำลังกายที่บ้าน 🏃',
-      'อยากเดินอยู่บ้านแบบไม่ยุ่งยาก ตัวนี้ควบคุมได้ทั้งรีโมตและแอป ใช้งานง่ายและปรับตามจังหวะการเดินได้',
-      'ลองให้ดูตรง ๆ ว่าตอนกำลังเดิน D5-Pro ปรับการทำงานยังไง ใครกำลังหาลู่วิ่งใช้บ้านลองดูรุ่นนี้ครับ',
-      'วันที่ไม่อยากออกไปเดินข้างนอก เปิดลู่วิ่งแล้วเดินในบ้านได้เลย ดูซีรีส์ไปเดินไปก็สะดวกครับ'
-    ],
     hashtags:'#ลู่วิ่งD5Pro #ลู่วิ่งไฟฟ้า #เดินออกกำลังกาย #ออกกำลังกายที่บ้าน #HomeWorkout #ShopeeVideo #TikTokAffiliate'
+  },
+  {
+    key:'table', name:'โต๊ะขาว', sub:'สินค้าใหม่ · มีคลิปดิบ',
+    shopee:'20:00', tiktok:'20:30',
+    folder:'https://drive.google.com/drive/folders/1Hb8jQcrgnHC5Wzii8RGKnSF7PsVwItqI',
+    hashtags:'#โต๊ะขาว #ของใช้ในบ้าน #รีวิวสินค้า #ShopeeVideo #TikTokAffiliate'
+  }
+];
+
+const inventory = [
+  {
+    key:'sun', ready:1, review:5, edit:12,
+    note:'มีไฟล์ Ready ชัดเจน 1 คลิป และคลิป AI แนวตั้ง 10 วิอีก 5 คลิปที่ภาพ/สินค้าใช้ได้ แต่ควรฟังเสียงก่อนโพสต์ 1 รอบ; คลิปยาวป๋าเคน/น้องเมย์และ MOV เป็นวัตถุดิบสำหรับตัดเพิ่ม'
+  },
+  {
+    key:'chair', ready:1, review:4, edit:2,
+    note:'ป๋าเคน Flow 3 เป็นเวอร์ชันล่าสุดและใกล้ Reference สินค้าที่สุด; Flow/Meta รุ่นก่อนหน้าเป็นลุค/สินค้าเวอร์ชันเก่า ควรเช็กก่อนใช้; MOV 1977–1978 เป็นคลิปจริงสำหรับตัด B-roll'
+  },
+  {
+    key:'run', ready:0, review:0, edit:6,
+    note:'มีแต่คลิปดิบแนวนอน 6 ไฟล์: เดินบนลู่, ถือรีโมต, รีโมต Close-up และหน้าจอควบคุม จึงควรตัด 9:16 ใส่ Hook/ข้อความก่อนโพสต์'
+  },
+  {
+    key:'table', ready:0, review:0, edit:1,
+    note:'มี IMG_2024.MOV คลิปดิบไฟล์ใหญ่ประมาณ 1.7 GB เพียงไฟล์เดียว ยังไม่มี Final Export จึงต้องตัดก่อน'
   }
 ];
 
@@ -224,19 +223,33 @@ function todayISO(){ return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bang
 function fmtDate(d){
   return new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',weekday:'long',day:'numeric',month:'short',year:'numeric'}).format(d);
 }
-function makeSchedule(){
-  const counts={sun:0,chair:0,run:0};
-  return Array.from({length:DAYS},(_,i)=>{
-    const p=products[i%products.length];
-    const n=counts[p.key]++;
-    const file=p.files[n%p.files.length];
-    return {
-      id:'d'+i,date:addDays(START,i),product:p,file,
-      caption:p.captions[n%p.captions.length]
-    };
-  });
-}
-const schedule=makeSchedule();
+const salesPlan = [
+  {date:'2026-10-10',key:'sun',status:'ready',file:['13igBswTDFZeNbmfXCb_hLCBuuacgAXny','Shopee_Sunscreen_NongMay_10s_Ready.mp4'],caption:'☀️ แดดแรงแค่ไหนก็ต้องมีตัวช่วย กันแดดศิริราชสีเนื้อ ใช้ง่ายในทุกวัน เหมาะกับคนที่กำลังมองหากันแดดสำหรับผิวบอบบาง 💙',task:'พร้อมโพสต์ได้เลย'},
+  {date:'2026-10-11',key:'chair',status:'ready',file:['1AYfRABxoeMq-7Huydwm624OK4YYEtU6X','ป๋าเคน Flow 3.mp4'],caption:'นั่งนานแล้วขาตึง ลองมายืนยืดกับเก้าอี้มหัศจรรย์คุณตาแสวงครับ ใช้ง่าย ขนาดไม่ใหญ่ เหมาะไว้ใช้ทั้งที่บ้านและออฟฟิศ',task:'พร้อมโพสต์ · ใช้เวอร์ชันล่าสุด'},
+  {date:'2026-10-12',key:'sun',status:'review',file:['1rcZ-_yfSPZixqFletGNUHSc6G5DhGGK3','Woman_presenting_sunscreen_bottle_20261009133712.mp4'],caption:'กันแดดศิริราชสีเนื้อ Physical Sunscreen SPF 50+ PA++++ ใช้ง่ายในชีวิตประจำวัน ใครชอบกันแดดสีเนื้อลองดูตัวนี้ค่ะ',task:'ภาพพร้อม 10 วิ · ฟังเสียงและเช็กคำพูด 1 รอบก่อนโพสต์'},
+  {date:'2026-10-13',key:'sun',status:'review',file:['1e8Lb-PquG0er-vCfejKd6AR-fjw_bh1r','Woman_holding_sunscreen_at_market_20261009164003.mp4'],caption:'อากาศร้อนและต้องออกแดดบ่อย กันแดดจึงเป็นของที่ขาดไม่ได้ 💙 กันแดดศิริราชสีเนื้อ SPF 50+ PA++++ รายละเอียดอยู่ที่ตะกร้าค่ะ',task:'คลิปตลาด 10 วิ · เช็กเสียง/ฉลากก่อนโพสต์'},
+  {date:'2026-10-14',key:'sun',status:'review',file:['1Ey7ghLaTKyc6LrNkDJLQ3z8Zn92HmisF','Woman_holding_sunscreen_at_market_20261009155605.mp4'],caption:'แดดเมืองไทยแรงทุกวัน ☀️ ใครกำลังมองหากันแดดสีเนื้อ ใช้ง่ายในชีวิตประจำวัน ลองดู SIRIRAJ Tinted Physical Sunscreen ได้เลยค่ะ',task:'คลิปตลาด 10 วิ · ตรวจเสียงก่อนโพสต์'},
+  {date:'2026-10-15',key:'sun',status:'review',file:['1M-C0IqECI6W4TAk_mGUqJwr4jM4lgOHs','Hand_holding_sunscreen_bottle_20261009152335.mp4'],caption:'ดูตัวสินค้าชัด ๆ ค่ะ SIRIRAJ Tinted Physical Sunscreen สีเนื้อ SPF 50+ PA++++ ขนาด 30 กรัม 💙',task:'คลิปสินค้าเดี่ยว 10 วิ · เหมาะเป็น Product Focus'},
+  {date:'2026-10-16',key:'sun',status:'review',file:['1t7jMpP3cB6e4LLveNd8K9KpAf7OHCS6M','Woman_holding_sunscreen_bottle_20261009145232.mp4'],caption:'ใครกำลังหากันแดดสำหรับใช้ทุกวัน ตัวนี้เป็น Physical Sunscreen สีเนื้อ ดูเป็นธรรมชาติและพกง่าย 30 กรัม 💙',task:'คลิปน้ำชา 10 วิ · เช็กเสียงก่อนโพสต์'},
+  {date:'2026-10-17',key:'run',status:'edit',file:['1HURxxYRalnPXH7eTZAMAnZfbtnhJtr7_','IMG_1971.MOV'],extra:['1q2PjXPWqz66tl9Yael5uqypF0-SXeVdC','IMG_1974.MOV'],caption:'ลู่วิ่ง D5-Pro ปรับความเร็วจากรีโมตได้ระหว่างเดิน ใช้งานสะดวก เหมาะกับคนที่อยากเดินออกกำลังกายที่บ้าน 🏃',task:'ต้องตัดก่อน: ใช้ IMG_1971 ช็อตเดิน + IMG_1974 รีโมต Close-up ทำคลิป 15–25 วิ'},
+  {date:'2026-10-18',key:'run',status:'edit',file:['17m6tals5a5yrR_3p-q1pcJJRGavIkic1','IMG_1973.MOV'],caption:'อยากควบคุมลู่วิ่งแบบไม่ยุ่งยาก ลองดู D5-Pro ครับ โชว์หน้าจอและการสั่งงานให้เห็นแบบตรง ๆ',task:'ต้องตัดก่อน: IMG_1973 มีมุมหน้าจอ/ชุดควบคุม เหมาะทำคลิปฟีเจอร์'},
+  {date:'2026-10-19',key:'sun',status:'edit',file:['1Q1jISGXXiaL7kACbbldZEfpvWyg2tKAT','ป๋าเคน5.mp4'],caption:'ถ้ากำลังมองหากันแดดที่ใช้ง่ายในทุกวัน SIRIRAJ Tinted Physical Sunscreen เป็นอีกตัวที่น่าสนใจครับ',task:'ต้องตัดก่อน: คลิปยาว 31.7 วิ ตัด Hook 8–15 วิออกมาเป็นคลิปขายใหม่'},
+  {date:'2026-10-20',key:'chair',status:'edit',file:['1oU6mlMfWKFxWHDbxrld94N2SXuFVOAT_','IMG_1977.MOV'],extra:['1mZwiowJpxeXTrbFCWASgH98TRYmTtABu','IMG_1978.MOV'],caption:'เก้าอี้มหัศจรรย์คุณตาแสวง หรือแท่นยืนยืดเส้น ขนาดกะทัดรัด เหมาะไว้ยืดเหยียดระหว่างวันครับ',task:'ต้องตัดก่อน: ใช้คลิปสินค้าจริง 1977–1978 ทำ Demo วิธีใช้ จะน่าเชื่อถือกว่า AI'},
+  {date:'2026-10-21',key:'table',status:'edit',file:['13sdar_U_2XmihyVPtG92NDzazZHzh4c0','IMG_2024.MOV'],caption:'',task:'ต้องตัดก่อน: มีคลิปดิบ 1 ไฟล์ใหญ่ ~1.7 GB ยังไม่มี Final Export และยังต้องกำหนด Hook/จุดขายของโต๊ะ'},
+  {date:'2026-10-22',key:'sun',status:'edit',file:['1y21uR6Em6rUMaBlpvLmQ5KmVXY65q_8i','น้องเมย์.mp4'],caption:'ออกแดดบ่อยก็ต้องเลือกกันแดดที่หยิบใช้ได้ทุกวัน ☀️ กันแดดศิริราชสีเนื้อเป็นอีกตัวเลือกที่น่าสนใจค่ะ',task:'ต้องตัดก่อน: คลิปยาว 42.8 วิ ตัดเป็น 2–3 คลิปสั้นได้'},
+  {date:'2026-10-23',key:'run',status:'edit',file:['1Uv7S6O9-F-tad8DgWfMtq62jp2Ay4D1u','IMG_1976.MOV'],caption:'วันที่ไม่อยากออกไปเดินข้างนอก เปิดลู่วิ่งแล้วเดินอยู่บ้านได้เลยครับ D5-Pro ใช้เป็น Routine เดินเบา ๆ ในบ้านได้',task:'ต้องตัดก่อน: IMG_1976 ยาว 68 วิ เลือกช่วงเดินสวย ๆ 10–20 วิ'}
+];
+
+const schedule = salesPlan.map((x,i)=>({
+  id:'sale-'+x.date,
+  date:new Date(x.date+'T00:00:00+07:00'),
+  product:products.find(p=>p.key===x.key),
+  file:x.file,
+  extra:x.extra||null,
+  caption:x.caption||'',
+  status:x.status,
+  task:x.task
+}));
 let range='today';
 let done=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
 
@@ -248,6 +261,25 @@ function toast(msg){
 async function copyText(text,msg){
   try{await navigator.clipboard.writeText(text);toast(msg||'คัดลอกแล้ว');}
   catch{toast('คัดลอกไม่สำเร็จ');}
+}
+
+
+function renderInventory(){
+  const el=document.getElementById('inventoryGrid');
+  el.innerHTML=inventory.map(x=>{
+    const p=products.find(q=>q.key===x.key);
+    return `
+      <article class="inventory-card">
+        <h3>${escapeHtml(p.name)}</h3>
+        <div class="inventory-note">${escapeHtml(x.note)}</div>
+        <div class="inventory-counts">
+          <span class="badge-ready">พร้อมโพสต์ ${x.ready}</span>
+          <span class="badge-review">เช็กก่อนโพสต์ ${x.review}</span>
+          <span class="badge-edit">ต้องตัด ${x.edit}</span>
+        </div>
+        <div class="actions"><a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a></div>
+      </article>`;
+  }).join('');
 }
 
 function scheduledRows(){
@@ -317,6 +349,7 @@ function visibleRows(){
   return schedule.slice(start,start+30);
 }
 function render(){
+  renderInventory();
   const srows=scheduledRows();
   renderScheduled(srows);
   const rows=visibleRows();
@@ -326,31 +359,39 @@ function render(){
   if(!rows.length){ el.innerHTML='<div class="empty">ยังไม่มีรายการสำหรับวันนี้ กดดู 7 วันหรือ 30 วันได้ครับ</div>'; return; }
   el.innerHTML=rows.map((x)=>{
     const p=x.product, fileId=x.file[0], fileName=x.file[1], isDone=!!done[x.id];
+    const status=x.status||'ready';
+    const statusText=status==='ready'?'พร้อมโพสต์':(status==='review'?'เช็กก่อนโพสต์':'ต้องตัดก่อน');
+    const statusClass=status==='ready'?'status-ready':(status==='review'?'status-review':'status-edit');
     const download='https://drive.google.com/uc?export=download&id='+encodeURIComponent(fileId);
-    const all=x.caption+'\n\n'+p.hashtags;
+    const all=(x.caption ? x.caption+'\n\n'+p.hashtags : p.hashtags).trim();
     const dt=x.date;
     const day=String(dt.getDate()).padStart(2,'0');
     const mon=new Intl.DateTimeFormat('th-TH',{month:'short',timeZone:'Asia/Bangkok'}).format(dt).replace('.','');
     return `
-    <article class="day ${isDone?'done':''}">
+    <article class="day ${isDone?'done':''} ${status==='review'?'review':''} ${status==='edit'?'edit':''}">
       <header class="day-head">
         <div class="day-title">
           <div class="datebox"><strong>${day}</strong><small>${mon}</small></div>
           <div class="product"><h2>${escapeHtml(p.name)}</h2><p>${escapeHtml(fmtDate(dt))} · ${escapeHtml(p.sub)}</p></div>
         </div>
-        <button class="status ${isDone?'done':''}" data-done="${x.id}">${isDone?'✓ โพสต์แล้ว':'ทำเครื่องหมายโพสต์แล้ว'}</button>
+        <div class="chips">
+          <span class="chip ${statusClass}">${statusText}</span>
+          ${status!=='edit'?`<button class="status ${isDone?'done':''}" data-done="${x.id}">${isDone?'✓ โพสต์แล้ว':'ทำเครื่องหมายโพสต์แล้ว'}</button>`:''}
+        </div>
       </header>
       <div class="day-body">
         <div class="times">
-          <span class="time-pill shopee">Shopee · ${p.shopee} น.</span>
-          <span class="time-pill tiktok">TikTok · ${p.tiktok} น.</span>
+          ${status!=='edit'?`<span class="time-pill shopee">Shopee · ${p.shopee} น.</span><span class="time-pill tiktok">TikTok · ${p.tiktok} น.</span>`:'<span class="time-pill" style="background:#feecec;color:#b42318">ยังไม่กำหนดเวลาโพสต์ — ตัดให้เสร็จก่อน</span>'}
         </div>
 
-        <div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
-        <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>
+        <div class="taskbox ${status==='edit'?'edit':''}"><b>${status==='edit'?'งานที่ต้องทำก่อนโพสต์':'QA ก่อนโพสต์'}:</b> ${escapeHtml(x.task)}</div>
+
+        ${x.caption?`<div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
+        <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>`:''}
 
         <div class="actions">
-          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">⬇ ดาวน์โหลดคลิป · ${escapeHtml(fileName)}</a>
+          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">${status==='edit'?'⬇ ดาวน์โหลดวัตถุดิบ':'⬇ ดาวน์โหลดคลิป'} · ${escapeHtml(fileName)}</a>
+          ${x.extra?`<a class="btn btn-secondary" href="https://drive.google.com/uc?export=download&id=${encodeURIComponent(x.extra[0])}" target="_blank" rel="noopener">⬇ วัตถุดิบเพิ่ม · ${escapeHtml(x.extra[1])}</a>`:''}
           <a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a>
         </div>
       </div>
