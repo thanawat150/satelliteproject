@@ -424,6 +424,7 @@ function floodPlan(d){
   '<p class="rpt-caption">จำนวนภาพ Sentinel-2 '+d.all.length+' รายการ · ภาพผ่าน QA '+d.good.length+' รายการ · เปรียบเทียบน้ำได้ '+comparable.length+' แปลง</p>'+
   '<p class="rpt-disclaimer">แผนผังแสดงพิกัดแปลง ไม่ยืนยันพื้นที่ท่วม ระดับน้ำ หรือระดับความเสียหาย</p>');
 
+ for(const visualPage of visualScreeningPages(d))section(visualPage.key,visualPage.title,visualPage.body);
  const trackRows=rows.map(r=>{
   const t=waterTimelineRow(r.timeline);
   return {code:r.code,peak:t.peak,now:t.current,delta:t.change,state:t.state};
@@ -483,7 +484,7 @@ function floodPlan(d){
    waterChangeBreakdown(c)+floodFinding(r)+
    '<p class="rpt-disclaimer">ยังไม่สรุปว่าเป็นน้ำท่วม และไม่สามารถบอกผลกระทบต่อการรอดของต้นไม้จากภาพสองวันได้ ต้องตรวจน้ำขึ้นลงและพื้นที่จริง</p>');
  }
- for(const visualPage of visualScreeningPages(d,new Set(priority.map(r=>r.code))))section(visualPage.key,visualPage.title,visualPage.body);
+ 
   const rainRows=priority.concat(ordered.slice(3,6)).map(r=>{
   const date=r.timeline?.latest.date||r.pair?.date_b;
   const rain=(ctx?.environment?.plots?.[r.code]?.scenes||[]).find(x=>x.date===date);
