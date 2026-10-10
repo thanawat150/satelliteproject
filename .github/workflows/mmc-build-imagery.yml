@@ -126,6 +126,8 @@ jobs:
             docs/mangrove-monitoring/index_quality_audit.json
           if ! git diff --cached --quiet; then
             git commit -m "Publish raster-derived Sentinel-2 color and spectral index layers"
-            git pull --rebase origin main
+            # Regenerated imagery manifest and QA reports are authoritative for this run.
+            # On concurrent report edits, prefer our tested generated output.
+            git pull --rebase -X theirs origin main
             git push origin HEAD:main
           fi
