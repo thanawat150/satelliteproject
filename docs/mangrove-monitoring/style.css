@@ -276,3 +276,10 @@ html{scroll-behavior:smooth}
 @media(max-width:1000px){.rpt-input-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rpt-checkbox-grid fieldset{grid-template-columns:1fr}}
 @media(max-width:650px){.rpt-studio{padding:12px}.rpt-input-grid,.rpt-checkbox-grid{grid-template-columns:1fr}.rpt-input-grid label{min-width:0}.rpt-checkbox-grid fieldset{grid-template-columns:repeat(2,minmax(0,1fr))}#rpt-preview{padding:9px}#rpt-preview .rpt-papers{width:210mm;transform:scale(.44);transform-origin:top left;margin-bottom:-165mm}#rpt-preview .rpt-paper{margin-left:0}}
 @media print{.rpt-studio{border:0;padding:0}.rpt-studio>:not(.rpt-preview-toggle){display:none!important}.rpt-preview-toggle{display:block}.rpt-preview-toggle>summary{display:none!important}#rpt-preview{overflow:visible;padding:0;background:transparent;margin:0}#rpt-preview .rpt-papers{transform:none!important;width:auto!important;margin:0!important}}
+
+/* Legacy evidence is available on demand, not duplicated beside Report Studio. */
+.report-legacy{margin-top:15px;border:1px solid #416b50;border-radius:11px;background:#142f23;padding:0 15px}
+.report-legacy>summary{list-style:revert;cursor:pointer;color:#cfebd5;padding:14px 6px;font-size:12px;font-weight:650}
+.report-legacy[open]>summary{border-bottom:1px solid #38604a;margin-bottom:16px}
+#report-legacy-content{padding-bottom:15px}
+@media print{.report-legacy:not([open]){display:none!important}}
