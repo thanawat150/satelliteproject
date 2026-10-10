@@ -8,5 +8,8 @@
   "type": "module",
   "scripts": {
     "build": "mkdir -p public && cp index.html public/index.html"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.6.1"
   }
 }
