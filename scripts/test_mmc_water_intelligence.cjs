@@ -24,4 +24,24 @@ assert.equal(result.context.rain,'NOT_CONNECTED');
 assert.equal(water.quality(change('unknown','2026-01-01','2026-01-02',5),null).screenable,false);
 assert.equal(water.substantive(0.07,1),true,'small plots should use proportion-based threshold');
 assert.equal(water.substantive(0.03,1),false,'rounding noise should not trigger');
+const dates=[
+ {date:'2026-09-29',analysis_status:'AUTO_VALID',qa_valid_pct:91.5,mndwi:-0.15,ndwi:-0.22,water_rai:12.7},
+ {date:'2026-10-02',analysis_status:'NO_DATA',qa_valid_pct:0,mndwi:0.9,ndwi:0.7,water_rai:999}
+];
+const rainDays=[
+ {date:'2026-09-29',data_quality:'COMPLETE',rain_prev_1_utc_day_mm:4.56,rain_prev_3_utc_days_mm:95.93},
+ {date:'2026-10-02',data_quality:'MISSING_DAILY_VALUES',rain_prev_1_utc_day_mm:null,rain_prev_3_utc_days_mm:null}
+];
+const ok=water.daySnapshot(dates,'2026-09-29',rainDays);
+assert.equal(ok.water_rai,12.7);
+assert.equal(ok.mndwi,-0.15);
+assert.equal(ok.rainfall_prev_3_utc_days_mm,95.93);
+assert.equal(ok.qa_status,'AUTO_VALID');
+const rejected=water.daySnapshot(dates,'2026-10-02',rainDays);
+assert.equal(rejected.analytical_values_approved_for_screening,false);
+assert.equal(rejected.water_rai,null,'never expose unvalidated water area');
+assert.equal(rejected.ndwi,null,'never expose unvalidated water index');
+assert.equal(rejected.rainfall_prev_1_utc_day_mm,null);
+assert.equal(rejected.tide_level_m,null,'never invent tide observations');
+assert.equal(water.daySnapshot(dates,'2026-09-30',rainDays),null,'no values for a date without a scene');
 console.log('WATER_INTELLIGENCE_QA_PASS',result.reversals.length,result.held.length);
