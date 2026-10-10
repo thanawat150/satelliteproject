@@ -130,20 +130,33 @@ function chart(rows,metric){
 
 
 
-function waterChangeBreakdown(pair){
- if(!pair)return '<p class="rpt-empty">ไม่มีคู่ภาพที่ใช้คำนวณการเปลี่ยนแปลง</p>';
- const gain=pair.water_new_rai==null?null:Number(pair.water_new_rai);
- const loss=pair.water_lost_rai==null?null:Number(pair.water_lost_rai);
- const net=pair.water_net_change_rai==null?null:Number(pair.water_net_change_rai);
- if(!Number.isFinite(gain)||!Number.isFinite(loss)||!Number.isFinite(net))return '<p class="rpt-empty">ไม่มีตัวเลขน้ำเพิ่ม/น้ำลดจากผลการวิเคราะห์เดิมครบทุกตัว จึงไม่สร้างค่าทดแทน</p>';
- const mx=Math.max(gain,loss,.25),bar=(label,val,klass)=>
-  '<div class="rpt-water-row"><span>'+esc(label)+'</span><div class="rpt-water-bar"><div class="'+klass+'" style="width:'+Math.min(100,Math.max(0,val/mx*100)).toFixed(2)+'%"></div></div><b>'+num(val)+' ไร่</b></div>';
- return '<div class="rpt-water-breakdown"><h3>จำแนกการเปลี่ยนแปลงพื้นที่น้ำจากคู่ภาพ</h3>'+
- bar('เปลี่ยนเป็นน้ำ',gain,'rpt-water-gain')+bar('เปลี่ยนออกจากน้ำ',loss,'rpt-water-loss')+
- '<p class="rpt-water-net">น้ำเพิ่มสุทธิ = '+num(gain)+' − '+num(loss)+' = <b>'+num(net)+' ไร่</b></p>'+
- '<p class="rpt-caption">คำนวณจากพิกเซลคู่ภาพที่ผ่านเกณฑ์เดียวกัน ไม่ใช่แผนที่ตำแหน่งน้ำเพิ่ม/น้ำลดรายพิกเซล</p></div>';
+function waterChangeBreakdown(pair,ts=null){
+ const value=(x)=>x==null||!Number.isFinite(Number(x))?null:Number(x),gain=value(pair?.water_new_rai),loss=value(pair?.water_lost_rai),net=value(pair?.water_net_change_rai);
+ const historical=pair&&net!==null?'<p class="rpt-history-pair"><b>ข้อมูลย้อนหลังที่คำนวณจากพิกเซลร่วม:</b> '+
+   esc(pair.date_a)+' → '+esc(pair.date_b)+' · น้ำเพิ่ม '+num(gain)+' ไร่ / น้ำลด '+num(loss)+' ไร่ · สุทธิ '+(net>0?'+':'')+num(net)+' ไร่</p>':'';
+ if(ts&&ts.all.length>1){
+  const prev=ts.all.at(-2),latest=ts.latest,peak=ts.peak;
+  // Current interval uses actual classified totals from consecutive QA-valid scenes.
+  // It is intentionally separate from the historical common-clear comparison.
+  const interval=latest.water-prev.water,falling=interval<-.01,base=Math.max(1,prev.water,latest.water);
+  const prevWidth=Math.min(100,prev.water/base*100),lastWidth=Math.min(100,latest.water/base*100);
+  const state=falling?'พื้นที่น้ำที่จำแนกได้ลดลง':interval>.01?'พื้นที่น้ำที่จำแนกได้เพิ่มขึ้น':'พื้นที่น้ำที่จำแนกได้ใกล้เคียงวันก่อน';
+  return '<div class="rpt-water-breakdown rpt-water-now"><h3>แนวโน้มล่าสุด · '+esc(ts.plot)+'</h3>'+
+   '<p class="rpt-water-status '+(falling?'rpt-water-decreased':interval>.01?'rpt-water-increased':'')+'"><b>'+esc(state)+'</b> '+
+   (interval>0?'+':'')+num(interval)+' ไร่</p>'+
+   '<div class="rpt-water-row"><span>'+esc(prev.date)+'</span><div class="rpt-water-bar"><div class="rpt-water-prev" style="width:'+prevWidth.toFixed(2)+'%"></div></div><b>'+num(prev.water)+' ไร่</b></div>'+
+   '<div class="rpt-water-row"><span>'+esc(latest.date)+'</span><div class="rpt-water-bar"><div class="rpt-water-current" style="width:'+lastWidth.toFixed(2)+'%"></div></div><b>'+num(latest.water)+' ไร่</b></div>'+
+   (ts.falling?'<p class="rpt-water-net">เทียบช่วงค่าสูงสุด '+esc(peak.date)+': '+num(peak.water)+' → '+num(latest.water)+' ไร่ (−'+num(peak.water-latest.water)+' ไร่)</p>':'')+
+   '<p class="rpt-caption">กราฟหลักเป็นพื้นที่ที่จำแนกเป็นน้ำจากภาพ QA สองวันล่าสุด ไม่ใช่พิกเซลน้ำเพิ่ม/ลดบน Common-clear Area และไม่ยืนยันสาเหตุการเปลี่ยนแปลง</p>'+
+   historical+'</div>';
+ }
+ if(!pair||gain===null||loss===null||net===null)return '<p class="rpt-empty">ยังไม่มีข้อมูลเพียงพอสำหรับการเทียบพื้นที่น้ำ</p>';
+ const mx=Math.max(1,gain,loss);
+ return '<div class="rpt-water-breakdown rpt-water-history"><h3>การเปลี่ยนแปลงย้อนหลังเท่านั้น · '+esc(pair.date_a)+' → '+esc(pair.date_b)+'</h3>'+
+  '<div class="rpt-water-row"><span>เปลี่ยนเป็นน้ำ</span><div class="rpt-water-bar"><div class="rpt-water-gain" style="width:'+(gain/mx*100).toFixed(2)+'%"></div></div><b>'+num(gain)+' ไร่</b></div>'+
+  '<div class="rpt-water-row"><span>เปลี่ยนออกจากน้ำ</span><div class="rpt-water-bar"><div class="rpt-water-loss" style="width:'+(loss/mx*100).toFixed(2)+'%"></div></div><b>'+num(loss)+' ไร่</b></div>'+
+  '<p class="rpt-caption">คู่ภาพย้อนหลัง ไม่ใช่สถานการณ์ล่าสุด · ใช้ตัวเลขเฉพาะพิกเซลที่ผ่านเงื่อนไขร่วม</p></div>';
 }
-
 function imageryAlignment(a,b,mode){
  const bounds=x=>x?.mode_bounds?.[mode]||x?.bounds,aa=bounds(a),bb=bounds(b);
  if(!Array.isArray(aa)||!Array.isArray(bb)||aa.length!==2||bb.length!==2)return false;
@@ -459,7 +472,7 @@ function floodPlan(d){
  section('03 / EVIDENCE','แปลงที่ควรตรวจสอบก่อน',
   '<p>จัดลำดับตาม <b>พื้นที่น้ำเพิ่มสุทธิที่จำแนกได้</b> ในคู่ภาพล่าสุดที่ผ่านเงื่อนไขของแต่ละแปลง ไม่ใช่อันดับน้ำท่วมจริง และไม่ได้ปรับระยะเวลาหรือน้ำขึ้นลงให้เทียบเท่ากัน</p>'+
   table(rankChunk.map(shortRow),rankingCols)+
-  waterChangeBreakdown(ordered[0]?.pair)+'<p class="rpt-caption">ภาพสรุปด้านบนเป็นรายละเอียดของ '+esc(ordered[0]?.code||'แปลงที่มีคู่ภาพ')+' เท่านั้น ไม่ใช่ผลรวมรายจังหวัด</p>'+ 
+  waterChangeBreakdown(ordered[0]?.pair,ordered[0]?.timeline)+'<p class="rpt-caption">ภาพสรุปด้านบนเป็นรายละเอียดของ '+esc(ordered[0]?.code||'แปลงที่มีคู่ภาพ')+' เท่านั้น ไม่ใช่ผลรวมรายจังหวัด</p>'+ 
    '<p class="rpt-caption">แสดง '+rankChunk.length+' / '+comparable.length+' แปลงที่มีคู่ภาพ · สัญญาณน้ำเพิ่ม '+increase.length+' แปลง · ไม่มีคู่ภาพ '+noPair+' แปลง</p>'+
   '<p class="rpt-disclaimer">'+esc(variableWindows?'แต่ละแปลงใช้คู่วันที่ภาพต่างกัน ไม่ควรตีความอันดับนี้ว่าเป็นความรุนแรงที่เปรียบเทียบกันได้':'ต้องตรวจปัจจัยต่าง ๆ ของคู่ภาพก่อนตีความผล')+' · คำว่า “ภาพปัจจุบัน” หมายถึงวันภาพหลังที่ใช้เทียบ ไม่จำเป็นต้องเป็นภาพดาวเทียมใหม่ล่าสุดในคลัง</p>'+ 
   '<p class="rpt-caption"><b>คำอธิบาย:</b> Δ น้ำ = ผลต่างพื้นที่ที่จำแนกเป็นน้ำระหว่างภาพสองวัน; พื้นที่ร่วม = พิกเซลที่นำมาเปรียบเทียบได้ทั้งสองวัน; QA = การตรวจคุณภาพภาพสำหรับการวิเคราะห์ ไม่ใช่ความถูกต้องของการยืนยันน้ำท่วม</p>');
@@ -481,7 +494,7 @@ function floodPlan(d){
    '<p class="rpt-caption">คู่ภาพประวัติ (ไม่ใช่ภาพล่าสุดเสมอไป) · กรุณาดูหน้าลำดับเหตุการณ์เพื่อดูว่าหลังจากนี้น้ำเพิ่มหรือลด</p>'+
    (imAfter?'<div class="rpt-case-index">'+picture(imAfter,indexMode)+'</div>':'<p class="rpt-empty">'+esc(indexMode.toUpperCase())+' วันหลังเหตุการณ์ไม่พร้อมสำหรับแสดงประกอบ</p>')+
    '<p class="rpt-caption">ฝน NASA POWER ก่อนวันหลังภาพ 3 วัน (UTC): '+(rain&&rain.rain_prev_3_utc_days_mm!=null?num(rain.rain_prev_3_utc_days_mm)+' มม.':'ไม่มีข้อมูลที่ตรงวัน')+'</p>'+
-   waterChangeBreakdown(c)+floodFinding(r)+
+   waterChangeBreakdown(c,r.timeline)+floodFinding(r)+
    '<p class="rpt-disclaimer">ยังไม่สรุปว่าเป็นน้ำท่วม และไม่สามารถบอกผลกระทบต่อการรอดของต้นไม้จากภาพสองวันได้ ต้องตรวจน้ำขึ้นลงและพื้นที่จริง</p>');
  }
  
