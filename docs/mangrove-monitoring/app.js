@@ -7,6 +7,79 @@ const state={view:(new URLSearchParams(location.search).get('view')||'overview')
 const cache={data:null,plots:[],byCode:new Map(),byScene:new Map(),changes:new Map(),canonical:new Set(),status:null,when:null,imagery:null,environment:null};
 const TITLES={overview:'Nationwide Overview',map:'GIS Map Center',plots:'Plot Registry & Details',insights:'Plot Intelligence & Decisions',analysis:'Environmental Analytics',change:'Change Detection',satellite:'Satellite Catalog',alerts:'Early Warning',field:'Field Operations & Growth',carbon:'Carbon & MRV',qa:'Data Quality & Boundaries',reports:'Report Center',modules:'All 26 Modules'};
 const METRICS={ndvi:['NDVI','ดัชนีพืช'],ndre:['NDRE','คลอโรฟิลล์ / Red Edge'],evi:['EVI','สัญญาณเรือนยอด'],savi:['SAVI','พืชปรับผลดิน'],ndmi:['NDMI','ความชื้นพืช'],ndwi:['NDWI','สัญญาณน้ำ'],mndwi:['MNDWI','ผิวน้ำ'],bsi:['BSI','ดินเปิดโล่ง'],gli:['GLI','ดัชนีสีเขียว'],water_rai:['Water (rai)','พื้นที่น้ำ ไร่'],vegetation_rai:['Vegetation (rai)','พื้นที่พืช ไร่'],bare_soil_rai:['Bare soil (rai)','พื้นที่ดิน ไร่'],wetness_rai:['Wetness (rai)','พื้นที่ชื้น ไร่']};
+const SERIES={
+ ndvi:['NDVI · ความเขียว','index','พืช'],ndre:['NDRE · Red Edge','index','พืช'],
+ evi:['EVI · พืช','index','พืช'],savi:['SAVI · พืชปรับผลดิน','index','พืช'],
+ gli:['GLI · สีเขียว','index','พืช'],ndmi:['NDMI (B8A) · ความชื้นพืช','index','พืช'],
+ ndwi:['NDWI · น้ำผิวดิน','index','น้ำ'],mndwi:['MNDWI · น้ำ','index','น้ำ'],
+ water_rai:['พื้นที่น้ำ','rai','น้ำ'],water_pct:['สัดส่วนน้ำ','percent','น้ำ'],
+ vegetation_rai:['พื้นที่พืช','rai','พื้นที่'],bare_soil_rai:['พื้นที่ดินเปิดโล่ง','rai','พื้นที่'],
+ other_rai:['พื้นที่ประเภทอื่น','rai','พื้นที่'],wetness_rai:['พื้นที่ชื้น','rai','พื้นที่'],
+ bsi:['BSI · ดินเปิดโล่ง','index','ดิน'],
+ rain_prev_1_utc_day_mm:['ฝนก่อนหน้า 1 วัน UTC · NASA POWER','mm','ฝน'],
+ rain_prev_3_utc_days_mm:['ฝนก่อนหน้า 3 วัน UTC · NASA POWER','mm','ฝน']
+};
+function seriesMeta(key){return SERIES[key]||SERIES.ndvi;}
+function seriesUnit(key){return {index:'ค่าดัชนี',rai:'ไร่',percent:'%',mm:'มม.'}[seriesMeta(key)[1]];}
+function seriesFmt(key,v){return fmt(v,seriesMeta(key)[1]==='index'?4:2);}
+function seriesOptions(selected){
+ const groups=new Map();
+ for(const [key,[label,unit,group]] of Object.entries(SERIES)){
+  if(!groups.has(group))groups.set(group,[]);
+  groups.get(group).push('<option value="'+html(key)+'" '+(key===selected?'selected':'')+'>'+html(label)+'</option>');
+ }
+ return [...groups].map(([g,opts])=>'<optgroup label="'+html(g)+'">'+opts.join('')+'</optgroup>').join('');
+}
+function timeSeriesRows(plot,key){
+ const rainKey=key==='rain_prev_1_utc_day_mm'||key==='rain_prev_3_utc_days_mm';
+ const rain=new Map((cache.environment?.plots?.[plot]?.scenes||[]).filter(r=>r.data_quality==='COMPLETE').map(r=>[r.date,r]));
+ return plotScenes(plot).filter(qaOk).map(x=>{
+  const v=rainKey?rain.get(x.date)?.[key]:x[key];
+  return {...x,series_value:v};
+ }).filter(x=>x.series_value!==null&&x.series_value!==undefined&&
+             x.series_value!==''&&Number.isFinite(Number(x.series_value)));
+}
+function timeSeriesInfo(key,rows){
+ const n=rows.length,first=rows[0],last=rows.at(-1),unit=seriesUnit(key);
+ const isRain=seriesMeta(key)[1]==='mm';
+ return '<div class="time-series-summary">'+
+   '<span>ข้อมูลผ่าน QA '+n+' วัน</span>'+
+   '<span>ล่าสุด '+(last?html(last.date)+' : <b>'+seriesFmt(key,last.series_value)+' '+unit+'</b>':'ไม่มีค่าที่ใช้ได้')+'</span>'+
+   (n>1?'<span>เปลี่ยนจากวันแรก '+seriesFmt(key,last.series_value-first.series_value)+' '+unit+'</span>':'')+
+   '</div><p class="muted tiny">'+(isRain?
+   'NASA POWER PRECTOTCORR: ฝนสะสมในวัน UTC ก่อนวันถ่ายภาพ ไม่ใช่ 24/72 ชั่วโมงย้อนหลังจากเวลาผ่านดาวเทียม • แสดงเฉพาะวัน Sentinel-2 ผ่าน QA และมีฝนครบ':
+   'ใช้ค่า Sentinel-2 รายแปลงที่ผ่าน AUTO_VALID เท่านั้น • ค่าพื้นที่เป็นผลจำแนกเดิมที่ยังไม่มีการปรับน้ำขึ้นน้ำลง')+
+   '</p>';
+}
+function timeSeriesKpis(plot,key){
+ const good=timeSeriesRows(plot,key),first=good[0],last=good.at(-1),unit=seriesUnit(key),label=seriesMeta(key)[0];
+ return kpi('วันภาพที่มีค่า',good.length+' / '+validScenes(plot).length,'เฉพาะวันผ่าน QA'+(unit==='มม.'?' และฝนครบ':''))+
+   kpi(label+' ล่าสุด',last?seriesFmt(key,last.series_value)+' '+unit:'—',last?.date||'ไม่มีข้อมูล')+
+   kpi('ค่าแรกที่มีข้อมูล',first?seriesFmt(key,first.series_value)+' '+unit:'—',first?.date||'ไม่มีข้อมูล')+
+   kpi('ต่างจากค่าแรก',good.length>=2?seriesFmt(key,last.series_value-first.series_value)+' '+unit:'—','เปรียบเทียบวันจริง ไม่ใช่ข้อสรุปผลกระทบ');
+}
+function timeSeriesPanel(plot,key){
+ const meta=seriesMeta(key),good=timeSeriesRows(plot,key);
+ return '<div class="panel" id="time-series-panel"><div class="section-title time-series-toolbar">'+
+  '<div><h2 id="time-series-title">Time Series · '+html(meta[0])+'</h2>'+
+  '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+' · เฉพาะ AUTO_VALID</p></div>'+
+  '<label class="time-series-select">เลือกค่าที่แสดงบนกราฟ<select id="timeseries-metric-select" aria-label="เลือกค่ากราฟ Time Series">'+seriesOptions(key)+'</select></label>'+
+  '</div><div id="time-series-visual">'+svgChart(good,'series_value',{unit:seriesUnit(key),decimals:meta[1]==='index'?4:2,label:meta[0],nonnegative:meta[1]!=='index'})+'</div>'+
+  '<div id="time-series-details">'+timeSeriesInfo(key,good)+'</div></div>';
+}
+function changeTimeSeriesMetric(key){
+ if(!Object.prototype.hasOwnProperty.call(SERIES,key))return;
+ state.metric=key;
+ const q=$('metric-select'),selector=$('timeseries-metric-select');
+ if(q)q.value=key;if(selector)selector.value=key;
+ const plot=state.plot,meta=seriesMeta(key),good=timeSeriesRows(plot,key);
+ const title=$('time-series-title'),subtitle=$('time-series-subtitle'),graphic=$('time-series-visual'),info=$('time-series-details'),kpis=$('analysis-metric-kpis');
+ if(title)title.textContent='Time Series · '+meta[0];
+ if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+' · เฉพาะ AUTO_VALID';
+ if(graphic)graphic.innerHTML=svgChart(good,'series_value',{unit:seriesUnit(key),decimals:meta[1]==='index'?4:2,label:meta[0],nonnegative:meta[1]!=='index'});
+ if(info)info.innerHTML=timeSeriesInfo(key,good);
+ if(kpis)kpis.innerHTML=timeSeriesKpis(plot,key);
+}
 const qaOk=r=>r&&r.analysis_status==='AUTO_VALID';
 const fmt=(n,k=2)=>Number.isFinite(Number(n))&&n!==null&&n!==''?Number(n).toLocaleString('th-TH',{maximumFractionDigits:k}):'—';
 const html=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -140,13 +213,26 @@ function initMap(where,plots,tall=false){clearMap();const div=$(where);if(!div)r
  if(group.getLayers().length){try{map.fitBounds(group.getBounds(),{padding:[18,18],maxZoom:16});}catch(e){}}
  setTimeout(()=>{try{map.invalidateSize()}catch(e){}},120);
 }
-function svgChart(rows,key){const good=rows.filter(x=>qaOk(x)&&x[key]!=null&&Number.isFinite(Number(x[key])));if(!good.length)return empty('ยังไม่มีค่าผ่าน QA','ไม่ใช้ค่าจากวันภาพ NO_DATA หรือ PARTIAL');
- const v=good.map(x=>Number(x[key])),min=Math.min(...v),max=Math.max(...v),span=Math.max(max-min,.05),base=min-span*.20,top=max+span*.20;
- const w=680,h=210,pad=28,xx=i=>pad+(w-2*pad)*(good.length===1?.5:i/(good.length-1)),yy=n=>h-pad-(Number(n)-base)/(top-base)*(h-2*pad);
+function svgChart(rows,key,opts={}){
+ const good=rows.filter(x=>qaOk(x)&&x[key]!==null&&x[key]!==undefined&&x[key]!==''&&Number.isFinite(Number(x[key])));
+ if(!good.length)return empty('ยังไม่มีค่าที่ใช้แสดงกราฟ','ไม่ใช้ค่า NO_DATA / PARTIAL หรือข้อมูลฝนที่ขาด');
+ const v=good.map(x=>Number(x[key])),min=Math.min(...v),max=Math.max(...v);
+ const minSpan=opts.unit==='ค่าดัชนี'?.05:opts.unit==='%'?1:opts.unit==='ไร่'?.5:2;
+ const span=Math.max(max-min,minSpan);
+ const base=opts.nonnegative?Math.max(0,min-span*.20):min-span*.20;
+ const top=max+span*.20;
+ const w=680,h=240,pad=39;
+ const timestamps=good.map(x=>Date.parse(x.date+'T00:00:00Z'));
+ const lo=Math.min(...timestamps),hi=Math.max(...timestamps);
+ const xx=i=>pad+(w-2*pad)*(lo===hi?.5:(timestamps[i]-lo)/(hi-lo));
+ const yy=n=>h-pad-(Number(n)-base)/(top-base)*(h-2*pad);
  const points=good.map((r,i)=>xx(i).toFixed(1)+','+yy(r[key]).toFixed(1)).join(' ');
- const axes=[.2,.5,.8].map(q=>'<line x1="'+pad+'" y1="'+(h-pad-q*(h-2*pad))+'" x2="'+(w-pad)+'" y2="'+(h-pad-q*(h-2*pad))+'" stroke="#305747" stroke-dasharray="3 5"/><text x="'+(pad+2)+'" y="'+(h-pad-q*(h-2*pad)-5)+'" fill="#7ba592" font-size="10">'+fmt(base+q*(top-base),3)+'</text>').join('');
- const dots=good.map((r,i)=>'<circle cx="'+xx(i)+'" cy="'+yy(r[key])+'" r="4" fill="#99f2bc"><title>'+html(r.date)+' • '+html(key)+': '+fmt(r[key],4)+'</title></circle>').join('');
- return '<div class="mini-chart"><svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="กราฟ '+html(key)+' '+good.length+' ภาพผ่าน QA">'+axes+'<polyline fill="none" stroke="#79dfaa" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="'+points+'"/>'+dots+'</svg></div><div class="timeline-labels"><span>'+html(good[0].date)+'</span><span>'+html(good[good.length-1].date)+'</span></div>';
+ const numTick=n=>fmt(n,opts.decimals??3);
+ const axes=[.2,.5,.8].map(q=>'<line x1="'+pad+'" y1="'+(h-pad-q*(h-2*pad))+'" x2="'+(w-pad)+'" y2="'+(h-pad-q*(h-2*pad))+'" stroke="#305747" stroke-dasharray="3 5"/><text x="'+(pad+2)+'" y="'+(h-pad-q*(h-2*pad)-7)+'" fill="#9cbdab" font-size="12">'+html(numTick(base+q*(top-base)))+'</text>').join('');
+ const dots=good.map((r,i)=>'<circle cx="'+xx(i)+'" cy="'+yy(r[key])+'" r="5" fill="#99f2bc"><title>'+html(r.date)+' • '+html(opts.label||key)+': '+html(numTick(r[key]))+' '+html(opts.unit||'')+'</title></circle>').join('');
+ return '<div class="mini-chart"><svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="กราฟ '+html(opts.label||key)+' '+good.length+' วันผ่าน QA หน่วย '+html(opts.unit||'')+'">'+axes+
+  '<polyline fill="none" stroke="#79dfaa" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="'+points+'"/>'+dots+
+  '</svg></div><div class="timeline-labels"><span>'+html(good[0].date)+'</span><span>'+html(good.at(-1).date)+'</span></div>';
 }
 
 function previewCoverage(){
