@@ -278,6 +278,20 @@ assert.ok(!provinceReport.hasAtlas,'Flood report must not generate dozens of ind
 assert.ok(provinceReport.head.includes('สรุปสถานการณ์พื้นที่น้ำ'),'Flood findings must appear on first page');
 assert.ok(provinceReport.audit&&provinceReport.audit.reviewNeeded===true,'Flood report is screening only, never falsely approved');
 assert.ok((await page.locator('#rpt-readiness').innerText()).includes('รายงานคัดกรองเท่านั้น'),'UI must disclose non-confirmation');
+
+await page.locator('#rpt-text').fill('ขอรายงานแปลงระยอง เรื่องน้ำท่วม');
+await page.locator('#rpt-analyze').click();
+assert.equal(await page.locator('#rpt-type').inputValue(),'water','Exact user request must produce a flood screening report');
+assert.equal(await page.locator('#rpt-scope').inputValue(),'province','Exact user request resolves Rayong province, not a random plot');
+assert.equal(await page.locator('#rpt-period').inputValue(),'180','No specified window uses an explicit default six-month period');
+const rayong=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,qa:r.audit,front:r.pages.split('</article>')[0],text:r.pages};});
+assert.ok(rayong.pages>=7&&rayong.pages<=12,'Exact prompt should produce compact executive report, not 55-page image atlas');
+assert.ok(rayong.qa&&rayong.qa.plots===19,'Rayong report contains exactly 19 registry plots');
+assert.ok(rayong.qa.comparable>0,'Flood brief finds QA-valid before-after pair evidence from the real dataset');
+assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Prioritized Rayong case evidence must include supported high-change plots');
+assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู้บริหาร'),'Executive findings appear immediately instead of page 49');
+assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็นน้ำท่วม'),'Screening uncertainty must be explicit and unambiguous');
+
 assert.equal(await page.locator('#rpt-appendix').isChecked(),false,'Large image appendix must default OFF');
 await page.locator('#rpt-appendix').check();
 const withAppendix=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,hasAppendix:r.pages.includes('ภาคผนวก Raster Evidence')}}); 
