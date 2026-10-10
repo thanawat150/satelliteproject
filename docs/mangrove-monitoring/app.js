@@ -96,7 +96,9 @@ function changeTimeSeriesMetric(key){
  if(kpis)kpis.innerHTML=timeSeriesKpis(plot,key);
 }
 const qaOk=r=>r&&r.analysis_status==='AUTO_VALID';
-const fmt=(n,k=2)=>Number.isFinite(Number(n))&&n!==null&&n!==''?Number(n).toLocaleString('th-TH',{maximumFractionDigits:k}):'—';
+// Presentation precision only: keep source data and all calculations at full precision.
+const fmt=(n,k=2)=>Number.isFinite(Number(n))&&n!==null&&n!==''?Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+const countFmt=n=>Number.isFinite(Number(n))&&n!==null&&n!==''?Number(n).toLocaleString('th-TH',{maximumFractionDigits:0}):'—';
 const html=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const tag=(s,t='neutral')=>'<span class="tag '+t+'">'+html(s)+'</span>';
 const message=(s,kind='')=>'<div class="notice '+kind+'">'+s+'</div>';
@@ -381,14 +383,14 @@ function plotDecision(code){
   kpi('NDVI เปลี่ยน',fmt(last.ndvi-prev.ndvi,4),prev.date+' → '+last.date)+
   kpi('พื้นที่น้ำเปลี่ยน',fmt(last.water_rai-prev.water_rai,3)+' ไร่','เทียบยอดรวมสองวัน ยังไม่ใช่ Pixel Change')+
   kpi('พื้นที่พืชเปลี่ยน',fmt(last.vegetation_rai-prev.vegetation_rai,3)+' ไร่','ไม่ใช่ต้นไม้รอดตายหรือเจริญเติบโต')+
-  kpi('QA ล่าสุด',fmt(last.qa_valid_pct,0)+'%','ประเมินจาก '+fmt(last.total_pixels,0)+' พิกเซล')+'</div>':
+  kpi('QA ล่าสุด',fmt(last.qa_valid_pct,0)+'%','ประเมินจาก '+countFmt(last.total_pixels)+' พิกเซล')+'</div>':
   message('ยังไม่มีข้อมูล QA ผ่านสองวันสำหรับการเปรียบเทียบ');
  return '<section class="panel decision-panel"><div class="panel-header"><div><div class="eyebrow">PLOT INTELLIGENCE · CANDIDATE ONLY</div><h2>'+html(code)+' · บันทึกการตัดสินใจ</h2><p class="muted">สรุปจากภาพดาวเทียมและ QA ไม่ใช่ผลการรับรองด้านสิ่งแวดล้อม</p></div>'+statusTag(code)+'</div>'+
  '<div class="grid half"><div class="kv"><span>พื้นที่ Geometry</span><b>'+(p.geometry?fmt(p.area,3)+' ไร่':'ไม่มี Geometry')+'</b><span>Boundary</span><b>'+html(p.group)+'</b><span>วัน QA ผ่านล่าสุด</span><b>'+html(last?.date||'ไม่มี')+'</b><span>Raster Preview</span><b>'+html(previewText)+'</b></div>'+
  '<div class="kv"><span>วันภาพที่มีในผลวิเคราะห์</span><b>'+rows.length+'</b><span>วันภาพผ่าน QA</span><b>'+good.length+'</b><span>สถานะสิ่งแวดล้อม</span><b>ยังไม่ยืนยันภาคสนาม</b><span>ผู้อนุมัติ/หลักฐานภาคสนาม</span><b>ยังไม่เชื่อมระบบ</b></div></div>'+
  compare+
  (last&&available&&!hasPreview?message('ภาพวันที่ '+html(last.date)+' ผ่าน QA แต่ยังไม่มี Raster Preview จาก TIFF จึงห้ามใช้ภาพวันที่อื่นแทน','warn'):'')+
- (last&&Number(last.total_pixels)<30?message('Small Plot Warning: การประเมินใช้เพียง '+fmt(last.total_pixels,0)+' พิกเซลบนกริดวิเคราะห์ ควรตรวจสอบด้วย Drone หรือข้อมูลภาคสนาม','warn'):'')+
+ (last&&Number(last.total_pixels)<30?message('Small Plot Warning: การประเมินใช้เพียง '+countFmt(last.total_pixels)+' พิกเซลบนกริดวิเคราะห์ ควรตรวจสอบด้วย Drone หรือข้อมูลภาคสนาม','warn'):'')+
  '<div class="decision-next"><b>ขั้นตอนตรวจสอบต่อ</b><p>ตรวจ RGB/False Color, SCL, ระดับน้ำขึ้นลง/ฝน, ขอบเขตเวอร์ชันเดียวกัน และหลักฐานภาคสนามก่อนสรุปน้ำท่วม การเสื่อมโทรมหรือการเติบโต</p><div class="button-row">'+btn('เปิด Satellite','setview','satellite','primary')+btn('ดูดัชนี','setview','analysis')+btn('Export Evidence','exportevidence',code)+'</div></div></section>';
 }
 function insightsPage(){
@@ -447,7 +449,7 @@ function overview(){const p=filtered(),qa= p.filter(x=>plotStatus(x.code)==='VAL
  infoBox()+'<div class="grid kpis">'+kpi('รายการแปลงตามขอบเขตที่เลือก',state.company==='EVR'?'ไม่ทราบ':String(p.length),'ทะเบียน STC/VSD 160 • EVR ยังไม่มีแหล่งทะเบียนที่ยืนยัน')+
  kpi('มี Geometry ที่จับคู่ได้',state.company==='EVR'?'ยังไม่เชื่อม':String(p.filter(x=>x.geometry).length),'MOC 159 • อีก 1 รหัสรอตรวจสอบ')+
  kpi('แปลงที่มีภาพผ่าน QA',state.company==='EVR'?'ยังไม่เชื่อม':String(qa),'ต้องมีอย่างน้อยหนึ่งภาพที่ผ่านเกณฑ์')+
- kpi('ภาพในผลวิเคราะห์ทั่วระบบ',fmt(st.totals.processed_dates,0),'ผ่าน QA '+fmt(st.totals.qa_valid_dates,0)+' วันภาพ')+'</div>'+
+ kpi('ภาพในผลวิเคราะห์ทั่วระบบ',countFmt(st.totals.processed_dates),'ผ่าน QA '+countFmt(st.totals.qa_valid_dates)+' วันภาพ')+'</div>'+
  '<div class="grid two"><div class="panel"><div class="panel-header"><h2>GIS Map • STC / VSD / MOC</h2>'+btn('ขยายแผนที่','setview','map','mini')+'</div><div class="map" id="home-map"></div><div class="legend"><span><i class="valid"></i>มีภาพผ่าน QA</span><span><i class="notvalid"></i>ไม่ผ่าน QA</span><span><i class="extra"></i>MOC 3</span><span><i class="unknown"></i>ยังไม่ประมวลผล</span></div></div>'+
  '<div class="panel"><div class="panel-header"><h2>ภาพรวมพื้นที่และหน่วยงาน</h2></div><div class="grid half">'+kpi('STC',companies.STC,'แปลงในตัวกรอง')+kpi('VSD',companies.VSD,'แปลงในตัวกรอง')+'</div><div class="panel-divider"></div><h3>จำนวนแปลงตามจังหวัด (10 อันดับแรก)</h3><div class="stats-list">'+prov.map(x=>'<div class="stats-row"><span>'+html(x[0])+'</span><div class="track"><i style="width:'+100*x[1]/w+'%"></i></div><strong>'+x[1]+'</strong></div>').join('')+'</div></div></div>'+
  '<div class="grid half"><div class="panel"><h2>Data Coverage</h2><div class="kv"><span>ทะเบียน STC/VSD</span><b>160 รหัส (16 จังหวัด)</b><span>Boundary MOC</span><b>159 รหัส รวม MOC 3</b><span>PDD วิเคราะห์เดิม</span><b>136 / 136</b><span>ผ่าน QA อย่างน้อย 1 วัน</span><b>126 / 136</b><span>EVR</span><b>รอทะเบียนและขอบเขตยืนยัน</b><span>วันภาพล่าสุดในชุดวิเคราะห์</span><b>'+html(latestDate())+'</b></div></div>'+
@@ -528,7 +530,7 @@ function alertsPage(){const changes=alertRows(),withheld=allChangesFiltered().fi
  '<div class="panel"><h3>Screening Queue</h3>'+(changes.length?'<div class="table-wrap"><table class="tbl"><thead><tr><th>รหัสแปลง</th><th>วันภาพ</th><th>Water net ไร่</th><th>Vegetation net ไร่</th><th>Soil net ไร่</th><th>สัญญาณ</th><th>สถานะ</th></tr></thead><tbody>'+changes.sort((x,y)=>Math.abs(y.water_net_change_rai||0)-Math.abs(x.water_net_change_rai||0)).slice(0,150).map(x=>'<tr><td>'+btn(x.plot,'plot',x.plot,'mini')+'</td><td>'+html(x.date_b)+'</td><td class="num">'+fmt(x.water_net_change_rai)+'</td><td class="num">'+fmt(x.vegetation_net_change_rai)+'</td><td class="num">'+fmt(x.bare_soil_net_change_rai)+'</td><td class="num">'+fmt(state.riskUnit==='percent'?signalPercent(x,state.riskKind):changeSignal(x,state.riskKind))+(state.riskUnit==='percent'?'%':' ไร่')+'</td><td>'+tag('Candidate','warn')+'</td></tr>').join('')+'</tbody></table></div>':empty('ไม่มีรายการเข้าเกณฑ์นี้','อาจปรับเกณฑ์พื้นที่หรือจังหวัดที่ต้องการตรวจ'))+'</div>'+
  '<div class="panel"><h3>พักแจ้งเตือนอัตโนมัติ · ข้อมูลร่วมไม่เพียงพอ</h3><p class="muted">จำนวน '+withheld.length+' คู่วันที่ ต้องตรวจ QA หรือภาคสนามก่อน ไม่ถือว่าไม่มีความเสี่ยง</p>'+
  '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>คู่วันที่</th><th>พิกเซลร่วม</th><th>เหตุผล</th><th>เปิด</th></tr></thead><tbody>'+
- withheld.slice(0,100).map(x=>'<tr><td>'+html(x.plot)+'</td><td>'+html(x.date_a)+' → '+html(x.date_b)+'</td><td>'+fmt(x.common_clear_pixels,0)+'</td><td>'+html(comparisonQuality(x).join(' / '))+'</td><td>'+btn('ตรวจ','insight',x.plot,'mini')+'</td></tr>').join('')+
+ withheld.slice(0,100).map(x=>'<tr><td>'+html(x.plot)+'</td><td>'+html(x.date_a)+' → '+html(x.date_b)+'</td><td>'+countFmt(x.common_clear_pixels)+'</td><td>'+html(comparisonQuality(x).join(' / '))+'</td><td>'+btn('ตรวจ','insight',x.plot,'mini')+'</td></tr>').join('')+
  '</tbody></table></div></div>';
 }
 function qaPage(){const registry=filtered(),notValid=registry.filter(x=>plotStatus(x.code)==='NO_VALID'),unprocessed=registry.filter(x=>plotStatus(x.code)==='UNPROCESSED'),missing=registry.filter(x=>!x.geometry),issues=[
