@@ -138,7 +138,7 @@ def stage(plots,out,max_dates):
         report["index_drift_count"]=len(index_review)
         report["area_review_flags"]=area_review
         report["area_review_count"]=len(area_review)
-        report["review_required"]=bool(area_review or report["errors"])
+        report["review_required"]=bool(area_review or index_review or report["errors"])
         report["approval_status"]="REVIEW_REQUIRED" if report["review_required"] else "NOT_APPROVED"
         balance_review=[]
         for item in report["plot_results"]:
