@@ -89,12 +89,24 @@ def stage(plots,out,max_dates):
                                            "qa_staging":r.get("analysis_status"),
                                            "index_and_area_differences":diff,
                                            "area_balance_error_rai":r.get("area_balance_error_rai")})
+        area_review=[]
+        for item in report["plot_results"]:
+            for key in ("water_rai","vegetation_rai","bare_soil_rai"):
+                delta=item["index_and_area_differences"][key]["delta"]
+                if delta is not None and abs(delta)>=0.25:
+                    area_review.append({"plot":item["plot"],"date":item["date"],
+                        "metric":key,"difference_rai":delta,
+                        "reason":"PUBLISHED_VS_POLYGON_CLIPPED_AREA_DIFFERENCE"})
+        report["area_review_flags"]=area_review
+        report["area_review_count"]=len(area_review)
+        report["review_required"]=bool(area_review or report["errors"])
+        report["approval_status"]="REVIEW_REQUIRED" if report["review_required"] else "NOT_APPROVED"
         report["staged_changes"]=analysis["changes"]
         report["comparison_count"]=len(analysis["changes"])
         report["pairs_downloaded"]=len(ready)
         report["pass_for_publication"]=False
         write(out/"staging_report.json",report)
-        print("STAGING_FINISHED",len(ready),"TIFF_PAIRS",len(analysis["changes"]),"CHANGES",len(report["errors"]),"ERRORS")
+        print("STAGING_FINISHED",len(ready),"TIFF_PAIRS",len(analysis["changes"]),"CHANGES",len(report["errors"]),"ERRORS",len(area_review),"AREA_REVIEW_FLAGS")
         if report["errors"]:print("STAGING_REVIEW_REQUIRED",len(report["errors"]))
     return report
 
