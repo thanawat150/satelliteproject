@@ -379,6 +379,7 @@ if(action==='exportvisualqa'){
   scene_count:rows.length,qa_valid_dates:rows.filter(qaOk).length,
   observations:rows.map(x=>({date:x.date,qa_status:x.analysis_status,qa_valid_pct:x.qa_valid_pct,algorithm:x.algorithm,qa_rule:x.qa_rule,classification_rule:x.classification_rule,indices:Object.fromEntries(['ndvi','ndre','ndmi','ndwi','mndwi','bsi','evi','savi','gli','water_rai','vegetation_rai','bare_soil_rai'].map(k=>[k,qaOk(x)?x[k]??null:null])),source_tif_10m:x.original_tif10||null,source_file_id_10m:x.original_tif10_file_id||null,source_tif_20m:x.original_tif20||null,source_file_id_20m:x.original_tif20_file_id||null})),
   comparisons:plotChanges(code),
+  water_screening:{source:'published_legacy_change_records',scientific_status:'SCREENING_ONLY',context:'TIDE_RAIN_NOT_CONNECTED',observations:waterScreen()?.observations.filter(x=>x.plot===code)||[],reversal_candidates:waterScreen()?.reversals.filter(x=>x.plot===code)||[]},
   caveats:['This is a preview export and not a legally or scientifically verified MRV evidence pack.','No independent classification accuracy, tidal normalization or boundary approval certificate is included.','Missing/non-valid QA values are null and must not be interpreted as zeros.'],
   exported_at:new Date().toISOString()
  };
