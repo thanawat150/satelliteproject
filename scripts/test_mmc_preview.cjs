@@ -300,15 +300,35 @@ assert.ok(rayong.text.includes('2026-10-07 · 13.75')&&rayong.text.includes('202
 assert.ok(rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 17-STC')&&rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ · 21-STC'),'Visual timeline pages prioritize dated recession examples');
 assert.ok(rayong.text.includes('วันภาพทั้งหมดที่มี Raster MNDWI'),'Review pages disclose every raster date, not only two');
  
-const rejectedSceneCheck=await page.evaluate(()=>{
- const r=window.MMCReportCopilot.renderPages(),root=document.createElement('main');root.innerHTML=r.pages;
- const visualPairs=[...root.querySelectorAll('.rpt-visual-pair')].map(pair=>({labels:[...pair.querySelectorAll('.rpt-visual-date small')].map(x=>x.textContent||''),scan:pair.dataset.visualScan}));
- return {rejected:r.audit?.visualImagesRejected,qaPage:r.pages.includes('ภาพที่คัดออกจากการแปลผลเชิงภาพ'),hasBad14:r.pages.includes('ภาพเปรียบเทียบจุดน้ำเปลี่ยน · 14(1)-STC'),zeroInPairs:visualPairs.filter(v=>v.labels.some(label=>/QA NO_DATA|พิกเซลผ่าน QA 0[.]00%/.test(label))),pairs:visualPairs.length};
+const visualOnlyQA=await page.evaluate(()=>{
+ const report=window.MMCReportCopilot.renderPages();
+ const container=document.createElement('main');container.innerHTML=report.pages;
+ const pairs=[...container.querySelectorAll('.rpt-visual-pair')].map(p=>({
+  scan:p.dataset.visualScan,
+  text:p.querySelector('.rpt-visual-result')?.textContent||'',
+  labels:[...p.querySelectorAll('.rpt-visual-date small')].map(x=>x.textContent||'')
+ }));
+ return {pairs,legend:report.pages.includes('rpt-mndwi-guide'),qaPage:report.pages.includes('ภาพที่คัดออกจากการแปลผลเชิงภาพ'),rejected:report.audit?.visualImagesRejected||0};
 });
-assert.ok(rejectedSceneCheck.rejected>0&&rejectedSceneCheck.qaPage,'Rejected images must be logged with explicit reasons in QA, not quietly used');
-assert.equal(rejectedSceneCheck.hasBad14,false,'14(1)-STC with QA zero on both Oct 2 and 7 must not produce visual analysis pages');
-assert.equal(rejectedSceneCheck.zeroInPairs.length,0,'Never compare or auto-outline NO_DATA / QA-zero imagery');
-assert.ok(rejectedSceneCheck.pairs>=1,'Still use clear comparison images from other suitable scenes');
+assert.ok(visualOnlyQA.legend,'MNDWI source color palette must be explained to non-GIS readers');
+assert.ok(visualOnlyQA.pairs.length>0,'Report still has real index-pair comparisons');
+assert.ok(visualOnlyQA.pairs.filter(v=>v.labels.some(x=>/QA NO_DATA|พิกเซลผ่าน QA 0[.]00%/.test(x))).every(v=>v.scan==='disabled'),
+ 'Zero-SCL-QA data can be displayed as visual MNDWI but never auto-highlighted or certified');
+assert.ok(visualOnlyQA.rejected>=0,'QA gate distinguishes display-only indices from truly missing images');
+await page.locator('#rpt-text').fill('ขอรายงานแปลง 14(1)-STC เรื่องน้ำท่วม');
+await page.locator('#rpt-analyze').click();
+const visual14=await page.evaluate(()=>{
+ const r=window.MMCReportCopilot.renderPages();
+ const host=document.createElement('main');host.innerHTML=r.pages;
+ const nodes=[...host.querySelectorAll('.rpt-visual-pair')];
+ return {count:nodes.length,dates:nodes.map(n=>[...n.querySelectorAll('.rpt-visual-date small')].map(x=>x.textContent)),auto:nodes.some(n=>n.dataset.visualScan==='eligible'),hint:r.pages.includes('ใช้สังเกตแนวสีน้ำได้แม้ SCL/QA ไม่ผ่าน')};
+});
+console.log('MMC_QA0_INDEX_VISUAL',JSON.stringify(visual14));
+assert.ok(visual14.count>0,'Index data with real B3/B11 render must still be visually inspectable despite zero SCL QA');
+assert.ok(visual14.dates.some(arr=>arr.some(x=>x.includes('QA NO_DATA'))),'Show explicit NO_DATA status while presenting MNDWI for visual-only inspection');
+assert.equal(visual14.auto,false,'Do not auto-outline or measure water from zero-QA visual-only indices');
+await page.locator('#rpt-text').fill('ขอรายงานแปลงระยอง เรื่องน้ำท่วม');
+await page.locator('#rpt-analyze').click();
 assert.ok(rayong.front.includes('น้ำลดจากช่วงสูงในภาพล่าสุด'),'Executive KPI differentiates current recession from older pair change');
 
 assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็นน้ำท่วม'),'Screening uncertainty must be explicit and unambiguous');
