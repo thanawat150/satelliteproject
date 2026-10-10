@@ -24,6 +24,31 @@ function waterScreen(){
  const areas=Object.fromEntries(cache.plots.map(p=>[p.code,p.geometry?p.area:null]));
  return engine.derive(allChangesFiltered(),areas);
 }
+function rainfallEvidencePanel(code){
+ const ctx=cache.environment;
+ if(!ctx?.plots)return '<p class="muted">NASA POWER: รอข้อมูลจาก GitHub Actions • ไม่แสดงฝนที่ไม่ได้ตรวจสอบ</p>';
+ const entries=[];
+ const priority=['16-STC','14-STC','92-STC'];
+ for(const p of Object.values(ctx.plots)){
+  if(code&&p.plot!==code)continue;
+  for(const scene of p.scenes||[])entries.push({plot:p.plot,...scene});
+ }
+ entries.sort((a,b)=>(priority.indexOf(a.plot)<0?99:priority.indexOf(a.plot))-
+                    (priority.indexOf(b.plot)<0?99:priority.indexOf(b.plot))||
+                    (b.date||'').localeCompare(a.date||''));
+ const count=entries.filter(x=>x.data_quality==='COMPLETE').length;
+ const rows=entries.slice(0,code?15:30).map(x=>
+  '<tr><td>'+btn(x.plot,'insight',x.plot,'mini')+'</td><td>'+html(x.date)+
+  '</td><td class="num">'+(x.rain_prev_1_utc_day_mm==null?'ไม่มีข้อมูล':fmt(x.rain_prev_1_utc_day_mm,2))+
+  '</td><td class="num">'+(x.rain_prev_3_utc_days_mm==null?'ไม่มีข้อมูล':fmt(x.rain_prev_3_utc_days_mm,2))+
+  '</td><td>'+html(x.data_quality==='COMPLETE'?'ครบ':'ข้อมูลบางวันขาด')+'</td></tr>').join('');
+ return '<div class="panel"><h3>ฝนจาก NASA POWER · แหล่งข้อมูลจริง</h3>'+
+ '<p class="muted">เชื่อมสำเร็จ '+ctx.plot_count+' แปลง / '+ctx.scenes_with_complete_rain+
+ ' วันภาพทั้งระบบ • ในตัวกรอง '+count+' วัน • หน่วยมิลลิเมตร (มม.)</p>'+
+ '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันภาพ</th><th>ฝนก่อนหน้า 1 วัน (UTC)</th><th>ฝนก่อนหน้า 3 วัน (UTC)</th><th>QA ฝน</th></tr></thead><tbody>'+
+ (rows||'<tr><td colspan="5">แปลงนี้ยังไม่มีข้อมูลฝนที่เชื่อมแล้ว</td></tr>')+'</tbody></table></div>'+
+ '<p class="muted tiny">แหล่งข้อมูล: NASA POWER / PRECTOTCORR (ค่าประมาณจากแบบจำลอง/ข้อมูลผสาน ไม่ใช่สถานีวัดฝนหรือ GPM IMERG) • ใช้วัน UTC ก่อนวันถ่ายภาพ ไม่ใช่ฝนย้อนหลัง 24/72 ชั่วโมงจากเวลาที่ถ่ายจริง • ระดับน้ำทะเลยังไม่เชื่อมและยังไม่มี datum/สถานียืนยัน</p></div>';
+}
 function waterIntelligencePanel(code){
  const result=waterScreen();
  if(!result)return message('Water Anomaly Engine ยังไม่พร้อม โปรดโหลดหน้าใหม่','warn');
@@ -39,11 +64,11 @@ function waterIntelligencePanel(code){
  '<div class="grid half">'+kpi('น้ำเพิ่ม · Candidate',increases.length,'ผ่านจำนวนพิกเซลและพื้นที่ร่วมขั้นต่ำ')+
  kpi('น้ำเพิ่มแล้วลด · Review',reversals.length,'ยังไม่ใช่การยืนยันเหตุการณ์')+
  kpi('หลักฐานไม่พอ',held.length,'ไม่ใช้เป็น Early Warning อัตโนมัติ')+
- kpi('น้ำขึ้นน้ำลง / ฝน','ยังไม่เชื่อม','ไม่คาดเดาค่าหรือกล่าวว่าได้ปรับแล้ว')+'</div>'+
+ kpi('ฝน NASA POWER / น้ำขึ้นน้ำลง',cache.environment?.plot_count?'ฝน '+cache.environment.plot_count+' แปลง':'รอข้อมูลฝน','น้ำขึ้นน้ำลงยังไม่เชื่อม')+'</div>'+
  '<p class="muted">การยืนยันต้องมีเวลาถ่ายภาพจาก Scene ID, ระดับน้ำทะเลที่ตรวจสอบแหล่งและ Datum ได้, ฝนย้อนหลัง และข้อมูลภาคสนาม • การลดลงในภาพถัดไปไม่ได้แปลว่าระดับน้ำกลับสู่ปกติ</p>'+
  '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>ช่วงภาพหลัง</th><th>น้ำเพิ่ม ไร่</th><th>น้ำลด ไร่</th><th>สถานะ</th></tr></thead><tbody>'+
  (rows||'<tr><td colspan="5">ยังไม่พบรูปแบบน้ำเพิ่มแล้วลดที่เข้าเกณฑ์จากข้อมูลในตัวกรอง</td></tr>')+
- '</tbody></table></div></section>';
+ '</tbody></table></div>'+rainfallEvidencePanel(code)+'</section>';
 }
 
 function validScenes(code){return plotScenes(code).filter(qaOk);}
