@@ -171,7 +171,7 @@ await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2
 await page.waitForFunction(()=>{const im=document.querySelector('.img-large .img-frame img');return im?.complete&&im.naturalWidth===9&&im.naturalHeight===13;},{timeout:20000});
 const rgb30=await page.locator('#imagery-explorer').innerText();
 assert.ok(rgb30.includes('RGB Preview 9 × 13'),'30-STC actual RGB preview must use native 10m, not old 5x7 20m image');
-assert.ok(rgb30.includes('SCL 100%')&&rgb30.includes('5px'),'The 100% QA result must be labeled with only 5 sample pixels');
+assert.ok(rgb30.includes('SCL 100.00%')&&rgb30.includes('5px'),'The 100% QA result must display two decimals and still identify only 5 sample pixels');
 assert.ok(rgb30.includes('เกือบขาว'),'Independent RGB whiteness screening must be exposed');
 assert.equal(await page.locator('#image-before').inputValue(),'2026-09-22','30-STC defaults to prior QA-valid date');
 assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'Georeferenced 10m preview retains plot polygon');
@@ -202,11 +202,13 @@ assert.ok(rgb24.nearWhite/rgb24.valid<0.30,'24-VSD RGB must not be a white-only 
 assert.ok(rgb24.greenDominant/rgb24.valid>0.40,'Vegetated plot must retain plausible green RGB band balance');
 assert.ok((await page.locator('#index-value-audit').innerText()).includes('NDMI'),'Source index comparison table is visible');
 const qa24=await page.locator('#index-value-audit').innerText();
-assert.ok(qa24.includes('0.7176')&&qa24.includes('0.7174'),'24-VSD 2026-09-05 NDVI source mean and previous mean must both appear');
+const ndviCells=await page.locator('#index-value-audit tbody tr').first().locator('td').allInnerTexts();
+assert.equal(ndviCells[2].trim(),'0.72','24-VSD calculated NDVI mean must be rounded to two decimal places');
+assert.equal(ndviCells[3].trim(),'0.72','24-VSD published NDVI mean must be rounded to two decimal places');
 await page.locator('#image-mode').selectOption('ndmi');
 assert.ok((await page.locator('[data-index-legend="ndmi"]').innerText()).includes('B8A'),'NDMI B8A variant must be explicitly labeled');
-assert.ok((await page.locator('[data-index-stat="ndmi"]').first().innerText()).includes('0.3661'),'Calculated NDMI mean comes from TIFF pixels');
-assert.ok((await page.locator('[data-index-legend="ndmi"] .img-legend-ticks').innerText()).includes('−0.5'),'Legend must include correctly positioned numeric colors');
+assert.ok((await page.locator('[data-index-stat="ndmi"]').first().innerText()).includes('0.37'),'Calculated NDMI mean comes from TIFF pixels');
+assert.ok((await page.locator('[data-index-legend="ndmi"] .img-legend-ticks').innerText()).includes('−0.50'),'Legend must include correctly positioned numeric colors');
 
 assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'24-VSD actual polygon remains georeferenced');
 await page.locator('#plot-select').selectOption('102-VSD');
