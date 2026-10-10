@@ -559,6 +559,17 @@ function floodPlan(d){
     '<h3>แปลงที่ยังไม่มีคู่ภาพพร้อมเปรียบเทียบ</h3><p>'+esc(dataGaps.length?dataGaps.join(', '):'ทุกแปลงมีคู่ภาพ')+'</p>'+
     '<div class="rpt-disclaimer">Data Quality Gate: ยังไม่พร้อมรับรองผลกระทบ • เปิดรายงานคัดกรองเพื่อชี้เป้าตรวจสอบเพิ่มเติมได้เท่านั้น</div>');
   }
+ const rejectedVisual=(d.visualImages||[]).filter(im=>!visualQuality(im).usable);
+ if(rejectedVisual.length){
+  const sample=rejectedVisual.slice(0,12).map(im=>{
+   const q=d.all.find(row=>row.plot===im.plot&&row.date===im.date),quality=visualQuality(im);
+   return {plot:im.plot,date:im.date,qa:q?.analysis_status||'ไม่มี QA',pct:q?.qa_valid_pct==null?'—':num(q.qa_valid_pct)+'%',reason:quality.reason};
+  });
+  section('09 / IMAGE QA','ภาพที่คัดออกจากการแปลผลเชิงภาพ',
+   '<p class="rpt-lead">พบ '+rejectedVisual.length+' ภาพที่ไม่เหมาะใช้เปรียบเทียบการเปลี่ยนแปลงน้ำ ระบบจะไม่แสดงเป็นคู่ภาพวิเคราะห์ ไม่วาดวง และไม่ใช้คำนวณผล เพียงเพราะไฟล์ภาพเปิดดูได้</p>'+
+   table(sample,[['plot','แปลง'],['date','วันที่ภาพ'],['qa','ผล QA'],['pct','ผ่าน QA'],['reason','เหตุผลคัดออก']])+
+   '<p class="rpt-caption">แสดง '+sample.length+' จาก '+rejectedVisual.length+' ภาพ (เรียงจากภาพล่าสุด) · NO_DATA และ QA 0% ถูกคัดออกทันที</p>');
+ }
  if(ui.appendix){
   const modes=ui.modules.has('indices')?[...ui.metrics].filter(m=>METRICS[m]).slice(0,3):[];
   const cards=[];
@@ -580,7 +591,7 @@ function floodPlan(d){
  }
  return {out,imageCount:out.reduce((n,p)=>n+(p.body.match(/<figure class="rpt-image"/g)||[]).length,0),
    audit:{scope,plots:rows.length,comparable:comparable.length,increases:increase.length,latestQA:latest?.date||null,
-    reviewNeeded:true,changePairCaveats:issues,priority:priority.map(r=>({plot:r.code,net_water_rai:r.water,common_clear_rai:r.area,date_a:r.pair?.date_a||null,date_b:r.pair?.date_b||null,latest_observation_date:r.timeline?.latest.date||null,latest_water_rai:r.timeline?.latest.water??null,peak_water_rai:r.timeline?.peak.water??null}))}};
+    reviewNeeded:true,visualImagesRejected:rejectedVisual.length,changePairCaveats:issues,priority:priority.map(r=>({plot:r.code,net_water_rai:r.water,common_clear_rai:r.area,date_a:r.pair?.date_a||null,date_b:r.pair?.date_b||null,latest_observation_date:r.timeline?.latest.date||null,latest_water_rai:r.timeline?.latest.water??null,peak_water_rai:r.timeline?.peak.water??null}))}};
 }
 
 function documentPlan(d){
