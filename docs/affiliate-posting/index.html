@@ -299,7 +299,7 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
   <section id="inventorySection">
     <div class="section-head">
       <div><div class="kicker">READY SOURCE</div><h2>โฟลเดอร์ “พร้อม” คือแหล่งคลิปพร้อมโพสต์</h2></div>
-      <span class="snapshot">Ready Folder · 16 คลิป</span>
+      <span class="snapshot">Ready Folder · 15 คลิป</span>
     </div>
     <div class="inventory-grid" id="inventoryGrid"></div>
   </section>
@@ -334,6 +334,12 @@ const products = [
     shopee:'20:00', tiktok:'21:00',
     folder:READY_FOLDER,
     hashtags:'#กันแดดศิริราช #กันแดดสีเนื้อ #PhysicalSunscreen #SPF50Plus #ShopeeVideo #TikTokAffiliate'
+  },
+  {
+    key:'shampoo', name:'แชมพู ศิริราช', sub:'ตรวจพบโฟลเดอร์สินค้าใหม่แล้ว',
+    shopee:'', tiktok:'',
+    folder:'https://drive.google.com/drive/folders/1724wvtzj962Ol3Xig7HrP9AwWwhW-iiJ',
+    hashtags:''
   }
 ];
 
@@ -343,8 +349,12 @@ const inventory = [
     note:'พบคลิปเก้าอี้คุณตาแสวงในโฟลเดอร์ “พร้อม” 5 คลิป — ระบบจะถือว่าพร้อมโพสต์ตามการคัดของคุณ และใช้วันละ 1 คลิป'
   },
   {
-    key:'sun', ready:11, review:0, edit:0, posted:0,
-    note:'พบคลิปกันแดดศิริราชในโฟลเดอร์ “พร้อม” 11 คลิป — ระบบจะถือว่าพร้อมโพสต์ตามการคัดของคุณ และใช้วันละ 1 คลิป'
+    key:'sun', ready:10, review:0, edit:0, posted:0,
+    note:'พบคลิปกันแดดศิริราชในโฟลเดอร์ “พร้อม” 10 คลิป — ระบบจะถือว่าพร้อมโพสต์ตามการคัดของคุณ และใช้วันละ 1 คลิป'
+  },
+  {
+    key:'shampoo', ready:0, review:0, edit:0, posted:0,
+    note:'ตรวจพบโฟลเดอร์สินค้าใหม่ “แชมพู ศิริราช” แล้ว แต่ขณะตรวจล่าสุดยังไม่พบไฟล์คลิปในโฟลเดอร์นี้หรือในโฟลเดอร์ “พร้อม”'
   }
 ];
 
