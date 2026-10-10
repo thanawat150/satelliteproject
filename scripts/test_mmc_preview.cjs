@@ -59,6 +59,28 @@ await page.locator('#timeseries-metric-select').selectOption('mndwi');
 await page.waitForSelector('#image-date',{timeout:15000});
 const opts=await page.locator('#image-date option').allTextContents();
 assert.ok(opts.some(x=>x.includes('2026-09-29')),'Actual image product dates should be available for 13-STC');
+// Legacy archive dates used to render 7/8 images because NDWI had never
+// existed in the historic generic_preview source. All four now use original
+// real 10m/20m TIFFs, still explicitly unvalidated for analytical QA.
+for(const plot of ['13-STC','14-VSD']){
+  if(await page.locator('#plot-select').inputValue()!==plot){
+    await page.locator('#plot-select').selectOption(plot);
+  }
+  for(const date of ['2026-10-02','2026-10-07']){
+    await page.waitForSelector('#image-date');
+    await page.locator('#image-date').selectOption(date);
+    await page.waitForFunction((d)=>
+      document.querySelector('#image-date')?.value===d &&
+      document.querySelectorAll('#imagery-explorer .img-gallery img').length===8,
+      date,{timeout:30000});
+    const images=await page.locator('#imagery-explorer .img-gallery img').count();
+    assert.equal(images,8,plot+' '+date+' should show all eight true TIFF images');
+    const ndwi=page.locator('#imagery-explorer .img-gallery .img-tile').filter({has:page.locator('.img-title', {hasText:'NDWI'})}).last();
+    assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Archive must not claim QA passed');
+  }
+}
+await page.locator('#plot-select').selectOption('13-STC');
+await page.waitForSelector('#image-date');
 await page.locator('#image-date').selectOption('2026-09-29');
 await page.locator('#image-mode').selectOption('ndvi');
 await page.waitForFunction(()=>document.querySelectorAll('#imagery-explorer .img-gallery img').length>=5,{timeout:15000});
