@@ -16,6 +16,11 @@ assert.ok((await page.locator('.tbl tbody').first().locator('tr').count())>=160,
 await page.locator('#plot-search').fill('66(1)-STC');
 assert.equal(await page.locator('.tbl tbody').first().locator('tr').count(),1,'Missing geometry entry remains visible');
 assert.ok((await page.locator('.tbl tbody').first().locator('tr').first().innerText()).includes('ต้องจับคู่'),'No invented geometry');
+await page.locator('[data-view="insights"]').click();
+await page.waitForSelector('#plot-digital-twin');
+assert.ok((await page.locator('#plot-digital-twin').innerText()).includes('Pixel Change'),'Plot Digital Twin must show changes with screening limits');
+assert.ok((await page.locator('#plot-digital-twin').innerText()).includes('NDMI'),'Plot Digital Twin must expose original index bands');
+assert.ok((await page.locator('#plot-digital-twin').innerText()).includes('ยังไม่มีข้อมูลน้ำขึ้นน้ำลง'),'Twin must disclose lack of tidal context');
 await page.locator('[data-view="analysis"]').click();
 await page.waitForFunction(()=>!!document.querySelector('#metric-select'));
 await page.locator('#plot-select').selectOption('13-STC');
