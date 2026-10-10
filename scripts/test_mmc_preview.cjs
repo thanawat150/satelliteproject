@@ -259,6 +259,26 @@ assert.ok((await page.locator('#view-root').innerText()).includes('ภาพด�
 assert.ok(await page.locator('#report-copilot-root #rpt-analyze').count()===1,'Report Copilot must be mounted in Report Center');
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Real A4 report preview includes multiple structured pages');
 assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('ข้อมูลจริง'),'Report preview discloses actual source coverage');
+
+await page.locator('#rpt-text').fill('ทำรายงานติดตามแปลง ระยอง');
+await page.locator('#rpt-analyze').click();
+assert.equal(await page.locator('#rpt-type').inputValue(),'plot','General Rayong monitoring prompt selects plot-monitoring interpretation');
+assert.equal(await page.locator('#rpt-scope').inputValue(),'province','General Rayong monitoring prompt targets all province plots');
+const generalDecision=await page.evaluate(()=>{
+ const r=window.MMCReportCopilot.renderPages('main'),first=r.pages.split('</article>')[0];
+ return {total:r.total,first,all:r.pages,plots:r.d.pp.length,imageCount:r.imageCount};
+});
+assert.equal(generalDecision.plots,19,'General monitoring report includes all 19 Rayong plots');
+assert.ok(generalDecision.first.includes('สรุปสถานการณ์')||generalDecision.first.includes('รายงานสถานภาพป่าชายเลน'),'Non-flood report must lead with a decision summary');
+assert.ok(generalDecision.first.includes('คำแนะนำสำหรับผู้บริหาร'),'Management summary must provide next steps rather than bare raster thumbnails');
+assert.ok(['NDVI','NDRE','NDMI','NDWI','MNDWI','BSI'].every(k=>generalDecision.all.includes(k)),'General monitoring report must interpret all six indices');
+assert.ok(!generalDecision.all.includes('Satellite Atlas'),'General monitoring must not become a 72-image atlas by default');
+assert.ok(generalDecision.total>=7&&generalDecision.total<=16,'General decision report should be compact: '+generalDecision.total);
+assert.ok(generalDecision.all.includes('นักลงทุน')&&generalDecision.all.includes('Auditor')&&generalDecision.all.includes('TIFF'),'Investor exposure and Audit evidence must be included');
+assert.ok(generalDecision.all.includes('วันที่ภาพก่อนหน้า')||generalDecision.all.includes('วันภาพก่อนหน้า'),'All findings must be tied to actual comparison dates');
+const generalMain=await page.evaluate(()=>window.MMCReportCopilot.renderPages('appendix'));
+assert.equal(generalMain.total,0,'General report appendix should be optional and empty by default');
+
 await page.locator('#rpt-text').fill('รายงานน้ำท่วมจังหวัดระยองย้อนหลัง 3 เดือน เน้น MNDWI NDVI และฝน อ่านง่าย');
 await page.locator('#rpt-analyze').click();
 assert.equal(await page.locator('#rpt-type').inputValue(),'water','Thai intent parser understands water report');
