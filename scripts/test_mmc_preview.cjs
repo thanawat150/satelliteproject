@@ -66,7 +66,7 @@ await page.locator('#plot-select').selectOption('30-STC');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
 assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Latest cloudy TIFF must be clearly labeled display-only');
 assert.equal(await page.locator('[data-history-date="2026-10-07"] .img-frame img').count(),8,'Cloudy 30-STC date must have real RGB and six TIFF-based index quicklooks');
-assert.ok((await page.locator('#index-value-audit').innerText()).includes('ไม่มีผลดัชนี'),'Cloudy indexes must not receive approved index statistics');
+assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่มีผลดัชนี'),'Cloudy indexes must not receive approved index statistics');
 await page.locator('#image-date').selectOption('2026-09-30');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-09-30',{timeout:20000});
 await page.waitForFunction(()=>{const im=document.querySelector('.img-large .img-frame img');return im?.complete&&im.naturalWidth===9&&im.naturalHeight===13;},{timeout:20000});
