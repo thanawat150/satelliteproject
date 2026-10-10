@@ -21,6 +21,8 @@ await page.waitForSelector('#plot-digital-twin');
 assert.ok((await page.locator('#plot-digital-twin').innerText()).includes('Pixel Change'),'Plot Digital Twin must show changes with screening limits');
 assert.ok((await page.locator('#plot-digital-twin').innerText()).includes('NDMI'),'Plot Digital Twin must expose original index bands');
 assert.ok((await page.locator('#water-intelligence').innerText()).includes('น้ำขึ้นน้ำลง'),'Plot Twin must disclose missing tidal observations');
+assert.ok((await page.locator('#water-intelligence').innerText()).includes('NASA POWER'),'Water panel must identify source even if remote context is unavailable');
+
 assert.ok((await page.locator('#plot-digital-twin').innerText()).includes('ยังไม่มีข้อมูลน้ำขึ้นน้ำลง'),'Twin must disclose lack of tidal context');
 await page.locator('[data-view="analysis"]').click();
 await page.waitForFunction(()=>!!document.querySelector('#metric-select'));
