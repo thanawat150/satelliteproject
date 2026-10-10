@@ -227,12 +227,12 @@ function svgChart(rows,key,opts={}){
  // The line uses SVG vector-effect=non-scaling-stroke, while markers/ticks
  // are HTML. This prevents huge desktop SVGs from escaping the fixed chart
  // and keeps axis text/point circles legible at any screen width.
- const xpos=i=>4+92*(earliest===latest?.5:(timestamps[i]-earliest)/(latest-earliest));
+ const xpos=i=>4+92*(earliest===latest ? 0.5 : (timestamps[i]-earliest)/(latest-earliest));
  const ypos=v=>8+84*(high-Number(v))/(high-low);
  const points=good.map((x,i)=>(xpos(i)*10).toFixed(2)+','+(ypos(x[key])*10).toFixed(2)).join(' ');
  const format=n=>fmt(n,opts.decimals??3);
  const ticks=[20,50,80].map(y=>{
-  const value=low+(high-low)*(1-y/100);
+  const value=high-(high-low)*((y-8)/84);
   return '<span class="ts-y-tick" style="top:'+y+'%">'+html(format(value))+'</span>';
  }).join('');
  const grid=[20,50,80].map(y=>'<line x1="0" y1="'+(y*10)+'" x2="1000" y2="'+(y*10)+'" class="ts-gridline" vector-effect="non-scaling-stroke"/>').join('');
