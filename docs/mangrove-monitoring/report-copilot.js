@@ -133,7 +133,9 @@ function chart(rows,metric){
 function floodPlan(d){
  const out=[],section=(key,title,body)=>out.push({key,title,body});
  const latest=d.good.at(-1),pairs=new Map(),matched=new Set(d.pp.map(p=>p.code));
- const raw=d.changes.filter(c=>matched.has(c.plot)&&c.date_a&&c.date_b&&c.date_a<c.date_b
+ const validDates=new Set(d.good.map(x=>x.plot+'|'+x.date));
+ const raw=d.changes.filter(c=>matched.has(c.plot)&&c.date_a&&c.date_b&&c.date_a<c.date_b&&c.date_a>=d.threshold
+  &&validDates.has(c.plot+'|'+c.date_a)&&validDates.has(c.plot+'|'+c.date_b)
   &&c.water_net_change_rai!==null&&c.water_net_change_rai!==undefined
   &&Number.isFinite(Number(c.water_net_change_rai))&&Number(c.common_clear_rai)>0);
  for(const c of raw){
@@ -155,6 +157,7 @@ function floodPlan(d){
  if(!d.pp.length)issues.push('ไม่พบแปลงในขอบเขตที่เลือก');
  if(!comparable.length)issues.push('ไม่มีคู่ภาพ Change Detection ที่ผ่านเกณฑ์ในช่วงเวลา จึงไม่จัดอันดับสัญญาณพื้นที่น้ำ');
  if(noPair)issues.push(noPair+' แปลงไม่มีคู่ภาพที่เทียบการเปลี่ยนแปลงน้ำได้');
+ issues.push('ใช้คู่ภาพที่ทั้งวันก่อนและวันหลังอยู่ในช่วงเวลาที่เลือกและมี Scene ผ่าน QA ในทะเบียนเท่านั้น');
  if(variableWindows)issues.push('ช่วงห่างระหว่างคู่ภาพไม่เท่ากัน จึงใช้ลำดับพื้นที่น้ำเพิ่มเพื่อตั้งคำถาม ไม่ใช้เป็นการเปรียบเทียบความรุนแรงที่เทียบเท่ากัน');
  const geodiff=comparable.filter(r=>r.plot.geometry&&r.plot.area!=null&&r.area>Number(r.plot.area)+0.1);
  if(geodiff.length)issues.push('พื้นที่พิกเซลร่วมมากกว่าพื้นที่ Geometry ใน '+geodiff.length+' แปลง: อาจต่างจาก Rasterization ต้องตรวจการคำนวณก่อน Audit');
