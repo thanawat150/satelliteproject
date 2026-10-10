@@ -303,3 +303,5 @@ html{scroll-behavior:smooth}
 .rpt-readiness strong{display:block;font-size:12px}
 .rpt-readiness p{margin:5px 0 0;font-size:11px;line-height:1.7;color:#ffdfaa}
 @media print{.rpt-appendix-toggle,.rpt-readiness{display:none!important}}
+
+.rpt-studio [hidden]{display:none!important}.rpt-flood-guidance{border:1px solid #588268;background:#163f2a;border-radius:9px;color:#cae8d2;padding:11px 13px;font-size:11px;line-height:1.7;margin:12px 0}
