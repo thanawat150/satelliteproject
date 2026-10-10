@@ -298,13 +298,10 @@ function renderScheduled(rows){
         </div>
         ${isErr?'<div class="notice" style="margin-top:10px;border-color:#fecaca;background:#fff5f5;color:#9b1c1c">Metricool โพสต์ไม่สำเร็จเพราะชนลิมิตแพ็กเกจ — ใช้ปุ่มด้านล่างเพื่อดาวน์โหลดแล้วโพสต์เอง</div>':''}
         <div class="scheduled-copy">
-          <div class="label">แคปชั่น</div>
-          <div class="copybox"><p>${escapeHtml(parts.caption)}</p><button class="copy" data-copy="${encodeURIComponent(parts.caption)}">คัดลอก</button></div>
-          <div class="label">แฮชแท็ก</div>
-          <div class="copybox"><p>${escapeHtml(parts.hashtags||'—')}</p>${parts.hashtags?`<button class="copy" data-copy="${encodeURIComponent(parts.hashtags)}">คัดลอก</button>`:''}</div>
+          <div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
+          <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>
           <div class="scheduled-actions">
             ${x.media?`<a class="btn btn-primary" href="${x.media}" target="_blank" rel="noopener">⬇ เปิด / ดาวน์โหลดคลิป</a>`:''}
-            <button class="btn btn-secondary" data-copyall="${encodeURIComponent(all)}">คัดลอกพร้อมโพสต์</button>
           </div>
         </div>
       </article>`;
@@ -349,15 +346,11 @@ function render(){
           <span class="time-pill tiktok">TikTok · ${p.tiktok} น.</span>
         </div>
 
-        <div class="label">แคปชั่น</div>
-        <div class="copybox"><p>${escapeHtml(x.caption)}</p><button class="copy" data-copy="${encodeURIComponent(x.caption)}">คัดลอก</button></div>
-
-        <div class="label">แฮชแท็ก</div>
-        <div class="copybox"><p>${escapeHtml(p.hashtags)}</p><button class="copy" data-copy="${encodeURIComponent(p.hashtags)}">คัดลอก</button></div>
+        <div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
+        <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>
 
         <div class="actions">
           <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">⬇ ดาวน์โหลดคลิป · ${escapeHtml(fileName)}</a>
-          <button class="btn btn-secondary" data-copyall="${encodeURIComponent(all)}">คัดลอกแคปชั่น + แฮชแท็ก</button>
           <a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a>
         </div>
       </div>
