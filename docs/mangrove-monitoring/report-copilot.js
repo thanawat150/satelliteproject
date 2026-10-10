@@ -380,21 +380,22 @@ function floodPlan(d){
  const shortRow=r=>({code:r.code,water:waterVal(r),pct:percentVal(r),before:r.pair?.date_a||'—',current:r.pair?.date_b||'—'});
  const scope=ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ทุกแปลงในระบบ';
  const scopeText=ui.scope==='plot'?'แปลง':ui.scope==='province'?'จังหวัด':'เครือข่าย';
- const status=comparable.length?'พบสัญญาณพื้นที่น้ำเปลี่ยนแปลง ต้องตรวจบริบทเพิ่มเติม':'ข้อมูลคู่ภาพไม่เพียงพอสำหรับสรุปการเปลี่ยนแปลงน้ำ';
+ const status=recedingCount?'พบพื้นที่น้ำที่จำแนกได้ลดลงในภาพล่าสุด '+recedingCount+' แปลง หลังจากช่วงที่มีค่าสูงกว่า':comparable.length?'พบสัญญาณพื้นที่น้ำเปลี่ยนแปลง ต้องตรวจบริบทเพิ่มเติม':'ข้อมูลคู่ภาพไม่เพียงพอสำหรับสรุปการเปลี่ยนแปลงน้ำ';
  const coverVisual=priority.slice(0,2).map(r=>{
-  const im=d.images.find(x=>x.plot===r.code&&x.date===r.pair.date_b&&imageURL(x,'true_color'));
-  return im?picture(im,'true_color'):'<p class="rpt-empty">ภาพสีจริงหลังเหตุการณ์ '+esc(r.code)+' ยังไม่มี</p>';
+  const im=(d.visualImages||[]).find(x=>x.plot===r.code&&x.date===r.timeline?.latest.date&&imageURL(x,'true_color'))||d.images.find(x=>x.plot===r.code&&x.date===r.pair?.date_b&&imageURL(x,'true_color'));
+  return im?picture(im,'true_color'):'<p class="rpt-empty">ภาพสีจริงล่าสุด '+esc(r.code)+' ยังไม่มี</p>';
  }).join('');
  const coverage='<div class="rpt-kpis rpt-flood-kpis">'+metric('แปลงในขอบเขต',rows.length)+metric('คู่ภาพเทียบได้',comparable.length+'/'+rows.length)+
-  metric('แปลงน้ำเพิ่ม (คัดกรอง)',increase.length)+metric('วันที่ภาพ QA ล่าสุด',latest?.date||'—')+'</div>';
+  metric('คู่ภาพเดิมที่น้ำเพิ่ม',increase.length)+metric('น้ำลดจากช่วงสูงในภาพล่าสุด',recedingCount)+'</div>';
  const top3=table(ordered.slice(0,3).map(shortRow),[['code','แปลง'],['water','น้ำเปลี่ยน'],['pct','% พื้นที่ร่วม'],['before','ภาพก่อนหน้า'],['current','ภาพปัจจุบัน']]);
+ const recedingTable=table(declining.slice(0,3).map(r=>({code:r.code,peak:r.timeline.peak.date+' · '+num(r.timeline.peak.water),now:r.timeline.latest.date+' · '+num(r.timeline.latest.water),delta:num(r.timeline.delta)})),[['code','แปลง'],['peak','ช่วงน้ำสูง'],['now','ภาพล่าสุด'],['delta','เปลี่ยนจากสูงสุด (ไร่)']]);
  section('01 / DECISION','สรุปสถานการณ์พื้นที่น้ำ · '+scope,
   '<div class="rpt-flood-status"><strong>ผลคัดกรอง:</strong> '+esc(status)+'</div>'+
-  (comparable.length>3&&increase.length===comparable.length?'<p class="rpt-cross-scene"><strong>จุดสังเกตระดับจังหวัด:</strong> แปลงที่มีคู่ภาพทั้งหมด '+increase.length+' แปลงแสดงพื้นที่น้ำเพิ่มสุทธิพร้อมกัน จึงควรตรวจวันภาพ การประมวลผล ฤดูกาล และอิทธิพลน้ำขึ้นลงร่วมกันก่อนจัดเป็นเหตุการณ์น้ำท่วม</p>':'')+
-  '<p class="rpt-lead">วิเคราะห์ '+esc(scopeText)+' '+esc(scope)+' จาก Sentinel-2 และคู่ภาพ Change Detection ที่ผ่านเกณฑ์ข้อมูลในช่วง '+esc(ui.period==='all'?'ทุกวันที่มีข้อมูล':ui.period+' วันย้อนหลัง')+'. ค่าที่เห็นเป็นการเปลี่ยนแปลงการจำแนกน้ำ ไม่ใช่พื้นที่น้ำท่วมยืนยัน</p>'+
-  coverage+'<h3>แปลงที่มีพื้นที่น้ำเพิ่มสุทธิสูงสุดในชุดที่ตรวจได้</h3>'+top3+
+  (comparable.length>3&&increase.length===comparable.length?'<p class="rpt-cross-scene"><strong>จุดสังเกตระดับจังหวัด:</strong> คู่ภาพในผลวิเคราะห์เดิม '+increase.length+' แปลงพบพื้นที่น้ำเพิ่ม แต่ไม่ใช่สถานะล่าสุด — บางแปลงน้ำที่จำแนกได้เริ่มลดลงแล้ว ต้องดูภาพทุกวันที่มีเพิ่มเติม</p>':'')+
+  '<p class="rpt-lead">วิเคราะห์ '+esc(scopeText)+' '+esc(scope)+' จาก Sentinel-2 และข้อมูลตามวันจริงและคู่ภาพ Change Detection ที่ผ่านเกณฑ์ข้อมูลในช่วง '+esc(ui.period==='all'?'ทุกวันที่มีข้อมูล':ui.period+' วันย้อนหลัง')+'. ค่าที่เห็นเป็นการเปลี่ยนแปลงการจำแนกน้ำ ไม่ใช่พื้นที่น้ำท่วมยืนยัน</p>'+
+  coverage+'<h3>สถานการณ์ล่าสุดเทียบช่วงที่น้ำสูงกว่า</h3>'+(declining.length?recedingTable:'<p class="rpt-empty">ยังไม่มีภาพหลังจุดสูงสุดที่ผ่าน QA เพียงพอให้ประเมินการลดลง</p>')+
   '<div class="rpt-pictures rpt-cover-grid">'+coverVisual+'</div>'+
-  '<div class="rpt-nextstep"><b>ข้อเสนอเพื่อการตัดสินใจ</b><p>ให้ตรวจสอบคู่ภาพและวิธีคำนวณของ '+esc(priority.map(r=>r.code).join(', ')||'แปลงที่มีข้อมูลครบ')+' ก่อน พร้อมตรวจน้ำขึ้นลง ณ เวลาถ่ายภาพและสภาพพื้นที่จริง ยังไม่อนุมัติการสรุปความเสียหายจากข้อมูลชุดนี้เพียงอย่างเดียว</p></div>'+ 
+  '<div class="rpt-nextstep"><b>ข้อเสนอเพื่อการตัดสินใจ</b><p>ตรวจภาพก่อนน้ำเพิ่ม → ช่วงน้ำสูง → ภาพล่าสุด โดยเริ่มจาก '+esc(priority.map(r=>r.code).join(', ')||'แปลงที่มีข้อมูลครบ')+' พร้อมตรวจน้ำขึ้นลงและสภาพพื้นที่จริงก่อนยืนยันผลกระทบ</p></div>'+ 
   '<p class="rpt-disclaimer"><b>ข้อสรุปสำหรับผู้บริหาร:</b> ยังไม่ยืนยันว่าเกิดน้ำท่วมหรือพืชตาย ต้องตรวจวันภาพ น้ำขึ้นลง ฝน และหลักฐานภาคสนามก่อนระบุผลกระทบ</p>');
  const gis=floodPlotLocator(rows);
  section('02 / COVERAGE','ขอบเขตศึกษาและความครอบคลุม',
