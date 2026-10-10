@@ -336,7 +336,7 @@ function printPDF(){
  const report=renderPages(),popup=window.open('','_blank');
  if(!popup){alert('เบราว์เซอร์บล็อกหน้าต่าง กรุณาอนุญาต Pop-ups แล้วลองอีกครั้ง');return;}
  popup.document.open();
- popup.document.write('<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><title>MMC '+esc(ui.plot)+' Report</title><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet"><style>'+paperStyle()+'</style></head><body>'+report.pages+
+ popup.document.write('<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><title>MMC '+esc(ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'Nationwide')+' Report</title><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet"><style>'+paperStyle()+'</style></head><body>'+report.pages+
  '<script>window.addEventListener("load",function(){var images=Array.from(document.images);Promise.all(images.map(function(im){return im.complete?Promise.resolve():new Promise(function(resolve){im.onload=resolve;im.onerror=resolve})})).then(function(){document.querySelectorAll(".rpt-image-canvas").forEach(function(frame){var im=frame.querySelector("img"),svg=frame.querySelector("svg");if(!svg||!im.naturalWidth)return;var iw=im.clientWidth,ih=im.clientHeight,scale=Math.min(iw/im.naturalWidth,ih/im.naturalHeight),w=im.naturalWidth*scale,h=im.naturalHeight*scale;svg.style.left=(iw-w)/2+"px";svg.style.top=(ih-h)/2+"px";svg.style.width=w+"px";svg.style.height=h+"px"});setTimeout(function(){window.print()},350)})})<\/script></body></html>');
  popup.document.close();
 }
