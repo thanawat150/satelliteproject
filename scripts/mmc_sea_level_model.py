@@ -11,6 +11,7 @@ import json
 import math
 import urllib.parse
 import urllib.request
+import time
 from pathlib import Path
 from mmc_environmental_context import ROOT, DATA, coordinate_map, read_json
 
@@ -23,7 +24,14 @@ def marine_request(lat,lon,begin,end):
         "timezone":"UTC","cell_selection":"sea"})
     url=ENDPOINT+"?"+q
     req=urllib.request.Request(url,headers={"User-Agent":"MMC-MarineContext/1.0"})
-    with urllib.request.urlopen(req,timeout=60) as response: data=json.load(response)
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req,timeout=75) as response:
+                data=json.load(response)
+            break
+        except Exception:
+            if attempt==2:raise
+            time.sleep(2*(attempt+1))
     if data.get("error"):raise ValueError(str(data.get("reason"))[:150])
     hourly=data.get("hourly",{})
     dates=hourly.get("time",[])
