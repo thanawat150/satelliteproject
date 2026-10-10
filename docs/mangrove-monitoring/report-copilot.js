@@ -20,7 +20,7 @@ const DEFAULT={
  audit:['summary','location','qa','indices'],
  annual:['summary','satellite','indices','trend','change','qa']
 };
-const ui={text:'',type:'plot',scope:'plot',plot:'13-STC',province:'ALL',period:'180',density:'standard',metrics:new Set(['ndvi','mndwi','ndmi']),modules:new Set(DEFAULT.plot),notice:[]};
+const ui={text:'',type:'plot',scope:'plot',plot:'13-STC',province:'ALL',period:'180',density:'standard',imageDates:'2',metrics:new Set(['ndvi','mndwi','ndmi']),modules:new Set(DEFAULT.plot),notice:[]};
 let ctx=null,started=false;
 const plotList=()=>ctx?.plots||[];
 const allScenes=()=>ctx?.scenes||[];
@@ -54,6 +54,8 @@ function interpret(q){
  for(const key of Object.keys(METRICS))if(new RegExp('(^|[^a-z])'+key+'([^a-z]|$)','i').test(text))d.metrics.add(key);
  if(!d.metrics.size)d.metrics=new Set(d.type==='water'?['mndwi','ndwi','ndvi']:d.type==='forest'?['ndvi','ndre','ndmi']:['ndvi','mndwi']);
  if(/ทุกดัชนี/.test(text))d.metrics=new Set(Object.keys(METRICS));
+ const imageDays=text.match(/(?:ภาพ|วันภาพ|วันที่ภาพ)\s*(\d{1,2})\s*(?:วัน|วันที่)/);if(imageDays)d.imageDates=String(Math.min(4,Math.max(1,Number(imageDays[1]))));
+ if(d.scope==='all'&&!imageDays)d.imageDates='1';
  if(/น้ำท่วม|ต้นไม้ตาย|บุกรุก|เสียหาย/.test(text))d.notice.push('ข้อความเกี่ยวกับผลกระทบเป็นสมมติฐานคัดกรอง ยังไม่ใช่ข้อเท็จจริงที่ยืนยัน');
  if(!text)d.notice.push('ยังไม่ได้พิมพ์คำสั่ง');
  d.modules=new Set(DEFAULT[d.type]);
@@ -125,72 +127,169 @@ function chart(rows,metric){
 }
 
 function documentPlan(d){
- const latest=d.good.at(-1),first=d.good[0],isSingle=ui.scope==='plot';
- const candidates=d.images.filter(x=>x.assets&&Object.keys(x.assets).length);
- const out=[];
- const rowsLimit=ui.density==='brief'?4:ui.density==='technical'?12:8;
- const add=(key,title,body)=>out.push({key,title,body});
- const latestImg=mode=>candidates.find(x=>imageURL(x,mode));
- const safeRead=(key,row)=>row?num(row[key]):'—';
- const age=ui.period==='all'?'ทั้งหมดที่มีข้อมูล':ui.period+' วันย้อนหลัง';
+ const latest=d.good.at(-1),isSingle=ui.scope==='plot',out=[];
+ const rowsLimit=ui.density==='brief'?9:ui.density==='technical'?18:14;
+ const sampleDays=Math.max(1,Math.min(4,Number(ui.imageDates)||2));
+ const plotOrder=d.pp.map(x=>x.code);
+ const scopeLabel=isSingle?ui.plot:ui.scope==='province'?ui.province:'ทุกจังหวัด';
+ const add=(name,title,body)=>out.push({key:name,title,body});
+ const chunk=(rows,size)=>{const batches=[];for(let i=0;i<rows.length;i+=size)batches.push(rows.slice(i,i+size));return batches;};
+ const imgByPlot=new Map();
+ for(const im of d.images){
+  if(!imgByPlot.has(im.plot))imgByPlot.set(im.plot,[]);
+  imgByPlot.get(im.plot).push(im);
+ }
+ const perPlot=new Map();
+ for(const pp of d.pp){
+  const observations=d.good.filter(x=>x.plot===pp.code);
+  const frames=imgByPlot.get(pp.code)||[];
+  perPlot.set(pp.code,{plot:pp,rows:observations,latest:observations.at(-1),frames});
+ }
+ const thumbnail=(im,mode)=>picture(im,mode);
+ function galleryPages(title,kind,cards,maxTiles=6){
+  const batches=chunk(cards,maxTiles);
+  if(!batches.length){add(kind,title,'<p class="rpt-empty">ไม่พบภาพ Raster ที่ตรงกับช่วงวันที่และผ่าน QA สำหรับส่วนนี้</p>');return;}
+  batches.forEach((batch,i)=>{
+   const first=batch[0],last=batch.at(-1);
+   const subtitle=isSingle?'แปลง '+ui.plot:'แสดงแปลง '+(i*maxTiles+1)+'–'+(i*maxTiles+batch.length)+' จาก '+cards.length+' ภาพ';
+   add(kind+' '+(i+1),title+(batches.length>1?' · '+(i+1)+'/'+batches.length:''),
+    '<p class="rpt-gallery-sub">'+esc(subtitle)+' · ภาพจริงจาก TIFF เฉพาะวันผ่าน QA</p>'+
+    '<div class="rpt-pictures rpt-photo-grid">'+batch.map(x=>thumbnail(x.im,x.mode)).join('')+'</div>'+
+    '<p class="rpt-caption">วันภาพ '+esc(first.im.date)+' ถึง '+esc(last.im.date)+' · ขอบเขตแดงแสดงได้เมื่อมี Geometry ตรงกับภาพ Raster</p>');
+  });
+ }
+ const headImages=[];
+ const chosen=new Set();
+ for(const pp of d.pp){
+  const frames=imgByPlot.get(pp.code)||[];
+  let found=frames.find(im=>imageURL(im,'true_color')||imageURL(im,'mndwi')||imageURL(im,'ndvi'));
+  if(found){
+   const mode=imageURL(found,'true_color')?'true_color':imageURL(found,'mndwi')?'mndwi':'ndvi';
+   headImages.push({im:found,mode});chosen.add(pp.code);
+  }
+  if(headImages.length>=4)break;
+ }
+ if(isSingle&&headImages.length<4){
+  for(const im of imgByPlot.get(ui.plot)||[]){
+   for(const mode of ['false_color','ndvi','mndwi','true_color']){
+    if(!imageURL(im,mode))continue;
+    const key=im.plot+'|'+im.date+'|'+mode;
+    if(headImages.some(x=>x.im.plot+'|'+x.im.date+'|'+x.mode===key))continue;
+    headImages.push({im,mode});if(headImages.length>=4)break;
+   }
+   if(headImages.length>=4)break;
+  }
+ }
  if(ui.modules.has('summary')){
+  const latestDates=[...new Set(d.good.map(x=>x.date))].sort();
+  const areaPlots=d.pp.filter(x=>x.geometry&&x.area!=null&&Number.isFinite(Number(x.area)));
+  const areaSum=areaPlots.reduce((sum,p)=>sum+Number(p.area),0);
   const facts='<div class="rpt-kpis">'+[
-   ['จำนวนแปลง',String(d.pp.length)],['วันที่มีผลวิเคราะห์',String(d.all.length)],
-   ['วันภาพผ่าน QA',String(d.good.length)],['วันที่ผ่าน QA ล่าสุด',latest?.date||'—']
+   ['ขอบเขต',scopeLabel],['แปลงในรายงาน',String(d.pp.length)],
+   ['ผ่าน QA / วันภาพ',d.good.length+' / '+d.all.length],
+   ['วันภาพผ่าน QA ล่าสุด',latest?.date||'—'],
+   ['พื้นที่มี Geometry',areaPlots.length?num(areaSum)+' ไร่':'—'],
+   ['ช่วงเวลา',ui.period==='all'?'ทั้งหมด':ui.period+' วัน']
   ].map(([k,v])=>'<div class="rpt-kpi"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join('')+'</div>';
-  const snippet=latest&&isSingle?
-   '<p>ข้อมูลผ่าน QA ล่าสุดวันที่ <b>'+esc(latest.date)+'</b> มี NDVI '+num(latest.ndvi)+' และ MNDWI '+num(latest.mndwi)+' ส่วนพื้นที่น้ำที่จำแนกได้ '+num(latest.water_rai)+' ไร่</p>':
-   '<p>ใช้ข้อมูลที่มีอยู่จริงในขอบเขตที่เลือก โดยไม่นำค่าดัชนีของคนละแปลงมาเฉลี่ยรวมแบบไม่มีการถ่วงน้ำหนัก</p>';
-  add('01 / OVERVIEW','Executive Monitoring Summary',facts+
-    '<h3>วัตถุประสงค์</h3><p>'+esc(ui.text||'ติดตามสภาพสิ่งแวดล้อมจากภาพ Sentinel-2')+'</p>'+
-    '<h3>ข้อค้นพบเบื้องต้น</h3>'+snippet+
-    '<p class="rpt-disclaimer">เป็นรายงานคัดกรองเบื้องต้น ไม่ใช่ข้อยืนยันด้านน้ำท่วมหรืออัตราการรอดตายของป่าชายเลน</p>');
+  const visuals=headImages.length?'<h3>ภาพหลักฐานดาวเทียม</h3><div class="rpt-pictures rpt-cover-grid">'+headImages.slice(0,4).map(x=>thumbnail(x.im,x.mode)).join('')+'</div>':'<p class="rpt-empty">ยังไม่พบภาพ Raster ผ่าน QA ในช่วงเวลา</p>';
+  add('01 / SUMMARY','Environmental Monitoring · '+scopeLabel,
+   '<p class="rpt-lead">'+esc(ui.text||'รายงานติดตามสภาพป่าชายเลนจาก Sentinel-2')+'</p>'+facts+visuals+
+   '<p class="rpt-caption">พื้นที่รวมคำนวณจาก Geometry ของ '+areaPlots.length+' แปลงเท่านั้น ไม่ใช่ตัวเลขพื้นที่ยืนยันจากหน่วยงาน</p>');
  }
  if(ui.modules.has('location')){
-  const rows=d.pp.slice(0,rowsLimit).map(x=>({code:x.code,prov:x.province,rai:x.area==null?'—':num(x.area),geo:x.group||'—'}));
-  add('02 / REGISTRY','Plot Registry & Boundary',table(rows,[['code','แปลง'],['prov','จังหวัด'],['rai','พื้นที่ (ไร่)'],['geo','Boundary']])+
-  '<p class="rpt-caption">แสดง '+rows.length+' จาก '+d.pp.length+' แปลง · ขอบเขตยืนยัน PDD และ MOC เป็นข้อมูลคนละสถานะ ไม่ใช้แทนกันโดยอัตโนมัติ</p>');
+  const provinceCounts=new Map();
+  for(const p of d.pp){if(!provinceCounts.has(p.province))provinceCounts.set(p.province,{name:p.province,count:0,valid:0,images:0,area:0,withArea:0});
+   const q=provinceCounts.get(p.province);q.count++;q.valid+=perPlot.get(p.code).rows.length;q.images+=perPlot.get(p.code).frames.length;
+   if(p.geometry&&p.area!=null&&Number.isFinite(Number(p.area))){q.area+=Number(p.area);q.withArea++;}
+  }
+  if(!isSingle){
+   const byProvince=[...provinceCounts.values()].sort((a,b)=>b.count-a.count).map(p=>({province:p.name,plots:String(p.count),qa:String(p.valid),images:String(p.images),area:p.withArea?num(p.area):'—'}));
+   chunk(byProvince,rowsLimit).forEach((batch,i)=>add('02 / PROVINCE '+(i+1),'ภาพรวมแยกจังหวัด'+(i?' · ต่อ':''),
+    table(batch,[['province','จังหวัด'],['plots','แปลง'],['qa','วันภาพ QA'],['images','Raster QA'],['area','พื้นที่มี GIS (ไร่)']])+
+    '<p class="rpt-caption">ข้อมูลแยกตามจังหวัด ไม่เฉลี่ยค่าดัชนีของคนละแปลงรวมกัน</p>'));
+  }
+  const rows=d.pp.map(p=>({code:p.code,prov:p.province,rai:p.geometry&&p.area!=null?num(p.area):'—',qa:String(perPlot.get(p.code).rows.length),last:perPlot.get(p.code).latest?.date||'—'}));
+  chunk(rows,rowsLimit).forEach((batch,i)=>add('02 / REGISTRY '+(i+1),'ทะเบียนแปลง'+(rows.length>rowsLimit?' · '+(i+1)+'/'+Math.ceil(rows.length/rowsLimit):''),
+   table(batch,[['code','แปลง'],['prov','จังหวัด'],['rai','พื้นที่ GIS (ไร่)'],['qa','QA ผ่าน'],['last','วันล่าสุด']])+
+   '<p class="rpt-caption">แสดงแปลงที่ '+(i*rowsLimit+1)+'–'+Math.min(rows.length,(i+1)*rowsLimit)+' จาก '+rows.length+' แปลง พร้อมสถานะวันที่มีข้อมูลจริง</p>'));
  }
  if(ui.modules.has('satellite')){
-  const rgb=latestImg('true_color');
-  add('03 / SATELLITE','True Color · Satellite Evidence',rgb?picture(rgb,'true_color'):
-    '<p class="rpt-empty">ไม่พบภาพสีจริงจาก Raster TIFF ที่ตรงกับวันภาพผ่าน QA และช่วงเวลาที่เลือก</p>');
+  const gallery=[];
+  for(const code of plotOrder){
+   const frames=(imgByPlot.get(code)||[]).filter(im=>imageURL(im,'true_color')||imageURL(im,'false_color')).slice(0,sampleDays);
+   for(const im of frames){
+    if(imageURL(im,'true_color'))gallery.push({im,mode:'true_color'});
+    if(imageURL(im,'false_color'))gallery.push({im,mode:'false_color'});
+   }
+  }
+  galleryPages('Satellite Atlas · สีจริง / สีเท็จ','03 / SATELLITE',gallery,6);
  }
  if(ui.modules.has('indices')){
-  const indices=[...ui.metrics];
-  const grid=indices.slice(0,4).map(k=>{const img=latestImg(k);return img?picture(img,k):'<p class="rpt-empty">'+esc(k.toUpperCase())+' ยังไม่มี Raster Preview ที่ผ่าน QA</p>';}).join('');
-  add('04 / INDICES','Environmental Spectral Indices',
-    '<div class="rpt-pictures">'+(grid||'<p class="rpt-empty">ยังไม่เลือกดัชนี</p>')+'</div>'+
-    '<p class="rpt-caption">ภาพเป็น Visual Evidence จาก Raster ต้นฉบับ ไม่ใช่การยืนยันน้ำท่วม การเสื่อมสภาพ หรือความเสียหายโดยลำพัง</p>');
+  const gallery=[];
+  const selected=[...ui.metrics];
+  for(const code of plotOrder){
+   const frames=(imgByPlot.get(code)||[]).slice(0,sampleDays);
+   for(const im of frames)for(const mode of selected){
+    if(imageURL(im,mode))gallery.push({im,mode});
+   }
+  }
+  galleryPages('Index Atlas · '+(selected.map(x=>x.toUpperCase()).join(' / ')||'ไม่เลือกดัชนี'),'04 / INDICES',gallery,6);
  }
  if(ui.modules.has('trend')){
   const key=[...ui.metrics][0]||'ndvi';
-  const rows=isSingle?d.good:[];
-  const recent=rows.slice(-rowsLimit).map(x=>({date:x.date,value:num(x[key]),qa:num(x.qa_valid_pct)+'%'}));
-  add('05 / TIME SERIES','Trend · '+key.toUpperCase(),
-    isSingle?chart(rows,key)+table(recent,[['date','วันภาพ'],['value',key.toUpperCase()],['qa','QA SCL']]):
-      '<p class="rpt-empty">กราฟข้ามหลายแปลงยังไม่เปิดใช้ เพราะค่าเฉลี่ยของคนละพื้นที่ไม่ใช่อนุกรมเดียวกัน กรุณาเลือกแปลงเดียวเพื่อแสดงกราฟ</p>'+
-    '<p class="rpt-caption">แสดงเฉพาะวันภาพ AUTO_VALID ไม่เติมค่าระหว่างวันที่ไม่มีภาพ · ค่าสถิติแสดงทศนิยม 2 ตำแหน่ง</p>');
+  if(isSingle){
+   const rr=perPlot.get(ui.plot)?.rows||[];
+   const validMetric=rr.filter(x=>x[key]!=null&&x[key]!==''&&Number.isFinite(Number(x[key])));
+   const kpis='<div class="rpt-kpis">'+[
+    ['วันภาพที่มีค่า',String(validMetric.length)],['ค่าแรก',validMetric.length?num(validMetric[0][key]):'—'],
+    ['ค่าล่าสุด',validMetric.length?num(validMetric.at(-1)[key]):'—'],
+    ['ผลต่าง',validMetric.length>1?num(validMetric.at(-1)[key]-validMetric[0][key]):'—']
+   ].map(([k,v])=>'<div class="rpt-kpi"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join('')+'</div>';
+   add('05 / TREND','Time Series · '+key.toUpperCase(),kpis+chart(rr,key)+
+    table(rr.slice(-rowsLimit).map(r=>({date:r.date,value:num(r[key]),qa:num(r.qa_valid_pct)+'%'})),[['date','วันภาพ'],['value',key.toUpperCase()],['qa','QA SCL']])+
+    '<p class="rpt-caption">จุดกราฟคือวันที่มี Sentinel-2 ผ่าน QA จริง ไม่ใช่ข้อมูลต่อเนื่องรายวัน</p>');
+  }else{
+   const records=d.pp.map(p=>{const series=perPlot.get(p.code).rows.filter(x=>x[key]!=null&&x[key]!==''&&Number.isFinite(Number(x[key]))),last=series.at(-1),first=series[0];
+    return {code:p.code,province:p.province,scenes:String(series.length),last:last?.date||'—',value:last?num(last[key]):'—',delta:series.length>1?num(last[key]-first[key]):'—'};});
+   chunk(records,rowsLimit).forEach((batch,i)=>add('05 / TREND '+(i+1),'เปรียบเทียบรายแปลง · '+key.toUpperCase(),
+    table(batch,[['code','แปลง'],['province','จังหวัด'],['scenes','วัน QA'],['last','ล่าสุด'],['value','ค่า'],['delta','Δ ช่วง']])+
+    '<p class="rpt-caption">ไม่รวมค่าดัชนีข้ามแปลงเป็นเส้นเดียว ค่า Δ เทียบวันภาพแรกและสุดท้ายของแต่ละแปลง</p>'));
+  }
  }
  if(ui.modules.has('change')){
-  const rows=d.changes.slice(-rowsLimit).map(x=>({plot:x.plot,dates:x.date_a+' → '+x.date_b,area:num(x.common_clear_rai),water:num(x.water_net_change_rai)}));
-  add('06 / CHANGE','Change Detection Screening',table(rows,[['plot','แปลง'],['dates','ช่วงภาพ'],['area','พื้นที่ร่วม ไร่'],['water','น้ำ Δ ไร่']])+
-   '<p class="rpt-disclaimer">คู่ภาพที่ผ่านเกณฑ์ข้อมูลเบื้องต้นเท่านั้น ยังต้องพิจารณาน้ำขึ้นลง ฤดูกาล ภาพเมฆ และหลักฐานภาคสนามก่อนสรุปสาเหตุ</p>');
+  const cByPlot=new Map();
+  for(const r of d.changes){const prev=cByPlot.get(r.plot);if(!prev||r.date_b>prev.date_b)cByPlot.set(r.plot,r);}
+  const records=d.pp.map(p=>{const r=cByPlot.get(p.code);return {code:p.code,dates:r?r.date_a+' → '+r.date_b:'—',area:r?num(r.common_clear_rai):'—',water:r?num(r.water_net_change_rai):'—',veg:r?num(r.vegetation_net_change_rai):'—'};});
+  chunk(records,rowsLimit).forEach((batch,i)=>add('06 / CHANGE '+(i+1),'Screening Change · รายแปลง',
+   table(batch,[['code','แปลง'],['dates','คู่วันที่ผ่าน QA'],['area','ร่วม (ไร่)'],['water','น้ำ Δ'],['veg','พืช Δ']])+
+   '<p class="rpt-disclaimer">การเปลี่ยนแปลงเป็นการคัดกรองบนพิกเซลที่เทียบกันได้ ไม่ยืนยันน้ำท่วมหรือสาเหตุของสภาพป่า</p>'));
  }
  if(ui.modules.has('rain')){
-  const rr=isSingle?(ctx.environment?.plots?.[ui.plot]?.scenes||[]).filter(x=>d.all.some(y=>y.plot===ui.plot&&y.date===x.date)):[];
-  const rows=rr.slice(-rowsLimit).map(x=>({date:x.date,one:num(x.rain_prev_1_utc_day_mm),three:num(x.rain_prev_3_utc_days_mm),qa:x.data_quality||'—'}));
-  add('07 / RAINFALL','Rainfall · NASA POWER',table(rows,[['date','วันภาพ'],['one','ฝนก่อน 1 วัน มม.'],['three','ฝนก่อน 3 วัน มม.'],['qa','สถานะ']])+
-  '<p class="rpt-caption">NASA POWER PRECTOTCORR: วัน UTC ก่อนวันภาพ ไม่ใช่ฝนย้อนหลัง 24/72 ชั่วโมงจากเวลาผ่านของดาวเทียม หรือสถานีวัดฝนจริง</p>');
+  const latestRain=[];
+  for(const p of d.pp){
+   const rain=(ctx.environment?.plots?.[p.code]?.scenes||[]).filter(x=>d.all.some(y=>y.plot===p.code&&y.date===x.date)&&x.data_quality==='COMPLETE');
+   for(const row of rain.slice(isSingle?-rowsLimit:-1))latestRain.push({plot:p.code,date:row.date,one:num(row.rain_prev_1_utc_day_mm),three:num(row.rain_prev_3_utc_days_mm)});
+  }
+  chunk(latestRain,rowsLimit).forEach((batch,i)=>add('07 / RAIN '+(i+1),'Rainfall Context · NASA POWER',
+   table(batch,[['plot','แปลง'],['date','วันภาพ'],['one','ฝนก่อน 1 วัน (มม.)'],['three','ฝนก่อน 3 วัน (มม.)']])+
+   '<p class="rpt-caption">NASA POWER เป็นข้อมูลฝนตามวัน UTC ที่สัมพันธ์กับวันภาพ ไม่ใช่สถานีวัดฝนหรือน้ำขึ้นลงที่ตรวจสอบแล้ว</p>'));
+  if(!latestRain.length)add('07 / RAIN','Rainfall Context','<p class="rpt-empty">ยังไม่มีข้อมูลฝนที่ตรงช่วงเวลาหรือผ่านเงื่อนไข COMPLETE</p>');
  }
  if(ui.modules.has('qa')){
-  const rows=d.all.slice(-rowsLimit).map(x=>({plot:x.plot,date:x.date,status:x.analysis_status||'—',qa:num(x.qa_valid_pct)+'%',source:x.original_tif10||'—'}));
-  add('08 / QA','Quality Assurance & Traceability',table(rows,[['plot','แปลง'],['date','วันภาพ'],['status','สถานะ'],['qa','SCL'],['source','TIFF 10m']])+
-  '<h3>ข้อจำกัดและการใช้หลักฐาน</h3><ul class="rpt-findings">'+d.cautions.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
-  '<p class="rpt-caption">วันที่วิเคราะห์ '+esc(age)+' · ใช้ชุดข้อมูลที่เว็บไซต์เผยแพร่ ไม่แก้ไขค่า Raster จริง ไม่ใช้ภาพถ่ายอื่นแทน Scene ที่ขาด</p>');
+  const records=d.pp.map(p=>{
+   const related=d.all.filter(r=>r.plot===p.code),good=perPlot.get(p.code).rows,im=perPlot.get(p.code).frames;
+   return {code:p.code,prov:p.province,all:String(related.length),valid:String(good.length),images:String(im.length),source:good.at(-1)?.original_tif10||'—'};
+  });
+  chunk(records,rowsLimit).forEach((batch,i)=>add('08 / QA '+(i+1),'QA/QC · Data Lineage',
+   table(batch,[['code','แปลง'],['prov','จังหวัด'],['all','วันภาพ'],['valid','QA ผ่าน'],['images','Raster'],['source','TIFF ต้นฉบับล่าสุด']])+
+   '<p class="rpt-caption">รายงานคงค่า NULL สำหรับข้อมูลขาด ไม่ตีความว่ามีค่า 0.00</p>'));
+  add('09 / CAVEATS','การตีความและข้อจำกัด',
+   '<ul class="rpt-findings">'+d.cautions.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
+   '<p class="rpt-disclaimer">ยังไม่มีการตรวจสอบความถูกต้องโดยอิสระ หรือการปรับแก้น้ำขึ้นลง จึงไม่ใช้รายงานนี้เป็นใบรับรอง MRV หรือหลักฐานความเสียหายที่ยืนยันแล้ว</p>'+
+   '<p class="rpt-caption">ขอบเขต: '+esc(scopeLabel)+' · รอบภาพ: '+esc(ui.period==='all'?'ทุกวันที่มีข้อมูล':ui.period+' วัน')+' · สร้างเมื่อ '+esc(dateNow())+'</p>');
  }
- if(!out.length)add('REPORT','No Report Sections','<p class="rpt-empty">กรุณาเลือกองค์ประกอบอย่างน้อย 1 หัวข้อ</p>');
- return {out,latest:first?.date||null};
+ if(!out.length)add('00 / EMPTY','ไม่มีองค์ประกอบรายงาน','<p class="rpt-empty">กรุณาเลือกองค์ประกอบอย่างน้อย 1 หัวข้อ</p>');
+ return {out,imageCount:out.reduce((n,p)=>n+(p.body.match(/<figure class="rpt-image"/g)||[]).length,0)};
 }
 function paperStyle(){
  return '@page{size:A4 portrait;margin:0}*{box-sizing:border-box}body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}.rpt-paper{position:relative;margin:0 auto 14px;width:210mm;min-height:297mm;padding:16mm 15mm 24mm;background:white;box-shadow:0 4px 22px #12291b29;break-after:page;page-break-after:always;overflow:hidden}.rpt-paper:last-child{break-after:auto;page-break-after:auto}.rpt-pagehead{display:flex;justify-content:space-between;border-bottom:2px solid #256d4b;padding-bottom:9px;font-weight:700;font-size:9px;letter-spacing:1px;color:#256d4b}.rpt-eyebrow{font-size:11px;letter-spacing:1.6px;color:#287a53;margin-top:25px}.rpt-paper h2{font-size:24px;line-height:1.35;margin:9px 0 20px}.rpt-paper h3{font-size:14px;margin:16px 0 7px}.rpt-paper p,.rpt-paper li{font-size:11px;line-height:1.85}.rpt-pagefoot{position:absolute;bottom:14mm;left:15mm;right:15mm;display:flex;justify-content:space-between;color:#618171;border-top:1px solid #d1dfd5;padding-top:7px;font-size:9px}.rpt-kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:13px 0 18px}.rpt-kpi{background:#eef6f0;border-left:3px solid #36855a;padding:12px}.rpt-kpi small{display:block;font-size:10px;color:#607768}.rpt-kpi strong{display:block;font-size:17px;margin-top:3px}.rpt-caption{font-size:10px!important;color:#62796a;margin-top:8px}.rpt-disclaimer{padding:12px 14px;border-left:3px solid #bb8944;background:#fff7e9}.rpt-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:9px}.rpt-table th,.rpt-table td{padding:8px 5px;border-bottom:1px solid #dae5db;text-align:left;overflow-wrap:anywhere}.rpt-table th{background:#edf5ee;font-weight:700}.rpt-image{margin:5px 0 16px}.rpt-image-canvas{display:block;position:relative;isolation:isolate}.rpt-image img{display:block;width:100%;height:auto;max-height:175mm;object-fit:contain;background:#e9eee9}.rpt-image-boundary{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}.rpt-density-brief .rpt-image img{max-height:185mm}.rpt-density-technical .rpt-table td{font-size:8px}.rpt-image figcaption{font-size:10px;color:#52705d;margin-top:7px}.rpt-pictures{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rpt-pictures .rpt-image img{max-height:80mm}.rpt-empty{padding:18px;background:#eef4ef;border:1px dashed #b8caba;font-size:11px}.rpt-chart{width:100%;height:auto;max-height:72mm}.rpt-findings{padding-left:18px}@media print{body{background:white;print-color-adjust:exact;-webkit-print-color-adjust:exact}.rpt-paper{box-shadow:none;margin:0;width:210mm;height:297mm;min-height:297mm}}';
