@@ -636,17 +636,72 @@ function renderPages(output='full'){
  '<footer class="rpt-pagefoot"><span>'+esc(ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ALL PLOTS')+' · '+esc(dateNow())+'</span><span>'+String(i+1)+' / '+total+'</span></footer></article>').join('');
  return {pages,d,total,imageCount:items.reduce((n,p)=>n+(p.body.match(/<figure class="rpt-image"/g)||[]).length,0),audit:plan.audit||null};
 }
+
+async function markVisualChanges(root){
+ const sources=[...root.querySelectorAll('.rpt-visual-pair[data-visual-scan="eligible"]')];
+ for(const region of sources){
+  const photos=[...region.querySelectorAll('.rpt-visual-duo .rpt-image img')];
+  const overlay=region.querySelector('.rpt-visual-overlay'),caption=region.querySelector('.rpt-visual-result');
+  if(photos.length!==2||!overlay||!caption)continue;
+  try{
+   await Promise.all(photos.map(img=>img.complete&&img.naturalWidth?Promise.resolve():
+    new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});setTimeout(resolve,3000);})));
+   if(photos.some(img=>!img.naturalWidth||!img.naturalHeight)){caption.textContent='ภาพต้นทางโหลดไม่ครบ จึงไม่วงพื้นที่อัตโนมัติ';continue;}
+   const count=96,size=12,read=img=>{
+    const c=root.createElement?root.createElement('canvas'):document.createElement('canvas');
+    c.width=c.height=count;
+    const g=c.getContext('2d',{willReadFrequently:true});if(!g)return null;
+    g.clearRect(0,0,count,count);g.drawImage(img,0,0,count,count);
+    return g.getImageData(0,0,count,count).data;
+   };
+   const a=read(photos[0]),b=read(photos[1]);
+   if(!a||!b){caption.textContent='เครื่องไม่รองรับการอ่านสีภาพสำหรับวงจุดสังเกต';continue;}
+   const cells=[],w=count/size,h=count/size;
+   let changedAll=0,validAll=0;
+   for(let gy=0;gy<size;gy++)for(let gx=0;gx<size;gx++){
+    let valid=0,changed=0,magnitude=0;
+    for(let y=gy*h;y<(gy+1)*h;y++)for(let x=gx*w;x<(gx+1)*w;x++){
+     const p=(y*count+x)*4,ar=a[p],ag=a[p+1],ab=a[p+2],br=b[p],bg=b[p+1],bb=b[p+2];
+     if(a[p+3]<180||b[p+3]<180)continue;
+     if((ar>246&&ag>246&&ab>246)||(br>246&&bg>246&&bb>246))continue;
+     const diff=(Math.abs(ar-br)+Math.abs(ag-bg)+Math.abs(ab-bb))/3;valid++;validAll++;
+     if(diff>45){changed++;changedAll++;magnitude+=diff;}
+    }
+    const ratio=valid?changed/valid:0;
+    if(valid>=28&&ratio>=.26)cells.push({gx,gy,ratio,score:ratio*(magnitude/Math.max(1,changed))});
+   }
+   const area=validAll?changedAll/validAll:0;
+   if(validAll<count*count*.24){caption.textContent='พิกเซลที่อ่านเทียบได้มีน้อย อาจมีเมฆ/NoData — ไม่วงอัตโนมัติ';continue;}
+   if(area>.68){caption.textContent='ภาพสีเปลี่ยนกว้างมากทั้งภาพ อาจเกิดจากเมฆหรือการเรนเดอร์ — ไม่ระบุจุดเปลี่ยนแปลงโดยอัตโนมัติ';continue;}
+   if(area<.015||!cells.length){caption.textContent='ยังไม่พบความต่างของสีดัชนีที่เด่นพอจะวงอัตโนมัติ สามารถดูคู่ภาพเปรียบเทียบด้วยตาได้';continue;}
+   cells.sort((a,b)=>b.score-a.score);
+   const hits=[];
+   for(const cand of cells){
+    const cx=(cand.gx+.5)*1000/size,cy=(cand.gy+.5)*1000/size;
+    if(hits.some(p=>Math.hypot(p.cx-cx,p.cy-cy)<205))continue;
+    hits.push({cx,cy});
+    if(hits.length===3)break;
+   }
+   overlay.innerHTML=hits.map((p,i)=>'<circle cx="'+p.cx.toFixed(1)+'" cy="'+p.cy.toFixed(1)+'" r="93" fill="none" stroke="#fff" stroke-width="10" stroke-dasharray="13 9"/>'+
+    '<circle cx="'+p.cx.toFixed(1)+'" cy="'+p.cy.toFixed(1)+'" r="93" fill="none" stroke="#ef8a1b" stroke-width="7" stroke-dasharray="13 9"/>'+
+    '<circle cx="'+(p.cx+72).toFixed(1)+'" cy="'+(p.cy-72).toFixed(1)+'" r="24" fill="#ef8a1b" stroke="white" stroke-width="3"/>'+
+    '<text x="'+(p.cx+72).toFixed(1)+'" y="'+(p.cy-63).toFixed(1)+'" text-anchor="middle" fill="#fff" font-size="25" font-weight="700">'+(i+1)+'</text>').join('');
+   caption.textContent='วงจุดสังเกตเบื้องต้น '+hits.length+' จุด จากความต่างของสีภาพดัชนีสองวัน (ไม่ใช่ขอบเขตน้ำท่วมหรือผลวัดพื้นที่)';
+  }catch(e){caption.textContent='ไม่สามารถประมวลผลการเปรียบเทียบสีภาพได้ จึงไม่วงจุดโดยคาดเดา';}
+ }
+}
+
 function fitImageBoundaries(doc){
  const frames=[...doc.querySelectorAll('.rpt-image-canvas')];
  for(const frame of frames){
-  const img=frame.querySelector('img'),svg=frame.querySelector('.rpt-image-boundary');
-  if(!img||!svg)continue;
+  const img=frame.querySelector('img'),shapes=[...frame.querySelectorAll('.rpt-image-boundary,.rpt-visual-overlay')];
+  if(!img||!shapes.length)continue;
   const adjust=()=>{
    const iw=img.clientWidth,ih=img.clientHeight,nw=img.naturalWidth,nh=img.naturalHeight;
-   if(!iw||!ih||!nw||!nh){svg.style.visibility='hidden';return;}
+   if(!iw||!ih||!nw||!nh){shapes.forEach(svg=>svg.style.visibility='hidden');return;}
    const scale=Math.min(iw/nw,ih/nh),w=nw*scale,h=nh*scale;
-   svg.style.left=((iw-w)/2)+'px';svg.style.top=((ih-h)/2)+'px';
-   svg.style.width=w+'px';svg.style.height=h+'px';svg.style.visibility='visible';
+   for(const svg of shapes){svg.style.left=((iw-w)/2)+'px';svg.style.top=((ih-h)/2)+'px';
+   svg.style.width=w+'px';svg.style.height=h+'px';svg.style.visibility='visible';}
   };
   img.addEventListener('load',adjust,{once:true});
   adjust();
@@ -659,6 +714,7 @@ function updatePreview(){
  const previewCount=Math.min(8,report.total),previewPages=report.pages.split('</article>').slice(0,previewCount).map(x=>x+'</article>').join('');
  el.innerHTML='<style>'+paperStyle().replace('body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}','')+'</style><div class="rpt-papers">'+previewPages+'</div>'+(report.total>previewCount?'<p class="rpt-preview-more">แสดงตัวอย่าง '+previewCount+' จาก '+report.total+' หน้า · PDF ฉบับเต็มจะรวมครบทุกหน้า (ภาพ '+report.imageCount+' ภาพ)</p>':'');
  fitImageBoundaries(el);
+ void markVisualChanges(el);
  const summary=$('rpt-source-summary');
  if(summary)summary.innerHTML='<b>ข้อมูลจริง:</b> '+report.d.pp.length+' แปลง · '+report.d.all.length+' วันภาพ · ผ่าน QA '+report.d.good.length+' วัน · Raster Preview '+report.d.images.length+' ฉาก · ในรายงาน '+report.imageCount+' ภาพ / '+report.total+' หน้า';
  const note=$('rpt-warning-list');if(note)note.innerHTML=report.d.cautions.map(x=>'<p>• '+esc(x)+'</p>').join('');
