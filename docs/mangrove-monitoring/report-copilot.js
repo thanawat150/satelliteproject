@@ -644,7 +644,7 @@ function monitoringPlan(d){
   const ranked=metrics.filter(m=>change[m]!==null).sort((a,b)=>Math.abs(change[b])-Math.abs(change[a]));
   const nv=change.ndvi,mw=change.mndwi;
   const signal=!prev?'ข้อมูลเทียบไม่พอ':nv!==null&&mw!==null&&nv>=.08&&mw<=-.08?'สัญญาณน้ำลดและพืชพรรณเพิ่ม':nv!==null&&mw!==null&&nv<=-.08&&mw>=.08?'สัญญาณน้ำเพิ่มและพืชพรรณลด':mw!==null&&mw<=-.08?'ดัชนีน้ำลด':mw!==null&&mw>=.08?'ดัชนีน้ำเพิ่ม':nv!==null&&nv<=-.08?'ดัชนีพืชพรรณลด':nv!==null&&nv>=.08?'ดัชนีพืชพรรณเพิ่ม':'แนวโน้มผสม/เปลี่ยนไม่เด่น';
-  const followup=signal==='สัญญาณน้ำเพิ่มและพืชพรรณลด'?'ตรวจน้ำและเรือนยอดร่วมกัน':signal==='สัญญาณน้ำลดและพืชพรรณเพิ่ม'?'ตรวจน้ำลดจากภาพหลายวัน':!prev?'หาภาพเปรียบเทียบใหม่':'อ่านภาพครบทุกดัชนี';
+  const followup=!prev?'ตรวจวันภาพและเมฆ':signal==='สัญญาณน้ำเพิ่มและพืชพรรณลด'?'ตรวจน้ำปกคลุมเรือนยอด':signal==='สัญญาณน้ำลดและพืชพรรณเพิ่ม'?(change.ndmi!==null&&change.ndmi<0?'ตรวจความชื้นเรือนยอด':'ตรวจน้ำลดและพืช'):'ตรวจสัญญาณขัดแย้ง';
   return {p,code:p.code,scenes,last,prev,change,ranked,signal,followup,score:ranked.length?Math.abs(change[ranked[0]]):-1,
    imageBefore:prev?d.images.find(im=>im.plot===p.code&&im.date===prev.date):null,
    imageAfter:last?d.images.find(im=>im.plot===p.code&&im.date===last.date):null};
@@ -658,12 +658,23 @@ function monitoringPlan(d){
   if(!x.ranked.length)return 'ข้อมูลคู่ภาพไม่มีค่าดัชนีร่วมที่ใช้สรุปได้';
   const found=x.ranked.slice(0,2).map(k=>k.toUpperCase()+' '+(x.change[k]<0?'ลด':'เพิ่ม')+' '+num(Math.abs(x.change[k]))).join(' และ ');
   let message='ต้องอ่านค่าทั้งหกดัชนี ภาพสีจริง และเมฆร่วมกันก่อนระบุสาเหตุ';
-  const {ndvi,ndmi,mndwi}=x.change;
-  if(ndvi!==null&&ndmi!==null&&mndwi!==null){
-   if(ndvi<0&&ndmi<0&&mndwi>0)message='NDVI และ NDMI ลดร่วมกับ MNDWI เพิ่ม เป็นสัญญาณให้ตรวจสอบสภาพน้ำและพืช ไม่ใช่ข้อพิสูจน์น้ำท่วมหรือต้นไม้ตาย';
-   else if(ndvi>0&&ndmi>0&&mndwi<0)message='NDVI และ NDMI เพิ่มร่วมกับ MNDWI ลด แต่ยังยืนยันการฟื้นฟูหรืออัตรารอดไม่ได้';
-   else message='ดัชนีให้สัญญาณต่างทิศกันบางส่วน ต้องตรวจภาพจริงก่อนตีความ';
+  const {ndvi,ndre,ndmi,ndwi,mndwi,bsi}=x.change;
+  const up=z=>z!==null&&z>.005,down=z=>z!==null&&z<-.005;
+  if(up(ndvi)&&up(ndre)&&down(ndwi)&&down(mndwi)){
+   message='NDVI/NDRE สูงขึ้นพร้อมกับ NDWI/MNDWI ลดลง เป็นสัญญาณร่วมจากพืชและน้ำ ไม่ใช่การยืนยันว่าต้นไม้ฟื้นตัว';
+   if(down(ndmi))message+=' แต่ NDMI ลดลง จึงควรตรวจความชื้นเรือนยอด ไม่ควรใช้คำว่า “ป่าฟื้นตัว”';
+   if(up(ndmi))message+=' และ NDMI สูงขึ้นสอดคล้องกับความชื้นพืชเพิ่ม แต่ยังต้องตรวจภาพและสภาพพื้นที่';
+  }else if(down(ndvi)&&down(ndre)&&up(ndwi)&&up(mndwi)){
+   message='NDVI/NDRE ลดลงพร้อมกับ NDWI/MNDWI สูงขึ้น เป็นสัญญาณให้ตรวจน้ำปกคลุมและเรือนยอด ไม่ใช่หลักฐานว่าต้นไม้ตาย';
+   if(up(ndmi))message+=' ขณะที่ NDMI เพิ่ม จึงอาจมีการเปลี่ยนแปลงความชื้นที่ต้องแยกจากความเสียหาย';
+  }else if(down(ndwi)&&down(mndwi)){
+   message='NDWI และ MNDWI ลดทั้งคู่ สอดคล้องกับสัญญาณน้ำบนผิวพื้นที่ลดลง แต่ยังต้องตรวจระดับน้ำทะเลและภาพก่อนหน้า';
+  }else if(up(ndwi)&&up(mndwi)){
+   message='NDWI และ MNDWI เพิ่มทั้งคู่ สอดคล้องกับสัญญาณผิวน้ำสูงขึ้น แต่ยังไม่ใช่การยืนยันน้ำท่วม';
+  }else{
+   message='สัญญาณจากน้ำ พืชพรรณ และดินยังไม่สอดคล้องกันเพียงพอ ต้องอ่านภาพและตรวจ SCL/NoData ก่อนสรุป';
   }
+  if(bsi!==null&&Math.abs(bsi)>=.12)message+=' BSI เปลี่ยน '+num(Math.abs(bsi))+' ควรตรวจพื้นที่ดินเปิดโล่งร่วมด้วย';
   return 'ภาพ '+x.prev.date+' → '+x.last.date+' พบ '+found+'; '+message;
  };
  const kpi=[['จำนวนแปลง',String(d.pp.length)],['มีคู่ภาพ QA',compared.length+' / '+d.pp.length],
@@ -681,7 +692,7 @@ function monitoringPlan(d){
   '<div class="rpt-kpis">'+kpi+'</div>'+ 
   '<div class="rpt-monitor-note"><b>อ่านสถานการณ์จากข้อมูลที่มี</b><p>จาก '+compared.length+' แปลงที่มีคู่ภาพ QA พบ '+waterReceding.length+' แปลงมีทิศทาง NDVI เพิ่มร่วมกับ MNDWI ลด และ '+waterConcern.length+' แปลงมีทิศทาง NDVI ลดร่วมกับ MNDWI เพิ่ม · มี '+latestCompared.length+' แปลงที่มีคู่เปรียบเทียบสิ้นสุดในวันที่ '+esc(latestQA)+' · อีก '+missingCurrent.length+' แปลงมีค่า QA ล่าสุดก่อนวันนี้ ผลนี้เป็นเพียงการคัดกรอง ไม่ใช่สรุปสุขภาพป่าหรือสาเหตุการเปลี่ยนแปลง</p></div><h3>ตัวอย่างสัญญาณสำคัญที่ควรตรวจ</h3>'+ 
   (tops.length?'<ol class="rpt-decision-findings">'+tops.map(x=>'<li><b>'+esc(x.code)+' · '+esc(x.signal)+'</b> — '+esc(description(x))+(x.last?.date<latestQA?' · ข้อมูล QA ล่าสุดของแปลงนี้ไม่ใช่วันที่ '+latestQA:'')+'</li>').join('')+'</ol>':'<p class="rpt-empty">ยังไม่มีคู่ภาพที่คำนวณค่าดัชนีเปรียบเทียบได้</p>')+
-  '<div class="rpt-nextstep"><b>คำแนะนำสำหรับผู้บริหาร</b><p>ให้ทีม GIS ตรวจภาพรายวันที่มีจริงและค่าดัชนีร่วมกันในแปลงข้างต้น ตรวจพื้นที่จากภาพดาวเทียมและลงพื้นที่เมื่อจำเป็น แล้วจึงพิจารณามาตรการแก้ไข</p></div>'+
+  '<div class="rpt-nextstep"><b>คำสั่งตรวจสอบที่เสนอให้ผู้บริหารอนุมัติ</b><p>1) ทีม GIS ตรวจความครอบคลุม Raster/NoData ภายใน Polygon และเทียบพื้นที่ข้อมูลร่วมก่อน–หลัง · 2) ตรวจดัชนีทั้งหกพร้อมภาพสีจริงและน้ำขึ้นลง · 3) ให้ผู้จัดการโครงการติดตามแปลงที่ยังไม่มีภาพ QA ล่าสุดและจัดเก็บหลักฐานภาคสนาม · 4) ส่งผลกลับพร้อมชื่อ TIFF และข้อจำกัดก่อนยืนยันความเสียหาย</p></div>'+
   '<p class="rpt-caption">พื้นที่ Geometry รวม '+num(area)+' ไร่ เป็นผลรวมตามทะเบียน ไม่ใช่พื้นที่เสียหายหรือ Union ตัดซ้อนทับ · ไม่มีข้อมูลการลงทุนรองรับการประเมินความเสียหายเป็นเงิน</p>');
  const portfolio=[...items].sort((a,b)=>(b.last?.date||'').localeCompare(a.last?.date||'')||a.code.localeCompare(b.code));
  const ranks=portfolio.map((x,i)=>({rank:String(i+1),plot:x.code,date:x.prev?x.prev.date+' → '+x.last.date:'—',
