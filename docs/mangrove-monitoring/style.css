@@ -118,16 +118,46 @@ html{scroll-behavior:smooth}
 @media print{.img-index-audit{break-inside:avoid;background:white!important;color:#111!important}.img-index-brief{color:#222!important}}
 
 
-/* Interactive Time Series: chart controls stay visible and usable on mobile. */
-.time-series-toolbar{align-items:flex-end;flex-wrap:wrap;gap:12px}
-.time-series-select{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);min-width:225px;max-width:100%;font-weight:600}
-.time-series-select select{width:100%;max-width:340px;min-height:44px;font-size:14px}
-.time-series-summary{display:flex;gap:8px 20px;flex-wrap:wrap;margin:12px 0 8px;font-size:12px;color:var(--muted)}
-.time-series-summary b{color:var(--green)}
-#time-series-panel .mini-chart svg{width:100%;height:auto;display:block}
-#time-series-panel .timeline-labels{font-variant-numeric:tabular-nums}
-@media(max-width:650px){
- .time-series-toolbar{align-items:stretch;flex-direction:column}
- .time-series-select,.time-series-select select{min-width:0;max-width:none;width:100%}
- .time-series-summary{flex-direction:column;gap:5px}
+/* Time Series v2. Fixed-height raster-independent plot and separate axis labels.
+   Never stretch an SVG with height:auto inside a fixed-height mini-chart. */
+#time-series-panel{overflow:hidden}
+#time-series-panel .time-series-toolbar{align-items:end;display:flex;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+#time-series-panel .time-series-toolbar>div{min-width:0;flex:1 1 290px}
+#time-series-panel .time-series-toolbar h2{font-size:19px;line-height:1.45}
+#time-series-panel .time-series-toolbar p{font-size:12px;margin-top:4px}
+#time-series-panel .time-series-select{display:flex;flex-direction:column;gap:7px;color:var(--muted);font-size:12px;font-weight:600;flex:0 1 310px;min-width:220px;max-width:100%}
+#time-series-panel .time-series-select select{height:46px;width:100%;min-width:0;border-radius:9px;font-size:14px;font-weight:600}
+#time-series-panel .ts-chart{display:block;width:100%;min-width:0;border:1px solid var(--border);background:#0c211d;border-radius:12px;padding:19px 18px 15px;box-sizing:border-box}
+#time-series-panel .ts-chart-axis-caption{font-size:11px;letter-spacing:.02em;color:#98b6a6;margin:0 0 13px 72px}
+#time-series-panel .ts-chart-layout{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;min-width:0}
+#time-series-panel .ts-y-axis{height:290px;position:relative;min-width:0}
+#time-series-panel .ts-y-tick{position:absolute;right:0;transform:translateY(-50%);color:#a6c8b5;font-size:12px;line-height:1.3;font-variant-numeric:tabular-nums;white-space:nowrap}
+#time-series-panel .ts-plot{position:relative;height:290px;min-width:0;border:1px solid #315945;border-radius:9px;background:linear-gradient(180deg,#102c25,#0a211c);box-sizing:border-box}
+#time-series-panel .ts-chart-svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:hidden}
+#time-series-panel .ts-gridline{stroke:#3c6652;stroke-dasharray:5 8;stroke-width:1;opacity:.72}
+#time-series-panel .ts-zero-line{stroke:#91b99e;stroke-dasharray:3 6;stroke-width:1.3;opacity:.8}
+#time-series-panel .ts-chart-line{stroke:#75e2ae;stroke-width:2.8;stroke-linejoin:round;stroke-linecap:round}
+#time-series-panel .ts-point{position:absolute;width:12px;height:12px;border-radius:50%;background:#9ff6c5;border:2px solid #0b251d;box-shadow:0 0 0 1px #9ff6c5;transform:translate(-50%,-50%);box-sizing:border-box;cursor:help;z-index:1}
+#time-series-panel .ts-point:focus-visible{outline:3px solid #e5f4e9;outline-offset:4px}
+#time-series-panel .ts-point:hover,#time-series-panel .ts-point:focus{background:#fff;box-shadow:0 0 0 4px #468667}
+#time-series-panel .ts-x-axis{display:flex;justify-content:space-between;gap:10px;margin:12px 4px 0 84px;color:#a7c5b3;font-size:12px;font-variant-numeric:tabular-nums}
+#time-series-panel .ts-chart-footer{margin:14px 0 0 84px;color:#8ebba4;font-size:11px;line-height:1.65}
+#time-series-panel #time-series-details{border-top:1px solid var(--border);padding-top:14px;margin-top:15px}
+#time-series-panel .time-series-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
+#time-series-panel .time-series-summary span{padding:12px;border:1px solid #2b5140;border-radius:9px;background:#122b23;color:#a9cabb;font-size:12px;min-width:0;overflow-wrap:anywhere;line-height:1.6}
+#time-series-panel .time-series-summary b{font-weight:700;color:#9bf1bf}
+#time-series-panel #time-series-details .muted{font-size:11px;line-height:1.75;margin:0}
+@media(max-width:700px){
+ #time-series-panel .time-series-toolbar{align-items:stretch;flex-direction:column;gap:10px}
+ #time-series-panel .time-series-toolbar>div{flex:auto}
+ #time-series-panel .time-series-select{flex:auto;width:100%;max-width:none;min-width:0}
+ #time-series-panel .ts-chart{padding:14px 11px 13px}
+ #time-series-panel .ts-chart-layout{grid-template-columns:53px minmax(0,1fr);gap:6px}
+ #time-series-panel .ts-chart-axis-caption{margin-left:59px}
+ #time-series-panel .ts-plot,#time-series-panel .ts-y-axis{height:220px}
+ #time-series-panel .ts-y-tick{font-size:10px}
+ #time-series-panel .ts-x-axis{margin-left:59px;font-size:10px}
+ #time-series-panel .ts-chart-footer{margin-left:59px}
+ #time-series-panel .time-series-summary{grid-template-columns:1fr;gap:7px}
+ #time-series-panel .time-series-summary span{padding:10px 12px}
 }
