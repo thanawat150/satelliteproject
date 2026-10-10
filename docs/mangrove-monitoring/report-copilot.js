@@ -350,6 +350,7 @@ function reportChoices(){
  '<label class="rpt-prompt-title" for="rpt-text">คำอธิบายรายงานที่ต้องการ</label><textarea id="rpt-text" rows="4" maxlength="1200" placeholder="เช่น ขอรายงานแปลง 13-STC ย้อนหลัง 6 เดือน เน้น MNDWI NDVI และฝน เปรียบเทียบก่อนหลัง แบบภาพใหญ่ ไม่เอาตารางเยอะ">'+esc(ui.text)+'</textarea>'+
  '<div class="rpt-samples"><button type="button" data-rpt-sample="water">น้ำท่วม</button><button type="button" data-rpt-sample="forest">สภาพป่า</button><button type="button" data-rpt-sample="executive">ผู้บริหาร</button><button type="button" data-rpt-sample="audit">Audit</button></div>'+
  '<div class="rpt-buttons"><button type="button" class="btn primary" id="rpt-analyze">✦ วิเคราะห์คำสั่ง</button><small>โหมดปัจจุบันวิเคราะห์ข้อความด้วยกฎบนเว็บ ไม่ส่งข้อความไป API ภายนอก</small></div>'+
+ '<div class="rpt-scope-switch" role="group" aria-label="เลือกขอบเขตสำหรับรายงาน"><button type="button" data-rpt-scope-switch="plot">รายแปลง</button><button type="button" data-rpt-scope-switch="province">รายจังหวัด</button><button type="button" data-rpt-scope-switch="all">ทุกแปลง / ทั้งประเทศ</button></div>'+ 
  '<div id="rpt-blueprint" class="rpt-blueprint"></div>'+
  '<div class="rpt-input-grid">'+
  '<label>ประเภทรายงาน<select id="rpt-type">'+options(Object.entries(TYPE),ui.type)+'</select></label>'+
@@ -357,7 +358,8 @@ function reportChoices(){
  '<label>เลือกแปลง<select id="rpt-plot">'+options(plotList().map(p=>[p.code,p.code+' · '+p.province]),ui.plot)+'</select></label>'+
  '<label>จังหวัด<select id="rpt-province">'+options(provinceList().map(x=>[x,x]),ui.province)+'</select></label>'+
  '<label>ช่วงเวลา<select id="rpt-period">'+options([['30','30 วัน'],['90','90 วัน'],['180','6 เดือน'],['365','1 ปี'],['730','2 ปี'],['1825','5 ปี'],['3650','10 ปี'],['all','ทั้งหมดที่มี']],ui.period)+'</select></label>'+
- '<label>รูปแบบ<select id="rpt-density">'+options([['brief','Visual / กระชับ'],['standard','Balanced / มาตรฐาน'],['technical','Technical / เชิงลึก']],ui.density)+'</select></label></div>'+
+ '<label>รูปแบบ<select id="rpt-density">'+options([['brief','Visual / กระชับ'],['standard','Balanced / มาตรฐาน'],['technical','Technical / เชิงลึก']],ui.density)+'</select></label>'+ 
+ '<label>จำนวนวันภาพต่อแปลง<select id="rpt-image-dates">'+options([['1','วันภาพล่าสุด 1 วัน'],['2','2 วันภาพล่าสุด'],['3','3 วันภาพล่าสุด'],['4','4 วันภาพล่าสุด']],ui.imageDates)+'</select></label></div>'+
  '<div class="rpt-checkbox-grid"><fieldset><legend>เลือกหน้ารายงาน</legend>'+Object.entries(MODULES).map(([k,v])=>'<label><input type="checkbox" data-rpt-module="'+k+'"'+(ui.modules.has(k)?' checked':'')+'> '+esc(v)+'</label>').join('')+'</fieldset>'+
  '<fieldset><legend>ดัชนีที่ต้องการ</legend>'+Object.entries(METRICS).map(([k,v])=>'<label><input type="checkbox" data-rpt-metric="'+k+'"'+(ui.metrics.has(k)?' checked':'')+'> '+esc(v)+'</label>').join('')+'</fieldset></div>'+
  '<div class="rpt-buttons"><button type="button" class="btn primary" id="rpt-preview-button">สร้างตัวอย่างรายงาน</button><button type="button" class="btn" id="rpt-print">พิมพ์ / บันทึก PDF (A4)</button><button type="button" class="btn" id="rpt-blueprint-export">ส่งออก Blueprint JSON</button></div>'+
@@ -366,20 +368,21 @@ function reportChoices(){
  syncForm();updatePreview();
  container.oninput=e=>{if(e.target.id==='rpt-text')ui.text=e.target.value;};
  container.onchange=e=>{
-  const id=e.target.id,fields={'rpt-type':'type','rpt-scope':'scope','rpt-plot':'plot','rpt-province':'province','rpt-period':'period','rpt-density':'density'};
-  if(fields[id]){ui[fields[id]]=e.target.value;if(id==='rpt-type')ui.modules=new Set(DEFAULT[ui.type]);}
+  const id=e.target.id,fields={'rpt-type':'type','rpt-scope':'scope','rpt-plot':'plot','rpt-province':'province','rpt-period':'period','rpt-density':'density','rpt-image-dates':'imageDates'};
+  if(fields[id]){ui[fields[id]]=e.target.value;if(id==='rpt-type')ui.modules=new Set(DEFAULT[ui.type]);if(id==='rpt-scope')ui.imageDates=ui.scope==='all'?'1':ui.scope==='province'?'2':'3';}
   if(e.target.dataset.rptModule){if(e.target.checked)ui.modules.add(e.target.dataset.rptModule);else ui.modules.delete(e.target.dataset.rptModule);}
   if(e.target.dataset.rptMetric){if(e.target.checked)ui.metrics.add(e.target.dataset.rptMetric);else ui.metrics.delete(e.target.dataset.rptMetric);}
-  if(id==='rpt-type')syncForm();showBlueprint();
+  if(id==='rpt-type'||id==='rpt-scope')syncForm();showBlueprint();updatePreview();
  };
  container.onclick=e=>{
   const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.rptScopeSwitch){ui.scope=b.dataset.rptScopeSwitch;ui.imageDates=ui.scope==='all'?'1':ui.scope==='province'?'2':'3';syncForm();updatePreview();return;}
   if(b.dataset.rptSample){
    const example={water:'รายงานแปลง '+ui.plot+' ย้อนหลัง 6 เดือน เน้นพื้นที่น้ำเพิ่ม MNDWI NDWI และฝน ภาพใหญ่',forest:'ดูสภาพป่าชายเลนแปลง '+ui.plot+' ย้อนหลัง 1 ปี เน้น NDVI NDRE NDMI และกราฟ',executive:'ทำรายงานจังหวัดระยองสำหรับผู้บริหาร ย้อนหลัง 3 เดือน เน้นภาพ ไม่เอาตารางเยอะ',audit:'ทำรายงานตรวจสอบ QA/QC และหลักฐานแปลง '+ui.plot+' ย้อนหลัง 1 ปี รายละเอียดทางเทคนิค'};
    ui.text=example[b.dataset.rptSample];$('rpt-text').value=ui.text;return;
   }
   if(b.id==='rpt-analyze'){
-   const val=interpret(ui.text);for(const field of ['type','scope','plot','province','period','density'])ui[field]=val[field];
+   const val=interpret(ui.text);for(const field of ['type','scope','plot','province','period','density','imageDates'])ui[field]=val[field];
    ui.modules=val.modules;ui.metrics=val.metrics;ui.notice=val.notice;syncForm();updatePreview();return;
   }
   if(b.id==='rpt-preview-button'){updatePreview();$('rpt-preview')?.scrollIntoView({block:'start',behavior:'smooth'});return;}
@@ -390,12 +393,13 @@ function reportChoices(){
 function showBlueprint(){
  const elem=$('rpt-blueprint');if(!elem)return;
  elem.innerHTML='<b>Report Blueprint:</b> '+esc(TYPE[ui.type])+' · '+esc(ui.scope==='plot'?ui.plot:ui.scope==='province'?ui.province:'ทุกแปลง')+' · '+esc(ui.period==='all'?'ทุกวันภาพ':ui.period+' วัน')+
- ' · A4 แนวตั้ง · '+ui.modules.size+' ส่วนประกอบ <span>'+ui.notice.map(x=>esc(x)).join(' • ')+'</span>';
+ ' · วันภาพ/แปลง '+esc(ui.imageDates)+' วัน · A4 แนวตั้ง · '+ui.modules.size+' ส่วนประกอบ <span>'+ui.notice.map(x=>esc(x)).join(' • ')+'</span>';
 }
 function syncForm(){
- for(const [id,value] of [['rpt-type',ui.type],['rpt-scope',ui.scope],['rpt-plot',ui.plot],['rpt-province',ui.province],['rpt-period',ui.period],['rpt-density',ui.density]]){
+ for(const [id,value] of [['rpt-type',ui.type],['rpt-scope',ui.scope],['rpt-plot',ui.plot],['rpt-province',ui.province],['rpt-period',ui.period],['rpt-density',ui.density],['rpt-image-dates',ui.imageDates]]){
   const el=$(id);if(el)el.value=value;
  }
+ document.querySelectorAll('[data-rpt-scope-switch]').forEach(x=>{const on=x.dataset.rptScopeSwitch===ui.scope;x.classList.toggle('active',on);x.setAttribute('aria-pressed',String(on));});
  document.querySelectorAll('[data-rpt-module]').forEach(x=>x.checked=ui.modules.has(x.dataset.rptModule));
  document.querySelectorAll('[data-rpt-metric]').forEach(x=>x.checked=ui.metrics.has(x.dataset.rptMetric));
  showBlueprint();
