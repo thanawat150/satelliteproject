@@ -70,5 +70,28 @@
       scientific_status:'SCREENING_ONLY_NOT_FLOOD_CONFIRMATION'};
   }
 
-  return Object.freeze({derive,quality,substantive,QA_MIN_PIXELS,MIN_COVERAGE_PCT});
+  function daySnapshot(scenes,selectedDate,rainScenes=[]){
+    const ordered=[...(scenes||[])].filter(x=>/^20\d{2}-\d{2}-\d{2}$/.test(x?.date||''))
+      .sort((a,b)=>a.date.localeCompare(b.date));
+    const row=ordered.find(x=>x.date===selectedDate);
+    if(!row)return null;
+    const rain=(rainScenes||[]).find(x=>x.date===selectedDate)||null;
+    const verified=row.analysis_status==='AUTO_VALID';
+    const idx=k=>verified?num(row[k]):null;
+    const rainOk=rain?.data_quality==='COMPLETE';
+    const rainNum=k=>rainOk?num(rain[k]):null;
+    return {
+      date:row.date,qa_status:row.analysis_status||'UNKNOWN',
+      qa_valid_pct:num(row.qa_valid_pct),analytical_values_approved_for_screening:verified,
+      ndwi:idx('ndwi'),mndwi:idx('mndwi'),water_rai:idx('water_rai'),
+      rainfall_prev_1_utc_day_mm:rainNum('rain_prev_1_utc_day_mm'),
+      rainfall_prev_3_utc_days_mm:rainNum('rain_prev_3_utc_days_mm'),
+      rainfall_source:rain?'NASA_POWER_PRECTOTCORR':null,
+      rainfall_quality:rain?.data_quality||'NOT_AVAILABLE',
+      tide_level_m:null,tide_status:'NOT_CONNECTED',
+      note:verified?'Date-matched legacy QA-valid scene metrics, not tidal normalization'
+        :'Non-QA image day: only visual maps, do not present quantitative indices as validated'
+    };
+  }
+  return Object.freeze({derive,quality,substantive,daySnapshot,QA_MIN_PIXELS,MIN_COVERAGE_PCT});
 });
