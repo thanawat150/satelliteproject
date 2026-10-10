@@ -733,60 +733,85 @@ function renderPages(output='full'){
 }
 
 async function markVisualChanges(root){
- const sources=[...root.querySelectorAll('.rpt-visual-pair[data-visual-scan="eligible"]')];
- for(const region of sources){
-  const photos=[...region.querySelectorAll('.rpt-visual-duo .rpt-image img')];
-  const overlay=region.querySelector('.rpt-visual-overlay'),caption=region.querySelector('.rpt-visual-result');
-  if(photos.length!==2||!overlay||!caption)continue;
+ const regions=[...root.querySelectorAll('.rpt-visual-pair[data-visual-scan="eligible"]')];
+ for(const region of regions){
+  const imgs=[...region.querySelectorAll('.rpt-visual-duo .rpt-image img')],overlay=region.querySelector('.rpt-visual-overlay'),
+    label=region.querySelector('.rpt-visual-result');
+  if(imgs.length!==2||!overlay||!label)continue;
   try{
-   await Promise.all(photos.map(img=>img.complete&&img.naturalWidth?Promise.resolve():
-    new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});setTimeout(resolve,3000);})));
-   if(photos.some(img=>!img.naturalWidth||!img.naturalHeight)){caption.textContent='ภาพต้นทางโหลดไม่ครบ จึงไม่วงพื้นที่อัตโนมัติ';continue;}
-   const count=96,size=12,read=img=>{
-    const c=root.createElement?root.createElement('canvas'):document.createElement('canvas');
-    c.width=c.height=count;
-    const g=c.getContext('2d',{willReadFrequently:true});if(!g)return null;
-    g.clearRect(0,0,count,count);g.drawImage(img,0,0,count,count);
-    return g.getImageData(0,0,count,count).data;
-   };
-   const a=read(photos[0]),b=read(photos[1]);
-   if(!a||!b){caption.textContent='เครื่องไม่รองรับการอ่านสีภาพสำหรับวงจุดสังเกต';continue;}
-   const cells=[],w=count/size,h=count/size;
-   let changedAll=0,validAll=0;
-   for(let gy=0;gy<size;gy++)for(let gx=0;gx<size;gx++){
-    let valid=0,changed=0,magnitude=0;
-    for(let y=gy*h;y<(gy+1)*h;y++)for(let x=gx*w;x<(gx+1)*w;x++){
-     const p=(y*count+x)*4,ar=a[p],ag=a[p+1],ab=a[p+2],br=b[p],bg=b[p+1],bb=b[p+2];
-     if(a[p+3]<180||b[p+3]<180)continue;
-     if((ar>246&&ag>246&&ab>246)||(br>246&&bg>246&&bb>246))continue;
-     const diff=(Math.abs(ar-br)+Math.abs(ag-bg)+Math.abs(ab-bb))/3;valid++;validAll++;
-     if(diff>45){changed++;changedAll++;magnitude+=diff;}
+   await Promise.all(imgs.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{
+    img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});setTimeout(resolve,5000);
+   })));
+   if(imgs.some(im=>!im.naturalWidth||!im.naturalHeight)){label.textContent='ภาพบางวันโหลดไม่สำเร็จ จึงยังไม่ระบุตำแหน่ง';continue;}
+   const a=JSON.parse(region.dataset.beforeBounds),b=JSON.parse(region.dataset.afterBounds);
+   if(a.length!==2||b.length!==2){label.textContent='ไม่มีพิกัดภาพครบทั้งสองวัน จึงไม่วาดตำแหน่งคาดเดา';continue;}
+   const side=96,cellCount=16,span=side/cellCount;
+   function read(img){
+    const cvs=document.createElement('canvas');cvs.width=side;cvs.height=side;
+    const g=cvs.getContext('2d',{willReadFrequently:true});if(!g)return null;
+    g.drawImage(img,0,0,side,side);return g.getImageData(0,0,side,side).data;
+   }
+   const first=read(imgs[0]),last=read(imgs[1]);
+   if(!first||!last){label.textContent='ไม่สามารถอ่านภาพดัชนีเพื่อเปรียบเทียบได้';continue;}
+   const n=v=>Number(v),vA=[n(a[0][0]),n(a[0][1]),n(a[1][0]),n(a[1][1])],
+     vB=[n(b[0][0]),n(b[0][1]),n(b[1][0]),n(b[1][1])];
+   if(![...vA,...vB].every(Number.isFinite)||vA[2]<=vA[0]||vB[2]<=vB[0])continue;
+   const merc=y=>Math.log(Math.tan(Math.PI/4+Math.max(-85,Math.min(85,y))*Math.PI/360));
+   const ymaxA=merc(vA[2]),yminA=merc(vA[0]),ymaxB=merc(vB[2]),yminB=merc(vB[0]);
+   const boxes=[],countValid=Array(cellCount*cellCount).fill(0),countChanged=Array(cellCount*cellCount).fill(0);
+   let validTotal=0,changedTotal=0;
+   for(let py=0;py<side;py++)for(let px=0;px<side;px++){
+    const fx=(px+.5)/side,fy=(py+.5)/side;
+    const lon=vB[1]+fx*(vB[3]-vB[1]),mY=ymaxB-fy*(ymaxB-yminB);
+    const oldX=(lon-vA[1])/(vA[3]-vA[1]),oldY=(ymaxA-mY)/(ymaxA-yminA);
+    if(oldX<0||oldX>=1||oldY<0||oldY>=1)continue;
+    const ix=Math.floor(oldX*side),iy=Math.floor(oldY*side);
+    const p=(iy*side+ix)*4,q=(py*side+px)*4;
+    if(first[p+3]<175||last[q+3]<175)continue;
+    const oldC=[first[p],first[p+1],first[p+2]],newC=[last[q],last[q+1],last[q+2]];
+    if(oldC.every(v=>v>245)||newC.every(v=>v>245))continue;
+    const delta=(Math.abs(oldC[0]-newC[0])+Math.abs(oldC[1]-newC[1])+Math.abs(oldC[2]-newC[2]))/3;
+    const k=Math.floor(py/span)*cellCount+Math.floor(px/span);
+    countValid[k]++;validTotal++;
+    if(delta>43){countChanged[k]++;changedTotal++;}
+   }
+   if(validTotal<side*side*.22){label.textContent='พิกเซลที่เทียบตำแหน่งได้มีน้อยหรือถูกข้อมูลขาดบัง ไม่วาดวงอัตโนมัติ';continue;}
+   const diffuse=changedTotal/validTotal;
+   if(diffuse>.92){label.textContent='สีภาพเปลี่ยนเกือบทั้งหมด อาจเป็นการเรนเดอร์หรือเมฆ จึงไม่วงพื้นที่มั่ว ๆ';continue;}
+   const active=Array(cellCount*cellCount).fill(false);
+   for(let k=0;k<active.length;k++)active[k]=countValid[k]>=10&&countChanged[k]/countValid[k]>.35;
+   const seen=new Set(),clusters=[];
+   for(let k=0;k<active.length;k++){
+    if(!active[k]||seen.has(k))continue;
+    const queue=[k],members=[];seen.add(k);
+    while(queue.length){
+     const id=queue.pop(),x=id%cellCount,y=Math.floor(id/cellCount);members.push({x,y});
+     for(let yy=Math.max(0,y-1);yy<=Math.min(cellCount-1,y+1);yy++)
+      for(let xx=Math.max(0,x-1);xx<=Math.min(cellCount-1,x+1);xx++){
+       const nb=yy*cellCount+xx;if(active[nb]&&!seen.has(nb)){seen.add(nb);queue.push(nb);}
+      }
     }
-    const ratio=valid?changed/valid:0;
-    if(valid>=28&&ratio>=.26)cells.push({gx,gy,ratio,score:ratio*(magnitude/Math.max(1,changed))});
+    if(members.length<2)continue;
+    const xs=members.map(v=>v.x),ys=members.map(v=>v.y);
+    clusters.push({area:members.length,minX:Math.min(...xs),maxX:Math.max(...xs),minY:Math.min(...ys),maxY:Math.max(...ys)});
    }
-   const area=validAll?changedAll/validAll:0;
-   if(validAll<count*count*.24){caption.textContent='พิกเซลที่อ่านเทียบได้มีน้อย อาจมีเมฆ/NoData — ไม่วงอัตโนมัติ';continue;}
-   const widespread=area>.68;
-   if(area>.93){caption.textContent='ภาพสีเปลี่ยนแทบทั้งภาพ อาจเกิดจากเมฆหรือการเรนเดอร์ — ไม่ระบุจุดเปลี่ยนแปลงโดยอัตโนมัติ';continue;}
-   if(area<.015||!cells.length){caption.textContent='ยังไม่พบความต่างของสีดัชนีที่เด่นพอจะวงอัตโนมัติ สามารถดูคู่ภาพเปรียบเทียบด้วยตาได้';continue;}
-   cells.sort((a,b)=>b.score-a.score);
-   const hits=[];
-   for(const cand of cells){
-    const cx=(cand.gx+.5)*1000/size,cy=(cand.gy+.5)*1000/size;
-    if(hits.some(p=>Math.hypot(p.cx-cx,p.cy-cy)<205))continue;
-    hits.push({cx,cy});
-    if(hits.length===3)break;
-   }
-   overlay.innerHTML=hits.map((p,i)=>'<circle cx="'+p.cx.toFixed(1)+'" cy="'+p.cy.toFixed(1)+'" r="93" fill="none" stroke="#fff" stroke-width="10" stroke-dasharray="13 9"/>'+
-    '<circle cx="'+p.cx.toFixed(1)+'" cy="'+p.cy.toFixed(1)+'" r="93" fill="none" stroke="#ef8a1b" stroke-width="7" stroke-dasharray="13 9"/>'+
-    '<circle cx="'+(p.cx+72).toFixed(1)+'" cy="'+(p.cy-72).toFixed(1)+'" r="24" fill="#ef8a1b" stroke="white" stroke-width="3"/>'+
-    '<text x="'+(p.cx+72).toFixed(1)+'" y="'+(p.cy-63).toFixed(1)+'" text-anchor="middle" fill="#fff" font-size="25" font-weight="700">'+(i+1)+'</text>').join('');
-   caption.textContent='วงจุดสังเกตเบื้องต้น '+hits.length+' จุด '+(widespread?'(สีต่างกันกว้างมาก ควรตรวจเมฆและการเรนเดอร์) ':'')+'จากความต่างของสีภาพดัชนีสองวัน (ไม่ใช่ขอบเขตน้ำท่วมหรือผลวัดพื้นที่)';
-  }catch(e){caption.textContent='ไม่สามารถประมวลผลการเปรียบเทียบสีภาพได้ จึงไม่วงจุดโดยคาดเดา';}
+   clusters.sort((x,y)=>y.area-x.area);
+   const selected=clusters.slice(0,3);
+   if(!selected.length){label.textContent='ไม่พบกลุ่มพื้นที่สีเปลี่ยนต่อเนื่องชัดเจนในภาพสองวัน';continue;}
+   overlay.innerHTML=selected.map((c,i)=>{
+    const centerX=(c.minX+c.maxX+1)*500/cellCount,centerY=(c.minY+c.maxY+1)*500/cellCount,
+      rx=Math.max(40,(c.maxX-c.minX+1)*530/cellCount),ry=Math.max(40,(c.maxY-c.minY+1)*530/cellCount),
+      labelX=Math.min(973,centerX+rx*.77),labelY=Math.max(25,centerY-ry*.8);
+    return '<ellipse cx="'+centerX.toFixed(1)+'" cy="'+centerY.toFixed(1)+'" rx="'+rx.toFixed(1)+'" ry="'+ry.toFixed(1)+'" fill="#ed9026" fill-opacity=".09" stroke="#fff" stroke-width="9" stroke-dasharray="16 10"/>'+
+     '<ellipse cx="'+centerX.toFixed(1)+'" cy="'+centerY.toFixed(1)+'" rx="'+rx.toFixed(1)+'" ry="'+ry.toFixed(1)+'" fill="none" stroke="#ea8c21" stroke-width="6" stroke-dasharray="16 10"/>'+
+     '<circle cx="'+labelX.toFixed(1)+'" cy="'+labelY.toFixed(1)+'" r="25" fill="#dc732a" stroke="#fff" stroke-width="4"/>'+
+     '<text x="'+labelX.toFixed(1)+'" y="'+(labelY+9).toFixed(1)+'" text-anchor="middle" fill="#fff" font-weight="700" font-size="28">'+(i+1)+'</text>';
+   }).join('');
+   label.textContent='วงบริเวณสีดัชนีเปลี่ยนที่ต่อเนื่อง '+selected.length+' กลุ่ม (ขนาดวงตามพื้นที่สีต่างที่พบ ไม่ใช่ขอบเขตน้ำจริง)'+
+     (diffuse>.65?' — สีเปลี่ยนเป็นบริเวณกว้าง ควรตรวจเมฆ/การเรนเดอร์':'');
+  }catch(e){label.textContent='อ่านตำแหน่งสีดัชนีไม่ได้ จึงแสดงภาพเพื่อพิจารณาด้วยตาโดยไม่วงคาดเดา';}
  }
 }
-
 function fitImageBoundaries(doc){
  const frames=[...doc.querySelectorAll('.rpt-image-canvas')];
  for(const frame of frames){
