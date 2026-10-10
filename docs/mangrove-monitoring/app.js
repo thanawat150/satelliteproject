@@ -112,6 +112,12 @@ function missingQaRecords(){
  const available=previewCoverage();if(!available)return [];
  return (cache.data.scenes||[]).filter(x=>qaOk(x)&&!available.has(x.plot+'|'+x.date)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 }
+function missingVisualRecords(){
+ const available=previewCoverage();
+ if(!available)return [];
+ return (cache.data?.scenes||[]).filter(x=>!qaOk(x)&&!available.has(x.plot+'|'+x.date))
+  .sort((x,y)=>(y.date||'').localeCompare(x.date||''));
+}
 function twinQuality(code){
  const images=(cache.imagery?.generated_items||[]).filter(x=>x.plot===code);
  const scenes=plotScenes(code),valid=scenes.filter(qaOk),latest=valid.at(-1);
@@ -173,12 +179,12 @@ function insightsPage(){
 }
 function integrityTable(){
  if(!cache.imagery)return message('ยังอ่าน Raster Manifest ไม่สำเร็จ ไม่สามารถยืนยันจำนวน Preview ที่ขาด');
- const gaps=missingQaRecords(),valid=(cache.data.scenes||[]).filter(qaOk);
+ const gaps=missingQaRecords(),valid=(cache.data.scenes||[]).filter(qaOk),nonQa=(cache.data.scenes||[]).filter(x=>!qaOk(x)),unavailable=missingVisualRecords(),visual=(cache.imagery?.generated_items||[]).filter(x=>x.preview_kind==='VISUAL_ONLY_NON_QA');
  return '<div class="panel"><div class="panel-header"><div><h2>QA / Raster Preview Integrity</h2><p class="muted">ตรวจความครบถ้วนรายคู่รหัสแปลง-วันภาพ (ไม่ใช่การตรวจ Scene ID)</p></div>'+btn('Export Gap CSV','exportgaps','','primary')+'</div>'+
- '<div class="grid half">'+kpi('วันภาพผ่าน QA',valid.length,'ในข้อมูล PDD')+kpi('QA ผ่านแต่ไม่มี Preview',gaps.length,'ต้องสร้างภาพจาก GeoTIFF จริง')+'</div>'+
+ '<div class="grid half">'+kpi('วันภาพผ่าน QA',valid.length,'ในข้อมูล PDD')+kpi('QA ผ่านแต่ไม่มี Preview',gaps.length,'ต้องสร้างภาพจาก GeoTIFF จริง')+kpi('ภาพไม่ผ่าน QA',nonQa.length,'แสดงได้เฉพาะ RGB จากต้นฉบับ')+kpi('RGB ไม่ผ่าน QA ที่สร้างเพิ่ม',visual.length,'สีจริง/สีเท็จ รวมเมฆจริง ไม่สร้างดัชนี')+kpi('ภาพไม่ผ่าน QA ที่ยังไม่มี Preview',unavailable.length,'ดูรายการด้านล่างและไฟล์ TIFF ต้นฉบับ')+'</div>'+
  '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันภาพ</th><th>QA</th><th>10m TIFF</th></tr></thead><tbody>'+
  gaps.slice(0,100).map(x=>'<tr><td>'+btn(x.plot,'plot',x.plot,'mini')+'</td><td>'+html(x.date)+'</td><td>'+fmt(x.qa_valid_pct,0)+'%</td><td>'+assetLink(x.original_tif10,x.original_tif10_file_id)+'</td></tr>').join('')+
- '</tbody></table></div><p class="muted">แสดง '+Math.min(gaps.length,100)+' จาก '+gaps.length+' รายการ ดาวน์โหลด CSV เพื่อดูทั้งหมด</p></div>';
+ '</tbody></table></div><p class="muted">แสดง '+Math.min(gaps.length,100)+' จาก '+gaps.length+' รายการ ดาวน์โหลด CSV เพื่อดูทั้งหมด</p>'+'<h3>รายการภาพสีจริงวันไม่ผ่าน QA ที่ยังขาด</h3>'+btn('Export Visual Gap CSV','exportnonqagaps','','primary')+'<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันที่</th><th>ผล QA</th><th>10m TIFF ต้นฉบับ</th></tr></thead><tbody>'+unavailable.slice(0,100).map(x=>'<tr><td>'+html(x.plot)+'</td><td>'+html(x.date)+'</td><td>'+html(x.analysis_status)+'</td><td>'+assetLink(x.original_tif10,x.original_tif10_file_id)+'</td></tr>').join('')+'</tbody></table></div><p class="muted">แสดง '+Math.min(unavailable.length,100)+' / '+unavailable.length+' วันที่ไม่มี Preview • ไม่มีการสร้างภาพแทนจากวันอื่น</p></div>';
 }
 function displayQualityIssues(){
  const rows=cache.imagery?.generated_items||[];
@@ -198,7 +204,7 @@ function displayQualityTable(){
 }
 function spectralQualityTable(){
  if(!cache.imagery)return message('ไม่พบ Raster Manifest สำหรับตรวจดัชนี');
- const rows=cache.imagery.generated_items||[];
+ const rows=(cache.imagery.generated_items||[]).filter(x=>x.preview_kind!=='VISUAL_ONLY_NON_QA');
  const audited=rows.filter(x=>x.index_renderer_version==='mmc-index-source-verified-v1');
  const flagged=rows.filter(x=>(x.index_parity_warnings||[]).length);
  return '<section class="panel" id="index-audit"><div class="panel-header"><div><h2>Index QA · ตรวจดัชนีจาก GeoTIFF ทุกแปลง</h2><p class="muted">ตรวจสูตร NDVI / NDRE / NDMI (B8A) / NDWI / MNDWI / BSI เทียบกับค่ารายงาน และ NDRE/NDMI/MNDWI ที่ฝังใน TIFF</p></div>'+
@@ -393,6 +399,7 @@ if(action==='exportvisualqa'){
  const rows=(cache.imagery?.generated_items||[]).map(x=>[x.plot,x.date,x.qa_valid_pct,x.rgb_native_width,x.rgb_native_height,x.rgb_near_white_pct,x.rgb_invalid_pct,x.rgb_unclassified_scl_pct,x.rgb_renderer_version||'legacy',x.rgb_display_warning]);
  csvDownload('mmc_raster_visual_qa.csv',['plot','date','scl_qa_pct','rgb_w','rgb_h','near_white_pct','nodata_pct','scl7_pct','renderer','display_warning'],rows);return;
  }
+ if(action==='exportnonqagaps'){csvDownload('mmc_nonqa_visual_missing.csv',['plot','date','qa_status','qa_valid_pct','original_tif10','original_tif10_file_id'],missingVisualRecords().map(x=>[x.plot,x.date,x.analysis_status,x.qa_valid_pct,x.original_tif10||'',x.original_tif10_file_id||'']));return;}
  if(action==='exportgaps'){csvDownload('mmc_qa_preview_gaps.csv',['plot','date','qa','qa_valid_pct','usable_pixels','total_pixels','original_tif10','original_tif10_file_id'],missingQaRecords().map(x=>[x.plot,x.date,x.analysis_status,x.qa_valid_pct,x.usable_pixels,x.total_pixels,x.original_tif10||'',x.original_tif10_file_id||'']));return;}
  if(action==='exportplots'){const p=filtered();csvDownload('mmc_public_plot_registry.csv',['plot_code','company','province','boundary_group','geometry_rai','monitoring_state'],p.map(x=>[x.code,x.company,x.province,x.group,x.area??'',plotStatus(x.code)]));return;}
  if(action==='exportscenes'){const p=value||state.plot;csvDownload(p+'_satellite_qa.csv',['plot','date','status','qa_valid_pct','ndvi','ndre','ndmi','mndwi','bsi','water_rai','vegetation_rai','bare_soil_rai','original_tif10','original_tif20'],plotScenes(p).map(x=>[x.plot,x.date,x.analysis_status,x.qa_valid_pct,...['ndvi','ndre','ndmi','mndwi','bsi','water_rai','vegetation_rai','bare_soil_rai'].map(k=>qaOk(x)?x[k]??'':''),x.original_tif10||'',x.original_tif20||'']));return;}
