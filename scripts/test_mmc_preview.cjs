@@ -271,6 +271,17 @@ assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('15-S
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Custom report modules still render after scope changes');
 assert.ok((await page.locator('#rpt-preview').innerText()).includes('QA'),'Report includes QA evidence rather than unsupported impact claims');
 
+const borderCount=await page.locator('#rpt-preview .rpt-image-boundary').count();
+assert.ok(borderCount>=1,'Report preview with authentic index Raster must include a real GIS boundary overlay');
+const printWindow=page.waitForEvent('popup',{timeout:15000});
+await page.locator('#rpt-print').click();
+const reportPopup=await printWindow;
+await reportPopup.waitForSelector('.rpt-paper',{timeout:15000});
+assert.ok(await reportPopup.locator('.rpt-paper').count()>=3,'PDF print opens a dedicated multi-page A4 report, not the entire dashboard');
+assert.ok((await reportPopup.locator('style').first().innerText()).includes('size:A4 portrait'),'PDF report must explicitly print A4 portrait');
+await reportPopup.close();
+
+
 await page.locator('#image-date').selectOption('2026-08-03');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-08-03'&&!!document.querySelector('#mmc-geo-map'),null,{timeout:20000});
 const reportLayer=await page.locator('#mmc-geo-map .leaflet-image-layer').count();
