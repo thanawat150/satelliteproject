@@ -148,7 +148,7 @@ function allDateGallery(items,byDate,modes){
  for(const item of [...items].reverse()){
   const layers=byDate.get(item.date)||{};
   const count=modes.filter(mode=>layers[mode]).length;
-  out+='<article class="img-history-date-card" data-history-date="'+esc(item.date)+'"><div class="img-history-meta"><div class="img-history-date"><b>'+esc(item.date)+'</b> '+statusPill(item.date)+' <span class="img-history-count">'+count+' / 8 ภาพ</span></div>'+
+  out+='<article class="img-history-date-card" data-history-date="'+esc(item.date)+'"><div class="img-history-meta"><div class="img-history-date"><b>'+esc(item.date)+'</b> '+statusPill(item.date)+' <span class="img-history-count">'+count+' / '+(item.preview_kind==='VISUAL_ONLY_NON_QA'?'2 ภาพสี (ไม่ผ่าน QA)':'8 ภาพ')+'</span></div>'+
    '<button type="button" class="img-history-select" data-image-jump="'+esc(item.date)+'">เลือกดูวันที่นี้บนแผนที่</button></div>';
   if(!count){
    out+='<div class="notice img-missing">วันที่นี้ยังไม่มี Raster Preview ('+esc(qa(item.date).label)+') ไม่สร้างภาพแทนจากแหล่งอื่น</div>';
@@ -172,6 +172,7 @@ const a=byDate.get(active.date)||{},b=byDate.get(active.before)||{};
 const sourceRows=active.rows.filter(x=>x.date===active.date);
 const srcMeta=sourceRows[0];
 const nav=items.length?'<label>วันภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label><label>ภาพดัชนี / สี<select id="image-mode">'+modeOptions(active.mode)+'</select></label><label>Opacity ภาพ<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label><label class="img-boundary-control"><input type="checkbox" id="image-boundary-toggle" '+(active.boundaryVisible?'checked':'')+'> ขอบเขตแปลง</label><a class="img-history-link" href="#img-all-dates">ดูภาพทุกวัน + ทุกดัชนี ↓</a>':'';
+const visualOnly=target?.preview_kind==='VISUAL_ONLY_NON_QA'?'<div class="notice img-missing"><b>ภาพสีจริงจาก TIFF ต้นฉบับ (ไม่ผ่าน QA):</b> ใช้ดูเมฆ น้ำ และสภาพวันถ่ายภาพเท่านั้น • ไม่มีดัชนีหรือ Change Detection ที่ใช้รับรองได้สำหรับวันนี้</div>':'';
 const validQaRows=active.rows.filter(x=>x.analysis_status==='AUTO_VALID');
 const previewDates=new Set(items.filter(x=>x.source!=='missing').map(x=>x.date));
 const missingQa=validQaRows.filter(x=>!previewDates.has(x.date));
@@ -190,7 +191,7 @@ const rgbWarning=showRgbReview?'<div class="notice img-missing img-rgb-warning">
 const rgbMeta=rgbSource?.rgb_native_width?'<div class="img-rgb-resolution">RGB Preview '+esc(rgbSource.rgb_native_width)+' × '+esc(rgbSource.rgb_native_height)+' พิกเซล (กริดต้นทาง 10 ม.) · ดัชนีจากกริด 20 ม. · เกือบขาว '+esc(String(whitePct??'ไม่ทราบ'))+'% · NoData/ไม่ผ่าน SCL '+esc(String(rgbSource.rgb_invalid_pct??'ไม่ทราบ'))+'% · รุ่น '+esc(rgbSource.rgb_renderer_version||'เดิม')+'</div>':'';
 const boundaryLegend=active.geometry?'<div class="img-boundary-legend"><i></i> เส้นแดง = ขอบเขต '+esc(active.boundaryType==='PDD_136'?'PDD':active.boundaryType==='MOC3'?'MOC 3 (ยังไม่ยืนยัน)':active.boundaryType||'จากฐาน GIS')+' ที่ระบบมีอยู่ (ไม่ใช่การรับรองสิทธิ์)</div>':'<div class="notice img-missing">แปลงนี้ไม่มี Geometry ที่จับคู่ได้ จึงยังไม่สามารถวาดขอบเขตบน Raster</div>';
 const qaLegend='<div class="img-qa-explainer">การแสดงภาพ: SCL QA ระบุพิกเซลที่วิเคราะห์ได้ ไม่ใช่คะแนนความชัด • RGB ใช้การปรับสีแบบค่าการสะท้อนแสงคงที่ • ช่องลายตารางหมายถึง NoData/ไม่ผ่าน SCL ของภาพต้นฉบับ • สีขาวอาจเป็นความสว่างสูงหรือเมฆที่ต้องตรวจสอบ</div>';
-const main='<div class="img-controls">'+nav+'</div>'+boundaryLegend+qaLegend+noPreview+smallWarning+rgbWarning+rgbMeta+
+const main='<div class="img-controls">'+nav+'</div>'+boundaryLegend+qaLegend+visualOnly+noPreview+smallWarning+rgbWarning+rgbMeta+
  '<div class="img-preview-grid"><div class="img-large"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div><div class="img-frame">'+thumb(a[active.mode],active.mode,active.date,target)+'</div><div class="img-foot">ความละเอียด: '+esc(String(a[active.mode]?.resolution_m||'—'))+' m · ภาพเต็มสี่เหลี่ยม (ไม่ clip เฉพาะ Polygon)</div></div>'+
  '<div class="img-map-panel"><div class="img-title">'+(a[active.mode]?'Raster Sentinel-2 พร้อมขอบเขต PDD':'ภาพพื้นหลัง Esri พร้อมขอบเขต PDD (ยังไม่มี Raster '+esc(active.date)+')')+'</div><div class="img-geo-map" id="mmc-geo-map"></div><div class="img-foot">'+(a[active.mode]?'ขอบเขต PDD เส้นแดง · ภาพ Sentinel-2 วันที่เลือกอ้างอิง bounds ของ Raster จริง':'ภาพนี้เป็น Basemap Esri สำหรับดูตำแหน่งเท่านั้น ไม่ใช่ภาพ Sentinel-2 วันที่ '+esc(active.date))+'</div>'
 +legend(target,active.mode)
@@ -220,7 +221,7 @@ setTimeout(()=>{try{map.invalidateSize()}catch(e){}},100);
 }
 async function renderAsync(){const id=++epoch;destroyMap();clearBoundaryLayout();const hold=active.holder;if(!hold)return;hold.innerHTML='<div class="img-load">กำลังอ่าน Raster Preview และ metadata…</div>';
 try{await getIndex();const items=imageryItems();
-if(!items.some(x=>x.date===active.date)){const v=[...items].reverse().find(x=>qa(x.date).kind==='AUTO_VALID');active.date=v?.date||items.at(-1)?.date||'';}
+if(!items.some(x=>x.date===active.date)){const latest=[...items].reverse().find(x=>x.source!=='missing');const v=[...items].reverse().find(x=>qa(x.date).kind==='AUTO_VALID');active.date=latest?.date||v?.date||items.at(-1)?.date||'';}
 if(!active.beforeManual||!items.some(x=>x.date===active.before)||active.before>=active.date){
 const before=[...items].reverse().find(x=>x.date<active.date&&x.source!=='missing'&&qa(x.date).kind==='AUTO_VALID');
 active.before=before?.date||[...items].reverse().find(x=>x.date<active.date&&qa(x.date).kind==='AUTO_VALID')?.date||'';
