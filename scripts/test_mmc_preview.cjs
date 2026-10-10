@@ -63,6 +63,10 @@ assert.ok(imageStatus.qa&&imageStatus.before&&imageStatus.after,'QA and before-a
 
 // Regression for screenshot: 30-STC had a 5x7 full-color thumbnail incorrectly resampled to 20m.
 await page.locator('#plot-select').selectOption('30-STC');
+await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
+assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Latest cloudy TIFF must be clearly labeled display-only');
+assert.equal(await page.locator('[data-history-date="2026-10-07"] .img-frame img').count(),2,'Cloudy 30-STC date must have two original RGB bands');
+await page.locator('#image-date').selectOption('2026-09-30');
 await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-09-30',{timeout:20000});
 await page.waitForFunction(()=>{const im=document.querySelector('.img-large .img-frame img');return im?.complete&&im.naturalWidth===9&&im.naturalHeight===13;},{timeout:20000});
 const rgb30=await page.locator('#imagery-explorer').innerText();
@@ -106,7 +110,9 @@ assert.ok((await page.locator('[data-index-legend="ndmi"] .img-legend-ticks').in
 
 assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'24-VSD actual polygon remains georeferenced');
 await page.locator('#plot-select').selectOption('102-VSD');
-await page.waitForFunction(()=>document.querySelector('#image-date option')?.textContent?.includes('2026'),{timeout:20000});
+await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-10-07',{timeout:20000});
+await page.locator('#image-date').selectOption('2026-07-09');
+await page.waitForFunction(()=>document.querySelector('#image-date')?.value==='2026-07-09',{timeout:20000});
 await page.locator('#image-mode').selectOption('ndmi');
 await page.waitForFunction(()=>document.querySelectorAll('#imagery-explorer .img-tile img[src^="./imagery/"]').length>=6,{timeout:20000});
 const generated=await page.locator('#imagery-explorer').evaluate(el=>({images:[...el.querySelectorAll('.img-tile img')].filter(x=>x.complete&&x.naturalWidth>0).length,legend:!!el.querySelector('.img-legend-ramp'),geo:!!el.querySelector('.leaflet-image-layer')}));
@@ -159,6 +165,8 @@ assert.ok(await page.locator('.img-large .img-boundary-line').count()===1,'15-ST
 assert.ok(await page.locator('.img-compare-grid .img-boundary-line').count()>=1,'Before/After images retain per-date geographic boundary');
 await page.locator('[data-view="qa"]').click();
 assert.ok((await page.locator('#view-root').innerText()).includes('QA / Raster Preview Integrity'),'QA view must expose missing image pairs');
+assert.ok((await page.locator('#view-root').innerText()).includes('ภาพไม่ผ่าน QA'),'QA overview must count cloudy dates separately');
+assert.ok(await page.locator('[data-action="exportnonqagaps"]').count()===1,'Missing non-QA scene CSV must be downloadable');
 assert.ok((await page.locator('#view-root').innerText()).includes('Raster Visual QA'),'QA must expose portfolio-wide visual integrity inspection');
 assert.ok((await page.locator('#view-root').innerText()).includes('Index QA'),'QA view must list spectral formula and report parity checks');
 assert.ok((await page.locator('#view-root').innerText()).includes('241 / 241'),'All QA-valid dates must have source-verified spectral means');
