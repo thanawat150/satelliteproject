@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Affiliate Daily Post</title>
+<meta name="description" content="ตารางโพสต์ Affiliate รายวัน พร้อมคลิป แคปชั่น แฮชแท็ก และเวลาโพสต์">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#758096;--line:#e6eaf1;
+  --navy:#13233f;--blue:#2563eb;--orange:#ff6b35;--green:#0f9f74;
+  --shadow:0 14px 40px rgba(29,43,76,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Thai",system-ui,sans-serif}
+button,a{font:inherit}
+a{text-decoration:none;color:inherit}
+.shell{max-width:1160px;margin:auto;padding:28px 18px 64px}
+.hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}
+.kicker{font:800 11px "Plus Jakarta Sans",sans-serif;letter-spacing:1.8px;color:var(--blue);text-transform:uppercase}
+h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",sans-serif;margin:6px 0 8px}
+.hero p{margin:0;color:var(--muted);max-width:680px}
+.clock{background:#0f172a;color:#fff;border-radius:18px;padding:13px 16px;min-width:170px;box-shadow:var(--shadow)}
+.clock small{display:block;color:#a9b6ca;font-size:11px}
+.clock strong{font:800 18px "Plus Jakarta Sans",sans-serif;display:block;margin-top:2px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{border:1px solid var(--line);background:#fff;color:#5a667b;border-radius:999px;padding:9px 14px;font-weight:700;cursor:pointer}
+.tab.active{background:var(--navy);border-color:var(--navy);color:white}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.metric{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px 17px}
+.metric span{font-size:12px;color:var(--muted)}
+.metric strong{font:800 22px "Plus Jakarta Sans",sans-serif;display:block;margin-top:2px}
+.list{display:grid;gap:16px}
+.day{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.day.done{opacity:.68}
+.day-head{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;background:linear-gradient(180deg,#fff,#fbfcff)}
+.day-title{display:flex;align-items:center;gap:12px}
+.datebox{width:52px;height:52px;border-radius:15px;background:#edf3ff;color:#1d4ed8;display:grid;place-items:center;line-height:1}
+.datebox strong{font:800 20px "Plus Jakarta Sans",sans-serif}.datebox small{font-size:10px;font-weight:700}
+.product h2{font-size:18px;margin:0}.product p{font-size:12px;margin:2px 0 0;color:var(--muted)}
+.status{border:0;border-radius:999px;padding:8px 12px;background:#eff3f8;color:#60708a;font-weight:700;cursor:pointer}
+.status.done{background:#e6f7f1;color:#087b5a}
+.day-body{padding:18px 19px}
+.times{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}
+.time-pill{border-radius:12px;padding:9px 12px;font-weight:700;font-size:12px}
+.shopee{background:#fff0e9;color:#d45226}.tiktok{background:#eef2ff;color:#263ea0}
+.label{font-size:11px;font-weight:800;color:#66728a;letter-spacing:.5px;margin:13px 0 6px}
+.copybox{background:#f8faff;border:1px solid #e7ebf3;border-radius:14px;padding:13px 14px;display:flex;gap:12px;align-items:flex-start}
+.copybox p{margin:0;flex:1;white-space:pre-wrap}
+.copy{border:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 10px;cursor:pointer;font-weight:700;color:#40516d;white-space:nowrap}
+.copy:hover{background:#eef4ff}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:10px 14px;font-weight:800;border:1px solid transparent}
+.btn-primary{background:var(--blue);color:#fff}.btn-secondary{background:#fff;border-color:var(--line);color:#40516d}
+.btn-primary:hover{background:#1d4ed8}.btn-secondary:hover{background:#f7f9fc}
+.notice{padding:14px 16px;border:1px dashed #d9dfeb;border-radius:14px;color:#69758a;font-size:12px;background:#fbfcfe;margin-top:18px}
+.empty{text-align:center;padding:52px 20px;background:#fff;border:1px solid var(--line);border-radius:22px;color:var(--muted)}
+.toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:11px 15px;border-radius:12px;box-shadow:0 16px 36px rgba(0,0,0,.18);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:none}
+@media(max-width:720px){
+  .shell{padding:20px 12px 44px}.hero{display:block}.clock{margin-top:15px;width:100%}
+  .summary{grid-template-columns:1fr 1fr}.summary .metric:last-child{grid-column:1/-1}
+  .day-head{align-items:flex-start}.copybox{display:block}.copy{margin-top:9px}
+  .actions .btn{flex:1 1 46%}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <section class="hero">
+    <div>
+      <div class="kicker">AFFILIATE DAILY QUEUE</div>
+      <h1>วันนี้ต้องโพสต์อะไร</h1>
+      <p>รวมคลิปที่ต้องใช้ แคปชั่น แฮชแท็ก และเวลาโพสต์ Shopee / TikTok ไว้หน้าเดียว — กดคัดลอกแล้วโพสต์ได้เลย</p>
+    </div>
+    <div class="clock"><small>Asia / Bangkok</small><strong id="now">—</strong></div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab active" data-range="today">วันนี้</button>
+    <button class="tab" data-range="7">7 วัน</button>
+    <button class="tab" data-range="30">30 วัน</button>
+  </div>
+
+  <section class="summary">
+    <div class="metric"><span>รายการที่แสดง</span><strong id="count">0</strong></div>
+    <div class="metric"><span>โพสต์แล้ว</span><strong id="doneCount">0</strong></div>
+    <div class="metric"><span>แพลตฟอร์ม</span><strong>Shopee + TikTok</strong></div>
+  </section>
+
+  <main class="list" id="list"></main>
+  <div class="notice">หมายเหตุ: หน้านี้เป็นระบบเตรียมโพสต์ ไม่ได้โพสต์เข้า Shopee หรือ TikTok อัตโนมัติ สถานะ “โพสต์แล้ว” จะถูกจำไว้เฉพาะในเบราว์เซอร์นี้</div>
+</div>
+<div class="toast" id="toast">คัดลอกแล้ว</div>
+
+<script>
+const START = new Date('2026-10-10T00:00:00+07:00');
+const DAYS = 60;
+const STORE_KEY = 'affiliate-daily-post-done-v1';
+
+const products = [
+  {
+    key:'sun',
+    name:'ครีมกันแดดศิริราช',
+    sub:'SIRIRAJ TINTED PHYSICAL SUNSCREEN',
+    shopee:'20:00',
+    tiktok:'21:00',
+    folder:'https://drive.google.com/drive/folders/1pYXNSp8T9zykrWwwk0mmXt66y464nsP3',
+    files:[
+      ['13igBswTDFZeNbmfXCb_hLCBuuacgAXny','Shopee_Sunscreen_NongMay_10s_Ready.mp4'],
+      ['1h37yx5AsPm961-4ZfHhRGUOazAmzrKUF','IMG_1979.MOV'],
+      ['1ufqGzGTjmO7I1rlG-NQajyzGR9XLhvwy','IMG_1984.MOV'],
+      ['1oWllfgv35Y04M4eLvnvspbqfuKffDHyI','IMG_1983.MOV'],
+      ['16VmsrO_vAbNf5N42J39vaG_t41tD-CF4','IMG_1980.MOV'],
+      ['1A_nedEAZ5U-LuVIqFqPxy3zyA_XmkjZe','IMG_1981.MOV']
+    ],
+    captions:[
+      '☀️ แดดแรงแค่ไหนก็ต้องมีตัวช่วย กันแดดศิริราชสีเนื้อ ใช้ง่ายในทุกวัน เหมาะกับคนที่กำลังมองหากันแดดสำหรับผิวบอบบาง 💙',
+      'กันแดดศิริราชสีเนื้อ Physical Sunscreen SPF 50+ PA++++ ใช้ง่ายในชีวิตประจำวัน ใครชอบกันแดดสีเนื้อลองดูตัวนี้ค่ะ',
+      'จุดที่น่าสนใจของตัวนี้คือเป็นกันแดดสีเนื้อ พร้อม SPF 50+ PA++++ และสูตรไม่มีน้ำหอม ไม่มีพาราเบน',
+      'ใครกำลังหากันแดดสำหรับใช้ทุกวัน ตัวนี้เป็น Physical Sunscreen สีเนื้อ ดูเป็นธรรมชาติและพกง่าย 30 กรัม 💙'
+    ],
+    hashtags:'#กันแดดศิริราช #กันแดดสีเนื้อ #PhysicalSunscreen #SPF50Plus #ผิวบอบบาง #ShopeeVideo #TikTokAffiliate'
+  },
+  {
+    key:'chair',
+    name:'เก้าอี้มหัศจรรย์คุณตาแสวง',
+    sub:'แท่นยืนยืดเส้น / ไม้ยืนเพื่อสุขภาพ',
+    shopee:'19:30',
+    tiktok:'20:00',
+    folder:'https://drive.google.com/drive/folders/1SX1WU3Hoy4j8fiyr5R93-7kke8PwZa0W',
+    files:[
+      ['1oU6mlMfWKFxWHDbxrld94N2SXuFVOAT_','IMG_1977.MOV'],
+      ['1mZwiowJpxeXTrbFCWASgH98TRYmTtABu','IMG_1978.MOV']
+    ],
+    captions:[
+      'นั่งทำงานนาน ๆ แล้วอยากยืดเหยียดระหว่างวัน ลองดูแท่นยืนยืดเส้นคุณตาแสวงครับ ใช้ได้ทั้งที่บ้านและออฟฟิศ',
+      'ของชิ้นไม่ใหญ่ แต่เหมาะสำหรับวางไว้ข้างโต๊ะทำงาน เวลานั่งหรือยืนนาน ๆ ก็หยิบมาใช้ยืดเหยียดได้สะดวกครับ',
+      'เก้าอี้มหัศจรรย์คุณตาแสวง หรือแท่นยืนยืดเส้น ขนาดกะทัดรัด ใช้งานง่ายและเก็บไม่กินพื้นที่',
+      'ใครนั่งหน้าคอมนานหรือยืนนาน ลองมีอุปกรณ์สำหรับยืดเหยียดไว้ใกล้ตัวแบบนี้ครับ'
+    ],
+    hashtags:'#เก้าอี้มหัศจรรย์ #คุณตาแสวง #แท่นยืนยืดเส้น #ยืดเหยียด #คนทำงาน #ShopeeVideo #TikTokAffiliate'
+  },
+  {
+    key:'run',
+    name:'ลู่วิ่ง D5-Pro',
+    sub:'เดินออกกำลังกายที่บ้าน',
+    shopee:'20:00',
+    tiktok:'19:00',
+    folder:'https://drive.google.com/drive/folders/1s70Qd1D0UUTvU_BsXp3GutJuN-bErKzR',
+    files:[
+      ['1Uv7S6O9-F-tad8DgWfMtq62jp2Ay4D1u','IMG_1976.MOV'],
+      ['1HURxxYRalnPXH7eTZAMAnZfbtnhJtr7_','IMG_1971.MOV'],
+      ['17m6tals5a5yrR_3p-q1pcJJRGavIkic1','IMG_1973.MOV'],
+      ['1q2PjXPWqz66tl9Yael5uqypF0-SXeVdC','IMG_1974.MOV'],
+      ['1FbizeAKAPauLmGq_1OQ5MBhxogmJET9g','IMG_1970.MOV'],
+      ['1blBqYgQX6ostkwZkA0kv0A22Qy3sMXfw','IMG_1972.MOV']
+    ],
+    captions:[
+      'ลู่วิ่ง D5-Pro ปรับความเร็วจากรีโมตได้ระหว่างเดิน ใช้งานสะดวก เหมาะกับคนที่อยากเดินออกกำลังกายที่บ้าน 🏃',
+      'อยากเดินอยู่บ้านแบบไม่ยุ่งยาก ตัวนี้ควบคุมได้ทั้งรีโมตและแอป ใช้งานง่ายและปรับตามจังหวะการเดินได้',
+      'ลองให้ดูตรง ๆ ว่าตอนกำลังเดิน D5-Pro ปรับการทำงานยังไง ใครกำลังหาลู่วิ่งใช้บ้านลองดูรุ่นนี้ครับ',
+      'วันที่ไม่อยากออกไปเดินข้างนอก เปิดลู่วิ่งแล้วเดินในบ้านได้เลย ดูซีรีส์ไปเดินไปก็สะดวกครับ'
+    ],
+    hashtags:'#ลู่วิ่งD5Pro #ลู่วิ่งไฟฟ้า #เดินออกกำลังกาย #ออกกำลังกายที่บ้าน #HomeWorkout #ShopeeVideo #TikTokAffiliate'
+  }
+];
+
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function iso(d){ return d.toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'}); }
+function todayISO(){ return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok'}).format(new Date()); }
+function fmtDate(d){
+  return new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',weekday:'long',day:'numeric',month:'short',year:'numeric'}).format(d);
+}
+function makeSchedule(){
+  const counts={sun:0,chair:0,run:0};
+  return Array.from({length:DAYS},(_,i)=>{
+    const p=products[i%products.length];
+    const n=counts[p.key]++;
+    const file=p.files[n%p.files.length];
+    return {
+      id:'d'+i,date:addDays(START,i),product:p,file,
+      caption:p.captions[n%p.captions.length]
+    };
+  });
+}
+const schedule=makeSchedule();
+let range='today';
+let done=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(window.__toast); window.__toast=setTimeout(()=>t.classList.remove('show'),1800);
+}
+async function copyText(text,msg){
+  try{await navigator.clipboard.writeText(text);toast(msg||'คัดลอกแล้ว');}
+  catch{toast('คัดลอกไม่สำเร็จ');}
+}
+function visibleRows(){
+  const now=todayISO();
+  const idx=schedule.findIndex(x=>iso(x.date)>=now);
+  const start=Math.max(0,idx<0?schedule.length-1:idx);
+  if(range==='today') return schedule.filter(x=>iso(x.date)===now).slice(0,1);
+  if(range==='7') return schedule.slice(start,start+7);
+  return schedule.slice(start,start+30);
+}
+function render(){
+  const rows=visibleRows();
+  document.getElementById('count').textContent=rows.length;
+  document.getElementById('doneCount').textContent=rows.filter(x=>done[x.id]).length;
+  const el=document.getElementById('list');
+  if(!rows.length){ el.innerHTML='<div class="empty">ยังไม่มีรายการสำหรับวันนี้ กดดู 7 วันหรือ 30 วันได้ครับ</div>'; return; }
+  el.innerHTML=rows.map((x)=>{
+    const p=x.product, fileId=x.file[0], fileName=x.file[1], isDone=!!done[x.id];
+    const download='https://drive.google.com/uc?export=download&id='+encodeURIComponent(fileId);
+    const all=x.caption+'\n\n'+p.hashtags;
+    const dt=x.date;
+    const day=String(dt.getDate()).padStart(2,'0');
+    const mon=new Intl.DateTimeFormat('th-TH',{month:'short',timeZone:'Asia/Bangkok'}).format(dt).replace('.','');
+    return `
+    <article class="day ${isDone?'done':''}">
+      <header class="day-head">
+        <div class="day-title">
+          <div class="datebox"><strong>${day}</strong><small>${mon}</small></div>
+          <div class="product"><h2>${escapeHtml(p.name)}</h2><p>${escapeHtml(fmtDate(dt))} · ${escapeHtml(p.sub)}</p></div>
+        </div>
+        <button class="status ${isDone?'done':''}" data-done="${x.id}">${isDone?'✓ โพสต์แล้ว':'ทำเครื่องหมายโพสต์แล้ว'}</button>
+      </header>
+      <div class="day-body">
+        <div class="times">
+          <span class="time-pill shopee">Shopee · ${p.shopee} น.</span>
+          <span class="time-pill tiktok">TikTok · ${p.tiktok} น.</span>
+        </div>
+
+        <div class="label">แคปชั่น</div>
+        <div class="copybox"><p>${escapeHtml(x.caption)}</p><button class="copy" data-copy="${encodeURIComponent(x.caption)}">คัดลอก</button></div>
+
+        <div class="label">แฮชแท็ก</div>
+        <div class="copybox"><p>${escapeHtml(p.hashtags)}</p><button class="copy" data-copy="${encodeURIComponent(p.hashtags)}">คัดลอก</button></div>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">⬇ ดาวน์โหลดคลิป · ${escapeHtml(fileName)}</a>
+          <button class="btn btn-secondary" data-copyall="${encodeURIComponent(all)}">คัดลอกแคปชั่น + แฮชแท็ก</button>
+          <a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copyText(decodeURIComponent(b.dataset.copy),'คัดลอกแล้ว'));
+  document.querySelectorAll('[data-copyall]').forEach(b=>b.onclick=()=>copyText(decodeURIComponent(b.dataset.copyall),'คัดลอกพร้อมโพสต์แล้ว'));
+  document.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.done; done[id]=!done[id];
+    localStorage.setItem(STORE_KEY,JSON.stringify(done)); render();
+  });
+}
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); range=b.dataset.range; render();
+});
+function tick(){
+  const now=new Date();
+  document.getElementById('now').textContent=new Intl.DateTimeFormat('th-TH',{
+    timeZone:'Asia/Bangkok',weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false
+  }).format(now)+' น.';
+}
+tick(); setInterval(tick,30000); render();
+</script>
+</body>
+</html>
