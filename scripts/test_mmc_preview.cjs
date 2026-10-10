@@ -292,6 +292,21 @@ assert.ok(rayong.text.includes('17-STC')&&rayong.text.includes('13-STC'),'Priori
 assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู้บริหาร'),'Executive findings appear immediately instead of page 49');
 assert.ok(rayong.text.includes('ยังไม่สรุปว่าเป็นน้ำท่วม'),'Screening uncertainty must be explicit and unambiguous');
 
+const a4Overflows=await page.evaluate(()=>{
+ const host=document.createElement('div');
+ host.style.cssText='position:absolute;left:-15000px;top:0;width:210mm;pointer-events:none';
+ host.innerHTML=window.MMCReportCopilot.renderPages().pages;
+ document.body.appendChild(host);
+ const problems=[...host.querySelectorAll('.rpt-paper')].map((paper,i)=>{
+  const foot=paper.querySelector('.rpt-pagefoot')?.getBoundingClientRect().top||Infinity;
+  const last=Math.max(...[...paper.children].filter(x=>!x.classList.contains('rpt-pagefoot')).map(x=>x.getBoundingClientRect().bottom));
+  return {page:i+1,overflow:Math.round(last-foot)};
+ }).filter(x=>x.overflow>0);
+ host.remove();return problems;
+});
+assert.deepEqual(a4Overflows,[],'Rayong executive report sections must fit above A4 page footer: '+JSON.stringify(a4Overflows));
+
+
 assert.equal(await page.locator('#rpt-appendix').isChecked(),false,'Large image appendix must default OFF');
 await page.locator('#rpt-appendix').check();
 const withAppendix=await page.evaluate(()=>{const r=window.MMCReportCopilot.renderPages();return {pages:r.total,images:r.imageCount,hasAppendix:r.pages.includes('ภาคผนวก Raster Evidence')}}); 
