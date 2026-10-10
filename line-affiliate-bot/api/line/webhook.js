@@ -79,10 +79,13 @@ function menuText() {
     'ตาราง — ดูกำหนดการ 7 วันในแชต',
     'ส่ง — ส่งลิงก์คลิป + Platform + Caption',
     'สถานะ — ดู Checklist วันนี้',
-    'TikTok Affiliate ลงแล้ว — ติ๊กงาน Affiliate',
-    'TikTok Content ลงแล้ว — ติ๊กงาน Content',
-    'Shopee ลงแล้ว — ติ๊ก Shopee Video',
-    'ครบแล้ว — ติ๊กครบทั้ง 3 งาน',
+    'TikTok ขาย ลงแล้ว',
+    'TikTok คลิป ลงแล้ว',
+    'Shopee ลงแล้ว',
+    'Instagram ลงแล้ว',
+    'Facebook ลงแล้ว',
+    'YouTube ลงแล้ว',
+    'ครบแล้ว — ติ๊กครบทุกงาน',
     'รีเซ็ตวันนี้ — ล้าง Checklist วันนี้',
     'พร้อม — เปิดโฟลเดอร์คลิปพร้อม',
     'เมนู — ดูคำสั่งทั้งหมด'
@@ -163,6 +166,9 @@ export async function POST(request) {
           s.tiktok_affiliate = true;
           s.tiktok_content = true;
           s.shopee_video = true;
+          s.instagram = true;
+          s.facebook = true;
+          s.youtube = true;
           const saved = await writeChecklist(s);
           await reply(event.replyToken, statusText(saved, '✅ อัปเดตแล้ว'));
         } catch (e) {
@@ -182,18 +188,22 @@ export async function POST(request) {
         if (target === 'tiktok_ambiguous') {
           await reply(event.replyToken, [
             'TikTok วันนี้มี 2 งาน เลือกอันไหนครับ?',
-            'พิมพ์: TikTok Affiliate ลงแล้ว\nหรือ\nTikTok Content ลงแล้ว'
+            'พิมพ์: TikTok ขาย ลงแล้ว\nหรือ\nTikTok คลิป ลงแล้ว'
           ]);
         } else if (target) {
           try {
             const s = await readChecklist();
             s[target] = doneIntent(incoming) && !undoIntent(incoming);
             const saved = await writeChecklist(s);
-            const label = target === 'tiktok_affiliate'
-              ? 'TikTok Affiliate'
-              : target === 'tiktok_content'
-                ? 'TikTok Content'
-                : 'Shopee Video';
+            const labels = {
+              tiktok_affiliate:'TikTok ขาย',
+              tiktok_content:'TikTok คลิป',
+              shopee_video:'Shopee Video',
+              instagram:'Instagram',
+              facebook:'Facebook',
+              youtube:'YouTube'
+            };
+            const label = labels[target] || target;
             await reply(event.replyToken, statusText(saved, '✅ อัปเดต ' + label + ' แล้ว'));
           } catch (e) {
             console.error('CHECKLIST_UPDATE_ERROR', e);
