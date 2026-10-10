@@ -97,6 +97,16 @@ def stage(plots,out,max_dates):
                     area_review.append({"plot":item["plot"],"date":item["date"],
                         "metric":key,"difference_rai":delta,
                         "reason":"PUBLISHED_VS_POLYGON_CLIPPED_AREA_DIFFERENCE"})
+        # Review priority depends on magnitude and plot area, not a universal
+        # declaration that the boundary clipping alone explains every change.
+        plot_areas={k:float(v.get("pdd_area_rai") or 0)
+                    for k,v in old.get("plots",{}).items()}
+        for flag in area_review:
+            area=plot_areas.get(flag["plot"],0)
+            flag["pdd_area_rai"]=round(area,4) if area else None
+            flag["pct_of_plot"]=round(100*abs(flag["difference_rai"])/area,2) if area else None
+            flag["review_category"]="AREA_METHOD_OR_PIXEL_MASK_DISCREPANCY"
+            flag["review_status"]="UNRESOLVED_REQUIRES_INDEPENDENT_GIS_CHECK"
         report["area_review_flags"]=area_review
         report["area_review_count"]=len(area_review)
         report["review_required"]=bool(area_review or report["errors"])
