@@ -986,6 +986,14 @@ function plotEvidencePlan(d){
  const pair=(mode)=>[iBefore,iAfter].map(im=>im&&have(im,mode)?picture(im,mode):'<p class="rpt-empty">ไม่มีภาพ '+esc(mode.toUpperCase())+' สำหรับวันเปรียบเทียบ</p>').join('');
  const stat=(label,value)=>'<div class="rpt-kpi"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>';
  const lastImage=(d.visualImages||[]).find(x=>x.plot===code&&have(x,'true_color'))||null;
+ // Keep spectrally legible images after the latest QA scene available for human interpretation;
+ // never treat visual-only observations as validated measurements.
+ const visualExtra=()=>{const newer=(d.visualImages||[]).some(im=>im.plot===code&&im.date>qaDate&&metrics.some(mode=>have(im,mode)));
+  if(!newer)return[];
+  return visualScreeningPages(d).filter(page=>page.key.startsWith('V / INDICES')).map(page=>({...page,
+   key:'A / VISUAL QA '+page.key,
+   body:'<p class="rpt-visual-qa"><b>Visual Only:</b> ภาพที่ใหม่กว่าคู่ QA มีแบนด์ให้ตรวจสีได้ แต่ยังไม่ผ่านเกณฑ์คำนวณพื้นที่หรือรับรองน้ำท่วม</p>'+page.body}));
+ };
  const available=latestScene?.date||'ไม่มีภาพในช่วง',qaDate=after?.date||'ไม่มีภาพ QA';
  const area=valid(p.area);
  const diff=before&&after?metrics.map(k=>({k,a:valid(before[k]),b:valid(after[k])})):metrics.map(k=>({k,a:null,b:valid(after?.[k])}));
@@ -1014,6 +1022,7 @@ function plotEvidencePlan(d){
   add('02 / DATA QA','วันที่ภาพและคุณภาพข้อมูล · '+code,
    table(source.slice(-12).reverse().map(x=>({date:x.date,qa:x.analysis_status||'ไม่ทราบ',valid:x.qa_valid_pct==null?'ไม่ทราบ':num(x.qa_valid_pct)+'%',file:x.original_tif10||'ไม่ระบุ'})),[['date','วันภาพ'],['qa','QA'],['valid','ผ่าน SCL QA'],['file','TIFF ต้นทาง']])+
    '<p class="rpt-disclaimer">สถานะ QA ไม่ใช่ความถูกต้องของการจำแนกน้ำหรือพืชพรรณ · ภาพที่แสดงได้อาจยังไม่เหมาะสำหรับการสรุปทั้งแปลง</p>');
+  out.push(...visualExtra());
   return {out,imageCount:out.reduce((n,q)=>n+(q.body.match(/<figure class="rpt-image"/g)||[]).length,0),
    audit:{release_status:'INSUFFICIENT_PAIR',plot:code,valid_dates:dates.length,common_valid_pixel_verified:false}};
  }
@@ -1063,6 +1072,7 @@ function plotEvidencePlan(d){
    '<div class="rpt-pictures rpt-photo-grid rpt-plot-six">'+indexImage.map(mode=>picture(iAfter,mode)).join('')+'</div>'+
    '<p class="rpt-disclaimer">สีในภาพเป็นช่วงค่าในการแสดงผล; ไม่ใช้สีเดียวสรุปความลึกน้ำ คุณภาพน้ำ ความสมบูรณ์หรือต้นไม้ตาย</p>');
  }
+ out.push(...visualExtra());
  const qRows=source.slice(-10).reverse().map(x=>({date:x.date,state:x.analysis_status||'ไม่ระบุ',qa:x.qa_valid_pct==null?'ไม่ทราบ':num(x.qa_valid_pct)+'%',source:x.original_tif10||'ไม่มีชื่อ TIFF'}));
  add('06 / ACTION & AUDIT','ข้อสรุป ข้อจำกัด และหลักฐาน · '+code,
   '<div class="rpt-plot-audit-summary"><b>สถานะรายงาน: Screening Only / Draft</b><p>'+esc(review)+' · '+esc(waterText)+' · ไม่ได้ยืนยันผลกระทบทางนิเวศวิทยาหรือการลงทุน</p></div>'+
