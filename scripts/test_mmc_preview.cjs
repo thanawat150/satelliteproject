@@ -528,7 +528,24 @@ await page.locator('#rpt-period').selectOption('180');
 await page.locator('#rpt-preview-button').click();
 
 const coverQA=await page.locator('#rpt-preview .rpt-paper').first().innerText();
-assert.ok(coverQA.includes('สรุปสถานการณ์พื้นที่น้ำ')&&coverQA.includes('คู่ภาพเทียบได้'),'Flood cover must lead with actual change-pair findings and coverage');
+assert.ok(coverQA.includes('ติดตามพื้นที่น้ำ')&&coverQA.includes('พิกเซลร่วม')&&coverQA.includes('ก่อน')&&coverQA.includes('QA'),'Plot flood cover must identify the paired dates, common-pixel evidence, and data quality');
+
+const plotReferenceQA=await page.evaluate(()=>{
+ const r=window.MMCReportCopilot.renderPages('main'),page=r.pages;
+ return {pages:r.total,audit:r.audit,hasTrueFalse:page.includes('TRUE_COLOR')&&page.includes('FALSE_COLOR'),
+  hasWater:page.includes('น้ำเพิ่ม/ลดสุทธิ')&&page.includes('พื้นที่น้ำคงเดิม'),
+  hasStableLandDisclaimer:page.includes('Stable Land Mask'),
+  hasWaterBalanceQA:page.includes('น้ำใหม่ − น้ำลด'),
+  hasAllSix:['NDVI','NDRE','NDMI','NDWI','MNDWI','BSI'].every(k=>page.includes(k)),
+  hasSourceDates:r.audit?.date_before&&r.audit?.date_after,
+  sourceReferenceNotCopied:!page.includes('194.91 ไร่')};
+});
+assert.ok(plotReferenceQA.pages>=6,'Plot-specific report must have a concise detailed evidence narrative: '+JSON.stringify(plotReferenceQA));
+assert.ok(plotReferenceQA.hasTrueFalse&&plotReferenceQA.hasWater&&plotReferenceQA.hasStableLandDisclaimer&&plotReferenceQA.hasAllSix,
+ 'Plot report follows source example evidence flow without fabricating stable land measurements: '+JSON.stringify(plotReferenceQA));
+assert.ok(plotReferenceQA.hasSourceDates&&plotReferenceQA.sourceReferenceNotCopied,
+ 'Plot report uses only linked live dates and never copies reference-PDF numbers');
+
 const decisionPages=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-paper')].filter(p=>p.querySelector('.rpt-visual-pair')).map(p=>{
  const evidence=p.querySelector('.rpt-visual-pair'),footer=p.querySelector('.rpt-pagefoot');
  return {last:evidence?.getBoundingClientRect().bottom,footer:footer?.getBoundingClientRect().top};
