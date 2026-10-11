@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Affiliate Daily Post</title>
+<meta name="description" content="ตารางโพสต์ Affiliate รายวัน พร้อมคลิป แคปชั่น แฮชแท็ก และเวลาโพสต์">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#758096;--line:#e6eaf1;
+  --navy:#13233f;--blue:#2563eb;--orange:#ff6b35;--green:#0f9f74;
+  --shadow:0 14px 40px rgba(29,43,76,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Thai",system-ui,sans-serif}
+button,a{font:inherit}
+a{text-decoration:none;color:inherit}
+.shell{max-width:1160px;margin:auto;padding:28px 18px 64px}
+.hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}
+.kicker{font:800 11px "Plus Jakarta Sans",sans-serif;letter-spacing:1.8px;color:var(--blue);text-transform:uppercase}
+h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",sans-serif;margin:6px 0 8px}
+.hero p{margin:0;color:var(--muted);max-width:680px}
+.clock{background:#0f172a;color:#fff;border-radius:18px;padding:13px 16px;min-width:170px;box-shadow:var(--shadow)}
+.clock small{display:block;color:#a9b6ca;font-size:11px}
+.clock strong{font:800 18px "Plus Jakarta Sans",sans-serif;display:block;margin-top:2px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{border:1px solid var(--line);background:#fff;color:#5a667b;border-radius:999px;padding:9px 14px;font-weight:700;cursor:pointer}
+.tab.active{background:var(--navy);border-color:var(--navy);color:white}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.metric{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px 17px}
+.metric span{font-size:12px;color:var(--muted)}
+.metric strong{font:800 22px "Plus Jakarta Sans",sans-serif;display:block;margin-top:2px}
+.list{display:grid;gap:16px}
+.day{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.day.done{opacity:.68}
+.day-head{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;background:linear-gradient(180deg,#fff,#fbfcff)}
+.day-title{display:flex;align-items:center;gap:12px}
+.datebox{width:52px;height:52px;border-radius:15px;background:#edf3ff;color:#1d4ed8;display:grid;place-items:center;line-height:1}
+.datebox strong{font:800 20px "Plus Jakarta Sans",sans-serif}.datebox small{font-size:10px;font-weight:700}
+.product h2{font-size:18px;margin:0}.product p{font-size:12px;margin:2px 0 0;color:var(--muted)}
+.status{border:0;border-radius:999px;padding:8px 12px;background:#eff3f8;color:#60708a;font-weight:700;cursor:pointer}
+.status.done{background:#e6f7f1;color:#087b5a}
+.day-body{padding:18px 19px}
+.times{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}
+.time-pill{border-radius:12px;padding:9px 12px;font-weight:700;font-size:12px}
+.shopee{background:#fff0e9;color:#d45226}.tiktok{background:#eef2ff;color:#263ea0}
+.label{font-size:11px;font-weight:800;color:#66728a;letter-spacing:.5px;margin:13px 0 6px}
+.copybox{background:#f8faff;border:1px solid #e7ebf3;border-radius:14px;padding:13px 14px;display:flex;gap:12px;align-items:flex-start}
+.copybox p{margin:0;flex:1;white-space:pre-wrap}
+.copy{border:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 10px;cursor:pointer;font-weight:700;color:#40516d;white-space:nowrap}
+.copy:hover{background:#eef4ff}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:10px 14px;font-weight:800;border:1px solid transparent}
+.btn-primary{background:var(--blue);color:#fff}.btn-secondary{background:#fff;border-color:var(--line);color:#40516d}
+.btn-primary:hover{background:#1d4ed8}.btn-secondary:hover{background:#f7f9fc}
+.notice{padding:14px 16px;border:1px dashed #d9dfeb;border-radius:14px;color:#69758a;font-size:12px;background:#fbfcfe;margin-top:18px}
+.empty{text-align:center;padding:52px 20px;background:#fff;border:1px solid var(--line);border-radius:22px;color:var(--muted)}
+.toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:11px 15px;border-radius:12px;box-shadow:0 16px 36px rgba(0,0,0,.18);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:none}
+@media(max-width:720px){
+  .shell{padding:20px 12px 44px}.hero{display:block}.clock{margin-top:15px;width:100%}
+  .summary{grid-template-columns:1fr 1fr}.summary .metric:last-child{grid-column:1/-1}
+  .day-head{align-items:flex-start}.copybox{display:block}.copy{margin-top:9px}
+  .actions .btn{flex:1 1 46%}
+}
+
+/* SCHEDULED_POSTS_UI_START */
+.summary{grid-template-columns:repeat(4,1fr)}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:28px 2px 13px}
+.section-head h2{margin:3px 0 0;font-size:22px}
+.affiliate-head{margin-top:34px}
+.snapshot{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:7px 10px;border-radius:999px}
+.scheduled-card{background:#fff;border:1px solid var(--line);border-radius:19px;padding:16px 17px;box-shadow:var(--shadow)}
+.scheduled-card.error{border-color:#fecaca;background:linear-gradient(180deg,#fff,#fffafa)}
+.scheduled-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.scheduled-title{font-size:16px;font-weight:800;margin:0 0 3px}
+.scheduled-meta{font-size:12px;color:var(--muted)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.chip{font-size:11px;font-weight:800;border-radius:999px;padding:6px 9px;background:#eef2f7;color:#41506a}
+.chip.platform-tiktok{background:#eef2ff;color:#243d9c}
+.chip.platform-instagram{background:#fff0f6;color:#b42364}
+.chip.platform-youtube{background:#fff0f0;color:#b42318}
+.chip.platform-facebook{background:#eef5ff;color:#175cd3}
+.chip.ok{background:#e8f7f1;color:#087b5a}
+.chip.err{background:#feecec;color:#b42318}
+.scheduled-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.scheduled-actions .btn{font-size:12px;padding:9px 12px}
+.scheduled-copy{margin-top:12px}
+@media(max-width:720px){
+  .summary{grid-template-columns:1fr 1fr}
+  .section-head{align-items:flex-start}
+  .snapshot{white-space:nowrap}
+  .scheduled-top{display:block}.chips{justify-content:flex-start;margin-top:9px}
+}
+
+.inventory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.inventory-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 17px;box-shadow:var(--shadow)}
+.inventory-card h3{margin:0;font-size:17px}
+.inventory-note{font-size:12px;color:var(--muted);margin:5px 0 12px;line-height:1.55}
+.inventory-counts{display:flex;gap:7px;flex-wrap:wrap}
+.badge-ready,.badge-review,.badge-edit,.badge-posted{font-size:11px;font-weight:800;border-radius:999px;padding:6px 9px}
+.badge-ready{background:#e7f7ef;color:#087b5a}.badge-review{background:#fff6df;color:#a15c00}.badge-edit{background:#feecec;color:#b42318}.badge-posted{background:#eef2f7;color:#5b6678}
+.status-ready{background:#e7f7ef;color:#087b5a}.status-review{background:#fff6df;color:#a15c00}.status-edit{background:#feecec;color:#b42318}
+.day.review{border-color:#f7d995}.day.edit{border-color:#fecaca}
+.taskbox{margin:12px 0 0;padding:12px 13px;border-radius:12px;background:#fff8e8;color:#7a4b00;font-size:12px;border:1px solid #f6dfaa}
+.taskbox.edit{background:#fff4f4;color:#8d1d1d;border-color:#fecaca}
+@media(max-width:720px){.inventory-grid{grid-template-columns:1fr}}
+
+.platform-checks{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.platform-btn{border:1px solid var(--line);background:#fff;color:#526078;border-radius:999px;padding:8px 11px;font-weight:800;font-size:11px;cursor:pointer}
+.platform-btn.active{background:#e7f7ef;color:#087b5a;border-color:#b7e7d5}
+.platform-btn.tiktok.active{background:#eef2ff;color:#243d9c;border-color:#cbd5ff}
+.platform-btn.shopee.active{background:#fff0e9;color:#d45226;border-color:#ffd1bf}
+.archive-note{font-size:11px;color:var(--muted);margin-top:8px}
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.platform-status{border-radius:12px;padding:10px 12px;font-size:12px;font-weight:700}
+.platform-status.tiktok{background:#eef2ff;color:#243d9c}
+.platform-status.shopee{background:#fff0e9;color:#d45226}
+@media(max-width:720px){.platform-grid{grid-template-columns:1fr}}
+
+.calendar-card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;border-bottom:1px solid var(--line)}
+.calendar-title{font-weight:800;font-size:18px}
+.calendar-nav{display:flex;gap:8px}
+.cal-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;cursor:pointer;font-weight:800;color:#526078}
+.calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.calendar-weekdays div{padding:9px 6px;text-align:center;font-size:11px;font-weight:800;color:var(--muted);border-bottom:1px solid var(--line)}
+.cal-day{min-height:112px;padding:9px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;background:#fff;transition:.15s}
+.cal-day:nth-child(7n){border-right:0}
+.cal-day.other{background:#fafbfc;color:#aab2c0}
+.cal-day.today{box-shadow:inset 0 0 0 2px var(--blue)}
+.cal-day.has-post:hover{background:#f8faff}
+.cal-num{font:800 13px "Plus Jakarta Sans",sans-serif;margin-bottom:7px}
+.cal-item{border-radius:10px;padding:7px 8px;margin-top:5px;font-size:10px;line-height:1.35;background:#f4f7fb;color:#40516d}
+.cal-item.chair{background:#eef5ff;color:#175cd3}
+.cal-item.sun{background:#fff4e8;color:#a84b12}
+.cal-name{font-weight:800;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-times{display:block;margin-top:3px;opacity:.82}
+.cal-done{display:block;margin-top:4px;font-weight:800;color:#087b5a}
+.calendar-legend{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;background:#fbfcfe;font-size:11px;color:var(--muted)}
+.legend-dot{display:inline-block;width:9px;height:9px;border-radius:999px;margin-right:5px;vertical-align:-1px}
+.legend-chair{background:#7aa7ff}.legend-sun{background:#ffb36b}
+@media(max-width:720px){
+  .cal-day{min-height:86px;padding:6px}
+  .cal-item{padding:5px 6px;font-size:9px}
+  .cal-times{display:none}
+  .calendar-toolbar{padding:12px}
+}
+/* SCHEDULED_POSTS_UI_END */
+
+.platform-sidebar{
+  position:fixed;left:18px;top:18px;bottom:18px;width:210px;
+  background:#0f172a;color:#fff;border-radius:22px;padding:16px;
+  box-shadow:0 18px 50px rgba(15,23,42,.18);z-index:40;overflow:auto
+}
+.platform-sidebar .side-kicker{font:800 10px "Plus Jakarta Sans",sans-serif;letter-spacing:1.5px;color:#93c5fd;text-transform:uppercase}
+.platform-sidebar h3{margin:5px 0 14px;font-size:18px}
+.side-group{margin-top:16px}
+.side-label{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:.6px;margin:0 0 7px}
+.side-btn{
+  width:100%;border:0;background:#17233a;color:#dbe4f0;border-radius:12px;
+  padding:10px 11px;margin:5px 0;text-align:left;cursor:pointer;font-weight:700;
+  display:flex;align-items:center;justify-content:space-between;gap:8px
+}
+.side-btn:hover,.side-btn.active{background:#243653;color:#fff}
+.side-btn .side-left{display:flex;align-items:center;gap:8px}
+.side-dot{width:8px;height:8px;border-radius:50%;background:#64748b;flex:0 0 auto}
+.side-dot.tiktok{background:#8b5cf6}.side-dot.shopee{background:#fb6a33}
+.side-dot.instagram{background:#ec4899}.side-dot.facebook{background:#3b82f6}.side-dot.youtube{background:#ef4444}
+.side-count{min-width:22px;text-align:center;background:#0b1220;border-radius:999px;padding:2px 7px;font-size:10px;color:#cbd5e1}
+.side-btn.active .side-count{background:#fff;color:#172033}
+.side-divider{height:1px;background:#26364d;margin:14px 0}
+.side-link{display:block;color:#cbd5e1;font-size:12px;padding:8px 4px;cursor:pointer}
+.side-link:hover{color:#fff}
+body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
+.metricool-filter-note{font-size:11px;color:var(--muted);margin:0 0 10px}
+@media(max-width:1050px){
+  .platform-sidebar{
+    position:sticky;top:0;left:auto;right:auto;bottom:auto;width:auto;border-radius:0;
+    margin:0;display:flex;gap:8px;align-items:center;overflow-x:auto;white-space:nowrap;padding:10px 12px
+  }
+  .platform-sidebar h3,.platform-sidebar .side-kicker,.side-label,.side-divider,.side-link{display:none}
+  .side-group{display:flex;gap:6px;margin:0}
+  .side-btn{width:auto;min-width:max-content;margin:0;padding:8px 10px}
+  body.has-sidebar .shell{margin:0 auto;max-width:1160px}
+}
+
+.content-ready-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.content-ready-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 17px;box-shadow:var(--shadow)}
+.content-ready-card h3{margin:0 0 6px;font-size:17px}
+.content-ready-meta{font-size:12px;color:var(--muted);line-height:1.55}
+.content-ready-status{display:inline-block;margin-top:10px;font-size:11px;font-weight:800;border-radius:999px;padding:6px 9px;background:#fff6df;color:#a15c00}
+@media(max-width:720px){.content-ready-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="has-sidebar">
+<aside class="platform-sidebar" id="platformSidebar">
+  <div class="side-kicker">POSTING HUB</div>
+  <h3>แพลตฟอร์มที่ต้องโพสต์</h3>
+
+  <div class="side-group">
+    <div class="side-label">AFFILIATE</div>
+    <button class="side-btn" data-side="affiliate-tiktok">
+      <span class="side-left"><i class="side-dot tiktok"></i>TikTok</span>
+      <span class="side-count" id="sideTikTok">0</span>
+    </button>
+    <button class="side-btn" data-side="affiliate-shopee">
+      <span class="side-left"><i class="side-dot shopee"></i>Shopee</span>
+      <span class="side-count" id="sideShopee">0</span>
+    </button>
+  </div>
+
+  <div class="side-divider"></div>
+
+  <div class="side-group">
+    <div class="side-label">METRICOOL</div>
+    <button class="side-btn" data-side="metricool-all">
+      <span class="side-left">ทั้งหมด</span>
+      <span class="side-count" id="sideMetricoolAll">0</span>
+    </button>
+    <button class="side-btn" data-side="instagram">
+      <span class="side-left"><i class="side-dot instagram"></i>Instagram</span>
+      <span class="side-count" id="sideInstagram">0</span>
+    </button>
+    <button class="side-btn" data-side="facebook">
+      <span class="side-left"><i class="side-dot facebook"></i>Facebook</span>
+      <span class="side-count" id="sideFacebook">0</span>
+    </button>
+    <button class="side-btn" data-side="youtube">
+      <span class="side-left"><i class="side-dot youtube"></i>YouTube</span>
+      <span class="side-count" id="sideYouTube">0</span>
+    </button>
+    <button class="side-btn" data-side="metricool-tiktok">
+      <span class="side-left"><i class="side-dot tiktok"></i>TikTok</span>
+      <span class="side-count" id="sideMetricoolTikTok">0</span>
+    </button>
+  </div>
+
+  <div class="side-divider"></div>
+  <span class="side-link" data-jump="calendarSection">📅 ปฏิทิน</span>
+  <span class="side-link" data-jump="affiliateSection">🛒 คลิปขายวันนี้</span>
+  <span class="side-link" data-jump="scheduledSection">🗓️ คลิปตั้งเวลา</span>
+</aside>
+<div class="shell">
+  <section class="hero">
+    <div>
+      <div class="kicker">AFFILIATE DAILY QUEUE</div>
+      <h1>วันนี้ต้องโพสต์อะไร</h1>
+      <p>คิว Affiliate ใช้เฉพาะคลิปในโฟลเดอร์ “พร้อม” และแสดงวันละ 1 คลิป ใช้คลิปเดียวกันลงทั้ง TikTok และ Shopee</p>
+    </div>
+    <div class="clock"><small>Asia / Bangkok</small><strong id="now">—</strong></div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab active" data-range="today">วันนี้</button>
+    <button class="tab" data-range="7">7 วัน</button>
+    <button class="tab" data-range="30">30 วัน</button>
+  </div>
+
+  <section class="summary">
+    <div class="metric"><span>Affiliate ที่แสดง</span><strong id="count">0</strong></div>
+    <div class="metric"><span>โพสต์ครบ TikTok + Shopee</span><strong id="doneCount">0</strong></div>
+    <div class="metric"><span>ตั้งเวลา Metricool</span><strong id="scheduledCount">0</strong></div>
+    <div class="metric"><span>ต้องโพสต์เอง / Error</span><strong id="errorCount">0</strong></div>
+  </section>
+
+  <section id="calendarSection">
+    <div class="section-head">
+      <div><div class="kicker">CONTENT CALENDAR</div><h2>ปฏิทินโพสต์ Affiliate</h2></div>
+      <span class="snapshot">TikTok + Shopee</span>
+    </div>
+    <div class="calendar-card">
+      <div class="calendar-toolbar">
+        <button class="cal-btn" id="calPrev">‹</button>
+        <div class="calendar-title" id="calendarTitle">—</div>
+        <div class="calendar-nav">
+          <button class="cal-btn" id="calToday">วันนี้</button>
+          <button class="cal-btn" id="calNext">›</button>
+        </div>
+      </div>
+      <div class="calendar-weekdays">
+        <div>อา.</div><div>จ.</div><div>อ.</div><div>พ.</div><div>พฤ.</div><div>ศ.</div><div>ส.</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="calendar-legend">
+        <span><i class="legend-dot legend-chair"></i>เก้าอี้คุณตาแสวง</span>
+        <span><i class="legend-dot legend-sun"></i>กันแดดศิริราช</span>
+        <span>คลิกวันที่เพื่อดูรายละเอียดโพสต์ของวันนั้น</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="contentReadySection">
+    <div class="section-head">
+      <div><div class="kicker">CONTENT READY</div><h2>คลิป Content ใหม่จาก Google Drive</h2></div>
+      <span class="snapshot">ตรวจล่าสุด · 10 ต.ค. 2569</span>
+    </div>
+    <div class="content-ready-grid">
+      <article class="content-ready-card">
+        <h3>ผมไม่ได้โหลดภาพดาวเทียมทีละรูป — ผมให้ AI ช่วยเตรียมให้พร้อมโหลด</h3>
+        <div class="content-ready-meta">Ken Monitoring — System Stories · ไฟล์: Final<br>พบใน Google Drive วันนี้ · ยังไม่ถูกตั้งเวลาใน Metricool</div>
+        <span class="content-ready-status">พร้อม · รอตั้งเวลา</span>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://drive.google.com/uc?export=download&id=186zfRVanODoos4TY3twdGC8z_SKuYG1U">ดาวน์โหลด Final</a>
+          <a class="btn btn-secondary" href="https://docs.google.com/document/d/1wh9U_eQJ32urwo-ZDrbTAPoF4fPhQ5uI8gQGbccAsMA/edit?usp=drivesdk" target="_blank" rel="noopener">เปิด Script</a>
+        </div>
+      </article>
+      <article class="content-ready-card">
+        <h3>DEMO — System Story 006</h3>
+        <div class="content-ready-meta">ไฟล์ประกอบ/เดโมในโฟลเดอร์เดียวกัน · ไม่ถูกนับเป็นคลิปพร้อมโพสต์หลัก</div>
+        <span class="content-ready-status">Asset</span>
+        <div class="actions">
+          <a class="btn btn-secondary" href="https://drive.google.com/file/d/1sjgojUNLoQQ_Y4KePKVpW3ehzaMDA9g2/view?usp=drivesdk" target="_blank" rel="noopener">เปิด DEMO</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="scheduledSection">
+    <div class="section-head">
+      <div><div class="kicker">METRICOOL SCHEDULE</div><h2>คลิปที่ตั้งเวลาไว้</h2></div>
+      <span class="snapshot">Snapshot · Live 10 ต.ค. 2569</span>
+    </div>
+    <div class="metricool-filter-note" id="metricoolFilterNote">แสดงทุกแพลตฟอร์ม</div><div class="list scheduled-list" id="scheduledList"></div>
+  </section>
+
+  <section id="inventorySection">
+    <div class="section-head">
+      <div><div class="kicker">READY SOURCE</div><h2>โฟลเดอร์ “พร้อม” คือแหล่งคลิปพร้อมโพสต์</h2></div>
+      <span class="snapshot">Ready Folder · 15 คลิป</span>
+    </div>
+    <div class="inventory-grid" id="inventoryGrid"></div>
+  </section>
+
+  <section id="affiliateSection">
+    <div class="section-head affiliate-head">
+      <div><div class="kicker">DAILY SALES PLAN</div><h2>วันละ 1 คลิป · TikTok + Shopee</h2></div>
+    </div>
+    <main class="list" id="list"></main>
+  </section>
+
+  <div class="notice">หมายเหตุ: รายการ Metricool ด้านบนเป็น Snapshot จากตารางที่ตั้งไว้ ณ วันที่ 10 ต.ค. 2569 จึงไม่ใช่ Live API บนหน้า GitHub โดยตรง หากสถานะเป็น <b>ERROR</b> ให้ดาวน์โหลดคลิปจากหน้านี้แล้วโพสต์เอง ระบบใช้เฉพาะคลิปจากโฟลเดอร์ “พร้อม” วันละ 1 คลิป และใช้คลิปเดียวกันลงทั้ง TikTok กับ Shopee; สถานะทั้งสองแพลตฟอร์มจะถูกจำแยกกันในเบราว์เซอร์นี้</div>
+</div>
+<div class="toast" id="toast">คัดลอกแล้ว</div>
+
+<script>
+const START = new Date('2026-10-10T00:00:00+07:00');
+const DAYS = 60;
+const STORE_KEY = 'affiliate-daily-post-platform-status-v2';
+
+const READY_FOLDER='https://drive.google.com/drive/folders/1kY02WlyrCcv9q13HKn2LcArrpLGGckM4';
+
+const products = [
+  {
+    key:'chair', name:'เก้าอี้มหัศจรรย์คุณตาแสวง', sub:'คลิปพร้อมจากโฟลเดอร์ พร้อม',
+    shopee:'19:30', tiktok:'20:00',
+    folder:READY_FOLDER,
+    hashtags:'#เก้าอี้มหัศจรรย์ #คุณตาแสวง #แท่นยืนยืดเส้น #ยืดเหยียด #คนทำงาน #ShopeeVideo #TikTokAffiliate'
+  },
+  {
+    key:'sun', name:'ครีมกันแดดศิริราช', sub:'คลิปพร้อมจากโฟลเดอร์ พร้อม',
+    shopee:'20:00', tiktok:'21:00',
+    folder:READY_FOLDER,
+    hashtags:'#กันแดดศิริราช #กันแดดสีเนื้อ #PhysicalSunscreen #SPF50Plus #ShopeeVideo #TikTokAffiliate'
+  }
+];
+
+const inventory = [
+  {
+    key:'chair', ready:5, review:0, edit:0, posted:0,
+    note:'พบคลิปเก้าอี้คุณตาแสวงในโฟลเดอร์ “พร้อม” 5 คลิป — ระบบจะถือว่าพร้อมโพสต์ตามการคัดของคุณ และใช้วันละ 1 คลิป'
+  },
+  {
+    key:'sun', ready:10, review:0, edit:0, posted:0,
+    note:'พบคลิปกันแดดศิริราชในโฟลเดอร์ “พร้อม” 10 คลิป — ระบบจะถือว่าพร้อมโพสต์ตามการคัดของคุณ และใช้วันละ 1 คลิป'
+  }
+];
+
+const scheduledPosts = [{"date":"2026-10-10T10:00:00","network":"instagram","status":"ERROR","detail":"You have reached your Metricool account limit.","text":"พื้นที่รอบตัวกำลังเปลี่ยนไป… แล้วเราจะมองเห็นมันได้ยังไง?\n\nภาพดาวเทียมช่วยให้เราเห็นภาพกว้าง GIS เชื่อมขอบเขตและพิกัด และเมื่อรวมโดรน ข้อมูลภาคสนาม และ AI เราก็สามารถวัด เปรียบเทียบ และติดตามการเปลี่ยนแปลงได้\n\nKen Monitoring — มองพื้นที่จริง ผ่านข้อมูล\n\n#KenMonitoring #GIS #RemoteSensing #ภาพดาวเทียม #Drone #GeoAI","media":"https://static.metricool.com/planner/202610/7218456-file-17116906687308376291.mp4","title":""},{"date":"2026-10-10T10:00:00","network":"tiktok","status":"ERROR","detail":"You have reached your Metricool account limit.","text":"พื้นที่รอบตัวกำลังเปลี่ยนไป… แล้วเราจะมองเห็นมันได้ยังไง?\n\nภาพดาวเทียม + GIS + Drone + AI ช่วยให้เราเห็น เปรียบเทียบ และติดตามการเปลี่ยนแปลงของพื้นที่ได้\n\nKen Monitoring — มองพื้นที่จริง ผ่านข้อมูล\n\n#KenMonitoring #GIS #RemoteSensing #ภาพดาวเทียม #GeoAI","media":"https://static.metricool.com/planner/202610/7218456-file-265953579177194905.mp4","title":"มองพื้นที่จริง ผ่านข้อมูล | Ken Monitoring"},{"date":"2026-10-10T10:00:00","network":"facebook","status":"ERROR","detail":"You have reached your Metricool account limit.","text":"ภาพก่อน–หลังดูต่างกัน ไม่ได้แปลว่าป่าหายทุกครั้ง 🛰️🌳\n\nเมฆ เงา ฤดูกาล และวันที่ถ่ายก็ทำให้ภาพดูต่างกันได้ เพราะงั้นก่อนสรุปว่าพื้นที่เปลี่ยนจริง ต้องดูหลายช่วงเวลาและเช็กกับข้อมูลอื่นร่วมกัน\n\nคุณคิดว่าภาพดาวเทียมภาพเดียวพอจะใช้ตัดสินไหม?\n\n#GIS #RemoteSensing #ภาพดาวเทียม #งานป่าไม้","media":"https://static.metricool.com/planner/202610/7218456-file-9576400512409829361.mp4","title":"ภาพดาวเทียมบอกได้ไหมว่าป่าหายไปตรงไหน?"},{"date":"2026-10-10T16:00:00","network":"youtube","status":"ERROR","detail":"You have reached your Metricool account limit.","text":"ภาพดาวเทียม GIS โดรน ข้อมูลภาคสนาม และ AI ช่วยให้เราเห็นและติดตามการเปลี่ยนแปลงของพื้นที่ได้อย่างไร\n\nKen Monitoring — มองพื้นที่จริง ผ่านข้อมูล\n\n#KenMonitoring #GIS #RemoteSensing #GeoAI #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-5493459475159593423.mp4","title":"Ken Monitoring | มองพื้นที่จริง ผ่านข้อมูล"},{"date":"2026-10-11T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว 👀\nคู่หูสาย GIS กำลังมา\nเจอกัน 12 ตุลาคม\n\n#GIS #RemoteSensing #ภูมิสารสนเทศ #คู่หูสายGIS","media":"https://static.metricool.com/planner/202610/7218456-file-3602539822932106380.mp4","title":""},{"date":"2026-10-11T10:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว 👀\nคู่หูสาย GIS กำลังมา\nเจอกัน 12 ตุลาคม\n\n#GIS #RemoteSensing #ภูมิสารสนเทศ","media":"https://static.metricool.com/planner/202610/7218456-file-6484419233823272374.mp4","title":"ป๋าเคนไม่ได้มาคนเดียว 👀 | Teaser คู่หูสาย GIS"},{"date":"2026-10-11T10:00:00","network":"facebook","status":"PENDING","detail":"Pending","text":"พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว 👀\n\nคู่หูสาย GIS กำลังมา\nเจอกัน 12 ตุลาคม\n\n#GIS #RemoteSensing #ภูมิสารสนเทศ #คู่หูสายGIS","media":"https://static.metricool.com/planner/202610/7218456-file-3602539822932106380.mp4","title":"พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว"},{"date":"2026-10-11T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว 👀\nคู่หูสาย GIS กำลังมา\nเจอกัน 12 ตุลาคม\n\n#GIS #RemoteSensing #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-5087273876280248186.mp4","title":"ป๋าเคนไม่ได้มาคนเดียว | Teaser คู่หูสาย GIS"},{"date":"2026-10-12T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"รู้จักคู่หูสาย GIS กันครับ 👋\nป๋าเคน × น้องสำลี\nจากนี้พวกเราจะพาไปดู GIS, Remote Sensing, ภาพดาวเทียม, โดรน และเรื่องจากงานจริงแบบเข้าใจง่าย\n\n#GIS #RemoteSensing #ภาพดาวเทียม #Drone #ภูมิสารสนเทศ","media":"https://static.metricool.com/planner/202610/7218456-file-1165320357195460166.mp4","title":""},{"date":"2026-10-12T10:00:00","network":"facebook","status":"PENDING","detail":"Pending","text":"รู้จักคู่หูสาย GIS กันครับ 👋\n\nป๋าเคน × น้องสำลี\nจากนี้พวกเราจะพาไปดู GIS, Remote Sensing, ภาพดาวเทียม, โดรน และเรื่องจากงานจริงแบบเข้าใจง่าย\n\n#GIS #RemoteSensing #ภาพดาวเทียม #Drone #ภูมิสารสนเทศ","media":"https://static.metricool.com/planner/202610/7218456-file-1165320357195460166.mp4","title":"รู้จักคู่หูสาย GIS | ป๋าเคน × น้องสำลี"},{"date":"2026-10-12T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"รู้จักคู่หูสาย GIS — ป๋าเคน × น้องสำลี\nพาไปดู GIS, Remote Sensing, ภาพดาวเทียม, โดรน และเรื่องจากงานจริงแบบเข้าใจง่าย\n\n#GIS #RemoteSensing #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-7821940178722560455.mp4","title":"รู้จักคู่หูสาย GIS | ป๋าเคน × น้องสำลี"},{"date":"2026-10-12T18:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"รู้จักคู่หูสาย GIS กันครับ 👋 ป๋าเคน × น้องสำลี จากนี้พาไปดู GIS ภาพดาวเทียม โดรน และเรื่องจากงานจริงแบบเข้าใจง่าย\n\n#GIS #RemoteSensing #ภูมิสารสนเทศ #Drone","media":"https://static.metricool.com/planner/202610/7218456-file-11327916995975880920.mp4","title":"รู้จักคู่หูสาย GIS | ป๋าเคน × น้องสำลี"},{"date":"2026-10-13T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"DTM กับ DSM ต่างกันยังไง? 🛰️\n\nDSM ยังเห็นสิ่งที่อยู่บนพื้น เช่น ต้นไม้หรืออาคาร ส่วน DTM พยายามเหลือระดับของพื้นดิน\n\nก่อนเลือกใช้ ต้องรู้ก่อนว่าเรากำลังอยากวัดอะไร\n\n#DTM #DSM #DroneMapping #Photogrammetry #GIS","media":"https://static.metricool.com/planner/202610/7218456-file-9344703691166718712.mp4","title":""},{"date":"2026-10-13T10:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"DSM กับ DTM ดูคล้ายกัน แต่ใช้ไม่เหมือนกัน\n\nDSM เห็นสิ่งที่อยู่บนพื้นด้วย ส่วน DTM พยายามเหลือเฉพาะพื้นดิน\n\n#DTM #DSM #DroneMapping #GIS","media":"https://static.metricool.com/planner/202610/7218456-file-6040909420029246546.mp4","title":"DTM vs DSM ต่างกันยังไง?"},{"date":"2026-10-13T10:00:00","network":"facebook","status":"PENDING","detail":"Pending","text":"เวลาประมวลผลภาพโดรน เรามักจะเจอคำว่า DSM กับ DTM\n\nจำง่าย ๆ ว่า DSM ยังเห็นสิ่งที่อยู่บนพื้น เช่น ต้นไม้หรืออาคาร ส่วน DTM พยายามเหลือเฉพาะระดับพื้นดิน\n\nก่อนเลือกใช้ อย่าเพิ่งถามว่าอันไหนดีกว่า ให้ถามก่อนว่าเรากำลังอยากวัดอะไร\n\n#DTM #DSM #DroneMapping #Photogrammetry #GIS","media":"https://static.metricool.com/planner/202610/7218456-file-9344703691166718712.mp4","title":"DTM กับ DSM ต่างกันยังไง?"},{"date":"2026-10-13T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"DTM กับ DSM ต่างกันยังไง และควรเลือกใช้อันไหนกับงานโดรน?\n\n#DTM #DSM #DroneMapping #Photogrammetry #GIS #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-10320493680101086643.mp4","title":"DTM กับ DSM ต่างกันยังไง? ใช้อันไหนกับงานโดรน"},{"date":"2026-10-14T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"ภาพดาวเทียมไม่ได้มีแค่สีที่ตาเราเห็น 🛰️\nหนึ่งพิกเซลเก็บค่าการสะท้อนของแสงหลายช่วงคลื่น และเราสามารถนำ Band ต่าง ๆ มาคำนวณเป็น Spectral Index เพื่อทำให้สิ่งที่สนใจเด่นขึ้นมา\n\n#GIS #RemoteSensing #SpectralIndex #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-8004861219465542746.mp4","title":""},{"date":"2026-10-14T10:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"ภาพดาวเทียมไม่ได้มีแค่สี 🛰️ หนึ่งพิกเซลซ่อนค่าการสะท้อนหลายช่วงคลื่น แล้ว Spectral Index ช่วยดึงสิ่งที่เราสนใจให้เด่นขึ้นมา\n\n#GIS #RemoteSensing #SpectralIndex #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-16641924669726956907.mp4","title":"ภาพดาวเทียมไม่ได้เห็นโลกเหมือนตาเรา"},{"date":"2026-10-14T12:00:00","network":"facebook","status":"PENDING","detail":"Pending","text":"ภาพดาวเทียมไม่ได้มีแค่สีที่ตาเราเห็น 🛰️\n\nหนึ่งพิกเซลเก็บค่าการสะท้อนของแสงหลายช่วงคลื่น และเราสามารถนำ Band ต่าง ๆ มาคำนวณเป็น Spectral Index เพื่อทำให้สิ่งที่เราสนใจเด่นขึ้นมา\n\n#GIS #RemoteSensing #SpectralIndex #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-8004861219465542746.mp4","title":"Spectral Index คืออะไร?"},{"date":"2026-10-14T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"ภาพดาวเทียมไม่ได้มีแค่สีที่ตาเราเห็น หนึ่งพิกเซลเก็บค่าการสะท้อนหลายช่วงคลื่น และ Spectral Index ช่วยทำให้สิ่งที่เราสนใจเด่นขึ้น\n\n#GIS #RemoteSensing #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-12602131967288974234.mp4","title":"Spectral Index คืออะไร? ทำไมภาพดาวเทียมไม่ได้มีแค่สี"},{"date":"2026-10-15T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"ทำไมเราชอบคิดว่าต้องพร้อมก่อนถึงจะเริ่ม?\n\nบางครั้งสิ่งที่ทำให้เราไม่เริ่ม ไม่ใช่เพราะทำไม่ได้ แต่เพราะเรารอให้ตัวเอง “พร้อม” มากเกินไป\n\nลองเริ่มจากเวอร์ชันที่ยังไม่สมบูรณ์ แล้วค่อยดีขึ้นระหว่างทาง\n\n#เริ่มก่อน #พัฒนาตัวเอง #การทำงาน #Mindset","media":"https://static.metricool.com/planner/202610/7218456-file-13662945151676636191.mp4","title":""},{"date":"2026-10-15T10:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"บางทีเราไม่ได้เริ่ม เพราะมัวแต่รอให้ตัวเองพร้อม\n\nแต่ความพร้อมหลายอย่าง มันเกิดหลังจากที่เราเริ่มไปแล้ว\n\n#เริ่มก่อน #พัฒนาตัวเอง #Mindset","media":"https://static.metricool.com/planner/202610/7218456-file-2795525056114123831.mp4","title":"ทำไมเราชอบคิดว่าต้องพร้อมก่อนถึงจะเริ่ม?"},{"date":"2026-10-15T10:00:00","network":"facebook","status":"PENDING","detail":"Pending","text":"บางครั้งสิ่งที่ทำให้เราไม่เริ่ม ไม่ใช่เพราะทำไม่ได้ แต่เพราะเรารอให้ตัวเอง “พร้อม” มากเกินไป\n\nลองเริ่มจากเวอร์ชันที่ยังไม่สมบูรณ์ แล้วค่อยดีขึ้นระหว่างทาง เพราะความพร้อมหลายอย่างเกิดขึ้นหลังจากที่เราเริ่มแล้ว\n\n#เริ่มก่อน #พัฒนาตัวเอง #การทำงาน #Mindset","media":"https://static.metricool.com/planner/202610/7218456-file-13662945151676636191.mp4","title":"ทำไมเราชอบคิดว่าต้องพร้อมก่อนถึงจะเริ่ม?"},{"date":"2026-10-15T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"ทำไมเราชอบรอให้ตัวเองพร้อมก่อนถึงจะเริ่ม? บางครั้งความพร้อมเกิดขึ้นหลังจากลงมือทำ\n\n#Mindset #การทำงาน #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-7058031648966289557.mp4","title":"ทำไมเราชอบคิดว่าต้องพร้อมก่อนถึงจะเริ่ม?"},{"date":"2026-10-16T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"พื้นที่ดูเขียวมาก ไม่ได้แปลว่าต้นไม้สุขภาพดีเสมอไป 🌿\nNDVI ใช้ Red และ Near Infrared ช่วยแยกการตอบสนองของพืช แต่ค่าที่ได้ยังต้องดูร่วมกับฤดูกาล ดิน ความชื้น เงา และชนิดพืช\n\n#NDVI #GIS #RemoteSensing #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-3166075233147141086.mp4","title":""},{"date":"2026-10-16T10:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"เขียวมาก = ต้นไม้สุขภาพดีจริงไหม? 🌿 NDVI ช่วยดูการตอบสนองของพืชจาก Red และ NIR แต่ห้ามดูตัวเลขตัวเดียวแล้วฟันธง\n\n#NDVI #GIS #RemoteSensing #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-14397444656996863852.mp4","title":"เขียวมาก = สุขภาพดี? เข้าใจ NDVI ใน 1 นาที"},{"date":"2026-10-16T10:00:00","network":"facebook","status":"PENDING","detail":"Pending","text":"พื้นที่ดูเขียวมาก ไม่ได้แปลว่าต้นไม้สุขภาพดีเสมอไป 🌿\n\nNDVI ใช้ Red และ Near Infrared ช่วยดูการตอบสนองของพืช แต่ค่าที่ได้ยังต้องดูร่วมกับฤดูกาล ดิน ความชื้น เงา และชนิดพืช\n\n#NDVI #GIS #RemoteSensing #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-3166075233147141086.mp4","title":"เขียวมาก = ต้นไม้สุขภาพดีจริงไหม?"},{"date":"2026-10-16T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"NDVI ใช้ Red และ Near Infrared เพื่อช่วยแยกการตอบสนองของพืช แต่ค่าที่สูงไม่ได้แปลว่าต้นไม้สุขภาพดีทุกครั้ง ต้องดูบริบทของพื้นที่ร่วมด้วย\n\n#NDVI #GIS #RemoteSensing #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-9037891701286496594.mp4","title":"NDVI คืออะไร? ต้นไม้เขียวไม่ได้แปลว่าสุขภาพดีเสมอไป"},{"date":"2026-10-17T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"อีก 5 ปี คนทำงานธรรมดาควรมี Skill อะไรติดตัว?\n\nโลกการทำงานเปลี่ยนเร็วขึ้นเรื่อย ๆ แต่สิ่งสำคัญอาจไม่ใช่การรู้ทุก Tool\n\nคือการเรียนรู้ของใหม่ให้เร็ว แก้ปัญหาเป็น และรู้ว่าจะใช้เทคโนโลยีช่วยงานตรงไหน\n\n#FutureSkills #AI #การทำงาน #พัฒนาตัวเอง","media":"https://static.metricool.com/planner/202610/7218456-file-957169142515310886.mp4","title":""},{"date":"2026-10-17T10:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"อีก 5 ปี Skill ไหนที่คนทำงานธรรมดาควรมีติดตัว?\n\nไม่จำเป็นต้องรู้ทุก Tool แต่ควรเรียนรู้ของใหม่ให้เร็ว และใช้เทคโนโลยีแก้ปัญหาให้เป็น\n\n#FutureSkills #AI #การทำงาน","media":"https://static.metricool.com/planner/202610/7218456-file-2998138424532372199.mp4","title":"อีก 5 ปี คนทำงานควรมี Skill อะไร?"},{"date":"2026-10-17T10:00:00","network":"facebook","status":"PENDING","detail":"Pending","text":"อีก 5 ปี คนทำงานธรรมดาควรมี Skill อะไรติดตัว?\n\nโลกการทำงานเปลี่ยนเร็วขึ้นเรื่อย ๆ แต่สิ่งสำคัญอาจไม่ใช่การรู้ทุก Tool คือการเรียนรู้ของใหม่ให้เร็ว แก้ปัญหาเป็น และรู้ว่าจะใช้เทคโนโลยีช่วยงานตรงไหน\n\n#FutureSkills #AI #การทำงาน #พัฒนาตัวเอง","media":"https://static.metricool.com/planner/202610/7218456-file-957169142515310886.mp4","title":"อีก 5 ปี คนทำงานธรรมดาควรมี Skill อะไรติดตัว?"},{"date":"2026-10-17T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"อีก 5 ปี คนทำงานควรมี Skill อะไรติดตัว? การเรียนรู้ของใหม่ การแก้ปัญหา และการใช้เทคโนโลยีให้เป็นอาจสำคัญกว่าการจำทุก Tool\n\n#FutureSkills #AI #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-367597217791703015.mp4","title":"อีก 5 ปี คนทำงานธรรมดาควรมี Skill อะไรติดตัว?"},{"date":"2026-10-19T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"ทำไมต้นไม้ในภาพดาวเทียมบางภาพถึงกลายเป็นสีแดง? 🌳🔴\nคำตอบอยู่ที่การแสดงผลแบบ False Color ซึ่งนำช่วงคลื่นที่ตามองไม่เห็นมาแทนด้วยสีที่เรามองเห็น เพื่อให้ลักษณะของพืชเด่นขึ้น\n\n#FalseColor #GIS #RemoteSensing #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-8781395873280630366.mp4","title":""},{"date":"2026-10-19T10:00:00","network":"facebook","status":"PENDING","detail":"Pending","text":"ทำไมต้นไม้ในภาพดาวเทียมบางภาพถึงกลายเป็นสีแดง? 🌳🔴\n\nคำตอบอยู่ที่การแสดงผลแบบ False Color ซึ่งนำช่วงคลื่นที่ตามองไม่เห็น เช่น Near Infrared มาแทนด้วยสีที่เรามองเห็น เพื่อให้ลักษณะของพืชเด่นขึ้น\n\n#FalseColor #GIS #RemoteSensing #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-8781395873280630366.mp4","title":"ทำไมต้นไม้ในภาพดาวเทียมถึงเป็นสีแดง?"},{"date":"2026-10-19T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"False Color ทำให้ช่วงคลื่นที่ตามองไม่เห็น เช่น Near Infrared ถูกแทนด้วยสีที่เรามองเห็น จึงทำให้พืชในภาพดาวเทียมบางชุดดูเป็นสีแดง\n\n#FalseColor #GIS #RemoteSensing #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-10036030903842501755.mp4","title":"ทำไมต้นไม้ในภาพดาวเทียมถึงเป็นสีแดง? | False Color"},{"date":"2026-10-19T18:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"เห็นต้นไม้เป็นสีแดงในภาพดาวเทียม ไม่ได้แปลว่าป่าไหม้ 🌳🔴 นี่คือ False Color ที่เอาช่วงคลื่นอย่าง NIR มาแสดงแทนด้วยสีที่ตาเราเห็น\n\n#FalseColor #GIS #RemoteSensing #ภาพดาวเทียม","media":"https://static.metricool.com/planner/202610/7218456-file-4335056834690620417.mp4","title":"ทำไมต้นไม้ในภาพดาวเทียมถึงเป็นสีแดง?"},{"date":"2026-10-21T10:00:00","network":"instagram","status":"PENDING","detail":"Pending","text":"ทำไมคนทำ GIS ป่าไม้ถึงต้องลงพื้นที่ด้วย? 🌳🗺️\n\nก่อนลงพื้นที่ เราใช้แผนที่วางเส้นทางและเลือกจุดสำรวจได้ แต่พอไปถึงจริง ถนนอาจหาย ทางอาจถูกปิด หรือพื้นที่อาจไม่เหมือนข้อมูลที่เราเปิดไว้เลย\n\nเพราะงาน GIS ป่าไม้ที่ดี ไม่ได้จบอยู่บนหน้าจอ แต่มันต้องกลับไปตรงกับโลกจริง\n\n#GIS #งานป่าไม้ #Fieldwork #RemoteSensing #ภูมิสารสนเทศ","media":"https://static.metricool.com/planner/202610/7218456-file-12116102135648342297.mp4","title":""},{"date":"2026-10-21T10:00:00","network":"tiktok","status":"PENDING","detail":"Pending","text":"ทำไมคนทำ GIS ป่าไม้ถึงต้องลงพื้นที่?\n\nเพราะสิ่งที่อยู่บนแผนที่ อาจไม่เหมือนโลกจริงเสมอไป\nข้อมูลภาคสนามช่วยให้เราแก้แผนที่ ปรับเส้นทาง และทำให้ข้อมูลครั้งต่อไปแม่นขึ้น\n\n#GIS #งานป่าไม้ #Fieldwork #ภูมิสารสนเทศ","media":"https://static.metricool.com/planner/202610/7218456-file-11387576922100880557.mp4","title":"ทำไมคนทำ GIS ต้องลงป่าด้วย?"},{"date":"2026-10-21T16:00:00","network":"youtube","status":"PENDING","detail":"Pending","text":"แผนที่ช่วยวางแผนได้ แต่ข้อมูลภาคสนามช่วยยืนยันว่าโลกจริงเป็นอย่างไร\n\nเพราะงาน GIS ป่าไม้ที่ดีไม่ได้จบอยู่บนหน้าจอ\n\n#GIS #Forestry #Fieldwork #Shorts","media":"https://static.metricool.com/planner/202610/7218456-file-15973990741966249331.mp4","title":"ทำไมคนทำ GIS ต้องลงป่าด้วย? | งาน GIS ป่าไม้จริง"}];
+
+const schedule = salesPlan.map((x,i)=>({
+  id:'sale-'+x.date,
+  date:new Date(x.date+'T00:00:00+07:00'),
+  product:products.find(p=>p.key===x.key),
+  file:x.file,
+  extra:x.extra||null,
+  caption:x.caption||'',
+  status:x.status,
+  task:x.task
+}));
+let range='today';
+let done=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+let calendarCursor=new Date('2026-10-01T00:00:00+07:00');
+let metricoolNetworkFilter='all';
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(window.__toast); window.__toast=setTimeout(()=>t.classList.remove('show'),1800);
+}
+async function copyText(text,msg){
+  try{await navigator.clipboard.writeText(text);toast(msg||'คัดลอกแล้ว');}
+  catch{toast('คัดลอกไม่สำเร็จ');}
+}
+
+
+function productShort(key){
+  return key==='chair'?'เก้าอี้คุณตาแสวง':key==='sun'?'กันแดดศิริราช':'สินค้า';
+}
+function renderCalendar(){
+  const grid=document.getElementById('calendarGrid');
+  if(!grid) return;
+  const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
+  document.getElementById('calendarTitle').textContent=new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric',timeZone:'Asia/Bangkok'}).format(calendarCursor);
+  const first=new Date(y,m,1);
+  const start=new Date(y,m,1-first.getDay());
+  const cells=[];
+  for(let i=0;i<42;i++){
+    const d=new Date(start); d.setDate(start.getDate()+i);
+    const ds=iso(d);
+    const plan=schedule.find(x=>iso(x.date)===ds);
+    const isToday=ds===todayISO();
+    const isOther=d.getMonth()!==m;
+    let item='';
+    if(plan){
+      const p=plan.product;
+      const st=done[plan.id]||{};
+      const complete=!!(st.tiktok&&st.shopee);
+      item=`<div class="cal-item ${p.key}">
+        <span class="cal-name">${escapeHtml(productShort(p.key))}</span>
+        <span class="cal-times">Shopee ${escapeHtml(p.shopee)} · TikTok ${escapeHtml(p.tiktok)}</span>
+        ${complete?'<span class="cal-done">✓ โพสต์ครบแล้ว</span>':''}
+      </div>`;
+    }
+    cells.push(`<div class="cal-day ${isOther?'other':''} ${isToday?'today':''} ${plan?'has-post':''}" data-cal-date="${ds}">
+      <div class="cal-num">${d.getDate()}</div>${item}
+    </div>`);
+  }
+  grid.innerHTML=cells.join('');
+  document.querySelectorAll('[data-cal-date]').forEach(el=>el.onclick=()=>{
+    const ds=el.dataset.calDate;
+    if(!schedule.some(x=>iso(x.date)===ds)) return;
+    range='date:'+ds;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    render();
+    document.getElementById('affiliateSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+function shiftCalendar(delta){
+  calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);
+  renderCalendar();
+}
+function renderInventory(){
+  const el=document.getElementById('inventoryGrid');
+  el.innerHTML=inventory.map(x=>{
+    const p=products.find(q=>q.key===x.key);
+    return `
+      <article class="inventory-card">
+        <h3>${escapeHtml(p.name)}</h3>
+        <div class="inventory-note">${escapeHtml(x.note)}</div>
+        <div class="inventory-counts">
+          <span class="badge-ready">พร้อมในโฟลเดอร์ ${x.ready} คลิป</span>
+        </div>
+        <div class="actions"><a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a></div>
+      </article>`;
+  }).join('');
+}
+
+function scheduledRows(){
+  const now=todayISO();
+  if(range.startsWith('date:')){
+    const ds=range.slice(5);
+    return scheduledPosts.filter(x=>x.date.slice(0,10)===ds);
+  }
+  const horizon = range==='today' ? 1 : (range==='7' ? 7 : 30);
+  const start = new Date(now+'T00:00:00+07:00');
+  const end = addDays(start,horizon);
+  return scheduledPosts.filter(x=>{
+    const d=new Date(x.date+'+07:00');
+    if(range==='today') return x.date.slice(0,10)===now;
+    return d>=start && d<end;
+  });
+}
+function splitPostText(text){
+  const i=text.indexOf('#');
+  if(i<0) return {caption:text.trim(),hashtags:''};
+  return {caption:text.slice(0,i).trim(),hashtags:text.slice(i).trim()};
+}
+function networkLabel(n){
+  return ({instagram:'Instagram',tiktok:'TikTok',youtube:'YouTube',facebook:'Facebook'})[n] || n;
+}
+
+function updateSidebarCounts(srows, arows){
+  const set=(id,n)=>{const e=document.getElementById(id);if(e)e.textContent=n;};
+  set('sideMetricoolAll',srows.length);
+  set('sideInstagram',srows.filter(x=>x.network==='instagram').length);
+  set('sideFacebook',srows.filter(x=>x.network==='facebook').length);
+  set('sideYouTube',srows.filter(x=>x.network==='youtube').length);
+  set('sideMetricoolTikTok',srows.filter(x=>x.network==='tiktok').length);
+  set('sideTikTok',arows.filter(x=>!(done[x.id]?.tiktok)).length);
+  set('sideShopee',arows.filter(x=>!(done[x.id]?.shopee)).length);
+}
+function filteredScheduledRows(rows){
+  if(metricoolNetworkFilter==='all') return rows;
+  return rows.filter(x=>x.network===metricoolNetworkFilter);
+}
+function renderScheduled(rows){
+  const allRows=rows;
+  rows=filteredScheduledRows(rows);
+  const el=document.getElementById('scheduledList');
+  const note=document.getElementById('metricoolFilterNote');
+  if(note){
+    const labels={all:'ทุกแพลตฟอร์ม',instagram:'Instagram',facebook:'Facebook',youtube:'YouTube',tiktok:'TikTok'};
+    note.textContent='กำลังแสดง: '+(labels[metricoolNetworkFilter]||'ทุกแพลตฟอร์ม')+' · '+rows.length+' รายการ';
+  }
+  document.getElementById('scheduledCount').textContent=allRows.length;
+  document.getElementById('errorCount').textContent=allRows.filter(x=>x.status==='ERROR').length;
+  if(!rows.length){
+    el.innerHTML='<div class="empty">ไม่มีคลิป Metricool ในช่วงวันที่เลือก</div>'; return;
+  }
+  el.innerHTML=rows.map((x,i)=>{
+    const t=x.date.slice(11,16);
+    const d=new Date(x.date+'+07:00');
+    const parts=splitPostText(x.text);
+    const title=x.title || parts.caption.split('\n')[0] || 'Scheduled post';
+    const isErr=x.status==='ERROR';
+    const statusText=isErr?'ต้องโพสต์เอง':'ตั้งเวลาแล้ว';
+    const all=(parts.caption+(parts.hashtags?'\n\n'+parts.hashtags:'')).trim();
+    return `
+      <article class="scheduled-card ${isErr?'error':''}">
+        <div class="scheduled-top">
+          <div>
+            <h3 class="scheduled-title">${escapeHtml(title)}</h3>
+            <div class="scheduled-meta">${escapeHtml(fmtDate(d))} · ${t} น.</div>
+          </div>
+          <div class="chips">
+            <span class="chip platform-${escapeHtml(x.network)}">${escapeHtml(networkLabel(x.network))}</span>
+            <span class="chip ${isErr?'err':'ok'}">${statusText}</span>
+          </div>
+        </div>
+        ${isErr?'<div class="notice" style="margin-top:10px;border-color:#fecaca;background:#fff5f5;color:#9b1c1c">Metricool โพสต์ไม่สำเร็จเพราะชนลิมิตแพ็กเกจ — ใช้ปุ่มด้านล่างเพื่อดาวน์โหลดแล้วโพสต์เอง</div>':''}
+        <div class="scheduled-copy">
+          <div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
+          <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>
+          <div class="scheduled-actions">
+            ${x.media?`<a class="btn btn-primary" href="${x.media}" target="_blank" rel="noopener">⬇ เปิด / ดาวน์โหลดคลิป</a>`:''}
+          </div>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+function visibleRows(){
+  const now=todayISO();
+  if(range.startsWith('date:')){
+    const ds=range.slice(5);
+    return schedule.filter(x=>iso(x.date)===ds).slice(0,1);
+  }
+  const idx=schedule.findIndex(x=>iso(x.date)>=now);
+  const start=Math.max(0,idx<0?schedule.length-1:idx);
+  if(range==='today') return schedule.filter(x=>iso(x.date)===now).slice(0,1);
+  if(range==='7') return schedule.slice(start,start+7);
+  return schedule.slice(start,start+30);
+}
+function render(){
+  renderCalendar();
+  renderInventory();
+  const srows=scheduledRows();
+  const rows=visibleRows();
+  updateSidebarCounts(srows, rows);
+  renderScheduled(srows);
+  document.getElementById('count').textContent=rows.length;
+  document.getElementById('doneCount').textContent=rows.filter(x=>done[x.id]?.tiktok && done[x.id]?.shopee).length;
+  const el=document.getElementById('list');
+  if(!rows.length){ el.innerHTML='<div class="empty">ยังไม่มีรายการสำหรับวันนี้ กดดู 7 วันหรือ 30 วันได้ครับ</div>'; return; }
+  el.innerHTML=rows.map((x)=>{
+    const p=x.product, fileId=x.file[0], fileName=x.file[1], isDone=!!(done[x.id]?.tiktok && done[x.id]?.shopee);
+    const status=x.status||'ready';
+    const statusText=status==='ready'?'พร้อมโพสต์':(status==='review'?'เช็กก่อนโพสต์':'ต้องตัดก่อน');
+    const statusClass=status==='ready'?'status-ready':(status==='review'?'status-review':'status-edit');
+    const download='https://drive.google.com/uc?export=download&id='+encodeURIComponent(fileId);
+    const all=(x.caption ? x.caption+'\n\n'+p.hashtags : p.hashtags).trim();
+    const dt=x.date;
+    const day=String(dt.getDate()).padStart(2,'0');
+    const mon=new Intl.DateTimeFormat('th-TH',{month:'short',timeZone:'Asia/Bangkok'}).format(dt).replace('.','');
+    return `
+    <article class="day ${isDone?'done':''} ${status==='review'?'review':''} ${status==='edit'?'edit':''}">
+      <header class="day-head">
+        <div class="day-title">
+          <div class="datebox"><strong>${day}</strong><small>${mon}</small></div>
+          <div class="product"><h2>${escapeHtml(p.name)}</h2><p>${escapeHtml(fmtDate(dt))} · ${escapeHtml(p.sub)}</p></div>
+        </div>
+        <div class="chips">
+          <span class="chip ${statusClass}">${statusText}</span>
+          ${status!=='edit'?`<div class="platform-checks">
+            <button class="platform-btn tiktok ${done[x.id]?.tiktok?'active':''}" data-platform="tiktok" data-id="${x.id}">${done[x.id]?.tiktok?'✓ TikTok โพสต์แล้ว':'TikTok ยังไม่โพสต์'}</button>
+            <button class="platform-btn shopee ${done[x.id]?.shopee?'active':''}" data-platform="shopee" data-id="${x.id}">${done[x.id]?.shopee?'✓ Shopee โพสต์แล้ว':'Shopee ยังไม่โพสต์'}</button>
+          </div>`:''}
+        </div>
+      </header>
+      <div class="day-body">
+        <div class="times">
+          ${status!=='edit'?`<span class="time-pill shopee">Shopee · ${p.shopee} น.</span><span class="time-pill tiktok">TikTok · ${p.tiktok} น.</span>`:'<span class="time-pill" style="background:#feecec;color:#b42318">ยังไม่กำหนดเวลาโพสต์ — ตัดให้เสร็จก่อน</span>'}
+        </div>
+        ${status!=='edit'?`<div class="platform-grid">
+          <div class="platform-status tiktok">TikTok: ${done[x.id]?.tiktok?'โพสต์แล้ว':'รอโพสต์'}</div>
+          <div class="platform-status shopee">Shopee: ${done[x.id]?.shopee?'โพสต์แล้ว':'รอโพสต์'}</div>
+        </div>`:''}
+
+        <div class="taskbox"><b>แผนวันนี้:</b> ${escapeHtml(x.task)}</div>
+
+        ${x.caption?`<div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
+        <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>`:''}
+
+        <div class="actions">
+          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">${status==='edit'?'⬇ ดาวน์โหลดวัตถุดิบจาก Google Drive':'⬇ ดาวน์โหลดจาก Google Drive'} · ${escapeHtml(fileName)}</a>
+          <a class="btn btn-secondary" href="https://drive.google.com/file/d/${encodeURIComponent(fileId)}/view" target="_blank" rel="noopener">เปิดไฟล์ใน Google Drive</a>
+          ${x.extra?`<a class="btn btn-secondary" href="https://drive.google.com/uc?export=download&id=${encodeURIComponent(x.extra[0])}" target="_blank" rel="noopener">⬇ วัตถุดิบเพิ่ม · ${escapeHtml(x.extra[1])}</a>`:''}
+          <a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copyText(decodeURIComponent(b.dataset.copy),'คัดลอกแล้ว'));
+  document.querySelectorAll('[data-copyall]').forEach(b=>b.onclick=()=>copyText(decodeURIComponent(b.dataset.copyall),'คัดลอกพร้อมโพสต์แล้ว'));
+  document.querySelectorAll('[data-platform]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.id;
+    const platform=b.dataset.platform;
+    done[id]=done[id]||{tiktok:false,shopee:false};
+    done[id][platform]=!done[id][platform];
+    localStorage.setItem(STORE_KEY,JSON.stringify(done));
+    render();
+  });
+}
+
+document.querySelectorAll('[data-side]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-side]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  const v=b.dataset.side;
+  if(v==='affiliate-tiktok' || v==='affiliate-shopee'){
+    metricoolNetworkFilter='all';
+    document.getElementById('affiliateSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
+  metricoolNetworkFilter = v==='metricool-all' ? 'all' : (v==='metricool-tiktok' ? 'tiktok' : v);
+  render();
+  document.getElementById('scheduledSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+}));
+document.querySelectorAll('[data-jump]').forEach(x=>x.addEventListener('click',()=>{
+  document.getElementById(x.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'});
+}));
+document.getElementById('calPrev')?.addEventListener('click',()=>shiftCalendar(-1));
+document.getElementById('calNext')?.addEventListener('click',()=>shiftCalendar(1));
+document.getElementById('calToday')?.addEventListener('click',()=>{
+  const n=new Date();
+  calendarCursor=new Date(n.getFullYear(),n.getMonth(),1);
+  range='today';
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.tab[data-range="today"]')?.classList.add('active');
+  render();
+});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); range=b.dataset.range; render();
+});
+function tick(){
+  const now=new Date();
+  document.getElementById('now').textContent=new Intl.DateTimeFormat('th-TH',{
+    timeZone:'Asia/Bangkok',weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false
+  }).format(now)+' น.';
+}
+tick(); setInterval(tick,30000); render();
+</script>
+</body>
+</html>

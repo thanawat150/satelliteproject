@@ -1,0 +1,13 @@
+{
+  "mode": "selected_history",
+  "description": "เก็บไฟล์ที่ระบบเคยเลือกเข้าคิวแล้ว เพื่อไม่ให้เลือกซ้ำ",
+  "items": [
+    {
+      "file_id": "13igBswTDFZeNbmfXCb_hLCBuuacgAXny",
+      "file_name": "Shopee_Sunscreen_NongMay_10s_Ready.mp4",
+      "product_name": "ครีมกันแดดศิริราช",
+      "selected_date": "2026-10-10",
+      "note": "คลิปที่ผู้ใช้แจ้งว่าโพสต์ไปแล้วก่อนเริ่มระบบคิวอัตโนมัติ"
+    }
+  ]
+}

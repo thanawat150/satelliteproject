@@ -1,0 +1,8 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "description": "Grounded spatial monitoring alerts derived from valid two-date raster change detection. Never populate with plot-average estimates or placeholder points.",
+    "generated_at": null
+  },
+  "features": []
+}

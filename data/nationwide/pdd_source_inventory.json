@@ -1,0 +1,2158 @@
+{
+  "source": "MOC.zip",
+  "candidate_count": 159,
+  "requested_scope_count": 136,
+  "scope_status": "CANDIDATES_PENDING_136_MASTER_LIST_RECONCILIATION",
+  "plots": [
+    {
+      "plot": "100-VSD",
+      "province": "กระบี่",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 291.51
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "101(1)-VSD",
+      "province": "กระบี่",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+          "area_rai": 198.0532
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 198.0532
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "105-VSD",
+      "province": "กระบี่",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+          "area_rai": 102.0008
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 102.0717
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "35-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 18.8065
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "38-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 34.5713
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 34.5713
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "39-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 100.0103
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 100.0103
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "40-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 49.694
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 49.694
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "41-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 105.9051
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 105.9051
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "42-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 10.4034
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 10.4034
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "43-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 25.9738
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 25.9738
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "44-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 55.8419
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 55.8419
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "45-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 45.0636
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 45.0636
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "46-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 71.2597
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 71.2601
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "47-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 50.4843
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 43.1788
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "48-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 46.1502
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 44.5384
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "49-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 37.0442
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 37.0442
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "50-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 108.0259
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 108.0259
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "51-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 173.1627
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 173.2351
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "52-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 106.8008
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 106.4713
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "53-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 42.4478
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 42.4248
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "54-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 71.7649
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 71.7649
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "55-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 47.2103
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 46.0205
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "56(1)-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 19.5731
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "57(1)-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 151.8483
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "58(1)-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 13.9076
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "59-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 468.3914
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 468.3914
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "60(1)-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 137.6161
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "62-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 65.9255
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 65.9255
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "63-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 55.5275
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 55.5275
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "64-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 12.1372
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 12.1372
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "65-STC",
+      "province": "กระบี่",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 60.9884
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 60.9884
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "96-VSD",
+      "province": "กระบี่",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 28.5488
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "97-VSD",
+      "province": "กระบี่",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 184.6435
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "98-VSD",
+      "province": "กระบี่",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 150.9491
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "99-VSD",
+      "province": "กระบี่",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 205.78
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "1-STC",
+      "province": "จันทบุรี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 64.566
+        }
+      ],
+      "geometry_parts": 9
+    },
+    {
+      "plot": "10-STC",
+      "province": "จันทบุรี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 12.0122
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "10-VSD",
+      "province": "จันทบุรี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+          "area_rai": 45.5309
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "11-VSD",
+      "province": "จันทบุรี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+          "area_rai": 118.6276
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "12-VSD",
+      "province": "จันทบุรี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+          "area_rai": 24.8139
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+          "area_rai": 26.7823
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "13(1)-VSD",
+      "province": "จันทบุรี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+          "area_rai": 8.7352
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "13-VSD",
+      "province": "จันทบุรี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+          "area_rai": 117.6152
+        }
+      ],
+      "geometry_parts": 30
+    },
+    {
+      "plot": "2-STC",
+      "province": "จันทบุรี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 21.0798
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "4-STC",
+      "province": "จันทบุรี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 2.9508
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "5-STC",
+      "province": "จันทบุรี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 13.4624
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "6-STC",
+      "province": "จันทบุรี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 37.7443
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "7-STC",
+      "province": "จันทบุรี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 17.4932
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "9-STC",
+      "province": "จันทบุรี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 0.0
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "9-VSD",
+      "province": "จันทบุรี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+          "area_rai": 24.4828
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp",
+          "area_rai": 13.7847
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "36-STC",
+      "province": "ฉะเชิงเทรา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 98.7535
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "18-VSD",
+      "province": "ชุมพร",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 1909.7783
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "19(1)-VSD",
+      "province": "ชุมพร",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+          "area_rai": 688.0892
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 688.0892
+        }
+      ],
+      "geometry_parts": 6
+    },
+    {
+      "plot": "19-VSD",
+      "province": "ชุมพร",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 316.3766
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "58-VSD",
+      "province": "ตรัง",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+          "area_rai": 10.5416
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+          "area_rai": 15.8836
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 10.5416
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 15.8836
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "64-VSD",
+      "province": "ตรัง",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp",
+          "area_rai": 5.2437
+        },
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_3_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 5.2437
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "66-VSD",
+      "province": "ตรัง",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 97.1678
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "1-VSD",
+      "province": "ตราด",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+          "area_rai": 9.4798
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "2-VSD",
+      "province": "ตราด",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+          "area_rai": 24.6424
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "3-VSD",
+      "province": "ตราด",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+          "area_rai": 10.4035
+        }
+      ],
+      "geometry_parts": 5
+    },
+    {
+      "plot": "4-VSD",
+      "province": "ตราด",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+          "area_rai": 21.6176
+        }
+      ],
+      "geometry_parts": 6
+    },
+    {
+      "plot": "5-VSD",
+      "province": "ตราด",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+          "area_rai": 20.1679
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "6-VSD",
+      "province": "ตราด",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+          "area_rai": 15.7789
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "7-VSD",
+      "province": "ตราด",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+          "area_rai": 2.3552
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "8-VSD",
+      "province": "ตราด",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp",
+          "area_rai": 4.431
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "22-VSD",
+      "province": "นครศรีธรรมราช",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 300.64
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "23-VSD",
+      "province": "นครศรีธรรมราช",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 200.1202
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "66-STC",
+      "province": "ประจวบคีรีขันธ์",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_3.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 30.4944
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 34.8733
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_3.shp",
+          "area_rai": 54.1758
+        }
+      ],
+      "geometry_parts": 12
+    },
+    {
+      "plot": "28-STC",
+      "province": "ปัตตานี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 2.4792
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "29-STC",
+      "province": "ปัตตานี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 8.2273
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "88-VSD",
+      "province": "ปัตตานี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 257.65
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "89-VSD",
+      "province": "ปัตตานี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 25.7175
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "90-VSD",
+      "province": "ปัตตานี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 22.4228
+        }
+      ],
+      "geometry_parts": 11
+    },
+    {
+      "plot": "91-VSD",
+      "province": "ปัตตานี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 11.09
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "92-VSD",
+      "province": "ปัตตานี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 3.6319
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "93-VSD",
+      "province": "ปัตตานี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 82.6259
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "94-VSD",
+      "province": "ปัตตานี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 140.8722
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "95-VSD",
+      "province": "ปัตตานี",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 200.3834
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "24-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 14.5102
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "25-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 39.198
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "27-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 9.7496
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "28-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 5.1301
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "29-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 2.5971
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "30-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 1.3353
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "30-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 13.3566
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "31-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 11.8122
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "31-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 7.4466
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "32-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 12.4955
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "33-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 16.6262
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "34-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 9.079
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "35-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 5.5481
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "36-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 3.0822
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "37-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 24.9471
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "38-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 1.2906
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "39-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 3.4831
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "40-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 277.3332
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "41-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 178.9213
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "42-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 223.0089
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "43-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 122.8243
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "44-VSD",
+      "province": "พังงา",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 221.0717
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "67-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 377.2578
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 377.2578
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "68-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 50.4291
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 50.4291
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "69-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 75.8937
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 75.8937
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "70-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 136.3122
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 136.3122
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "71-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 72.1737
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 72.1737
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "72-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 1017.0069
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 1017.0069
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "73-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 484.4121
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 484.4121
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "74-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 104.3164
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 104.3164
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "75-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 438.6406
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 438.6406
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "76-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 106.0072
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 106.0072
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "77-STC",
+      "province": "พังงา",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 52.1069
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 52.1069
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "102-VSD",
+      "province": "ภูเก็ต",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 32.0382
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "78-STC",
+      "province": "ภูเก็ต",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 26.3094
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 26.3094
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "79-STC",
+      "province": "ภูเก็ต",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 50.743
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 50.743
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "80-STC",
+      "province": "ภูเก็ต",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 70.8072
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 70.8072
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "81-STC",
+      "province": "ระนอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 666.5609
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 666.5609
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "13-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/Standard.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/Standard.shp",
+          "area_rai": 259.8925
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "14(1)-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 12.4737
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "14-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 4.4856
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "14-VSD",
+      "province": "ระยอง",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 39.0357
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "15-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 5.0788
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "15-VSD",
+      "province": "ระยอง",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 46.4767
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "16-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/Standard.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/Standard.shp",
+          "area_rai": 27.0559
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "16-VSD",
+      "province": "ระยอง",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 12.0375
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "17-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/Standard.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/Standard.shp",
+          "area_rai": 275.2231
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "17-VSD",
+      "province": "ระยอง",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 24.4157
+        }
+      ],
+      "geometry_parts": 5
+    },
+    {
+      "plot": "18(1)-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 21.03
+        }
+      ],
+      "geometry_parts": 4
+    },
+    {
+      "plot": "18-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/Standard.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/Standard.shp",
+          "area_rai": 31.631
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "19-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 15.2163
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "20-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 28.6925
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "21-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/Standard.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/Standard.shp",
+          "area_rai": 146.4686
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "22(1)-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 13.062
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "22-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 26.0535
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "23(1)-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 7.4641
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "23-STC",
+      "province": "ระยอง",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 42.9081
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "68-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 5.8401
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "69-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 17.85
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "70-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 54.8595
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "71(1)-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 39.8
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "71-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 78.0907
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "72-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 9.2402
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "73-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 21.7731
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "74-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp",
+          "area_rai": 24.8247
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "85-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 599.5826
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "86-VSD",
+      "province": "สตูล",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 1141.9611
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "88-STC",
+      "province": "สตูล",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 438.5763
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 438.5763
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "89(1)-STC",
+      "province": "สตูล",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 30.9212
+        }
+      ],
+      "geometry_parts": 3
+    },
+    {
+      "plot": "89-STC",
+      "province": "สตูล",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 168.8039
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 168.8039
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "90(1)-STC",
+      "province": "สตูล",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 425.2981
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 425.2981
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "90-STC",
+      "province": "สตูล",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 1863.4541
+        },
+        {          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 1863.4541
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "87-VSD",
+      "province": "สมุทรสงคราม",
+      "selected_source": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp",
+          "area_rai": 92.9224
+        }
+      ],
+      "geometry_parts": 5
+    },
+    {
+      "plot": "91-STC",
+      "province": "สมุทรสงคราม",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 279.4334
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 279.4334
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "92-STC",
+      "province": "สมุทรสงคราม",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 98.9481
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 98.9481
+        }
+      ],
+      "geometry_parts": 2
+    },
+    {
+      "plot": "93-STC",
+      "province": "สมุทรสงคราม",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 79.0184
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 79.0184
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "94-STC",
+      "province": "สมุทรสงคราม",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 30.6606
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 30.6606
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "95-STC",
+      "province": "สมุทรสงคราม",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 22.9144
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 22.9144
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "96-STC",
+      "province": "สมุทรสงคราม",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 5.1494
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 5.1494
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "97-STC",
+      "province": "สมุทรสงคราม",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 15.9591
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 15.9591
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "98-STC",
+      "province": "สมุทรสงคราม",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_2.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2.shp",
+          "area_rai": 3.5901
+        },
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_2_#U0e43#U0e0a#U0e49#U0e07#U0e32#U0e19.shp",
+          "area_rai": 3.5901
+        }
+      ],
+      "geometry_parts": 1
+    },
+    {
+      "plot": "37-STC",
+      "province": "สุราษฎร์ธานี",
+      "selected_source": "STC/Shapefile/STC PDD/MOC_1.shp",
+      "versions": [
+        {
+          "source_path": "STC/Shapefile/STC PDD/MOC_1.shp",
+          "area_rai": 157.5589
+        }
+      ],
+      "geometry_parts": 2
+    }
+  ]
+}

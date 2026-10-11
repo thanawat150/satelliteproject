@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="ระบบติดตามสถานการณ์น้ำท่วมและผลกระทบสิ่งแวดล้อมจาก Sentinel-2 สำหรับแปลงโครงการจังหวัดระยอง" />
+  <title>Rayong Flood & Environmental Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
+  <link rel="stylesheet" href="styles.css?v=20261009-uncropped1" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">≈</div>
+      <div><h1>Flood & Environmental Monitoring</h1><p>ระบบติดตามสถานการณ์น้ำท่วมและผลกระทบสิ่งแวดล้อม • จังหวัดระยอง</p></div>
+    </div>
+    <div class="top-actions">
+      <span class="update-pill" id="updated-pill">กำลังโหลด...</span>
+      <button class="ghost-btn" onclick="copyShareLink()">คัดลอกลิงก์</button>
+      <a class="ghost-btn" id="verified-folder" target="_blank" rel="noopener">Verified Reports</a>
+      <button class="ghost-btn header-calendar-btn" type="button" onclick="switchTab('calendar')">📅 ปฏิทินภาพ</button>
+      <a class="ghost-btn" href="nationwide.html" title="คลังภาพดาวเทียม 136 แปลง 2020–2026 และรายงาน QA">🗺️ ทุกจังหวัด · 136 แปลง</a>
+      <button class="primary-btn" onclick="openReportCenter()">สร้าง Report</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="eyebrow">RAYONG PROJECTS</div>
+        <h2>เลือกแปลง</h2>
+        <div class="search"><span>⌕</span><input id="search-input" placeholder="ค้นหา 13-STC, VSD..." /></div>
+        <div class="filter-row" id="status-filters">
+          <button class="filter active" data-status="ALL">ทั้งหมด</button>
+          <button class="filter" data-status="HIGH">สูง</button>
+          <button class="filter" data-status="WATCH">เฝ้าระวัง</button>
+          <button class="filter" data-status="NORMAL">ปกติ</button>
+        </div>
+        <button type="button" id="sidebar-alert-only" class="alert-plot-only" aria-pressed="false">แสดงเฉพาะแปลงที่มี Alert</button>
+      </div>
+      <div id="plot-list" class="plot-list"></div>
+    </aside>
+
+    <main class="main">
+      <nav class="tabs">
+        <button class="tab active" data-tab="overview">ภาพรวม</button>
+        <button class="tab" data-tab="map">แผนที่</button>
+        <button class="tab" data-tab="impact">Impact Matrix</button>
+        <button class="tab" data-tab="satellite">ภาพดาวเทียม</button>
+        <button class="tab" data-tab="compare">เปรียบเทียบ 2 วัน</button>
+        <button class="tab" data-tab="hotspots">พื้นที่เฝ้าระวัง</button>
+        <button class="tab" data-tab="alerts">แจ้งเตือนแปลงผิดปกติ<span id="nav-alert-count"></span></button>
+        <button class="tab" data-tab="report">Report Center</button>
+      </nav>
+
+      <section class="tab-panel active" id="tab-overview">
+        <div id="overview-alert-strip" class="overview-alert-strip"><span>กำลังโหลดสัญญาณเฝ้าระวัง...</span></div>
+        <div class="kpi-grid">
+          <div class="kpi"><span>แปลงทั้งหมด</span><strong id="kpi-total">—</strong><small>จังหวัดระยอง</small></div>
+          <div class="kpi danger"><span>สัญญาณน้ำสูง</span><strong id="kpi-high">—</strong><small>ควรตรวจสอบก่อน</small></div>
+          <div class="kpi warning"><span>เฝ้าระวัง</span><strong id="kpi-watch">—</strong><small>ติดตามรอบถัดไป</small></div>
+          <div class="kpi muted"><span>ข้อมูลไม่เพียงพอ</span><strong id="kpi-nodata">—</strong><small>เมฆ/ไม่มี valid pixels</small></div>
+        </div>
+
+        <div class="overview-grid">
+          <section class="card map-card">
+            <div class="card-head"><div><div class="eyebrow">SITUATION MAP</div><h3>สถานการณ์ล่าสุด</h3></div><div class="legend"><span><i class="dot high"></i>สูง</span><span><i class="dot watch"></i>เฝ้าระวัง</span><span><i class="dot normal"></i>ปกติ</span><span><i class="dot nodata"></i>ไม่มีข้อมูล</span><span><i class="dot newwater"></i>น้ำใหม่ของแปลงที่เลือก</span></div></div>
+            <div id="overview-map" class="map"></div>
+          </section>
+
+          <section class="card detail-card">
+            <div class="card-head"><div><div class="eyebrow">SELECTED PLOT</div><h3 id="detail-title">—</h3></div><span id="detail-status" class="status-pill">—</span></div>
+            <div class="plot-meta"><span id="detail-area">—</span><span id="detail-dates">—</span></div>
+            <div class="headline" id="plain-summary">เลือกแปลงเพื่อดูสรุป</div>
+            <div class="metric-stack">
+              <div class="metric-row"><div><span>พื้นที่น้ำ</span><small>MNDWI (ดัชนีน้ำเปิด)</small></div><div class="metric-value"><b id="water-values">—</b><em id="water-delta">—</em></div></div>
+              <div class="metric-row"><div><span>NDVI</span><small>ความเขียวพืช • stable land</small></div><div class="metric-value"><b id="ndvi-values">—</b><em id="ndvi-delta">—</em></div></div>
+              <div class="metric-row"><div><span>NDRE</span><small>สุขภาพใบพืช • stable land</small></div><div class="metric-value"><b id="ndre-values">—</b><em id="ndre-delta">—</em></div></div>
+              <div class="metric-row"><div><span>NDMI</span><small>ความชื้นพืช/พื้นที่ • stable land</small></div><div class="metric-value"><b id="ndmi-values">—</b><em id="ndmi-delta">—</em></div></div>
+            </div>
+            <button class="wide-btn" onclick="showSelectedReport()">เปิด Report Preview</button><button class="wide-btn verified-action" onclick="openVerifiedReport()">เปิด Verified PDF</button>
+          </section>
+        </div>
+
+        <section class="card monitoring-update-center" id="monitoring-update-center"><p>กำลังโหลดสถานะอัปเดต...</p></section>
+        <div class="lower-grid">
+          <section class="card"><div class="card-head"><div><div class="eyebrow">CHANGE PROFILE</div><h3>ก่อน → ปัจจุบัน</h3></div></div><div class="chart-wrap"><canvas id="change-chart"></canvas></div></section>
+          <section class="card"><div class="card-head"><div><div class="eyebrow">PRIORITY</div><h3>แปลงที่ควรดูเป็นอันดับแรก</h3></div></div><div id="priority-list" class="priority-list"></div></section>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-map">
+        <section class="card full-card">
+          <div class="card-head map-view-head">
+            <div><div class="eyebrow">GIS + SATELLITE VIEW</div><h3>แผนที่แปลงระยอง (ภาพเต็มไม่ตัด)</h3><p id="map-sat-status">เลือกแปลงเพื่อแสดงภาพดาวเทียมบนแผนที่</p><p id="pdd-boundary-note" class="pdd-boundary-note">ภาพดาวเทียมแสดงเต็มสี่เหลี่ยม Raster โดยไม่ Clip; ขอบเขตหลัก PDD แสดงเป็นชั้นเส้นแยก</p></div>
+            <div class="map-sat-controls">
+              <label>วันที่ภาพ
+                <select id="map-sat-date"></select>
+              </label>
+              <label class="toggle-line"><input id="map-sat-visible" type="checkbox" checked> แสดงภาพดาวเทียม</label>
+              <label>ความโปร่งใส
+                <input id="map-sat-opacity" type="range" min="20" max="100" value="65">
+              </label>
+            </div>
+          </div>
+          <div class="studio-toolbar">
+            <label>รูปแบบภาพ<select id="studio-mode">
+              <option value="true">สีจริง (B4-B3-B2)</option>
+              <option value="false">สีเท็จพืช (B8-B4-B3)</option>
+              <option value="mndwi">MNDWI (ดัชนีน้ำเปิด)</option>
+              <option value="ndmi">NDMI (ความชื้นพืช/พื้นที่)</option>
+              <option value="ndvi">NDVI (ความเขียวพืช)</option>
+              <option value="ndre">NDRE (สภาพใบพืช)</option>
+              <option value="bsi">BSI (ดินเปิดโล่ง)</option>
+            </select></label>
+            <label class="studio-check"><input id="studio-boundary" type="checkbox" checked> ขอบเขต</label>
+            <label class="studio-check"><input id="studio-water" type="checkbox" checked> น้ำใหม่</label>
+            <label class="studio-check"><input id="studio-labels" type="checkbox"> ชื่อแปลง</label>
+            <label>รูปแบบสำหรับรายงาน<select id="studio-preset">
+              <option value="custom">กำหนดเอง</option>
+              <option value="natural">สีจริง + ขอบเขต</option>
+              <option value="clean">ภาพล้วน</option>
+              <option value="water">ติดตามน้ำ</option>
+              <option value="vegetation">ติดตามพืช</option>
+              <option value="soil">ติดตามดิน</option>
+            </select></label>
+            <button id="studio-reset" class="ghost-btn" type="button">รีเซ็ตสี</button>
+          </div>
+          <details class="studio-adjust"><summary>ปรับสีและการแสดงผลด้วยตนเอง</summary>
+            <div class="studio-sliders">
+              <label>ความสว่าง <output id="studio-value-brightness">100%</output><input id="studio-brightness" type="range" min="40" max="200" value="100"></label>
+              <label>ความต่างสี <output id="studio-value-contrast">100%</output><input id="studio-contrast" type="range" min="40" max="200" value="100"></label>
+              <label>ความอิ่มสี <output id="studio-value-saturation">100%</output><input id="studio-saturation" type="range" min="0" max="250" value="100"></label>
+              <label>Gamma <output id="studio-value-gamma">100%</output><input id="studio-gamma" type="range" min="50" max="200" value="100"></label>
+              <label>Red <output id="studio-value-r">100%</output><input id="studio-r" type="range" min="0" max="200" value="100"></label>
+              <label>Green <output id="studio-value-g">100%</output><input id="studio-g" type="range" min="0" max="200" value="100"></label>
+              <label>Blue <output id="studio-value-b">100%</output><input id="studio-b" type="range" min="0" max="200" value="100"></label>
+            </div>
+            <p class="studio-hint">การปรับสีเป็นการปรับภาพเพื่อการแสดงผล ไม่เปลี่ยนค่าดัชนีทางวิทยาศาสตร์ที่คำนวณใน Report</p>
+          </details>
+          <svg aria-hidden="true" width="0" height="0" class="studio-filter"><defs><filter id="studio-color-filter" color-interpolation-filters="sRGB"><feColorMatrix id="studio-color-matrix" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/><feComponentTransfer id="studio-gamma-transfer"><feFuncR type="gamma" amplitude="1" exponent="1" offset="0"/><feFuncG type="gamma" amplitude="1" exponent="1" offset="0"/><feFuncB type="gamma" amplitude="1" exponent="1" offset="0"/></feComponentTransfer></filter></defs></svg>
+          <div id="studio-legend" class="studio-legend" hidden><span id="studio-legend-label">ดัชนี</span><div id="studio-ramp"></div><div class="studio-legend-scale"><span>−1</span><span>0</span><span>+1</span></div></div>
+          <div class="studio-actions">
+            <span id="studio-data-status">เลือกแปลงและวันที่เพื่อแสดงชั้นข้อมูล</span>
+            <button id="studio-save-report" class="ghost-btn" type="button">บันทึกมุมมองใน Report</button>
+            <button id="studio-export-svg" class="ghost-btn" type="button">Export SVG</button>
+            <button id="studio-export-png" class="ghost-btn" type="button">Export PNG</button>
+          </div>
+          <p id="studio-saved-note" class="studio-saved-note"></p>
+          <div id="full-map" class="map full-map"></div>
+          <div class="prototype-note">ภาพฐาน Esri มีรายละเอียดสูงกว่า Sentinel-2 (10 เมตร/พิกเซล) มาก ภาพที่ทับอยู่จะแสดงเฉพาะภายในขอบเขต PDD ของแปลงที่เลือก • ภาพวันมีเมฆอาจดูฟุ้งหรือซีด • ปรับความโปร่งใสหรือปิดภาพได้</div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="tab-calendar">
+        <section class="card full-card cal-card">
+          <div class="card-head">
+            <div><div class="eyebrow">SATELLITE MONITORING CALENDAR</div><h3>ปฏิทินภาพดาวเทียมและรอบตรวจข้อมูล</h3><p>ดูวันที่มีภาพจริง คุณภาพข้อมูล และกำหนดตรวจทุก 3 วัน + วันจันทร์ • คลิกวันที่เพื่อเปิดภาพหรือรายงาน</p></div>
+          </div>
+          <div id="calendar-root" class="calendar-root"><p class="cal-loading">กำลังโหลดปฏิทิน...</p></div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="tab-compare">
+        <section class="card full-card">
+          <div class="card-head"><div><div class="eyebrow">SATELLITE CHANGE COMPARISON</div><h3>เปรียบเทียบภาพดาวเทียม 2 วัน</h3><p>เลือกแปลง วันที่ และชั้นภาพจริง ระบบจะใช้ตำแหน่งพิกัดของ GeoTIFF ในการซ้อนภาพ</p><p id="compare-loading">กำลังโหลดภาพและขอบเขตที่มีอยู่...</p></div></div>
+          <div class="cmp-toolbar">
+            <label>แปลง<select id="compare-plot"></select></label>
+            <label>วันที่ A (ก่อน)<select id="compare-date-a"></select></label>
+            <label>วันที่ B (หลัง)<select id="compare-date-b"></select></label>
+            <label>ชั้นภาพ<select id="compare-layer">
+              <option value="true">True Color B4-B3-B2</option><option value="false">False Color B8-B4-B3</option>
+              <option value="mndwi">MNDWI — น้ำเปิด</option><option value="ndvi">NDVI — พืช</option>
+              <option value="ndre">NDRE — ใบพืช</option><option value="ndmi">NDMI — ความชื้น</option>
+              <option value="bsi">BSI — ดินเปิด</option>
+            </select></label>
+            <label>การเปรียบเทียบ<select id="compare-mode"><option value="side">ภาพคู่ Side-by-side</option><option value="swipe">เลื่อน Before/After</option><option value="change">ขอบเขตการเปลี่ยนแปลง</option></select></label>
+          </div>
+          <div class="cmp-options">
+            <label><input id="compare-boundary" type="checkbox" checked> ขอบเขตแปลง</label>
+            <label><input id="compare-water" type="checkbox" checked> ขอบเขตน้ำตามวันที่ (ถ้ามี)</label>
+            <label class="cmp-layer-label"><input id="compare-newwater" type="checkbox" checked> น้ำใหม่รอบ Verified <small id="compare-newwater-status">ตรวจสอบ Polygon...</small></label>
+            <label class="cmp-layer-label"><input id="compare-vegetation" type="checkbox" checked> ขอบเขตพืช <small id="compare-vegetation-status">กำลังตรวจผลวิเคราะห์...</small></label>
+            <label class="cmp-layer-label"><input id="compare-soil" type="checkbox" checked> ขอบเขตดิน <small id="compare-soil-status">กำลังตรวจผลวิเคราะห์...</small></label>
+          </div>
+          <div id="compare-map-wrap" class="cmp-map-wrap">
+            <div id="compare-divider" class="cmp-swipe-divider" aria-hidden="true"><span>⇆</span></div>
+            <div class="cmp-map-panel cmp-panel-a"><div id="compare-map-a" class="cmp-map"></div><span id="compare-qa-a" class="cmp-map-label">วันที่ A</span></div>
+            <div class="cmp-map-panel cmp-panel-b"><div id="compare-map-b" class="cmp-map"></div><span id="compare-qa-b" class="cmp-map-label">วันที่ B</span></div>
+          </div>
+          <div class="cmp-slider"><label>เส้นเปรียบเทียบ <strong id="compare-split-value">50%</strong></label><input id="compare-split" type="range" min="5" max="95" value="50"></div>
+          <div class="cmp-options cmp-legend"><span><i style="background:#fa7064"></i> ขอบแปลง</span><span><i style="background:#23cbf0"></i> ขอบน้ำรายวัน</span><span><i style="background:#b2df52"></i> น้ำใหม่ Verified</span><span><i style="background:#42b971"></i> พืช</span><span><i style="background:#c49c61"></i> ดินเปิด</span><span><i style="background:#e69d43"></i> น้ำลด</span></div>
+          <p class="cmp-note" id="compare-note"></p>
+          <div class="cmp-summary" id="compare-summary"></div>
+          <div class="cmp-buttons"><button class="primary-btn" type="button" id="compare-to-report">ใช้คู่วันที่นี้สร้าง Report</button><button class="ghost-btn" type="button" id="compare-export-csv">ส่งออกข้อมูลเปรียบเทียบ CSV</button></div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="tab-hotspots">
+        <section class="card full-card">
+          <div class="card-head"><div><div class="eyebrow">REMOTE MONITORING HOTSPOTS</div><h3>พื้นที่เปลี่ยนแปลงที่ควรติดตามจากออฟฟิศ</h3><p>แสดงตำแหน่งเฉพาะเมื่อมี Polygon จริง • ไม่สร้างจุดสมมติจากค่าดัชนีเฉลี่ยทั้งแปลง</p></div></div>
+          <div class="cmp-toolbar"><label>เลือกแปลง<select id="hotspot-plot"></select></label><button class="ghost-btn" type="button" id="hotspot-open-compare">เปิดเปรียบเทียบภาพ</button></div>
+          <div class="cmp-hotspot-layout"><div id="hotspot-map" class="cmp-hotspot-map"></div><div id="hotspot-results" class="cmp-hotspot-results"></div></div>
+          <p class="cmp-note">Monitoring Hotspots คือข้อบ่งชี้สำหรับตรวจภาพเพิ่มเติม ไม่ใช่หลักฐานยืนยันสาเหตุของน้ำท่วม พืชตาย หรือการบุกรุก ต้องพิจารณาเมฆและน้ำขึ้นน้ำลงประกอบ</p>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="tab-alerts">
+        <section class="card full-card">
+          <div class="card-head">
+            <div><div class="eyebrow">OFFICE ENVIRONMENTAL ALERT CENTER</div><h3>แจ้งเตือนแปลงที่ควรเปิดภาพตรวจสอบ</h3><p>อ่านผลวิเคราะห์จากประวัติจริง • สัญญาณผิดปกติไม่ใช่คำยืนยันว่าเกิดน้ำท่วม พืชตาย หรือบุกรุก</p></div>
+          </div>
+          <div id="alert-status" class="cmp-note">กำลังโหลดข้อมูลแปลงและผล QA...</div>
+          <div id="alert-kpis" class="alert-kpis"></div>
+          <div class="alert-filters">
+            <label>ระดับ<select id="alert-priority"><option value="ALL">ทุกระดับ</option><option value="P1">P1 ตรวจภาพก่อน</option><option value="P2">P2 เฝ้าระวัง</option><option value="P3">P3 ตรวจคุณภาพข้อมูล</option></select></label>
+            <label>ประเภท<select id="alert-type"><option value="ALL">ทุกประเภท</option><option value="water">น้ำเปลี่ยนแปลง</option><option value="vegetation">สัญญาณพืช</option><option value="qa">ข้อมูล/เมฆ</option></select></label>
+            <label>แปลง<select id="alert-plot"><option value="ALL">ทุกแปลง</option></select></label>
+            <button id="alert-export" type="button" class="ghost-btn">ส่งออกรายการ CSV</button>
+            <button id="alert-reload" type="button" class="ghost-btn">ตรวจข้อมูลบนเว็บอีกครั้ง</button>
+          </div>
+          <div class="alert-layout">
+            <div>
+              <div class="alert-list" id="alert-list"><p class="cal-loading">กำลังประเมินข้อมูล...</p></div>
+            </div>
+            <div>
+              <div class="alert-map-title">แผนที่แปลงที่มีสัญญาณ <small>ตำแหน่งแปลง ไม่ใช่พิกัดจุดผิดปกติภายในแปลง</small></div>
+              <div id="alert-map" class="alert-map"></div>
+              <p class="cmp-note">P1/P2 เป็นลำดับสำหรับการตรวจภาพจากออฟฟิศ ไม่ใช่ระดับความเสียหายจริง • พิจารณาน้ำขึ้นน้ำลงและขอบเขตที่ผ่าน QA ร่วมด้วย</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="tab-impact">
+        <section class="card full-card"><div class="card-head"><div><div class="eyebrow">IMPACT MATRIX</div><h3>เปรียบเทียบทุกแปลงในหน้าเดียว</h3></div><div class="card-actions"><button class="ghost-btn" onclick="downloadCSV()">ดาวน์โหลด CSV</button><p>คลิกแถวเพื่อเปิดรายละเอียด</p></div></div><div class="table-scroll"><table><thead><tr><th>แปลง</th><th>สถานะน้ำ</th><th>น้ำเดิม</th><th>น้ำล่าสุด</th><th>น้ำใหม่</th><th>NDVI</th><th>NDRE</th><th>NDMI</th><th>สภาพพืช</th></tr></thead><tbody id="impact-body"></tbody></table></div></section>
+      </section>
+
+      <section class="tab-panel" id="tab-satellite">
+        <section class="card satellite-library">
+          <div class="card-head satellite-head">
+            <div>
+              <div class="eyebrow">GOOGLE DRIVE SATELLITE LIBRARY</div>
+              <h3>ภาพดาวเทียมทั้งหมด</h3>
+              <p id="satellite-sync-status">กำลังโหลดรายการภาพ...</p>
+            </div>
+            <div class="card-actions">
+              <a class="ghost-btn" id="satellite-source-folder" target="_blank" rel="noopener">เปิดโฟลเดอร์ Google Drive</a>
+              <button class="ghost-btn" onclick="resetSatelliteFilters()">ล้างตัวกรอง</button>
+            </div>
+          </div>
+          <div class="satellite-filters">
+            <label>แปลง<select id="sat-filter-plot"></select></label>
+            <label>วันที่<select id="sat-filter-date"><option value="ALL">ทุกวันที่</option></select></label>
+            <label>ดาวเทียม<select id="sat-filter-sensor"><option value="ALL">ทุกดาวเทียม</option></select></label>
+            <label>ความละเอียด<select id="sat-filter-resolution"><option value="ALL">ทุกความละเอียด</option></select></label>
+          </div>
+          <div class="sat-date-panel"><div class="sat-date-panel-head"><strong>เลือกวันถ่ายภาพที่ต้องการแสดง (เลือกได้หลายวัน)</strong><button id="sat-date-all" class="ghost-btn" type="button">แสดงทุกวัน</button></div><div id="sat-date-checkboxes" class="sat-date-checkboxes"></div></div>
+          <div class="satellite-summary">
+            <div><strong id="sat-count-files">—</strong><span>ไฟล์ที่แสดง</span></div>
+            <div><strong id="sat-count-dates">—</strong><span>วันถ่ายภาพ</span></div>
+            <div><strong id="sat-latest-date">—</strong><span>วันที่ล่าสุด</span></div>
+            <div><strong id="sat-count-plots">—</strong><span>แปลงที่มีข้อมูล</span></div>
+          </div>
+          <div id="satellite-gallery" class="satellite-gallery"></div>
+        </section>
+      </section>
+
+      <div id="satellite-modal" class="satellite-modal" aria-hidden="true">
+        <div class="satellite-modal-backdrop" onclick="closeSatelliteViewer()"></div>
+        <div class="satellite-modal-panel">
+          <div class="satellite-modal-head">
+            <div><div class="eyebrow">SATELLITE PREVIEW</div><h3 id="sat-modal-title">—</h3><p id="sat-modal-meta">—</p></div>
+            <div class="card-actions"><a id="sat-modal-drive" class="ghost-btn" target="_blank" rel="noopener">เปิดใน Drive</a><button class="ghost-btn" onclick="closeSatelliteViewer()">ปิด</button></div>
+          </div>
+          <div class="satellite-modal-content"><img id="sat-modal-image" class="satellite-modal-image" alt="Satellite preview"><div id="sat-modal-waiting" class="satellite-modal-waiting"><strong>กำลังสร้าง JPG Preview</strong><p>ไฟล์ต้นฉบับเป็น GeoTIFF หลายแบนด์ ระบบจะสร้างสำเนา JPG สำหรับแสดงบนเว็บ</p><a id="sat-modal-original" class="ghost-btn" target="_blank" rel="noopener">เปิด TIFF ต้นฉบับใน Google Drive</a></div></div>
+        </div>
+      </div>
+
+      <section class="tab-panel" id="tab-report">
+        <div class="report-layout">
+          <section class="card report-controls">
+            <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3><p class="pdd-report-note">ขอบเขตแปลงหลักใช้ PDD ตามฐานข้อมูลเดิมของรายงาน • ขอบเขตยืนยันกรมเก็บไว้สำหรับเทียบข้อมูล ไม่ใช้แทน PDD อัตโนมัติ</p>
+            <label>เลือกแปลง<select id="report-plot"></select></label>
+            <label>รูปแบบรายงาน<select id="report-type"><option value="quick">Live Report — เลือกหลายวันและหลายปี</option><option value="compare">Compare Report — เปรียบเทียบวันที่ติ๊กเลือก</option><option value="verified">Verified Report — PDF ต้นฉบับ (ไม่เปลี่ยนแปลง)</option></select></label>
+            <div class="report-selection-panel" id="report-selection-panel">
+              <div class="report-selector-title">ช่วงเวลาที่ต้องการแสดง</div>
+              <fieldset class="report-mode-options" aria-label="รูปแบบการแสดงวันที่">
+                <label><input type="radio" name="report-period-mode" value="dates" checked> เลือกวันที่เอง</label>
+                <label><input type="radio" name="report-period-mode" value="years"> เลือกแต่ละปี (ทุกภาพในปีนั้น)</label>
+                <label><input type="radio" name="report-period-mode" value="annual"> ทุกปี ปีละ 1 ภาพ</label>
+              </fieldset>
+              <div id="report-date-panel">
+                <div class="report-selector-actions"><strong>เลือกวันได้หลายวัน</strong><div><button id="report-date-select-all" type="button" class="ghost-btn">เลือกทั้งหมด</button><button id="report-date-select-none" type="button" class="ghost-btn">ล้างที่เลือก</button></div></div>
+                <div class="report-date-checkboxes" id="report-date-checkboxes">กำลังโหลดวันที่จริง...</div>
+              </div>
+              <div id="report-year-panel" hidden>
+                <strong class="report-year-title">เลือกปีที่ต้องการ</strong>
+                <div id="report-year-checkboxes" class="report-year-checkboxes"></div>
+                <p class="report-year-help">โหมดปีละ 1 ภาพ: เลือกจากภาพดาวเทียมที่มีจริง โดยให้ความสำคัญกับข้อมูลที่ผ่าน QA</p>
+              </div>
+              <p class="report-scope-caption" id="report-scope-caption"></p>
+              <div class="report-selector-title report-graph-title">เลือกกราฟที่จะแสดง</div>
+              <div id="report-graph-checkboxes" class="report-graph-checkboxes">กำลังโหลดตัวเลือกกราฟ...</div>
+            </div>
+            <button class="primary-btn wide" onclick="renderReportPreview()">Preview Report</button>
+            <button class="ghost-btn wide" id="print-report-btn" onclick="printReport()">Export Quick Report เป็น PDF</button>
+            <a class="ghost-btn wide" id="verified-folder-2" target="_blank" rel="noopener">เปิด Verified PDF ของแปลงนี้</a>
+          </section>
+          <div class="report-viewer"><section class="report-paper" id="report-paper"></section><iframe id="verified-pdf-frame" class="verified-pdf-frame" title="Verified report preview"></iframe></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="map-studio.js?v=20261009-uncropped1"></script>
+  <script src="report-selector.js?v=20261009-reportselect1"></script>
+  <script src="trend-report.js?v=20261009-reportselect1"></script>
+  <script src="live-report-model.js?v=20261008-livereport3"></script>
+  <script src="app.js?v=20261009-reportselect1"></script>
+  <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
+  <script src="alert-engine.js?v=20261008-alertfix2"></script>
+  <script src="alert-center.js?v=20261008-alertfix2"></script>
+  <script src="monitoring-studio.js?v=20261009-reportselect1"></script>
+  <script src="calendar.js?v=20261008-alertfix3"></script>
+</body>
+</html>
