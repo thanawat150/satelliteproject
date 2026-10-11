@@ -216,6 +216,10 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
 .platform-title-value{font-size:14px;line-height:1.55;font-weight:700;overflow-wrap:anywhere}
 .platform-title-box .copy{display:block;margin-top:9px;width:100%}
 .platform-title-missing{font-size:12px;color:#a15c00}
+
+.manual-status{margin-top:12px;padding:10px 11px;background:#f8faff;border:1px solid #e3e9f4;border-radius:12px}
+.manual-status-help{margin-top:7px;font-size:11px;color:var(--muted);line-height:1.55}
+.status-storage-note{font-size:12px;color:#5d6981;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 13px;margin:10px 0 18px}
 </style>
 </head>
 <body class="has-sidebar">
@@ -289,6 +293,7 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
     <div class="metric"><span>ต้องโพสต์เอง / Error</span><strong id="errorCount">0</strong></div>
   </section>
 
+  <div class="status-storage-note">ℹ️ ปุ่ม “โพสต์แล้ว” ของ TikTok Affiliate, Shopee และ TikTok Ken Monitoring เป็นการยืนยันด้วยตนเอง และบันทึกเฉพาะเบราว์เซอร์เครื่องนี้ ไม่ซิงก์ข้ามมือถือ/คอมพิวเตอร์ และไม่เปลี่ยนสถานะที่ TikTok หรือ Metricool</div>
   <section id="todayContentSection">
     <div class="section-head">
       <div><div class="kicker">CONTENT TODAY</div><h2>Ken Monitoring · แคปชั่นแยกตามแพลตฟอร์ม</h2></div>
@@ -380,6 +385,7 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
 const START = new Date('2026-10-10T00:00:00+07:00');
 const DAYS = 60;
 const STORE_KEY = 'affiliate-daily-post-platform-status-v2';
+const CONTENT_STORE_KEY = 'affiliate-content-manual-post-status-v1';
 
 const READY_FOLDER='https://drive.google.com/drive/folders/1kY02WlyrCcv9q13HKn2LcArrpLGGckM4';
 
@@ -424,12 +430,16 @@ const schedule = salesPlan.map((x,i)=>({
   task:x.task
 }));
 let range='today';
-let done={};
-try{
-  done=JSON.parse(window.localStorage?.getItem(STORE_KEY)||'{}')||{};
-}catch(e){
-  done={};
+function loadLocalStatus(key){
+  try{
+    const raw=window.localStorage?.getItem(key);
+    if(!raw) return {};
+    const parsed=JSON.parse(raw);
+    return parsed && typeof parsed==='object' && !Array.isArray(parsed)?parsed:{};
+  }catch(e){return {};}
 }
+let done=loadLocalStatus(STORE_KEY);
+let contentDone=loadLocalStatus(CONTENT_STORE_KEY);
 let calendarCursor=new Date('2026-10-01T00:00:00+07:00');
 let metricoolNetworkFilter='all';
 
@@ -443,6 +453,36 @@ async function copyText(text,msg){
   catch{toast('คัดลอกไม่สำเร็จ');}
 }
 
+
+
+function saveLocalStatus(key,record){
+  try{
+    if(!window.localStorage) throw new Error('localStorage unavailable');
+    window.localStorage.setItem(key,JSON.stringify(record));
+    return true;
+  }catch(e){
+    toast('บันทึกสถานะไม่ได้ กรุณาอนุญาตพื้นที่จัดเก็บของเบราว์เซอร์');
+    return false;
+  }
+}
+function contentPostKey(post){
+  return [post.date,post.network,post.media||post.drive_file_id||post.title||''].join('|');
+}
+function manualPosted(post){
+  return !!contentDone[contentPostKey(post)]?.posted;
+}
+function manualTikTokAction(post){
+  if(post.network!=='tiktok') return '';
+  const key=contentPostKey(post);
+  const isDone=manualPosted(post);
+  const timestamp=contentDone[key]?.updated_at||'';
+  return `<div class="manual-status">
+    <button type="button" class="platform-btn tiktok ${isDone?'active':''}" data-content-toggle="${encodeURIComponent(key)}">
+      ${isDone?'✓ ฉันโพสต์ TikTok เองแล้ว · กดเพื่อยกเลิก':'ยืนยันว่าโพสต์ TikTok เองแล้ว'}
+    </button>
+    <div class="manual-status-help">${isDone?'ยืนยันเองบนเครื่องนี้'+(timestamp?' · '+escapeHtml(timestamp.slice(0,16).replace('T',' ')):''):'ใช้เมื่อโพสต์ใน TikTok จริงแล้วเท่านั้น ไม่ใช่การเปลี่ยนสถานะบน Metricool'}</div>
+  </div>`;
+}
 
 function productShort(key){
   return key==='chair'?'เก้าอี้คุณตาแสวง':key==='sun'?'กันแดดศิริราช':'สินค้า';
@@ -563,9 +603,9 @@ function renderTodayContent(){
      const publishedClip=x.media||'';
      const name=networkLabel(x.network);
      const isErr=x.status==='ERROR';
-     const state=isErr?'โพสต์ผิดพลาด':x.status==='PENDING'?'รอเผยแพร่':x.status==='SUCCESS'?'โพสต์แล้ว':x.status||'ไม่ทราบสถานะ';
+     const state=manualPosted(x)?'ฉันโพสต์เองแล้ว':isErr?'Metricool ผิดพลาด':x.status==='PENDING'?'รอเผยแพร่':x.status==='SUCCESS'?'Metricool โพสต์แล้ว':x.status||'ไม่ทราบสถานะ';
      return `<section class="platform-post-card ${isErr?'error':''}">
-       <div class="platform-post-head"><span class="chip platform-${escapeHtml(x.network)}">${escapeHtml(name)}</span><span class="chip ${isErr?'err':'ok'}">${escapeHtml(state)}</span></div>
+       <div class="platform-post-head"><span class="chip platform-${escapeHtml(x.network)}">${escapeHtml(name)}</span><span class="chip ${isErr && !manualPosted(x)?'err':'ok'}">${escapeHtml(state)}</span></div>
        <div class="platform-post-meta">${escapeHtml(x.date.slice(11,16))} น. · ${hasDraft?'ร่างใหม่สำหรับโพสต์เอง':'ข้อความจาก Metricool'}</div>
        ${isErr?'<div class="warn">Metricool มีข้อผิดพลาด โปรดตรวจสอบและโพสต์เอง</div>':''}
        ${hasDraft?'<div class="draft-notice">ข้อความนี้เป็นร่างใหม่ใน GitHub เท่านั้น ยังไม่ได้เปลี่ยนแคปชั่นใน Metricool</div>':''}
@@ -573,6 +613,7 @@ function renderTodayContent(){
        <div class="label">${x.network==='youtube'?'คำอธิบาย YouTube (Description)':'แคปชั่นพร้อมแฮชแท็ก'}</div>
        <div class="copybox"><p>${escapeHtml(copy)}</p><button class="copy" data-copy="${encodeURIComponent(copy)}">คัดลอกสำหรับ ${escapeHtml(name)}</button></div>
        <div class="scheduled-actions">${publishedClip?`<a class="btn btn-primary" href="${escapeHtml(publishedClip)}" target="_blank" rel="noopener">▶ ไฟล์ที่ตั้งใน Metricool · ${escapeHtml(name)}</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool — รอตรวจสอบ</span>'}</div>
+       ${manualTikTokAction(x)}
      </section>`;
    }).join('');
    return `<article class="scheduled-card">
@@ -642,7 +683,7 @@ function renderScheduled(rows){
     const parts=splitPostText(x.text);
     const title=x.title || parts.caption.split('\n')[0] || 'Scheduled post';
     const isErr=x.status==='ERROR';
-    const statusText=isErr?'ต้องโพสต์เอง':'ตั้งเวลาแล้ว';
+    const statusText=manualPosted(x)?'ฉันโพสต์เองแล้ว':isErr?'Metricool ผิดพลาด':'สถานะจาก Metricool';
     const all=(parts.caption+(parts.hashtags?'\n\n'+parts.hashtags:'')).trim();
     return `
       <article class="scheduled-card ${isErr?'error':''}">
@@ -653,10 +694,10 @@ function renderScheduled(rows){
           </div>
           <div class="chips">
             <span class="chip platform-${escapeHtml(x.network)}">${escapeHtml(networkLabel(x.network))}</span>
-            <span class="chip ${isErr?'err':'ok'}">${statusText}</span>
+            <span class="chip ${isErr&&!manualPosted(x)?'err':'ok'}">${statusText}</span>
           </div>
         </div>
-        ${isErr?'<div class="notice" style="margin-top:10px;border-color:#fecaca;background:#fff5f5;color:#9b1c1c">Metricool โพสต์ไม่สำเร็จเพราะชนลิมิตแพ็กเกจ — ใช้ปุ่มด้านล่างเพื่อดาวน์โหลดแล้วโพสต์เอง</div>':''}
+        ${isErr?'<div class="notice" style="margin-top:10px;border-color:#fecaca;background:#fff5f5;color:#9b1c1c">Metricool รายงานข้อผิดพลาดเพราะชนลิมิตแพ็กเกจ หากโพสต์เองแล้วสามารถยืนยันสถานะแยกบนเว็บนี้ได้</div>':''}
         <div class="scheduled-copy">
           ${publishingTitleBlock(x)}
           <div class="label">${x.network==='youtube'?'คำอธิบาย YouTube (Description)':'แคปชั่นพร้อมแฮชแท็ก'}</div>
@@ -665,6 +706,7 @@ function renderScheduled(rows){
             ${x.media?`<a class="btn btn-primary" href="${escapeHtml(x.media)}" target="_blank" rel="noopener">▶ ดูไฟล์ที่ตั้งใน Metricool · ${escapeHtml(networkLabel(x.network))}</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool</span>'}
             ${(x.drive_url||x.download_url)?`<a class="btn btn-secondary" href="${escapeHtml(x.drive_url||x.download_url)}" target="_blank" rel="noopener">ไฟล์ต้นฉบับ Google Drive · ${escapeHtml(x.drive_file_name||'Master')}</a>`:''}
           </div>
+          ${manualTikTokAction(x)}
         </div>
       </article>`;
   }).join('');
@@ -754,19 +796,35 @@ function render(){
     </article>`;
   }).join('');
 
-  document.querySelectorAll('[data-platform]').forEach(b=>b.onclick=()=>{
-    const id=b.dataset.id;
-    const platform=b.dataset.platform;
-    done[id]=done[id]||{tiktok:false,shopee:false};
-    done[id][platform]=!done[id][platform];
-    try{ window.localStorage?.setItem(STORE_KEY,JSON.stringify(done)); }catch(e){}
-    render();
-  });
 }
 
 document.addEventListener('click',event=>{
+ const affiliateButton=event.target.closest('[data-platform][data-id]');
+ if(affiliateButton){
+   const platform=affiliateButton.dataset.platform;
+   const id=affiliateButton.dataset.id;
+   if(platform!=='tiktok' && platform!=='shopee') return;
+   const next={...done,[id]:{...(done[id]||{}),[platform]:!done[id]?.[platform],updated_at:new Date().toISOString()}};
+   if(saveLocalStatus(STORE_KEY,next)){done=next;render();toast(platform==='tiktok'?'บันทึก TikTok Affiliate แล้ว (เฉพาะเครื่องนี้)':'บันทึก Shopee แล้ว (เฉพาะเครื่องนี้)');}
+   return;
+ }
+ const contentButton=event.target.closest('[data-content-toggle]');
+ if(contentButton){
+   const key=decodeURIComponent(contentButton.dataset.contentToggle||'');
+   if(!key)return;
+   const next={...contentDone,[key]:{posted:!contentDone[key]?.posted,updated_at:new Date().toISOString()}};
+   if(saveLocalStatus(CONTENT_STORE_KEY,next)){contentDone=next;render();toast('บันทึกสถานะ TikTok Ken Monitoring แล้ว (เฉพาะเครื่องนี้)');}
+   return;
+ }
  const b=event.target.closest('[data-copy], [data-copyall]');
- if(b)copyText(decodeURIComponent(b.dataset.copy||b.dataset.copyall||''),'คัดลอกแคปชั่นแล้ว');
+ if(b)copyText(decodeURIComponent(b.dataset.copy||b.dataset.copyall||''),'คัดลอกแล้ว');
+});
+window.addEventListener?.('storage',event=>{
+ if(event.key===STORE_KEY || event.key===CONTENT_STORE_KEY){
+   done=loadLocalStatus(STORE_KEY);
+   contentDone=loadLocalStatus(CONTENT_STORE_KEY);
+   render();
+ }
 });
 document.querySelectorAll('[data-side]').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('[data-side]').forEach(x=>x.classList.remove('active'));
