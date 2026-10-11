@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { readChecklist, writeChecklist, emptyChecklist, statusText, doneIntent, undoIntent, targetFromText } from '../../lib/checklist.js';
-import { dayPlan, dayPlanText, sevenDayText, bkkDate as scheduleDate } from '../../lib/schedule.js';
+import { dayPlan, dayPlanText, dayPostMessages, sevenDayText, bkkDate as scheduleDate, READY_FOLDER, DASHBOARD_URL } from '../../lib/schedule.js';
 
 function validSignature(raw, signature, secret) {
   if (!signature || !secret) return false;
@@ -26,50 +26,19 @@ async function reply(replyToken, texts) {
   if (!r.ok) console.error('LINE reply failed', r.status, await r.text());
 }
 
-const QUEUE_URL = 'https://raw.githubusercontent.com/thanawat150/satelliteproject/main/docs/affiliate-posting/queue.json';
-const SCHEDULE_URL = 'https://raw.githubusercontent.com/thanawat150/satelliteproject/main/docs/affiliate-posting/schedule.json';
-const DASHBOARD_URL = 'https://thanawat150.github.io/satelliteproject/affiliate-posting/';
-
-async function getQueue() {
-  const r = await fetch(QUEUE_URL, { cache:'no-store' });
-  if (!r.ok) throw new Error('queue fetch failed');
-  return r.json();
-}
-
-async function getSchedule() {
-  const r = await fetch(SCHEDULE_URL, { cache:'no-store' });
-  if (!r.ok) throw new Error('schedule fetch failed');
-  return r.json();
-}
-
-function bkkDate(offsetDays=0) {
-  const d = new Date(Date.now() + offsetDays * 86400000);
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone:'Asia/Bangkok',
-    year:'numeric', month:'2-digit', day:'2-digit'
-  }).format(d);
-}
-
-function shortDate(iso) {
-  const d = new Date(iso + 'T00:00:00+07:00');
-  return new Intl.DateTimeFormat('th-TH', {
-    timeZone:'Asia/Bangkok',
-    weekday:'short', day:'numeric', month:'short'
-  }).format(d);
-}
-
-function scheduleLine(x) {
-  return shortDate(x.date) + ' — ' + x.product +
-    '\nShopee ' + x.shopee + ' | TikTok ' + x.tiktok;
-}
-
-function detailText(label, x) {
-  if (!x) return label + ': ยังไม่มีคิว';
-  return label + ' (' + shortDate(x.date) + ')' +
-    '\nสินค้า: ' + x.product +
-    '\nคลิป: ' + x.file +
-    '\nPlatform: TikTok + Shopee' +
-    '\nShopee ' + x.shopee + ' | TikTok ' + x.tiktok;
+function postSelector(text) {
+  const query = String(text || '').trim().toLowerCase().replace(/\s+/g,' ');
+  if (['ส่ง', 'ส่งของวันนี้', 'ส่งทั้งหมด', 'ส่งทุกช่อง', 'ส่งครบทุกช่อง'].includes(query)) return 'all';
+  if (!query.startsWith('ส่ง')) return null;
+  const channel=query.slice('ส่ง'.length).trim();
+  if (['คอนเทนต์','content','คลิปคอนเทนต์'].includes(channel)) return 'content';
+  if (/^(?:tiktok|tik tok|ติ๊กต็อก|ติ๊กต๊อก|ติ๊กตอก)\s*(?:ขาย|affiliate)$/i.test(channel)) return 'tiktok-affiliate';
+  if (/^(?:shopee|ช้อปปี้|ช็อปปี้|ชอปปี้|ชอปปี้วิดีโอ|shopee video)$/i.test(channel)) return 'shopee';
+  if (/^(?:tiktok|tik tok|ติ๊กต็อก|ติ๊กต๊อก|ติ๊กตอก)(?:\s*(?:คลิป|content|คอนเทนต์))?$/i.test(channel)) return 'tiktok';
+  if (/^(?:facebook|fb|เฟซบุ๊ก|เฟสบุ๊ก|เพจ)$/i.test(channel)) return 'facebook';
+  if (/^(?:instagram|ig|อินสตาแกรม|ไอจี)$/i.test(channel)) return 'instagram';
+  if (/^(?:youtube|yt|ยูทูบ|ยูทูป|ยูทิวบ์)$/i.test(channel)) return 'youtube';
+  return null;
 }
 
 function menuText() {
@@ -78,7 +47,10 @@ function menuText() {
     'วันนี้ — ดูของที่ต้องลงวันนี้',
     'พรุ่งนี้ — ดูว่าพรุ่งนี้ต้องลงอะไร',
     'ตาราง — ดูกำหนดการ 7 วันในแชต',
-    'ส่ง — ส่งลิงก์คลิป + Platform + Caption',
+    'ส่ง — รายละเอียดคลิป+เวลา+แคปชั่นแยกทุกช่อง',
+    'ส่ง Facebook / ส่ง IG / ส่ง TikTok / ส่ง YouTube',
+    'ส่ง TikTok ขาย / ส่ง Shopee',
+    'ส่งคอนเทนต์ — ดูเฉพาะ IG, Facebook, TikTok, YouTube',
     'สถานะ — ดู Checklist วันนี้',
     'TikTok ขาย ลงแล้ว',
     'TikTok คลิป ลงแล้ว',
@@ -91,20 +63,6 @@ function menuText() {
     'พร้อม — เปิดโฟลเดอร์คลิปพร้อม',
     'เมนู — ดูคำสั่งทั้งหมด'
   ].join('\n');
-}
-
-function platformText(q) {
-  const p=[];
-  if (q?.tiktok_time) p.push('TikTok');
-  if (q?.shopee_time) p.push('Shopee');
-  return p.join(' + ') || 'TikTok + Shopee';
-}
-
-function timeText(q) {
-  const x=[];
-  if (q?.shopee_time) x.push('Shopee ' + q.shopee_time);
-  if (q?.tiktok_time) x.push('TikTok ' + q.tiktok_time);
-  return x.join(' | ');
 }
 
 export async function GET() {
@@ -148,17 +106,13 @@ export async function POST(request) {
         } catch {
           await reply(event.replyToken, 'อ่านกำหนดการวันนี้ไม่สำเร็จ ลองใหม่อีกครั้ง');
         }
-      } else if (['ส่ง','ส่งของวันนี้'].includes(incoming)) {
+      } else if (postSelector(incoming)) {
         try {
-          const q = await getQueue();
-          await reply(event.replyToken, [
-            q.download_url || q.drive_url || 'ยังไม่มีลิงก์คลิป',
-            platformText(q),
-            q.post_text || [q.caption,q.hashtags].filter(Boolean).join('\n\n'),
-            timeText(q) || 'ยังไม่ได้ตั้งเวลาโพสต์'
-          ]);
-        } catch {
-          await reply(event.replyToken, 'อ่านคิววันนี้ไม่สำเร็จ ลองใหม่อีกครั้ง');
+          const plan = await dayPlan(scheduleDate(0));
+          await reply(event.replyToken, dayPostMessages(plan, postSelector(incoming)));
+        } catch (e) {
+          console.error('POST_DETAILS_ERROR', e);
+          await reply(event.replyToken, 'อ่านคิวจากตารางล่าสุดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
         }
       } else if (incoming === 'สถานะ' || incoming === 'เช็คลิส' || incoming === 'checklist') {
         try {
@@ -238,12 +192,7 @@ export async function POST(request) {
       } else if (incoming === 'dashboard' || incoming === 'แดชบอร์ด') {
         await reply(event.replyToken, DASHBOARD_URL);
       } else if (incoming === 'พร้อม') {
-        try {
-          const q = await getQueue();
-          await reply(event.replyToken, q?.source_folder?.url || DASHBOARD_URL);
-        } catch {
-          await reply(event.replyToken, DASHBOARD_URL);
-        }
+        await reply(event.replyToken, READY_FOLDER);
       } else {
         await reply(event.replyToken, menuText());
       }
