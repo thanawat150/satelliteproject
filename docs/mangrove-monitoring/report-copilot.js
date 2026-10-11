@@ -517,7 +517,7 @@ function floodEventEvidencePages(d,plot,ts){
    '<div class="rpt-finding"><b>สิ่งที่ต้องตรวจเพิ่ม</b><p>บริเวณที่สัญญาณน้ำลดลงอาจเปิดเผยพืชหรือดินที่เคยถูกน้ำปกคลุม ค่า NDVI/NDRE/NDMI ที่เปลี่ยนจึงยังไม่ใช่การเติบโต การตาย หรือการฟื้นตัวของต้นไม้ ต้องประเมินพิกเซลพื้นที่ดินเดิม (Stable Land) และหลักฐานภาคสนามก่อน</p></div>'+
    '<p class="rpt-caption">ภาพล่าสุดของเหตุการณ์ '+esc(ts.latest.date)+' · วันที่ค่าสูงสุดที่พบ '+esc(ts.peak.date)+' · ไม่มีการเชื่อมสถานีวัดระดับน้ำขึ้นลงจริงในรายงานนี้</p>'
  }:null;
- const pages=[{key:'02B / EVENT '+plot,title:'ก่อนน้ำเพิ่ม → ช่วงสูง → ล่าสุด · '+plot,body:numeric},
+ const pages=[{key:'02B / EVENT '+plot,title:'ลำดับภาพและแนวโน้มน้ำ · '+plot+' — อ้างอิง → ค่าสูงสุด → ล่าสุด',body:numeric},
   {key:'02C / IMAGES '+plot,title:'ภาพดาวเทียมสามช่วงเหตุการณ์ · '+plot,body:imgBody}];
  if(plantPage)pages.push(plantPage);
  return pages;
