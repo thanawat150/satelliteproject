@@ -805,19 +805,27 @@ function monitoringPlan(d){
  // produced by nationwide_process.change_summary(). Do not misattribute it
  // to differences between the two scene-level index means.
  if(commonPairs.length){
+  const geometryAnomalies=commonPairs.filter(x=>Number.isFinite(Number(x.p.area))&&Number(x.p.area)>0&&Number(x.common.common_clear_rai)>Number(x.p.area)+.1);
+  const reliableAreaPairs=commonPairs.filter(x=>!geometryAnomalies.includes(x));
+  const missingCoverage=commonPairs.filter(x=>x.common.common_clear_pct_of_plot===null||x.common.common_clear_pct_of_plot===undefined||!Number.isFinite(Number(x.common.common_clear_pct_of_plot)));
   const bodyRows=[...commonPairs].sort((a,b)=>b.last.date.localeCompare(a.last.date)||a.code.localeCompare(b.code)).slice(0,8).map(x=>{
-   const c=x.common,over=Number(c.common_clear_rai)>Number(x.p.area||0)+.1;
+   const c=x.common,over=geometryAnomalies.includes(x),plotArea=Number(x.p.area);
+   const reported=c.common_clear_pct_of_plot!=null&&c.common_clear_pct_of_plot!==''&&Number.isFinite(Number(c.common_clear_pct_of_plot))?Number(c.common_clear_pct_of_plot):null;
+   const derived=!over&&reported===null&&Number.isFinite(plotArea)&&plotArea>0&&Number(c.common_clear_rai)<=plotArea?Number(c.common_clear_rai)/plotArea*100:null;
+   const pct=reported!==null&&reported>=0&&reported<=100?num(reported)+'%':derived!==null?num(derived)+'%*':'ไม่ทราบ';
    return {code:x.code,dates:c.date_a+' → '+c.date_b,area:num(c.common_clear_rai),
-    coverage:num(c.common_clear_pct_of_plot)+'%',water:num(c.water_net_change_rai),vegetation:num(c.vegetation_net_change_rai),
-    review:over?'ตรวจพื้นที่ Geometry':Number(c.common_clear_pct_of_plot)<50?'พื้นที่ร่วมต่ำกว่า 50%':'ต้องตรวจ Accuracy'};
+    coverage:over?'ผิดปกติ':pct,
+    water:over?'พักใช้':num(c.water_net_change_rai),
+    vegetation:over?'พักใช้':num(c.vegetation_net_change_rai),
+    review:over?'พักผล: ตรวจ Geometry':pct==='ไม่ทราบ'?'ตรวจ % พื้นที่ร่วม':Number(reported??derived)<50?'พื้นที่ร่วมต่ำ':'รอ Accuracy'};
   });
-  const geoIssues=commonPairs.filter(x=>Number(x.common.common_clear_rai)>Number(x.p.area||0)+.1).map(x=>x.code);
-  add('04 / COMMON PIXELS','ผลเปรียบเทียบเชิงพื้นที่จากพิกเซลร่วม · '+scope,
-   '<p class="rpt-lead">ค่าพื้นที่ตารางนี้มาจากผลจำแนก Raster ที่ใช้หน้ากากพิกเซลเหมาะสมร่วมกันในวันก่อนหน้าและวันปัจจุบัน และตัดตามขอบเขต Polygon แล้ว <b>ไม่ใช่</b>ผลต่างค่าเฉลี่ย NDVI/NDWI/MNDWI ที่แสดงในตารางดัชนี</p>'+
-   table(bodyRows,[['code','แปลง'],['dates','คู่วันที่'],['area','พื้นที่ร่วม (ไร่)'],['coverage','ครอบคลุม'],['water','น้ำสุทธิ (ไร่)'],['vegetation','พืชสุทธิ (ไร่)'],['review','ตรวจต่อ']])+
-   '<p class="rpt-caption">แสดง '+bodyRows.length+' จาก '+commonPairs.length+' แปลงที่มีผลจำแนกจากพิกเซลร่วมในคู่วันที่เดียวกับค่าดัชนีล่าสุด · เพิ่ม/ลดสุทธิคำนวณจาก Water/Vegetation Masks ที่จำแนกจาก GeoTIFF เดิม ไม่ใช่ผลตรวจภาคสนาม</p>'+
-   (geoIssues.length?'<p class="rpt-coverage-warning rpt-coverage-reject">พบพื้นที่พิกเซลร่วมมากกว่าพื้นที่ Geometry ที่รายงาน: '+esc(geoIssues.join(', '))+' · ต้องตรวจ CRS/Grid/การคำนวณพื้นที่ก่อนรับรองตัวเลข</p>':'')+
-   '<p class="rpt-disclaimer">ไม่มีการแก้อิทธิพลน้ำขึ้นลง และยังไม่มีการประเมินความถูกต้องอิสระของผลจำแนก จึงไม่ใช้ค่าเหล่านี้รับรองน้ำท่วม ความเสียหาย หรือการเพิ่มพูนป่าชายเลน</p>');
+  add('04 / COMMON PIXELS','ผลเปรียบเทียบพื้นที่ที่ใช้ข้อมูลร่วม · '+scope,
+   '<p class="rpt-lead">ตารางนี้มาจากการจำแนกน้ำ/พืชพรรณบนพิกเซลร่วมของคู่ภาพที่มีอยู่ใน Raster ต้นฉบับ ต่างจากผลต่างค่าเฉลี่ยดัชนีที่คำนวณคนละวัน · ตัวเลขยังเป็นผลคัดกรอง ไม่ใช่พื้นที่น้ำท่วมที่รับรอง</p>'+
+   table(bodyRows,[['code','แปลง'],['dates','คู่วันที่'],['area','พื้นที่ร่วม (ไร่)'],['coverage','ครอบคลุมแปลง'],['water','น้ำสุทธิ (ไร่)'],['vegetation','พืชสุทธิ (ไร่)'],['review','สถานะตรวจ']])+
+   '<p class="rpt-caption">มีคู่พิกเซลร่วม '+commonPairs.length+' แปลง · '+reliableAreaPairs.length+' แปลงไม่พบพื้นที่ร่วมเกินขนาด Geometry · '+geometryAnomalies.length+' แปลงพักใช้ตัวเลขจำแนก · เครื่องหมาย * หมายถึงสัดส่วนที่คำนวณเบื้องต้นจากพื้นที่ร่วม/พื้นที่ Geometry ที่ลงทะเบียน ไม่ใช่ร้อยละ QA ที่ยืนยันจากการประมวลผล</p>'+
+   (missingCoverage.length?'<p class="rpt-disclaimer">ผลต้นทาง '+missingCoverage.length+' แปลงยังไม่ได้ส่งค่าเปอร์เซ็นต์พื้นที่ร่วมมาใน Manifest; หากมี Geometry เหมาะสมจะแสดงสัดส่วนคำนวณ (*) มิฉะนั้นจะแสดง “ไม่ทราบ” ไม่เติม 0.00%</p>':'')+
+   (geometryAnomalies.length?'<p class="rpt-coverage-warning rpt-coverage-reject"><b>พักใช้ผลเชิงพื้นที่ของ '+esc(geometryAnomalies.map(x=>x.code).join(', '))+'</b> เพราะพื้นที่ร่วมมากกว่าพื้นที่ Geometry ที่ลงทะเบียน ต้องตรวจ Polygon, CRS, Raster Grid และการคำนวณพื้นที่ก่อนเผยแพร่ตัวเลขน้ำ/พืช</p>':'')+
+   '<p class="rpt-disclaimer">ยังไม่มีการปรับแก้น้ำขึ้นลงหรือประเมินความถูกต้องอิสระของผลจำแนก ห้ามใช้ผลนี้รับรองน้ำท่วม ความเสียหาย หรือต้นไม้ตาย</p>');
  }
  // Show matched before/after images rather than six unrelated thumbnail scenes.
  let cases=0;
