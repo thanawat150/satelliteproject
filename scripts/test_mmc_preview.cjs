@@ -270,6 +270,23 @@ const generalDecision=await page.evaluate(()=>{
 });
 assert.equal(generalDecision.plots,19,'General monitoring report includes all 19 Rayong plots');
 
+const geographyQA=await page.evaluate(()=>{
+ const host=document.createElement('div');host.innerHTML=window.MMCReportCopilot.renderPages('main').pages;
+ const province=host.querySelectorAll('.rpt-map-province-outline').length;
+ const sites=host.querySelectorAll('.rpt-map-province-site').length;
+ const detailed=host.querySelector('.rpt-map-detail');
+ const circles=[...(detailed?.querySelectorAll('circle')||[])].map(z=>[Number(z.getAttribute('cx')),Number(z.getAttribute('cy'))]);
+ let minDistance=Infinity;for(let i=0;i<circles.length;i++)for(let j=i+1;j<circles.length;j++)minDistance=Math.min(minDistance,Math.hypot(circles[i][0]-circles[j][0],circles[i][1]-circles[j][1]));
+ return {province,sites,markers:circles.length,leaders:host.querySelectorAll('.rpt-map-plot-leader').length,minDistance,
+  hasSource:host.innerHTML.includes('OCHA COD-AB Thailand'),hasRosters:host.innerHTML.includes('แปลงที่ต้องตรวจข้อมูลเพิ่มเติม'),
+  hasIndexBars:host.querySelectorAll('.rpt-index-bar-row').length};
+});
+assert.ok(geographyQA.province>=1&&geographyQA.sites===19,'Rayong PDF should show source-grounded province outline with all plot locations: '+JSON.stringify(geographyQA));
+assert.equal(geographyQA.markers,19,'Detailed GIS map contains every plot marker');
+assert.ok(geographyQA.minDistance>=12.5,'Plot number labels must not overlap: '+JSON.stringify(geographyQA));
+assert.ok(geographyQA.hasSource&&geographyQA.hasRosters&&geographyQA.hasIndexBars===6,'Executive-friendly maps, follow-up roster, and all six index bars must be present');
+
+
 assert.equal(generalDecision.audit?.release_status,'SCREENING_ONLY_NOT_APPROVED','General monitoring is explicitly not certified for decision-impact claims');
 assert.equal(generalDecision.audit?.common_valid_pixel_verified,false,'Source common-valid masks are screening products without independent accuracy validation');
 assert.ok(generalDecision.audit?.common_valid_classification_pair_count>0,'Actual GeoTIFF common-valid classification pairs must be surfaced where date-matched');
