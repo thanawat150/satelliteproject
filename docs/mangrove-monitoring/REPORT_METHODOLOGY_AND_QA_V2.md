@@ -7,7 +7,7 @@ Produce a **decision-oriented environmental monitoring report**, not a satellite
 1. **Decision question**: interpret the user's intent and scope (plot/province/nationwide, flood/forest/general/audit), identify the period and audience.
 2. **Evidence inventory**: enumerate all registered plots (including no-data), actual image dates and acquisition products; show the newest **available** acquisition separately from the newest **QA-valid** acquisition.
 3. **Scene quality**: SCL-based valid percentages are *not* classification accuracy. Validate band presence, CRS, geometry, footprints, cloud/no-data and plot coverage. RGB/index preview transparency is a display-quality check, not independent product validation.
-4. **Paired change**: a difference of separately computed per-scene mean indices is labeled an **index-mean screening comparison**. Do **not** call it validated spatial pixel change. To validate change, reproject to a common CRS/grid and intersect masks at identical geographic pixels. Report the common-valid pixel count, comparable area, denominator, and dates, and compare on that exact intersection. Until those outputs are generated, the report must explicitly say that common-pixel comparison is unverified.
+4. **Paired change**: a difference of separately computed per-scene mean indices is labeled an **index-mean screening comparison**. Do **not** call it validated spatial pixel change. To validate change, reproject to a common CRS/grid and intersect masks at identical geographic pixels. Report the common-valid pixel count, comparable area, denominator, and dates, and compare on that exact intersection. The existing `scripts/nationwide_process.py` already generates **polygon-clipped common-valid masks for water/vegetation/soil class change**, when a valid before/after TIFF pair exists. The Report Copilot now displays those class-area results when the exact date pair matches. However, **differences of separately calculated scene-mean indices are not recomputed on that common mask**, so they must remain index-mean screening indicators, not spatial change products.
 5. **Visual interpretation**: read true color, false color and all available NDVI, NDRE, NDMI, NDWI, MNDWI and BSI images. Make observations date-specific and strictly inside GIS polygons. A color change alone is not a certified inundation, forest survival rate, mortality, encroachment or ecological recovery.
 6. **Mangrove-specific competing explanations**: check tidal stage, rainfall, seasonal changes, clouds, shadows, surface water and spatial resolution. Do not declare flooding from increased MNDWI without suitable evidence. Sentinel-2 source bands have different native resolutions; display resampling does not increase native information.
 7. **Risk/finance**: plot geometry area is neither damaged area nor loss of investment value. Financial exposure requires credible project boundaries, liabilities, costs/contracts and independently reviewed impact claims.
@@ -18,7 +18,7 @@ Produce a **decision-oriented environmental monitoring report**, not a satellite
 ## Evidence levels — MMC internal labels (not ISO/CEOS certification)
 - **E0**: No adequate scene evidence in the selected period.
 - **E1**: Visual or one-date source evidence; no validated date pair.
-- **E2**: Two QA-valid source dates with a numeric *mean-index screening* comparison, not independently validated.
+- **E2**: QA-valid paired screening, optionally with a **source-derived common-valid land-cover class** change mask. Independent classification accuracy and index-mean common-mask recomputation remain unavailable.
 - **E3**: An area-specific, independently checked common-valid-pixel change product with documented accuracy/uncertainty.
 - **E4**: Evidence is adequate for the stated management or audit decision and has explicit authorized sign-off; this is not automatic from E3.
 
@@ -42,6 +42,6 @@ The current static report data supports **at most E2**. Reports must not claim E
 - [ ] CI browser smoke tests and deployment succeed; then review a newly generated PDF visually before approving it for external use.
 
 ## Outstanding work
-- Build a genuine GeoTIFF-based common-valid-pixel calculation with reproducible georeferencing and intersection masks, and then independently validate change accuracy.
+- Extend the existing GeoTIFF-based common-valid masks from **land-cover classes** to paired **index statistics** using the exact same valid pixels, and independently validate classification/change accuracy with documented reference samples.
 - Integrate timestamp-matched tidal/weather observations only when actual sources are available.
 - Add a human review and authorized sign-off workflow; existing GitHub Pages output remains a **DRAFT**.
