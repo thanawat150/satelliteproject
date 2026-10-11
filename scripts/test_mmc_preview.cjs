@@ -361,6 +361,31 @@ await page.locator('#rpt-analyze').click();
 assert.equal(await page.locator('#rpt-type').inputValue(),'water','Thai intent parser understands water report');
 assert.equal(await page.locator('#rpt-scope').inputValue(),'province','Thai intent parser understands province scope');
 assert.equal(await page.locator('#rpt-period').inputValue(),'90','Thai intent parser understands three-month window');
+
+const syntheticPhases=await page.evaluate(()=>{
+ const f=window.MMCReportCopilot.floodEventPhases;
+ const base=[{date:'2026-09-01',water:10},{date:'2026-09-10',water:100},{date:'2026-09-20',water:35}];
+ const p=f(base),returning=f([...base,{date:'2026-09-25',water:50}]);
+ const near=f([base[0],base[1],{date:'2026-09-20',water:12}]);
+ const rising=f(base.slice(0,2));
+ const missing=f([{date:'2026-09-01',water:100},{date:'2026-09-20',water:30}]);
+ return {
+  event:{baseline:p.baseline?.date,peak:p.peak?.date,latest:p.latest?.date,rise:p.rise,fall:p.peakChange,remaining:p.referenceChange,complete:p.complete,phase:p.phase},
+  rebound:{phase:returning.phase,latestInterval:returning.latestInterval},
+  near:near.phase,rising:rising.phase,noBaseline:missing.phase,
+  empty:f([])===null
+ };
+});
+assert.deepEqual(syntheticPhases.event,{
+ baseline:'2026-09-01',peak:'2026-09-10',latest:'2026-09-20',rise:90,fall:-65,remaining:25,complete:true,phase:'receding'
+},'Water-event model must identify before/peak/latest and all three mathematically consistent comparison deltas');
+assert.equal(syntheticPhases.rebound.phase,'rebound','After receding, a new rise in the most recent interval must not be falsely labeled continued receding');
+assert.equal(syntheticPhases.rebound.latestInterval,15,'Latest interval uses the last two authentic scene dates');
+assert.equal(syntheticPhases.near,'near_baseline','Water near the reference level must remain only a classification signal, not confirmed mangrove recovery');
+assert.equal(syntheticPhases.rising,'peak_latest','If water peaks on the newest observation, the system must not invent a recession');
+assert.equal(syntheticPhases.noBaseline,'no_baseline','If peak occurs at the first observation, there is no established pre-peak reference');
+assert.ok(syntheticPhases.empty,'No scene evidence must not generate a fake event');
+
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'AI report blueprint generates real A4 preview');
 const reportStateDebug=await page.evaluate(()=>{let result;try{const r=window.MMCReportCopilot.renderPages();result={count:r.d.pp.length,pages:r.total};}catch(e){result={error:String(e),stack:e?.stack};}return {scope:document.querySelector('#rpt-scope')?.value,warnings:document.querySelector('#rpt-warning-list')?.textContent,summary:document.querySelector('#rpt-source-summary')?.textContent,readiness:document.querySelector('#rpt-readiness')?.textContent,previewCount:document.querySelectorAll('#rpt-preview .rpt-paper').length,result};});console.log('MMC_REPORT_STATE_DEBUG',JSON.stringify(reportStateDebug));
 assert.ok((await page.locator('#rpt-warning-list').innerText()).includes('ไม่เฉลี่ยค่าดัชนี'),'Province report must not mix unweighted plot indices');
@@ -393,6 +418,10 @@ assert.ok(rayong.front.includes('ข้อสรุปสำหรับผู�
 
 assert.ok(rayong.front.includes('สถานการณ์ล่าสุดเทียบช่วงที่น้ำสูงกว่า'),'Executive cover must lead with latest receding-water evidence');
 assert.ok(rayong.text.includes('2026-10-07 · 60.06')&&rayong.text.includes('2026-09-29 · 238.45'),'17-STC shows both high-water and later recession rather than stopping in September');
+assert.ok(rayong.text.includes('ก่อนน้ำเพิ่ม → ช่วงสูง → ล่าสุด')===false||rayong.text.includes('ลำดับภาพและแนวโน้มน้ำ'),'Event report must present a coherent chronological history');
+assert.ok(rayong.text.includes('เปรียบเทียบสามคู่วันภาพ')&&rayong.text.includes('ช่วงอ้างอิง → ล่าสุด'),'A flood report must compare baseline-to-peak, peak-to-latest, and baseline-to-latest using real dates');
+assert.ok(rayong.text.includes('หลังน้ำลด พืชพรรณเปลี่ยนอย่างไร'),'Post-water NDVI NDRE NDMI evidence must be discussed without inventing tree recovery');
+assert.ok(rayong.front.includes('ลำดับเหตุการณ์จากวันภาพที่มี'),'Executive cover must distinguish complete observed event phases and latest directions');
 assert.ok(rayong.text.includes('−178.39')||rayong.text.includes('-178.39')||rayong.text.includes('178.39'),'Main Rayong report shows 17-STC decline since 29 Sept, not just historic +238 rai');
 assert.ok(rayong.text.includes('rpt-water-decreased')&&rayong.text.includes('แนวโน้มล่าสุด'),'Water change chart is based on recent dates and emphasizes the decrease');
 assert.ok(rayong.text.includes('2026-10-07 · 13.75')&&rayong.text.includes('2026-09-29 · 76.01'),'21-STC recent receding water is included');
@@ -555,6 +584,11 @@ assert.ok(decisionPages.every(x=>x.last!=null&&x.footer!=null&&x.last<x.footer-3
 
 const borderCount=await page.locator('#rpt-preview .rpt-image-boundary').count();
 assert.ok(borderCount>=1,'Report preview with authentic index Raster must include a real GIS boundary overlay');
+const eventPageFit=await page.evaluate(()=>{
+ const parsed=document.createElement('section');parsed.innerHTML=window.MMCReportCopilot.renderPages('main').pages;
+ return [...parsed.querySelectorAll('.rpt-event-phases')].map(x=>({count:x.querySelectorAll('.rpt-event-phase').length,text:x.textContent}));
+});
+assert.ok(eventPageFit.every(x=>x.count===3),'Every flood event must show exactly three dated phase slots, including explicit missing evidence');
 const printWindow=page.waitForEvent('popup',{timeout:15000});
 await page.locator('#rpt-print').click();
 const reportPopup=await printWindow;
