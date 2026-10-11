@@ -273,8 +273,13 @@ assert.equal(generalDecision.plots,19,'General monitoring report includes all 19
 assert.equal(generalDecision.audit?.release_status,'SCREENING_ONLY_NOT_APPROVED','General monitoring is explicitly not certified for decision-impact claims');
 assert.equal(generalDecision.audit?.common_valid_pixel_verified,false,'Source common-valid masks are screening products without independent accuracy validation');
 assert.ok(generalDecision.audit?.common_valid_classification_pair_count>0,'Actual GeoTIFF common-valid classification pairs must be surfaced where date-matched');
-assert.ok(generalDecision.all.includes('ผลเปรียบเทียบเชิงพื้นที่จากพิกเซลร่วม')&&generalDecision.all.includes('พื้นที่ร่วม (ไร่)'),'Report must explain real pixel-intersection class changes separately from scene mean index differences');
+assert.ok(generalDecision.all.includes('ผลเปรียบเทียบพื้นที่ที่ใช้ข้อมูลร่วม')&&generalDecision.all.includes('พื้นที่ร่วม (ไร่)'),'Report must explain real pixel-intersection class changes separately from scene mean index differences');
 assert.equal(generalDecision.audit?.independent_validation_available,false,'No field-reference validation should be claimed');
+assert.ok(!generalDecision.all.includes('—%'),'Missing overlap coverage must not be represented as a numeric percent: no em dash percent allowed');
+assert.ok(generalDecision.all.includes('พักใช้ผลเชิงพื้นที่ของ 23-STC'),'Invalid spatial area that exceeds plot geometry must be quarantined in the report');
+assert.ok(generalDecision.all.includes('พื้นที่ร่วม/พื้นที่ Geometry')||generalDecision.all.includes('ไม่ทราบ'),'Coverage must show how it is derived or be explicitly unknown');
+assert.ok(generalDecision.all.includes('รอ Accuracy'),'Unvalidated raster classifications need an explicit review status');
+
 assert.equal(generalDecision.audit?.unpaired.length,2,'All plots without comparable spectral pairs remain disclosed');
 assert.ok(generalDecision.first.includes('สถานะหลักฐาน')&&generalDecision.first.includes('แนวโน้มอื่น/ไม่ชัด'),'Executive findings must disclose evidence readiness and mutually exclusive trend categories');
 assert.ok(generalDecision.first.includes('ผลจำแนกน้ำ/พืช/ดินบนพิกเซลที่ใช้ได้ร่วมกัน'),'Executive summary must acknowledge genuine raster common-valid class results without treating index deltas as same-pixel changes');
