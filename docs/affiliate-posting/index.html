@@ -250,7 +250,7 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
     <div>
       <div class="kicker">AFFILIATE DAILY QUEUE</div>
       <h1>วันนี้ต้องโพสต์อะไร</h1>
-      <p>คิว Affiliate ใช้เฉพาะคลิปในโฟลเดอร์ “พร้อม” และแสดงวันละ 1 คลิป ใช้คลิปเดียวกันลงทั้ง TikTok และ Shopee</p>
+      <p>รวมงานที่ต้องโพสต์วันนี้ทั้ง Content (Instagram / Facebook / TikTok / YouTube) และ Affiliate (TikTok + Shopee) ไว้หน้าเดียว</p>
     </div>
     <div class="clock"><small>Asia / Bangkok</small><strong id="now">—</strong></div>
   </section>
@@ -266,6 +266,14 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
     <div class="metric"><span>โพสต์ครบ TikTok + Shopee</span><strong id="doneCount">0</strong></div>
     <div class="metric"><span>ตั้งเวลา Metricool</span><strong id="scheduledCount">0</strong></div>
     <div class="metric"><span>ต้องโพสต์เอง / Error</span><strong id="errorCount">0</strong></div>
+  </section>
+
+  <section id="todayContentSection">
+    <div class="section-head">
+      <div><div class="kicker">CONTENT TODAY</div><h2>คลิปที่ต้องลงวันนี้ · IG / FB / TikTok / YouTube</h2></div>
+      <span class="snapshot" id="todayContentCount">—</span>
+    </div>
+    <div class="scheduled-list" id="todayContentList"></div>
   </section>
 
   <section id="calendarSection">
@@ -491,6 +499,62 @@ function renderInventory(){
   }).join('');
 }
 
+function renderTodayContent(){
+  const el=document.getElementById('todayContentList');
+  const badge=document.getElementById('todayContentCount');
+  if(!el) return;
+
+  const ds=todayISO();
+  const rows=scheduledPosts
+    .filter(x=>String(x.date).slice(0,10)===ds)
+    .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+
+  if(badge) badge.textContent=rows.length+' รายการ';
+  if(!rows.length){
+    el.innerHTML='<div class="empty">วันนี้ยังไม่มี Content ที่ตั้งไว้</div>';
+    return;
+  }
+
+  const groups=new Map();
+  for(const x of rows){
+    const key=x.drive_file_id || x.drive_url || x.download_url || x.media || x.title || x.text;
+    if(!groups.has(key)) groups.set(key,[]);
+    groups.get(key).push(x);
+  }
+
+  el.innerHTML=[...groups.values()].map(items=>{
+    const first=items[0];
+    const parts=splitPostText(first.text||'');
+    const title=first.title || parts.caption.split('\n')[0] || first.drive_file_name || 'Content วันนี้';
+    const all=(parts.caption+(parts.hashtags?'\n\n'+parts.hashtags:'')).trim();
+    const clipUrl=first.download_url || first.drive_url || first.media || '';
+    const fileName=first.drive_file_name || '';
+
+    const platforms=items.map(x=>{
+      const t=String(x.date).slice(11,16);
+      return '<span class="chip platform-'+escapeHtml(x.network)+'">'+escapeHtml(networkLabel(x.network))+' '+escapeHtml(t)+'</span>';
+    }).join('');
+
+    return `
+      <article class="scheduled-card">
+        <div class="scheduled-top">
+          <div>
+            <h3 class="scheduled-title">${escapeHtml(title)}</h3>
+            <div class="scheduled-meta">${escapeHtml(fmtDate(new Date(first.date+'+07:00')))}${fileName?' · '+escapeHtml(fileName):''}</div>
+          </div>
+          <div class="chips">${platforms}</div>
+        </div>
+        <div class="scheduled-copy">
+          <div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
+          <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>
+          <div class="scheduled-actions">
+            ${clipUrl?`<a class="btn btn-primary" href="${clipUrl}" target="_blank" rel="noopener">⬇ ดาวน์โหลดคลิปจาก Google Drive</a>`:''}
+          </div>
+        </div>
+      </article>`;
+  }).join('');
+}
+
 function scheduledRows(){
   const now=todayISO();
   if(range.startsWith('date:')){
@@ -590,6 +654,7 @@ function visibleRows(){
 function render(){
   renderCalendar();
   renderInventory();
+  renderTodayContent();
   const srows=scheduledRows();
   const rows=visibleRows();
   updateSidebarCounts(srows, rows);
