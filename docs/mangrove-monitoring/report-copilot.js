@@ -707,11 +707,14 @@ function monitoringPlan(d){
 
  const selectedHighlights=[...waterReceding.filter(x=>x.last.date===latestQA).sort((a,b)=>a.code.localeCompare(b.code)).slice(0,2),...waterConcern.sort((a,b)=>b.last.date.localeCompare(a.last.date)).slice(0,2)];
  const tops=[...new Map(selectedHighlights.map(x=>[x.code,x])).values()];
+ const plotImageCaution=x=>x.imageAfter&&x.imageAfter.rgb_invalid_pct!==null&&x.imageAfter.rgb_invalid_pct!==undefined&&Number.isFinite(Number(x.imageAfter.rgb_invalid_pct))&&Number(x.imageAfter.rgb_invalid_pct)>=5?
+  ' · ภาพล่าสุดมีพิกเซลขาดในพื้นที่แปลง (ตรวจ Raster Preview ก่อนสรุปภาพรวมแปลง)':'';
+
  add('01 / EXECUTIVE','รายงานสถานภาพป่าชายเลน · '+scope,
   '<p class="rpt-lead">รายงานคัดกรองจากภาพดาวเทียม: ชี้จุดที่ควรตรวจสอบต่อ ไม่ใช่การรับรองน้ำท่วม ความเสียหาย ต้นไม้ตาย หรือมูลค่าการลงทุน</p>'+
   '<div class="rpt-kpis">'+kpi+'</div>'+auditGate+
   '<div class="rpt-monitor-note"><b>อ่านสถานการณ์จากข้อมูลที่มี</b><p>จาก '+compared.length+' แปลงที่มีคู่ภาพ QA พบ '+waterReceding.length+' แปลงมีทิศทาง NDVI เพิ่มร่วมกับ MNDWI ลด และ '+waterConcern.length+' แปลงมีทิศทาง NDVI ลดร่วมกับ MNDWI เพิ่ม · มี '+latestCompared.length+' แปลงที่มีคู่เปรียบเทียบสิ้นสุดในวันที่ '+esc(latestQA)+' · อีก '+missingCurrent.length+' แปลงมีค่า QA ล่าสุดก่อนวันนี้ ผลนี้เป็นเพียงการคัดกรอง ไม่ใช่สรุปสุขภาพป่าหรือสาเหตุการเปลี่ยนแปลง</p></div><h3>ตัวอย่างสัญญาณสำคัญที่ควรตรวจ</h3>'+ 
-  (tops.length?'<ol class="rpt-decision-findings">'+tops.map(x=>'<li><b>'+esc(x.code)+' · '+esc(x.signal)+'</b> — '+esc(description(x))+(x.last?.date<latestQA?' · ข้อมูล QA ล่าสุดของแปลงนี้ไม่ใช่วันที่ '+latestQA:'')+'</li>').join('')+'</ol>':'<p class="rpt-empty">ยังไม่มีคู่ภาพที่คำนวณค่าดัชนีเปรียบเทียบได้</p>')+
+  (tops.length?'<ol class="rpt-decision-findings">'+tops.map(x=>'<li><b>'+esc(x.code)+' · '+esc(x.signal)+'</b> — '+esc(description(x))+(x.last?.date<latestQA?' · ข้อมูล QA ล่าสุดของแปลงนี้ไม่ใช่วันที่ '+latestQA:'')+esc(plotImageCaution(x))+'</li>').join('')+'</ol>':'<p class="rpt-empty">ยังไม่มีคู่ภาพที่คำนวณค่าดัชนีเปรียบเทียบได้</p>')+
   '<div class="rpt-nextstep"><b>คำแนะนำสำหรับผู้บริหาร · คำสั่งตรวจสอบก่อนรับรองผล</b><p>1) ทีม GIS ตรวจความครอบคลุม Raster/NoData ภายใน Polygon และเทียบพื้นที่ข้อมูลร่วมก่อน–หลัง · 2) ตรวจดัชนีทั้งหกพร้อมภาพสีจริงและน้ำขึ้นลง · 3) ให้ผู้จัดการโครงการติดตามแปลงที่ยังไม่มีภาพ QA ล่าสุดและจัดเก็บหลักฐานภาคสนาม · 4) ส่งผลกลับพร้อมชื่อ TIFF และข้อจำกัดก่อนยืนยันความเสียหาย</p></div>'+
   '<p class="rpt-caption">เกณฑ์ E0–E2 เป็นสถานะหลักฐานคัดกรองภายใน ไม่ใช่เกณฑ์รับรองมาตรฐาน · พื้นที่ Geometry รวม '+num(area)+' ไร่ เป็นผลรวมตามทะเบียน ไม่ใช่พื้นที่เสียหายหรือ Union ตัดซ้อนทับ · ไม่มีข้อมูลการลงทุนรองรับการประเมินความเสียหายเป็นเงิน</p>');
  const portfolio=[...items].sort((a,b)=>(b.last?.date||'').localeCompare(a.last?.date||'')||a.code.localeCompare(b.code));
@@ -846,13 +849,20 @@ function monitoringPlan(d){
 
  // One compact six-band observation sheet: readers can compare the same day,
  // same plot, with legends before reading the multi-index findings.
- const cross=[...items].filter(x=>x.imageAfter&&metrics.every(k=>imageURL(x.imageAfter,k))).sort((a,b)=>b.imageAfter.date.localeCompare(a.imageAfter.date)||a.code.localeCompare(b.code))[0];
+ const completeness=im=>im?.rgb_invalid_pct!==null&&im?.rgb_invalid_pct!==undefined&&Number.isFinite(Number(im.rgb_invalid_pct))?Number(im.rgb_invalid_pct):null;
+ const cross=[...items].filter(x=>x.imageAfter&&metrics.every(k=>imageURL(x.imageAfter,k)))
+  .sort((a,b)=>{
+   const av=completeness(a.imageAfter),bv=completeness(b.imageAfter);
+   const goodA=av!==null&&av<=5?1:0,goodB=bv!==null&&bv<=5?1:0;
+   return goodB-goodA||b.imageAfter.date.localeCompare(a.imageAfter.date)||(av??100)-(bv??100)||a.code.localeCompare(b.code);
+  })[0];
  if(cross){
   const matched=metrics.map(k=>({k,im:cross.imageAfter}));
   add('04 / SIX INDICES','ภาพดัชนีทั้งหกในวันเดียวกัน · '+cross.code,
    '<p class="rpt-lead">วันภาพ '+esc(cross.imageAfter.date)+' · ทุกภาพใช้แปลงและวันเดียวกัน เพื่ออ่านสัญญาณหลายดัชนีประกอบกัน ห้ามสรุปจากสีใดสีหนึ่งลำพัง</p>'+
    '<div class="rpt-pictures rpt-photo-grid rpt-six-indices">'+matched.map(x=>picture(x.im,x.k)).join('')+'</div>'+
-   '<p class="rpt-disclaimer">สีเป็นการแสดงค่าดัชนี ไม่ใช่แผนที่ยืนยันน้ำท่วม พื้นที่เสียหาย หรือการตายของต้นไม้ ควรเทียบภาพก่อนหน้าของดัชนีชนิดเดียวกันกับสถานะเมฆ/QA ด้วย</p>');
+   '<div class="rpt-finding"><b>อ่านภาพร่วมกับวันที่ก่อนหน้า</b><p>'+esc(description(cross))+'</p></div>'+
+   '<p class="rpt-disclaimer">เลือกภาพตัวอย่างที่มีค่าความครบของ Raster Preview เหมาะสมก่อนภาพที่ขาดข้อมูล (ถ้ามีข้อมูลคุณภาพภาพให้ตรวจสอบ) ไม่ใช้ความสมบูรณ์ของภาพเป็นตัวแทนคุณภาพจำแนก · สีภาพแต่ละดัชนีไม่รับรองน้ำท่วมหรือต้นไม้ตาย</p>');
  }
 
  const trajectory=[...items].filter(x=>x.scenes.length>=3&&x.last).sort((a,b)=>b.last.date.localeCompare(a.last.date)||Math.abs(b.change.mndwi||0)-Math.abs(a.change.mndwi||0))[0];
