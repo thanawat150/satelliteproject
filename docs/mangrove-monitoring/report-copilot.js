@@ -764,6 +764,24 @@ function monitoringPlan(d){
    '<p class="rpt-lead">สรุปทะเบียนทั้งประเทศตามจังหวัด เพื่อให้ทราบว่าสถานะรายงานแต่ละจังหวัดมีหลักฐานเพียงพอหรือไม่</p>'+
    table(rows.slice(i,i+14),[['province','จังหวัด'],['plots','แปลง'],['comparisons','มีคู่ QA'],['valid','วันภาพผ่าน QA']]));
  }
+ // Six-index interpretation goes in the main report; detailed per-plot matrices
+ // are available only in technical mode or the separately printable appendix.
+ const indexMeaning={ndvi:'ความเขียวของพืชพรรณ',ndre:'การตอบสนองของเรือนยอดในย่าน Red Edge',ndmi:'ความชื้นของพืชและพื้นผิว',ndwi:'สัญญาณน้ำจาก Green/NIR',mndwi:'สัญญาณน้ำจาก Green/SWIR',bsi:'สัญญาณดินเปิดโล่ง'};
+ const indexSummary=metrics.map(k=>{
+  const observations=compared.filter(x=>x.change[k]!==null).map(x=>x.change[k]);
+  const increase=observations.filter(v=>v>.05).length,decrease=observations.filter(v=>v<-.05).length;
+  return {index:k.toUpperCase(),meaning:indexMeaning[k],available:String(observations.length),increase:String(increase),decrease:String(decrease),
+   uncertain:String(observations.length-increase-decrease)};
+ });
+ add('03 / INTERPRETATION','สังเคราะห์สัญญาณจากดัชนีทั้งหก · '+scope,
+  '<p class="rpt-lead">ตารางนี้นับจำนวนแปลงที่ค่าเฉลี่ยดัชนีต่างระหว่างสองวันภาพที่ผ่าน QA เกิน 0.05 ในทิศทางเพิ่มหรือลด เกณฑ์นี้เป็นเพียงเกณฑ์แสดงผลเบื้องต้น ไม่ใช่ความแม่นยำของผลแปลตีความหรือความเสียหาย</p>'+
+  table(indexSummary,[['index','ดัชนี'],['meaning','ใช้สังเกตอะไร'],['available','มีคู่ข้อมูล'],['increase','เพิ่ม'],['decrease','ลด'],['uncertain','ใกล้เคียงเดิม']])+
+  '<div class="rpt-finding"><b>ตีความภาพรวมร่วมกัน</b><p>NDVI/NDRE พิจารณาพืชพรรณ, NDMI พิจารณาความชื้น, NDWI/MNDWI พิจารณาน้ำ และ BSI พิจารณาดิน ต้องใช้ภาพสีจริง/สีเท็จและวันภาพประกอบ โดยเฉพาะเมื่อผลแต่ละดัชนีไม่สอดคล้องกัน</p></div>'+
+  '<p class="rpt-disclaimer">จำนวนแปลงเป็นเพียงสรุปการเปลี่ยนของค่าเฉลี่ยคนละวัน ไม่ได้ถ่วงน้ำหนักพื้นที่ ไม่ได้ตรวจ Common Valid Pixel ร่วม และไม่ยืนยันว่าน้ำท่วมหรือป่าฟื้นตัว</p>');
+ const detailIndex=(key,title,body)=>{
+  if(ui.density==='technical')add(key,title,body);
+  else if(ui.appendix)out.push({key:'A / APPENDIX '+key,title,body});
+ };
  // All-six indicator matrix: no single index may stand in for forest health.
  for(const group of [['ndvi','ndre','ndmi'],['ndwi','mndwi','bsi']]){
   const detail=(ui.scope==='all'?ordered.slice(0,20):items).map(x=>({
@@ -772,7 +790,7 @@ function monitoringPlan(d){
   }));
   const pageCount=Math.ceil(detail.length/10),balanced=Math.ceil(detail.length/Math.max(1,pageCount));
   for(let i=0;i<detail.length;i+=balanced){
-   add('03 / INDICES '+group[0]+' '+(Math.floor(i/balanced)+1),'อ่านทุกดัชนีร่วมกัน · '+group.map(m=>m.toUpperCase()).join(' / '),
+   detailIndex('03 / INDICES '+group[0]+' '+(Math.floor(i/balanced)+1),'ตารางดัชนีรายแปลง · '+group.map(m=>m.toUpperCase()).join(' / '),
     '<p class="rpt-lead">ผลต่างของค่าเฉลี่ยดัชนีที่ระบบรายงานแยกกันในแต่ละวัน (+/−) ยังไม่ใช่การเปลี่ยนแปลงบนพิกเซลร่วมที่ตรวจสอบแล้ว จึงไม่ใช้ยืนยันพื้นที่ทั้งแปลง</p>'+
     table(detail.slice(i,i+balanced),[['code','แปลง'],['before','วันก่อนหน้า'],['after','วันปัจจุบัน'],['a','Δ '+group[0].toUpperCase()],['b','Δ '+group[1].toUpperCase()],['c','Δ '+group[2].toUpperCase()]])+
     '<p class="rpt-caption">NDVI/NDRE = พืชพรรณ · NDMI = ความชื้นพืช · NDWI/MNDWI = สัญญาณน้ำ · BSI = ดินเปิดโล่ง ต้องดูภาพสีจริง/สีเท็จและสภาพน้ำขึ้นลงร่วมด้วย</p>');
