@@ -991,11 +991,13 @@ function plotEvidencePlan(d){
  const diff=before&&after?metrics.map(k=>({k,a:valid(before[k]),b:valid(after[k])})):metrics.map(k=>({k,a:null,b:valid(after?.[k])}));
  const explainDiff=x=>x.a===null||x.b===null?'ไม่มีคู่ข้อมูล':(x.b-x.a>=0?'+':'')+num(x.b-x.a);
  const checkGeometry=matched&&area!==null&&Number(matched.common_clear_rai)>area+.1;
- const usableSpatial=matched&&!checkGeometry;
+ const changeBalanceBad=!!matched&&[matched.water_new_rai,matched.water_lost_rai,matched.water_net_change_rai].every(v=>v!==null&&v!==undefined&&Number.isFinite(Number(v)))&&
+  Math.abs(Number(matched.water_new_rai)-Number(matched.water_lost_rai)-Number(matched.water_net_change_rai))>.03;
+ const usableSpatial=matched&&!checkGeometry&&!changeBalanceBad;
  const water=usableSpatial?valid(matched.water_net_change_rai):null;
  const waterText=water===null?'ยังไม่มีผลที่ใช้ได้':(water>0?'เพิ่มสุทธิ ':water<0?'ลดสุทธิ ':'ไม่เปลี่ยนสุทธิ ')+num(Math.abs(water))+' ไร่';
  const waterNote=water===null?'ยังสรุปการเปลี่ยนแปลงน้ำเชิงพื้นที่จากคู่ภาพนี้ไม่ได้':water>0?'พบสัญญาณพื้นที่ที่จำแนกเป็นน้ำเพิ่มสุทธิ':water<0?'พบสัญญาณพื้นที่ที่จำแนกเป็นน้ำลดสุทธิ':'พื้นที่ที่จำแนกเป็นน้ำเปลี่ยนสุทธิใกล้ศูนย์';
- const review=checkGeometry?'พักใช้ผลพื้นที่: พิกเซลร่วมเกินพื้นที่แปลง':
+ const review=changeBalanceBad?'พักใช้ผลพื้นที่: น้ำเพิ่มลบน้ำลดไม่ตรงผลสุทธิ':checkGeometry?'พักใช้ผลพื้นที่: พิกเซลร่วมเกินพื้นที่แปลง':
   !matched?'ยังไม่มีผลจำแนกพื้นที่จากคู่ภาพสองวันที่ตรงกัน':
   'มีผลจำแนกบนพิกเซลร่วม แต่ยังไม่ผ่านการตรวจ Accuracy อิสระ';
  const twoDates=before&&after?before.date+' → '+after.date:'ไม่มีคู่ภาพผ่าน QA';
@@ -1044,6 +1046,7 @@ function plotEvidencePlan(d){
   '<div class="rpt-plot-water-narrative"><b>'+esc(waterNote)+'</b><p>'+esc(twoDates)+' · '+esc(waterText)+'</p></div>'+
   (waterRows.length?table(waterRows,[['kind','ความเปลี่ยนแปลง'],['rai','ไร่'],['note','ความหมาย']]):'<p class="rpt-empty">ไม่มีคู่พิกเซลร่วมที่ผ่านเกณฑ์สำหรับวันคู่นี้ จึงไม่แสดงตัวเลขน้ำใหม่หรือน้ำลด</p>')+
   (checkGeometry?'<p class="rpt-coverage-warning rpt-coverage-reject">ผลร่วม '+num(matched.common_clear_rai)+' ไร่ มากกว่าพื้นที่ทะเบียน '+num(area)+' ไร่ ต้องพักใช้ตัวเลขและตรวจ CRS/Geometry/Grid</p>':'')+
+  (changeBalanceBad?'<p class="rpt-coverage-warning rpt-coverage-reject">พักใช้ผลจำแนก: น้ำใหม่ − น้ำลดไม่เท่าผลสุทธิ ตรวจสูตรและไฟล์ต้นทางก่อนเผยแพร่ตัวเลข</p>':'')+
   '<p class="rpt-disclaimer">MNDWI และ Mask เป็นตัวชี้สัญญาณน้ำเบื้องต้น ไม่ใช่ระดับน้ำ ความลึกน้ำ หรือการยืนยันน้ำท่วม ข้อมูลยังไม่ได้ปรับแก้น้ำขึ้นลงและฤดูกาล</p>');
  const categorization=[{label:'พืชพรรณ',modes:['ndvi','ndre']},{label:'น้ำ/ความชื้น',modes:['ndwi','mndwi','ndmi']},{label:'ดิน/พื้นผิว',modes:['bsi']}];
  const indexRows=diff.map(v=>({name:v.k.toUpperCase(),baseline:v.a===null?'—':num(v.a),current:v.b===null?'—':num(v.b),change:explainDiff(v)}));
@@ -1071,7 +1074,7 @@ function plotEvidencePlan(d){
   '<h3>วันที่ภาพและ TIFF ที่ตรวจย้อนหลังได้</h3>'+table(qRows,[['date','วันที่'],['state','สถานะ QA'],['qa','ผ่าน QA'],['source','TIFF']])+
   '<p class="rpt-caption">ต้นแบบประกอบแนวการเล่าเรื่องจากชุดรายงานอ้างอิงผู้ใช้ใน Google Drive; ตัวเลขทั้งหมดของ PDF ที่สร้างจากระบบนี้อ่านจากชุดข้อมูลที่เชื่อมปัจจุบัน ไม่คัดลอกตัวเลขประวัติจากต้นแบบ</p>');
  return {out,imageCount:out.reduce((n,v)=>n+(v.body.match(/<figure class="rpt-image"/g)||[]).length,0),
-  audit:{release_status:'SCREENING_ONLY_NOT_APPROVED',plot:code,plots:1,paired:dates.length>=2,common_pair:!!matched,geometry_area_conflict:!!checkGeometry,
+  audit:{release_status:'SCREENING_ONLY_NOT_APPROVED',plot:code,plots:1,paired:dates.length>=2,common_pair:!!matched,geometry_area_conflict:!!checkGeometry,water_balance_conflict:!!changeBalanceBad,
    date_before:before?.date||null,date_after:after?.date||null,latest_acquisition:available,
    stable_land_indices_available:false,water_quality_lab_verified:false,common_valid_pixel_classification:!!usableSpatial}};
 }
