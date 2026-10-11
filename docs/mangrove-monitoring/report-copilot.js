@@ -988,11 +988,11 @@ function plotEvidencePlan(d){
  const lastImage=(d.visualImages||[]).find(x=>x.plot===code&&have(x,'true_color'))||null;
  // Keep spectrally legible images after the latest QA scene available for human interpretation;
  // never treat visual-only observations as validated measurements.
- const visualExtra=()=>{const newer=(d.visualImages||[]).some(im=>im.plot===code&&im.date>qaDate&&metrics.some(mode=>have(im,mode)));
-  if(!newer)return[];
+ const visualExtra=()=>{const indexViews=(d.visualImages||[]).filter(im=>im.plot===code&&metrics.some(mode=>have(im,mode)));
+  if(!indexViews.length)return[];
   return visualScreeningPages(d).filter(page=>page.key.startsWith('V / INDICES')).map(page=>({...page,
    key:'A / VISUAL QA '+page.key,
-   body:'<p class="rpt-visual-qa"><b>Visual Only:</b> ภาพที่ใหม่กว่าคู่ QA มีแบนด์ให้ตรวจสีได้ แต่ยังไม่ผ่านเกณฑ์คำนวณพื้นที่หรือรับรองน้ำท่วม</p>'+page.body}));
+   body:'<p class="rpt-visual-qa"><b>Visual Screening:</b> อ่านภาพทุกดัชนีและทุกวันที่มีภาพต้นทาง แม้ภาพบางวันมีสถานะ QA ไม่ผ่านก็แสดงเพื่อสังเกตเท่านั้น ไม่ใช้ภาพเหล่านี้รับรองพื้นที่น้ำหรือสภาพป่า</p>'+page.body}));
  };
  const available=latestScene?.date||'ไม่มีภาพในช่วง',qaDate=after?.date||'ไม่มีภาพ QA';
  const area=valid(p.area);
