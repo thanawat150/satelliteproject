@@ -800,6 +800,25 @@ function monitoringPlan(d){
     '<p class="rpt-caption">NDVI/NDRE = พืชพรรณ · NDMI = ความชื้นพืช · NDWI/MNDWI = สัญญาณน้ำ · BSI = ดินเปิดโล่ง ต้องดูภาพสีจริง/สีเท็จและสภาพน้ำขึ้นลงร่วมด้วย</p>');
   }
  }
+
+ // Spatial comparison is sourced from the actual GeoTIFF common-valid mask
+ // produced by nationwide_process.change_summary(). Do not misattribute it
+ // to differences between the two scene-level index means.
+ if(commonPairs.length){
+  const bodyRows=[...commonPairs].sort((a,b)=>b.last.date.localeCompare(a.last.date)||a.code.localeCompare(b.code)).slice(0,8).map(x=>{
+   const c=x.common,over=Number(c.common_clear_rai)>Number(x.p.area||0)+.1;
+   return {code:x.code,dates:c.date_a+' → '+c.date_b,area:num(c.common_clear_rai),
+    coverage:num(c.common_clear_pct_of_plot)+'%',water:num(c.water_net_change_rai),vegetation:num(c.vegetation_net_change_rai),
+    review:over?'ตรวจพื้นที่ Geometry':Number(c.common_clear_pct_of_plot)<50?'พื้นที่ร่วมต่ำกว่า 50%':'ต้องตรวจ Accuracy'};
+  });
+  const geoIssues=commonPairs.filter(x=>Number(x.common.common_clear_rai)>Number(x.p.area||0)+.1).map(x=>x.code);
+  add('04 / COMMON PIXELS','ผลเปรียบเทียบเชิงพื้นที่จากพิกเซลร่วม · '+scope,
+   '<p class="rpt-lead">ค่าพื้นที่ตารางนี้มาจากผลจำแนก Raster ที่ใช้หน้ากากพิกเซลเหมาะสมร่วมกันในวันก่อนหน้าและวันปัจจุบัน และตัดตามขอบเขต Polygon แล้ว <b>ไม่ใช่</b>ผลต่างค่าเฉลี่ย NDVI/NDWI/MNDWI ที่แสดงในตารางดัชนี</p>'+
+   table(bodyRows,[['code','แปลง'],['dates','คู่วันที่'],['area','พื้นที่ร่วม (ไร่)'],['coverage','ครอบคลุม'],['water','น้ำสุทธิ (ไร่)'],['vegetation','พืชสุทธิ (ไร่)'],['review','ตรวจต่อ']])+
+   '<p class="rpt-caption">แสดง '+bodyRows.length+' จาก '+commonPairs.length+' แปลงที่มีผลจำแนกจากพิกเซลร่วมในคู่วันที่เดียวกับค่าดัชนีล่าสุด · เพิ่ม/ลดสุทธิคำนวณจาก Water/Vegetation Masks ที่จำแนกจาก GeoTIFF เดิม ไม่ใช่ผลตรวจภาคสนาม</p>'+
+   (geoIssues.length?'<p class="rpt-coverage-warning rpt-coverage-reject">พบพื้นที่พิกเซลร่วมมากกว่าพื้นที่ Geometry ที่รายงาน: '+esc(geoIssues.join(', '))+' · ต้องตรวจ CRS/Grid/การคำนวณพื้นที่ก่อนรับรองตัวเลข</p>':'')+
+   '<p class="rpt-disclaimer">ไม่มีการแก้อิทธิพลน้ำขึ้นลง และยังไม่มีการประเมินความถูกต้องอิสระของผลจำแนก จึงไม่ใช้ค่าเหล่านี้รับรองน้ำท่วม ความเสียหาย หรือการเพิ่มพูนป่าชายเลน</p>');
+ }
  // Show matched before/after images rather than six unrelated thumbnail scenes.
  let cases=0;
  const displayedCases=new Set();
