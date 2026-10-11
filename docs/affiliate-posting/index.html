@@ -411,6 +411,27 @@ async function copyText(text,msg){
 function productShort(key){
   return key==='chair'?'เก้าอี้คุณตาแสวง':key==='sun'?'กันแดดศิริราช':'สินค้า';
 }
+function iso(d){
+  return new Intl.DateTimeFormat('en-CA',{
+    timeZone:'Asia/Bangkok',
+    year:'numeric',month:'2-digit',day:'2-digit'
+  }).format(d);
+}
+function todayISO(){
+  return iso(new Date());
+}
+function addDays(d,n){
+  const x=new Date(d);
+  x.setDate(x.getDate()+n);
+  return x;
+}
+function fmtDate(d){
+  return new Intl.DateTimeFormat('th-TH',{
+    timeZone:'Asia/Bangkok',
+    weekday:'short',day:'numeric',month:'short',year:'numeric'
+  }).format(d);
+}
+
 function renderCalendar(){
   const grid=document.getElementById('calendarGrid');
   if(!grid) return;
