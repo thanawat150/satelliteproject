@@ -366,7 +366,7 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
     <main class="list" id="list"></main>
   </section>
 
-  <div class="notice">หมายเหตุ: รายการ Metricool ด้านบนเป็น Snapshot จากตารางที่ตั้งไว้ ณ วันที่ 11 ต.ค. 2569 จึงไม่ใช่ Live API บนหน้า GitHub โดยตรง หากสถานะเป็น <b>ERROR</b> ให้ดาวน์โหลดคลิปจากหน้านี้แล้วโพสต์เอง ระบบใช้เฉพาะคลิปจากโฟลเดอร์ “พร้อม” วันละ 1 คลิป และใช้คลิปเดียวกันลงทั้ง TikTok กับ Shopee; สถานะทั้งสองแพลตฟอร์มจะถูกจำแยกกันในเบราว์เซอร์นี้</div>
+  <div class="notice">หมายเหตุ: รายการ Metricool ด้านบนเป็น Snapshot จากตารางที่ตั้งไว้ ณ วันที่ 11 ต.ค. 2569 จึงไม่ใช่ Live API บนหน้า GitHub โดยตรง หากสถานะเป็น <b>ERROR</b> ให้ดาวน์โหลดคลิปจากหน้านี้แล้วโพสต์เอง ระบบอ้างอิงคลิปจากโฟลเดอร์ “พร้อม” วันละ 1 คลิปโดยยังต้องตรวจยืนยันสินค้า/เนื้อหาคลิปก่อนโพสต์ และใช้คลิปเดียวกันลงทั้ง TikTok กับ Shopee; สถานะทั้งสองแพลตฟอร์มจะถูกจำแยกกันในเบราว์เซอร์นี้</div>
 </div>
 <div class="toast" id="toast">คัดลอกแล้ว</div>
 
@@ -537,10 +537,11 @@ function renderTodayContent(){
  el.innerHTML=[...groups.values()].map(items=>{
    const first=items[0];
    const title=first.title||splitPostText(first.text||'').caption.split('\n')[0]||'Content วันนี้';
-   const clip=first.download_url||first.drive_url||first.media||'';
+   const masterClip=first.drive_url||first.download_url||'';
    const cards=items.map(x=>{
      const hasDraft=!!x.suggested_text;
      const copy=(x.suggested_text||x.text||'').trim();
+     const publishedClip=x.media||'';
      const name=networkLabel(x.network);
      const isErr=x.status==='ERROR';
      const state=isErr?'โพสต์ผิดพลาด':x.status==='PENDING'?'รอเผยแพร่':x.status==='SUCCESS'?'โพสต์แล้ว':x.status||'ไม่ทราบสถานะ';
@@ -550,13 +551,14 @@ function renderTodayContent(){
        ${isErr?'<div class="warn">Metricool มีข้อผิดพลาด โปรดตรวจสอบและโพสต์เอง</div>':''}
        ${hasDraft?'<div class="draft-notice">ข้อความนี้เป็นร่างใหม่ใน GitHub เท่านั้น ยังไม่ได้เปลี่ยนแคปชั่นใน Metricool</div>':''}
        <div class="copybox"><p>${escapeHtml(copy)}</p><button class="copy" data-copy="${encodeURIComponent(copy)}">คัดลอกสำหรับ ${escapeHtml(name)}</button></div>
+       <div class="scheduled-actions">${publishedClip?`<a class="btn btn-primary" href="${escapeHtml(publishedClip)}" target="_blank" rel="noopener">▶ ไฟล์ที่ตั้งใน Metricool · ${escapeHtml(name)}</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool — รอตรวจสอบ</span>'}</div>
      </section>`;
    }).join('');
    return `<article class="scheduled-card">
      <div class="scheduled-top"><div><h3 class="scheduled-title">${escapeHtml(title)}</h3><div class="scheduled-meta">${escapeHtml(fmtDate(new Date(first.date+'+07:00')))} · ${escapeHtml(first.drive_file_name||'')}</div></div><span class="chip">${items.length} แพลตฟอร์ม</span></div>
-     <p class="group-note">คลิปชุดเดียวกัน แต่ข้อความ เวลา และสถานะแยกแต่ละช่อง</p>
+     <p class="group-note">ตรวจสอบไฟล์ที่ใช้โพสต์จริงได้ในแต่ละแพลตฟอร์ม ด้านล่างแยกไฟล์ต้นฉบับ Drive ไว้ต่างหาก (อาจเป็นคนละเวอร์ชัน)</p>
      <div class="platform-post-grid">${cards}</div>
-     <div class="scheduled-actions">${clip?`<a class="btn btn-primary" href="${escapeHtml(clip)}" target="_blank" rel="noopener">⬇ ดาวน์โหลดคลิป Google Drive</a>`:''}</div>
+     <div class="scheduled-actions">${masterClip?`<a class="btn btn-secondary" href="${escapeHtml(masterClip)}" target="_blank" rel="noopener">เปิดไฟล์ต้นฉบับใน Google Drive · ${escapeHtml(first.drive_file_name||"Master")}</a>`:""}</div>
    </article>`;
  }).join('');
 }
@@ -638,49 +640,25 @@ function renderScheduled(rows){
           <div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
           <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>
           <div class="scheduled-actions">
-            ${(x.download_url||x.drive_url||x.media)?`<a class="btn btn-primary" href="${x.download_url||x.drive_url||x.media}" target="_blank" rel="noopener">⬇ ดาวน์โหลดคลิป</a>`:''}
+            ${x.media?`<a class="btn btn-primary" href="${escapeHtml(x.media)}" target="_blank" rel="noopener">▶ ดูไฟล์ที่ตั้งใน Metricool · ${escapeHtml(networkLabel(x.network))}</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool</span>'}
+            ${(x.drive_url||x.download_url)?`<a class="btn btn-secondary" href="${escapeHtml(x.drive_url||x.download_url)}" target="_blank" rel="noopener">ไฟล์ต้นฉบับ Google Drive · ${escapeHtml(x.drive_file_name||'Master')}</a>`:''}
           </div>
         </div>
       </article>`;
   }).join('');
 }
 
-function getAffiliateCaption(x,p,platform){
-  const override=(x.platformCaptions&&x.platformCaptions[platform])||x.caption;
-  const hooks={
-    sun:[
-      'กำลังมองหากันแดดอยู่ไหม? ☀️ วันนี้มีคลิปครีมกันแดดศิริราชมาให้ดูครับ',
-      'ก่อนเลือกซื้อกันแดด ลองดูรายละเอียดของครีมกันแดดศิริราชตัวนี้กันครับ 🧴',
-      'ครีมกันแดดศิริราชที่อยู่ในคลิปวันนี้ ดูตัวสินค้าและข้อมูลเพิ่มเติมได้เลยครับ',
-      'ใครกำลังเปรียบเทียบครีมกันแดด ลองดูคลิปของตัวนี้ก่อนตัดสินใจครับ',
-      'วันนี้หยิบครีมกันแดดศิริราชมาให้ดูอีกมุมหนึ่งครับ 👀',
-      'หากสนใจครีมกันแดดศิริราช ลองเปิดดูคลิปสั้นตัวนี้ก่อนครับ'
-    ],
-    chair:[
-      'เก้าอี้มหัศจรรย์คุณตาแสวงในคลิปนี้เป็นแบบไหน? มาดูกันครับ',
-      'นั่งทำงานนานแล้วอยากขยับตัวบ้าง? ลองมาดูไอเทมที่อยู่ในคลิปนี้กันครับ',
-      'วันนี้หยิบเก้าอี้มหัศจรรย์คุณตาแสวงมาให้ดูกันครับ',
-      'ใครหาไอเทมใช้ที่บ้านอยู่ ลองดูเก้าอี้มหัศจรรย์คุณตาแสวงตัวนี้ครับ',
-      'มาดูเก้าอี้มหัศจรรย์คุณตาแสวงในอีกคลิปสั้น ๆ กันครับ'
-    ]
-  };
-  const choices=hooks[p.key]||['มาดูสินค้าจากคลิปนี้กันครับ'];
-  const occurrence=schedule.filter(v=>v.product.key===p.key&&v.date.getTime()<=x.date.getTime()).length;
-  const intro=override||choices[(occurrence-1+choices.length)%choices.length];
-  const cta=platform==='shopee'?'ดูรายละเอียด ราคา และตัวเลือกสินค้าที่ตะกร้าด้านล่าง 🛒':'อยากรู้รายละเอียดสินค้า ลองกดดูตะกร้าจากคลิปได้ครับ 👇';
-  const tags=p.key==='sun'?(platform==='shopee'?'#กันแดดศิริราช #ครีมกันแดด #ShopeeVideo #Affiliate':'#กันแดดศิริราช #ครีมกันแดด #TikTokAffiliate'):(platform==='shopee'?'#เก้าอี้มหัศจรรย์ #คุณตาแสวง #ShopeeVideo #Affiliate':'#เก้าอี้มหัศจรรย์ #คุณตาแสวง #TikTokAffiliate');
-  return `${intro}\n\n${cta}\n\n${tags}\n\nคลิปนี้มีลิงก์ Affiliate`;
-}
-
 function affiliateCaptionCards(x,p){
- return `<div class="label">แคปชั่นแยก Shopee Video / TikTok Affiliate</div><div class="platform-copy-grid">${['shopee','tiktok'].map(platform=>{
-  const name=platform==='shopee'?'Shopee Video':'TikTok Affiliate';
-  const caption=getAffiliateCaption(x,p,platform);
-  return `<section class="platform-post-card">
-    <div class="platform-post-head"><span class="chip platform-${platform}">${name}</span><span class="platform-post-meta">${escapeHtml(p[platform])} น.</span></div>
-    <div class="copybox"><p>${escapeHtml(caption)}</p><button class="copy" data-copy="${encodeURIComponent(caption)}">คัดลอกสำหรับ ${name}</button></div>
-  </section>`;
- }).join('')}</div>`;
+  return `<div class="label">แคปชั่นแยก Shopee / TikTok · โปรดตรวจเนื้อหาวิดีโอจริงก่อนใช้</div>
+    <div class="platform-copy-grid">${['shopee','tiktok'].map(platform=>{
+      const name=platform==='shopee'?'Shopee Video':'TikTok Affiliate';
+      const approved=(x.platformCaptions&&x.platformCaptions[platform])||'';
+      return `<section class="platform-post-card">
+        <div class="platform-post-head"><span class="chip platform-${platform}">${name}</span><span class="platform-post-meta">${escapeHtml(p[platform])} น.</span></div>
+        ${approved?`<div class="copybox"><p>${escapeHtml(approved)}</p><button class="copy" data-copy="${encodeURIComponent(approved)}">คัดลอกสำหรับ ${name}</button></div>`:
+          '<div class="warn">ยังไม่มีแคปชั่นที่จับคู่กับเนื้อหาคลิปนี้ผ่านการตรวจสอบ จึงไม่สร้างข้อความเดาอัตโนมัติ</div>'}
+      </section>`;
+    }).join('')}</div>`;
 }
 
 function visibleRows(){
@@ -710,7 +688,7 @@ function render(){
   el.innerHTML=rows.map((x)=>{
     const p=x.product, fileId=x.file[0], fileName=x.file[1], isDone=!!(done[x.id]?.tiktok && done[x.id]?.shopee);
     const status=x.status||'ready';
-    const statusText=status==='ready'?'พร้อมโพสต์':(status==='review'?'เช็กก่อนโพสต์':'ต้องตัดก่อน');
+    const statusText=status==='ready'?'พบไฟล์ในโฟลเดอร์พร้อม':(status==='review'?'เช็กก่อนโพสต์':'ต้องตัดก่อน');
     const statusClass=status==='ready'?'status-ready':(status==='review'?'status-review':'status-edit');
     const download='https://drive.google.com/uc?export=download&id='+encodeURIComponent(fileId);
     const dt=x.date;
@@ -740,12 +718,12 @@ function render(){
           <div class="platform-status shopee">Shopee: ${done[x.id]?.shopee?'โพสต์แล้ว':'รอโพสต์'}</div>
         </div>`:''}
 
-        <div class="taskbox"><b>แผนวันนี้:</b> ${escapeHtml(x.task)}</div>
+        <div class="taskbox"><b>แผนตามตาราง:</b> ${escapeHtml(x.task)}<div style="margin-top:6px">ชื่อสินค้าเป็นข้อมูลจากตารางจัดคิว ไม่ใช่ผลตรวจเนื้อหาในวิดีโอ · File ID และชื่อไฟล์ตรวจตรงกับโฟลเดอร์ Drive “พร้อม” แล้ว</div></div>
 
         ${affiliateCaptionCards(x,p)}
 
         <div class="actions">
-          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">${status==='edit'?'⬇ ดาวน์โหลดวัตถุดิบจาก Google Drive':'⬇ ดาวน์โหลดจาก Google Drive'} · ${escapeHtml(fileName)}</a>
+          <a class="btn btn-primary" href="${download}" target="_blank" rel="noopener">${status==='edit'?'⬇ ดาวน์โหลดวัตถุดิบจาก Google Drive':'⬇ ไฟล์ตามตารางจาก Google Drive'} · ${escapeHtml(fileName)}</a>
           <a class="btn btn-secondary" href="https://drive.google.com/file/d/${encodeURIComponent(fileId)}/view" target="_blank" rel="noopener">เปิดไฟล์ใน Google Drive</a>
           ${x.extra?`<a class="btn btn-secondary" href="https://drive.google.com/uc?export=download&id=${encodeURIComponent(x.extra[0])}" target="_blank" rel="noopener">⬇ วัตถุดิบเพิ่ม · ${escapeHtml(x.extra[1])}</a>`:''}
           <a class="btn btn-secondary" href="${p.folder}" target="_blank" rel="noopener">เปิดโฟลเดอร์สินค้า</a>
