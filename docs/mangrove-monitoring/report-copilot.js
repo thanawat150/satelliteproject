@@ -489,10 +489,16 @@ function floodEventEvidencePages(d,plot,ts){
   const im=x.v?d.images.find(q=>q.plot===plot&&q.date===x.v.date)||null:null;
   eventRows.push({stage:x.label,point:x.v,im});
  }
- const pictureBlock=mode=>'<div class="rpt-event-gallery">'+eventRows.map(x=>'<div class="rpt-event-scene">'+
-  '<div class="rpt-event-date"><b>'+esc(x.stage)+'</b><small>'+esc(x.point?.date||'ไม่มีวันภาพ')+'</small></div>'+
-  (x.im&&imageURL(x.im,mode)?picture(x.im,mode):'<p class="rpt-empty">ไม่มี Raster '+esc(mode.toUpperCase())+' ของวันภาพนี้ · ไม่ใช้ภาพวันอื่นแทน</p>')+
-  '</div>').join('')+'</div>';
+ const pictureBlock=mode=>{const shown=new Set();return '<div class="rpt-event-gallery">'+eventRows.map(x=>{
+  const date=x.point?.date,duplicate=date&&shown.has(date);
+  if(date)shown.add(date);
+  return '<div class="rpt-event-scene">'+
+   '<div class="rpt-event-date"><b>'+esc(x.stage)+'</b><small>'+esc(date||'ไม่มีวันภาพ')+'</small></div>'+
+   (duplicate?'<p class="rpt-empty">ช่วงนี้ตรงกับวันภาพที่แสดงก่อนหน้า จึงไม่แสดงภาพเดียวกันซ้ำ</p>':
+    x.im&&imageURL(x.im,mode)?picture(x.im,mode):
+     '<p class="rpt-empty">ไม่มี Raster '+esc(mode.toUpperCase())+' ของวันภาพนี้ · ไม่ใช้ภาพวันอื่นแทน</p>')+
+   '</div>';
+ }).join('')+'</div>';};
  const imgBody='<p class="rpt-lead">ภาพเรียงตามวันที่ที่คำนวณจริง ไม่ใช้ภาพของวันอื่นมาแทน และแสดงเส้น Polygon เมื่อมีพิกัดที่จับคู่ได้</p>'+
   '<h3>True Color · พื้นผิวจริง</h3>'+pictureBlock('true_color')+
   '<h3>MNDWI · รูปแบบสัญญาณน้ำ</h3>'+pictureBlock('mndwi')+
