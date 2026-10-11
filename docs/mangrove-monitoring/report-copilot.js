@@ -430,21 +430,28 @@ function waterTimelineRow(ts){
 }
 function waterTimelineGraph(ts){
  if(!ts||!ts.all.length)return '<p class="rpt-empty">ยังไม่มีภาพที่ผ่าน QA พร้อมค่าพื้นที่น้ำสำหรับแสดงแนวโน้ม</p>';
- const width=580,height=160,lo=0,hi=Math.max(1,...ts.all.map(p=>p.water)),coords=ts.all.map((v,i)=>({
-  x:55+i/Math.max(1,ts.all.length-1)*470,
-  y:128-(v.water/hi)*98, ...v
+ const width=580,height=174,lo=0,hi=Math.max(1,...ts.all.map(p=>p.water));
+ const timestamps=ts.all.map(p=>Date.parse(p.date+'T00:00:00Z'));
+ const start=timestamps[0],span=Math.max(1,timestamps.at(-1)-start);
+ const coords=ts.all.map((v,i)=>({
+  x:ts.all.length===1?290:55+(timestamps[i]-start)/span*470,
+  y:132-(v.water/hi)*97,...v
  }));
- const d=coords.map((v,i)=>(i?'L':'M')+v.x.toFixed(1)+' '+v.y.toFixed(1)).join(' ');
- return '<svg class="rpt-timeline-graph" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="แนวโน้มพื้นที่ที่จำแนกเป็นน้ำตามวันจริง">'+
-   [0,.5,1].map(n=>'<line x1="50" x2="540" y1="'+(30+n*98)+'" y2="'+(30+n*98)+'" stroke="#d9e7dd" />').join('')+
-   '<path d="'+d+'" stroke="#2b83b3" stroke-width="3.5" fill="none"/>'+
-   coords.map(v=>'<circle cx="'+v.x.toFixed(1)+'" cy="'+v.y.toFixed(1)+'" r="4.7" fill="'+(v.date===ts.latest.date?'#d3722d':'#2b83b3')+'"/>'+
-   '<text x="'+v.x.toFixed(1)+'" y="'+Math.max(12,v.y-10).toFixed(1)+'" font-size="11" text-anchor="middle" fill="#244e68">'+num(v.water)+'</text>'+
-   '<text x="'+v.x.toFixed(1)+'" y="150" font-size="10" text-anchor="middle" fill="#385748">'+esc(v.date.slice(5))+'</text>').join('')+
-   '<text x="8" y="18" font-size="10" fill="#4b6657">ไร่</text></svg>'+
-  '<p class="rpt-caption">กราฟแสดงเฉพาะวันที่ผ่าน QA และมีพื้นที่น้ำจากการจำแนกจริง — ไม่เชื่อมความหมายว่าเป็นน้ำท่วมยืนยัน</p>';
+ const polyline=coords.map((v,i)=>(i?'L':'M')+v.x.toFixed(1)+' '+v.y.toFixed(1)).join(' ');
+ const labelsEvery=Math.max(1,Math.ceil(coords.length/6));
+ const grid=[0,.5,1].map(n=>'<line x1="51" x2="536" y1="'+(35+n*97).toFixed(1)+'" y2="'+(35+n*97).toFixed(1)+'" stroke="#d9e7dd"/>'+
+  '<text x="46" y="'+(39+n*97).toFixed(1)+'" text-anchor="end" font-size="9" fill="#4b6657">'+num(hi*(1-n))+'</text>').join('');
+ return '<svg class="rpt-timeline-graph" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="อนุกรมเวลาพื้นที่จำแนกน้ำตามวันภาพจริง แกน X เว้นระยะตามวัน">'+
+   grid+'<path d="'+polyline+'" stroke="#2b83b3" stroke-width="3" fill="none"/>'+
+   coords.map((v,i)=>'<g data-scene-date="'+esc(v.date)+'" data-water-rai="'+esc(num(v.water))+'">'+
+    '<circle cx="'+v.x.toFixed(1)+'" cy="'+v.y.toFixed(1)+'" r="4.1" fill="'+(v.date===ts.latest.date?'#d3722d':v.date===ts.peak.date?'#aa653d':'#2b83b3')+'"/>'+
+    '<text x="'+v.x.toFixed(1)+'" y="'+Math.max(12,v.y-9-(i%2)*6).toFixed(1)+'" font-size="9.5" text-anchor="middle" fill="#244e68">'+num(v.water)+'</text>'+
+    ((i%labelsEvery===0||i===coords.length-1)?'<text x="'+v.x.toFixed(1)+'" y="158" font-size="9" text-anchor="middle" fill="#385748">'+esc(v.date.slice(5))+'</text>':'')+
+    '</g>').join('')+
+   '<text x="12" y="18" font-size="10" fill="#4b6657">ไร่</text>'+
+   '<text x="534" y="171" font-size="9" text-anchor="end" fill="#496c5b">แกน X ตามวันที่บันทึกจริง</text></svg>'+
+  '<p class="rpt-caption">แต่ละจุดคือวันที่มีพื้นที่น้ำจำแนกและผ่าน QA จริง ระยะห่างแกนเวลาอิงวันที่ ไม่ใช่ข้อมูลต่อเนื่องทุกวัน · ไม่ใช่หลักฐานยืนยันน้ำท่วม</p>';
 }
-
 /* Three-phase story is supported only by dated observations. Total-area deltas
    from different scene masks are never presented as mapped water gains/losses. */
 function floodEventEvidencePages(d,plot,ts){
@@ -502,7 +509,7 @@ function floodEventEvidencePages(d,plot,ts){
  const imgBody='<p class="rpt-lead">ภาพเรียงตามวันที่ที่คำนวณจริง ไม่ใช้ภาพของวันอื่นมาแทน และแสดงเส้น Polygon เมื่อมีพิกัดที่จับคู่ได้</p>'+
   '<h3>True Color · พื้นผิวจริง</h3>'+pictureBlock('true_color')+
   '<h3>MNDWI · รูปแบบสัญญาณน้ำ</h3>'+pictureBlock('mndwi')+
-  '<p class="rpt-disclaimer">ค่าดัชนี MNDWI ใช้ระบุสัญญาณผิวน้ำเบื้องต้น สีและระดับน้ำในพื้นที่ป่าชายเลนอาจได้รับผลจากเมฆ เงา น้ำทะเลขึ้นลง และสภาพพืชพรรณ</p>';
+  '<h3>วันภาพและแหล่ง Raster ของทั้งสามช่วง</h3>'+table(eventRows.map(x=>{const q=d.good.find(v=>v.plot===plot&&v.date===x.point?.date);return {phase:x.stage,date:x.point?.date||'—',qa:q?.qa_valid_pct==null?'—':num(q.qa_valid_pct)+'%',source:q?.original_tif10||'ยังไม่ระบุ TIFF'};}),[['phase','ช่วง'],['date','วันภาพ'],['qa','ผ่าน QA'],['source','TIFF ต้นทาง']])+'<p class="rpt-disclaimer">ค่าดัชนี MNDWI ใช้ระบุสัญญาณผิวน้ำเบื้องต้น สีและระดับน้ำในพื้นที่ป่าชายเลนอาจได้รับผลจากเมฆ เงา น้ำทะเลขึ้นลง และสภาพพืชพรรณ</p>';
  const lastScene=d.good.find(x=>x.plot===plot&&x.date===ts.latest.date)||null;
  const peakScene=d.good.find(x=>x.plot===plot&&x.date===ts.peak.date)||null;
  const plantRows=['ndvi','ndre','ndmi'].map(mode=>{
