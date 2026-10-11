@@ -483,7 +483,7 @@ function floodEventEvidencePages(d,plot,ts){
   waterTimelineGraph(ts)+
   '<h3>เปรียบเทียบสามคู่วันภาพ</h3>'+
   table(phasePairs,[['stage','ช่วงเหตุการณ์'],['dates','วันภาพ'],['delta','Δ พื้นที่จำแนกน้ำ'],['proof','หลักฐานพื้นที่ร่วม']])+
-  '<p class="rpt-disclaimer">Δ พื้นที่น้ำ = ผลต่างพื้นที่จำแนกน้ำรายภาพซึ่งอาจมีชุดพิกเซลผ่าน QA ไม่เหมือนกัน ไม่ใช่ขนาดน้ำท่วมที่รับรอง · ผล Water Mask พิกเซลร่วมจะแสดงแยกเมื่อมีคู่วันที่ตรงกันและผ่านการตรวจความสมเหตุสมผล</p>';
+  '<p class="rpt-disclaimer">Δ พื้นที่น้ำ = ผลต่างพื้นที่จำแนกน้ำรายภาพซึ่งอาจมีชุดพิกเซลผ่าน QA ไม่เหมือนกัน ไม่ใช่ขนาดน้ำท่วมที่รับรอง · ผล Water Mask พิกเซลร่วมจะแสดงแยกเมื่อมีคู่วันที่ตรงกันและผ่านการตรวจความสมเหตุสมผล · ก่อนค่าสูงสุดไม่ใช่การยืนยันว่าก่อนน้ำท่วม เพราะยังไม่ตรวจระดับน้ำขึ้นลงจริง</p>';
  const eventRows=[];
  for(const x of pts){
   const im=x.v?d.images.find(q=>q.plot===plot&&q.date===x.v.date)||null:null;
@@ -502,7 +502,7 @@ function floodEventEvidencePages(d,plot,ts){
  const plantRows=['ndvi','ndre','ndmi'].map(mode=>{
   const a=peakScene?.[mode],b=lastScene?.[mode],valid=a!=null&&b!=null&&a!==''&&b!==''&&Number.isFinite(Number(a))&&Number.isFinite(Number(b));
   const diff=valid?Number(b)-Number(a):null;
-  return {mode:mode.toUpperCase(),peak:valid?num(a):'—',latest:valid?num(b):'—',delta:fmt(diff)};
+  return {mode:mode.toUpperCase(),peak:valid?num(a):'—',latest:valid?num(b):'—',delta:diff===null?'—':(diff>0?'+':'')+num(diff)};
  });
  const plantPage=ts.afterPeak?{
   key:'02D / VEGETATION '+plot,title:'หลังน้ำลด พืชพรรณเปลี่ยนอย่างไร · '+plot,
