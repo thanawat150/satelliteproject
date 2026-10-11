@@ -422,6 +422,29 @@ assert.ok(rayong.text.includes('ก่อนน้ำเพิ่ม → ช่�
 assert.ok(rayong.text.includes('เปรียบเทียบสามคู่วันภาพ')&&rayong.text.includes('ช่วงอ้างอิง → ล่าสุด'),'A flood report must compare baseline-to-peak, peak-to-latest, and baseline-to-latest using real dates');
 assert.ok(rayong.text.includes('หลังน้ำลด พืชพรรณเปลี่ยนอย่างไร'),'Post-water NDVI NDRE NDMI evidence must be discussed without inventing tree recovery');
 assert.ok(rayong.front.includes('ลำดับเหตุการณ์จากวันภาพที่มี'),'Executive cover must distinguish complete observed event phases and latest directions');
+
+const eventLayout=await page.evaluate(async()=>{
+ const root=document.createElement('div');
+ root.style.cssText='position:absolute;left:-3000px;top:0;width:820px;visibility:hidden';
+ root.innerHTML=window.MMCReportCopilot.renderPages('main').pages;
+ const keep=[...root.querySelectorAll('.rpt-paper')].filter(p=>/02B \/ EVENT|02C \/ IMAGES|02D \/ VEGETATION/.test(p.dataset.reportPage||'')).slice(0,7);
+ const container=document.createElement('div');container.style.cssText=root.style.cssText;
+ keep.forEach(p=>container.appendChild(p));document.body.appendChild(container);
+ await document.fonts.ready;
+ await Promise.all([...container.querySelectorAll('img')].map(im=>im.complete?Promise.resolve():new Promise(resolve=>{
+  im.addEventListener('load',resolve,{once:true});im.addEventListener('error',resolve,{once:true});setTimeout(resolve,5000);
+ })));
+ const evaluated=[...container.querySelectorAll('.rpt-paper')].map(p=>{
+  const footer=p.querySelector('.rpt-pagefoot')?.getBoundingClientRect().top||Infinity;
+  const content=Math.max(...[...p.children].filter(el=>!el.classList.contains('rpt-pagefoot')).map(el=>el.getBoundingClientRect().bottom));
+  return {key:p.dataset.reportPage,overflow:Math.round((content-footer)*100)/100};
+ });
+ container.remove();
+ return evaluated;
+});
+assert.ok(eventLayout.length>=4,'Selected plot flood narratives must include both event timeline and actual three-stage image evidence: '+JSON.stringify(eventLayout));
+assert.deepEqual(eventLayout.filter(x=>x.overflow>-2),[],'Baseline-peak-latest event and vegetation pages must fit A4 above footer: '+JSON.stringify(eventLayout));
+
 assert.ok(rayong.text.includes('−178.39')||rayong.text.includes('-178.39')||rayong.text.includes('178.39'),'Main Rayong report shows 17-STC decline since 29 Sept, not just historic +238 rai');
 assert.ok(rayong.text.includes('rpt-water-decreased')&&rayong.text.includes('แนวโน้มล่าสุด'),'Water change chart is based on recent dates and emphasizes the decrease');
 assert.ok(rayong.text.includes('2026-10-07 · 13.75')&&rayong.text.includes('2026-09-29 · 76.01'),'21-STC recent receding water is included');
