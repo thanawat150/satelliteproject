@@ -266,9 +266,19 @@ assert.equal(await page.locator('#rpt-type').inputValue(),'plot','General Rayong
 assert.equal(await page.locator('#rpt-scope').inputValue(),'province','General Rayong monitoring prompt targets all province plots');
 const generalDecision=await page.evaluate(()=>{
  const r=window.MMCReportCopilot.renderPages('main'),first=r.pages.split('</article>')[0];
- return {total:r.total,first,all:r.pages,plots:r.d.pp.length,imageCount:r.imageCount};
+ return {total:r.total,first,all:r.pages,plots:r.d.pp.length,imageCount:r.imageCount,audit:r.audit};
 });
 assert.equal(generalDecision.plots,19,'General monitoring report includes all 19 Rayong plots');
+
+assert.equal(generalDecision.audit?.release_status,'SCREENING_ONLY_NOT_APPROVED','General monitoring is explicitly not certified for decision-impact claims');
+assert.equal(generalDecision.audit?.common_valid_pixel_verified,false,'QA-valid dates must not be confused with independently verified common-pixel analysis');
+assert.equal(generalDecision.audit?.independent_validation_available,false,'No field-reference validation should be claimed');
+assert.equal(generalDecision.audit?.unpaired.length,2,'All plots without comparable spectral pairs remain disclosed');
+assert.ok(generalDecision.first.includes('สถานะหลักฐาน')&&generalDecision.first.includes('แนวโน้มอื่น/ไม่ชัด'),'Executive findings must disclose evidence readiness and mutually exclusive trend categories');
+assert.ok(generalDecision.all.includes('สังเคราะห์สัญญาณจากดัชนีทั้งหก'),'General decision report must synthesize indices rather than display four unprocessed delta pages');
+assert.ok(generalDecision.all.includes('Common Valid Pixel')&&generalDecision.all.includes('เกณฑ์ปิดประเด็นก่อนอนุมัติ'),'A professional report requires common-pixel data QA and named evidence acceptance gates');
+assert.ok(!generalDecision.all.includes('03 / INDICES ndvi'),'Raw plot index matrices should move from the main brief to technical mode or optional appendix');
+
 assert.ok(generalDecision.first.includes('สรุปสถานการณ์')||generalDecision.first.includes('รายงานสถานภาพป่าชายเลน'),'Non-flood report must lead with a decision summary');
 assert.ok(generalDecision.first.includes('คำแนะนำสำหรับผู้บริหาร'),'Management summary must provide next steps rather than bare raster thumbnails');
 assert.ok(generalDecision.first.includes('NDVI เพิ่มร่วมกับ MNDWI ลด')&&generalDecision.first.includes('NDVI ลดร่วมกับ MNDWI เพิ่ม'),'The executive brief must explain mixed provincial trends instead of only listing the strongest numerical deltas');
@@ -279,6 +289,12 @@ assert.ok(generalDecision.all.includes('นักลงทุน')&&generalDecis
 assert.ok(generalDecision.all.includes('ก่อนหน้า → ล่าสุดที่ผ่าน QA')||generalDecision.all.includes('ภาพก่อนหน้า'),'All findings must be tied to actual comparison dates');
 const generalMain=await page.evaluate(()=>window.MMCReportCopilot.renderPages('appendix'));
 assert.equal(generalMain.total,0,'General report appendix should be optional and empty by default');
+await page.locator('#rpt-appendix').check();
+const matrices=await page.evaluate(()=>window.MMCReportCopilot.renderPages('appendix'));
+assert.ok(matrices.pages.includes('ตารางดัชนีรายแปลง'),'Opt-in appendix must retain all six detailed per-plot index deltas');
+assert.ok(matrices.pages.includes('A / APPENDIX'),'Detailed evidence pages must be separated from the main report');
+await page.locator('#rpt-appendix').uncheck();
+
 
 const generalOverlaps=await page.evaluate(()=>[...document.querySelectorAll('#rpt-preview .rpt-paper')].map((paper,i)=>{
  const bottom=paper.querySelector('.rpt-pagefoot')?.getBoundingClientRect().top||Infinity;
