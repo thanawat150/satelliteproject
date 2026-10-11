@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-11T10:00:00+07:00",
+  "updated_at": "2026-10-11T10:17:00+07:00",
   "timezone": "Asia/Bangkok",
   "source": "Live Metricool scheduled posts",
   "items": [
@@ -42,8 +42,8 @@
     {
       "date": "2026-10-11T10:00:00",
       "network": "instagram",
-      "status": "PENDING",
-      "detail": "Pending",
+      "status": "ERROR",
+      "detail": "You have reached your Metricool account limit.",
       "text": "พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว 👀\nคู่หูสาย GIS กำลังมา\nเจอกัน 12 ตุลาคม\n\n#GIS #RemoteSensing #ภูมิสารสนเทศ #คู่หูสายGIS",
       "media": "https://static.metricool.com/planner/202610/7218456-file-3602539822932106380.mp4",
       "title": "",
@@ -55,8 +55,8 @@
     {
       "date": "2026-10-11T10:00:00",
       "network": "tiktok",
-      "status": "PENDING",
-      "detail": "Pending",
+      "status": "ERROR",
+      "detail": "You have reached your Metricool account limit.",
       "text": "พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว 👀\nคู่หูสาย GIS กำลังมา\nเจอกัน 12 ตุลาคม\n\n#GIS #RemoteSensing #ภูมิสารสนเทศ",
       "media": "https://static.metricool.com/planner/202610/7218456-file-6484419233823272374.mp4",
       "title": "ป๋าเคนไม่ได้มาคนเดียว 👀 | Teaser คู่หูสาย GIS",
@@ -68,8 +68,8 @@
     {
       "date": "2026-10-11T10:00:00",
       "network": "facebook",
-      "status": "PENDING",
-      "detail": "Pending",
+      "status": "ERROR",
+      "detail": "You have reached your Metricool account limit.",
       "text": "พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว 👀\n\nคู่หูสาย GIS กำลังมา\nเจอกัน 12 ตุลาคม\n\n#GIS #RemoteSensing #ภูมิสารสนเทศ #คู่หูสายGIS",
       "media": "https://static.metricool.com/planner/202610/7218456-file-3602539822932106380.mp4",
       "title": "พรุ่งนี้ ป๋าเคนไม่ได้มาคนเดียว",
