@@ -210,6 +210,12 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
 .chip.platform-shopee{background:#fff0e9;color:#d45226}
 @media(max-width:720px){.platform-post-grid,.platform-copy-grid{grid-template-columns:1fr}}
  .platform-post-card .draft-notice{margin-top:8px;font-size:11px;color:#22539d;background:#eef5ff;border-radius:9px;padding:8px 10px}
+
+.platform-title-box{border:1px solid #dce5f3;background:#fff;border-radius:12px;padding:11px 12px;margin-top:12px;min-width:0}
+.platform-title-heading{font-weight:800;font-size:12px;color:#233c62;margin-bottom:5px}
+.platform-title-value{font-size:14px;line-height:1.55;font-weight:700;overflow-wrap:anywhere}
+.platform-title-box .copy{display:block;margin-top:9px;width:100%}
+.platform-title-missing{font-size:12px;color:#a15c00}
 </style>
 </head>
 <body class="has-sidebar">
@@ -521,6 +527,19 @@ function renderInventory(){
   }).join('');
 }
 
+function publishingTitleBlock(x){
+  if(x.network!=='youtube' && x.network!=='facebook') return '';
+  const name=x.network==='youtube'?'YouTube Shorts':'Facebook Page Reels';
+  const label=x.network==='youtube'?'ชื่อคลิป YouTube Shorts (Title)':'ชื่อคลิป Facebook Page Reels (Title)';
+  const value=String(x.title||'').trim();
+  return `<div class="platform-title-box">
+    <div class="platform-title-heading">${escapeHtml(label)}</div>
+    ${value?`<div class="platform-title-value">${escapeHtml(value)}</div>
+      <button class="copy" data-copy="${encodeURIComponent(value)}">คัดลอกชื่อคลิปสำหรับ ${escapeHtml(name)}</button>`:
+      '<div class="platform-title-missing">ยังไม่มีชื่อคลิปในตาราง Metricool — รอตรวจสอบก่อนโพสต์</div>'}
+  </div>`;
+}
+
 function renderTodayContent(){
  const el=document.getElementById('todayContentList');
  const badge=document.getElementById('todayContentCount');
@@ -550,6 +569,8 @@ function renderTodayContent(){
        <div class="platform-post-meta">${escapeHtml(x.date.slice(11,16))} น. · ${hasDraft?'ร่างใหม่สำหรับโพสต์เอง':'ข้อความจาก Metricool'}</div>
        ${isErr?'<div class="warn">Metricool มีข้อผิดพลาด โปรดตรวจสอบและโพสต์เอง</div>':''}
        ${hasDraft?'<div class="draft-notice">ข้อความนี้เป็นร่างใหม่ใน GitHub เท่านั้น ยังไม่ได้เปลี่ยนแคปชั่นใน Metricool</div>':''}
+       ${publishingTitleBlock(x)}
+       <div class="label">${x.network==='youtube'?'คำอธิบาย YouTube (Description)':'แคปชั่นพร้อมแฮชแท็ก'}</div>
        <div class="copybox"><p>${escapeHtml(copy)}</p><button class="copy" data-copy="${encodeURIComponent(copy)}">คัดลอกสำหรับ ${escapeHtml(name)}</button></div>
        <div class="scheduled-actions">${publishedClip?`<a class="btn btn-primary" href="${escapeHtml(publishedClip)}" target="_blank" rel="noopener">▶ ไฟล์ที่ตั้งใน Metricool · ${escapeHtml(name)}</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool — รอตรวจสอบ</span>'}</div>
      </section>`;
@@ -637,7 +658,8 @@ function renderScheduled(rows){
         </div>
         ${isErr?'<div class="notice" style="margin-top:10px;border-color:#fecaca;background:#fff5f5;color:#9b1c1c">Metricool โพสต์ไม่สำเร็จเพราะชนลิมิตแพ็กเกจ — ใช้ปุ่มด้านล่างเพื่อดาวน์โหลดแล้วโพสต์เอง</div>':''}
         <div class="scheduled-copy">
-          <div class="label">แคปชั่นพร้อมแฮชแท็ก</div>
+          ${publishingTitleBlock(x)}
+          <div class="label">${x.network==='youtube'?'คำอธิบาย YouTube (Description)':'แคปชั่นพร้อมแฮชแท็ก'}</div>
           <div class="copybox"><p>${escapeHtml(all)}</p><button class="copy" data-copy="${encodeURIComponent(all)}">คัดลอกทั้งหมด</button></div>
           <div class="scheduled-actions">
             ${x.media?`<a class="btn btn-primary" href="${escapeHtml(x.media)}" target="_blank" rel="noopener">▶ ดูไฟล์ที่ตั้งใน Metricool · ${escapeHtml(networkLabel(x.network))}</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool</span>'}
