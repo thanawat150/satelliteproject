@@ -642,10 +642,12 @@ function monitoringPlan(d){
   const last=scenes.at(-1)||null,prev=scenes.at(-2)||null,change={};
   for(const m of metrics){const a=valid(prev?.[m]),b=valid(last?.[m]);change[m]=a===null||b===null?null:b-a;}
   const ranked=metrics.filter(m=>change[m]!==null).sort((a,b)=>Math.abs(change[b])-Math.abs(change[a]));
+  const common=(prev&&last)?d.changes.find(c=>c.plot===p.code&&c.date_a===prev.date&&c.date_b===last.date&&Number(c.common_clear_rai)>0&&c.status==='AUTO_VALID')||null:null;
+
   const nv=change.ndvi,mw=change.mndwi;
   const signal=!prev?'ข้อมูลเทียบไม่พอ':nv!==null&&mw!==null&&nv>=.08&&mw<=-.08?'สัญญาณน้ำลดและพืชพรรณเพิ่ม':nv!==null&&mw!==null&&nv<=-.08&&mw>=.08?'สัญญาณน้ำเพิ่มและพืชพรรณลด':mw!==null&&mw<=-.08?'ดัชนีน้ำลด':mw!==null&&mw>=.08?'ดัชนีน้ำเพิ่ม':nv!==null&&nv<=-.08?'ดัชนีพืชพรรณลด':nv!==null&&nv>=.08?'ดัชนีพืชพรรณเพิ่ม':'แนวโน้มผสม/เปลี่ยนไม่เด่น';
   const followup=!prev?'ตรวจวันภาพและเมฆ':signal==='สัญญาณน้ำเพิ่มและพืชพรรณลด'?'ตรวจน้ำปกคลุมเรือนยอด':signal==='สัญญาณน้ำลดและพืชพรรณเพิ่ม'?(change.ndmi!==null&&change.ndmi<0?'ตรวจความชื้นเรือนยอด':'ตรวจน้ำลดและพืช'):'ตรวจสัญญาณขัดแย้ง';
-  return {p,code:p.code,scenes,last,prev,change,ranked,signal,followup,score:ranked.length?Math.abs(change[ranked[0]]):-1,
+  return {p,code:p.code,scenes,last,prev,common,change,ranked,signal,followup,score:ranked.length?Math.abs(change[ranked[0]]):-1,
    imageBefore:prev?d.images.find(im=>im.plot===p.code&&im.date===prev.date):null,
    imageAfter:last?d.images.find(im=>im.plot===p.code&&im.date===last.date):null};
  });
@@ -655,10 +657,12 @@ function monitoringPlan(d){
  const readiness=x=>{
   if(!x.last)return {level:'E0',label:'ยังไม่มีภาพ QA',reason:'ไม่มีค่าจากภาพที่ผ่าน QA'};
   if(!x.prev||!x.ranked.length)return {level:'E1',label:'ดูภาพได้ แต่ยังเทียบไม่ได้',reason:'ไม่มีคู่ข้อมูลดัชนีที่พร้อมเปรียบเทียบ'};
-  return {level:'E2',label:'คัดกรองด้วยค่าเฉลี่ยรายวัน',reason:'ยังไม่ยืนยันว่าพิกเซลสองวันตรงกันและใช้ได้ร่วมกันทั้งหมด'};
+  if(x.common)return {level:'E2',label:'มีผลจำแนกบนพิกเซลร่วม',reason:'Water/vegetation/soil masks compare common-valid pixels; index mean deltas still compare independent per-scene means and neither is independently validated'};
+  return {level:'E2',label:'คัดกรองด้วยค่าเฉลี่ยรายวัน',reason:'ไม่มี common-valid pixel change product สำหรับคู่วันนี้ จึงไม่อ้างพื้นที่เพิ่ม/ลด'};
  };
  for(const x of items)x.readiness=readiness(x);
- const confirmedCount=0; // No independent validation or common-pixel certification available.
+ const commonPairs=items.filter(x=>x.common);
+ const confirmedCount=0; // Independent accuracy validation and management sign-off remain unavailable.
 
  const sums=d.pp.filter(p=>p.geometry&&valid(p.area)!==null),area=sums.reduce((n,p)=>n+Number(p.area),0);
  const latestQA=[...d.good].sort((a,b)=>a.date.localeCompare(b.date)).at(-1)?.date||'—';
@@ -698,7 +702,7 @@ function monitoringPlan(d){
  const mixed=compared.filter(x=>!waterReceding.includes(x)&&!waterConcern.includes(x));
  const pending=items.filter(x=>x.readiness.level!=='E2');
  const auditGate='<div class="rpt-evidence-gate"><b>สถานะหลักฐาน: E2 · คัดกรองเท่านั้น — ยังไม่ผ่านเกณฑ์ยืนยันผล</b>'+
-  '<p>คู่ข้อมูล '+compared.length+' แปลงเป็นการเปรียบเทียบค่าเฉลี่ยดัชนีรายวัน ไม่มีผลคำนวณ Common Valid Pixel ที่ได้รับการตรวจสอบ และยังไม่มีข้อมูลน้ำขึ้นลง/ภาคสนามอิสระ จึงไม่รับรองการเปลี่ยนแปลงของพื้นที่ทั้งแปลง</p>'+
+  '<p>มีคู่ภาพดัชนี '+compared.length+' แปลง และมีผลจำแนกน้ำ/พืช/ดินบนพิกเซลที่ใช้ได้ร่วมกันจาก Raster '+commonPairs.length+' แปลง (เฉพาะคู่วันที่ตรงกัน) · ผลต่างค่าเฉลี่ยดัชนีในตารางยังไม่ได้คำนวณบนพิกเซลร่วมเดียวกัน และผลจำแนกยังไม่มีการตรวจความถูกต้องอิสระ น้ำขึ้นลง หรือภาคสนาม จึงไม่รับรองการเปลี่ยนแปลงทั่วทั้งแปลง</p>'+
   '<p><b>การจัดกลุ่ม:</b> ดัชนีน้ำลดและพืชพรรณเพิ่ม '+waterReceding.length+' แปลง · สัญญาณตรงข้าม '+waterConcern.length+' แปลง · แนวโน้มอื่น/ไม่ชัด '+mixed.length+' แปลง · ไม่มีคู่ภาพพอ '+pending.length+' แปลง</p></div>';
 
  const selectedHighlights=[...waterReceding.filter(x=>x.last.date===latestQA).sort((a,b)=>a.code.localeCompare(b.code)).slice(0,2),...waterConcern.sort((a,b)=>b.last.date.localeCompare(a.last.date)).slice(0,2)];
@@ -836,7 +840,7 @@ function monitoringPlan(d){
 
  const releaseGates=[
   {item:'ขอบเขตและ NoData',current:'มี QA และตรวจ Preview เฉพาะภาพที่แสดง',close:'ตรวจ GeoTIFF และพื้นที่ภายใน Polygon ทุกวัน',owner:'GIS'},
-  {item:'Common Valid Pixel',current:'ยังไม่ยืนยัน',close:'จัด Grid/CRS ให้ตรงและคำนวณจากหน้ากากพิกเซลที่ใช้ได้ทั้งสองวัน',owner:'GIS / RS'},
+  {item:'Common Valid Pixel',current:'มีผลจำแนกจาก Raster '+commonPairs.length+' / '+compared.length+' คู่',close:'ตรวจ Grid/CRS หน้ากากพิกเซลร่วม พื้นที่ที่เทียบได้ และ Accuracy ของผลจำแนก',owner:'GIS / RS'},
   {item:'สาเหตุของการเปลี่ยนแปลง',current:'ยังไม่ยืนยัน',close:'ตรวจน้ำขึ้นลง เมฆ เงา และช่วงฤดูกาลร่วมกับภาพทุกดัชนี',owner:'GIS / ป่าไม้'},
   {item:'ความถูกต้องอิสระ',current:'ยังไม่มีในชุดรายงานนี้',close:'บันทึกตัวอย่างอ้างอิงภาคสนาม/ภาพละเอียดและประเมินความคลาดเคลื่อน',owner:'ผู้จัดการโครงการ'},
   {item:'ผลกระทบต่อเงินลงทุน',current:'ยังไม่มีต้นทุน/สัญญาอ้างอิง',close:'เชื่อมข้อมูลโครงการและผู้รับผิดชอบก่อนประเมินผลกระทบ',owner:'ฝ่ายโครงการ / การเงิน'}
@@ -862,7 +866,7 @@ function monitoringPlan(d){
  }
  return {out,imageCount:out.reduce((n,p)=>n+(p.body.match(/<figure class="rpt-image"/g)||[]).length,0),
   audit:{type:'monitoring',release_status:'SCREENING_ONLY_NOT_APPROVED',plots:items.length,comparable:compared.length,reviewNeeded:true,
-   common_valid_pixel_verified:false,independent_validation_available:false,tide_corrected:false,
+   common_valid_pixel_verified:false,common_valid_classification_pair_count:commonPairs.length,index_mean_delta_common_mask:false,independent_validation_available:false,tide_corrected:false,
    evidence_levels:Object.fromEntries(items.map(x=>[x.code,x.readiness.level])),
    unpaired:pending.map(x=>x.code),image_latest_date:latestScene,qa_latest_date:latestQA}};
 }
@@ -1210,7 +1214,7 @@ function fitImageBoundaries(doc){
 function updatePreview(){
  const el=$('rpt-preview');if(!el)return;
  const report=renderPages();
- const auditPanel=$('rpt-readiness');if(auditPanel){const a=report.audit;auditPanel.innerHTML=a?.type==='monitoring'?'<strong>สถานะรายงาน: คัดกรองเท่านั้น · ยังไม่ผ่านเกณฑ์รับรองผล</strong><p>มีคู่ภาพดัชนี '+a.comparable+' / '+a.plots+' แปลง · ยังไม่มีผลเปรียบเทียบ Common Valid Pixel ที่ยืนยันแล้ว ไม่มีผลตรวจความถูกต้องอิสระ และยังไม่ปรับแก้ระดับน้ำขึ้นลง</p>':a?'<strong>ผลประเมินเอกสาร: รายงานคัดกรองเท่านั้น</strong><p>มีคู่ภาพสำหรับวิเคราะห์ '+a.comparable+' / '+a.plots+' แปลง · พบสัญญาณน้ำเพิ่ม '+a.increases+' แปลง · ยังต้องตรวจน้ำขึ้นลงและภาคสนามก่อนสรุปน้ำท่วม</p>':'<strong>Report QA:</strong> ตรวจวันภาพและแหล่งข้อมูลก่อนใช้';}
+ const auditPanel=$('rpt-readiness');if(auditPanel){const a=report.audit;auditPanel.innerHTML=a?.type==='monitoring'?'<strong>สถานะรายงาน: คัดกรองเท่านั้น · ยังไม่ผ่านเกณฑ์รับรองผล</strong><p>มีคู่ภาพดัชนี '+a.comparable+' / '+a.plots+' แปลง · มี Common Valid Pixel สำหรับจำแนกน้ำ/พืช/ดิน '+a.common_valid_classification_pair_count+' คู่ แต่ผลต่างดัชนีเป็นค่าเฉลี่ยรายวัน และยังไม่มีผลตรวจความถูกต้องอิสระหรือการปรับแก้น้ำขึ้นลง</p>':a?'<strong>ผลประเมินเอกสาร: รายงานคัดกรองเท่านั้น</strong><p>มีคู่ภาพสำหรับวิเคราะห์ '+a.comparable+' / '+a.plots+' แปลง · พบสัญญาณน้ำเพิ่ม '+a.increases+' แปลง · ยังต้องตรวจน้ำขึ้นลงและภาคสนามก่อนสรุปน้ำท่วม</p>':'<strong>Report QA:</strong> ตรวจวันภาพและแหล่งข้อมูลก่อนใช้';}
  const previewCount=Math.min(8,report.total),previewPages=report.pages.split('</article>').slice(0,previewCount).map(x=>x+'</article>').join('');
  el.innerHTML='<style>'+paperStyle().replace('body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}','')+'</style><div class="rpt-papers">'+previewPages+'</div>'+(report.total>previewCount?'<p class="rpt-preview-more">แสดงตัวอย่าง '+previewCount+' จาก '+report.total+' หน้า · PDF ฉบับเต็มจะรวมครบทุกหน้า (ภาพ '+report.imageCount+' ภาพ)</p>':'');
  fitImageBoundaries(el);
