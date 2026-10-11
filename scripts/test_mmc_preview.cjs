@@ -303,6 +303,23 @@ const generalOverlaps=await page.evaluate(()=>[...document.querySelectorAll('#rp
 }).filter(x=>x.content>x.footer-2));
 assert.deepEqual(generalOverlaps,[],'General decision report must fit A4 preview pages above footer: '+JSON.stringify(generalOverlaps));
 
+const fullDecisionOverflows=await page.evaluate(async()=>{
+ const host=document.createElement('div');host.style.cssText='position:absolute;left:-3000px;top:0;width:820px;visibility:hidden';
+ host.innerHTML=window.MMCReportCopilot.renderPages('main').pages;document.body.appendChild(host);
+ await document.fonts.ready;
+ await Promise.all([...host.querySelectorAll('img')].map(im=>im.complete?Promise.resolve():new Promise(resolve=>{im.addEventListener('load',resolve,{once:true});im.addEventListener('error',resolve,{once:true});setTimeout(resolve,5000)})));
+ const issues=[...host.querySelectorAll('.rpt-paper')].map((paper,i)=>{
+  const footer=paper.querySelector('.rpt-pagefoot')?.getBoundingClientRect().top??Infinity;
+  const elements=[...paper.children].filter(x=>!x.classList.contains('rpt-pagefoot'));
+  const extent=Math.max(...elements.map(x=>x.getBoundingClientRect().bottom));
+  return {page:i+1,overlap:Math.round((extent-footer)*100)/100};
+ }).filter(x=>x.overlap>-2);
+ host.remove();
+ return issues;
+});
+assert.deepEqual(fullDecisionOverflows,[],'Entire general decision report must stay above its A4 footers, not just preview pages: '+JSON.stringify(fullDecisionOverflows));
+
+
 assert.ok(generalDecision.all.includes('NDVI')&&generalDecision.all.includes('MNDWI'),'Report must preserve multi-index dates');
 await page.locator('#rpt-text').fill('ทำรายงานติดตามแปลง 14-STC');
 await page.locator('#rpt-analyze').click();
