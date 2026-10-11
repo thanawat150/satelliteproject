@@ -369,6 +369,43 @@ function floodPlotLocator(rows){
 }
 
 
+/* Event phases are observed-image milestones, not inferred flood onset or a
+   daily continuous water record. Never infer a pre-flood baseline when no
+   lower-water observation exists before the observed peak. */
+function floodEventPhases(observations){
+ const all=[...(observations||[])].filter(x=>x&&/^\d{4}-\d{2}-\d{2}$/.test(String(x.date))&&
+  x.water!==null&&x.water!==''&&Number.isFinite(Number(x.water)))
+  .map(x=>({...x,water:Number(x.water)})).sort((a,b)=>a.date.localeCompare(b.date));
+ if(!all.length)return null;
+ const first=all[0],latest=all.at(-1),previous=all.at(-2)||null;
+ // In a tie keep the first recorded peak, so a later equal value does not
+ // silently erase the existence of a post-peak observation.
+ const peak=all.reduce((best,x)=>x.water>best.water?x:best,first);
+ const prior=all.filter(x=>x.date<peak.date);
+ const baseline=prior.length?prior.reduce((best,x)=>x.water<best.water?x:best,prior[0]):null;
+ const afterPeak=peak.date<latest.date;
+ const complete=Boolean(baseline&&afterPeak&&new Set([baseline.date,peak.date,latest.date]).size===3);
+ const referenceChange=baseline?latest.water-baseline.water:null;
+ const peakChange=latest.water-peak.water;
+ const rise=baseline?peak.water-baseline.water:null;
+ const latestInterval=previous?latest.water-previous.water:null;
+ const tolerance=baseline?Math.max(1,Math.abs(rise||0)*.1):null;
+ const closeToBaseline=complete&&rise>0&&Math.abs(referenceChange)<=tolerance;
+ const currentDirection=latestInterval===null?'ไม่มีคู่ภาพล่าสุด':latestInterval<-.01?'ลดลงจากภาพก่อนหน้า':latestInterval>.01?'เพิ่มขึ้นจากภาพก่อนหน้า':'ใกล้เคียงภาพก่อนหน้า';
+ let phase='insufficient',state='ยังไม่มีภาพพอให้เรียงเหตุการณ์';
+ if(all.length>=2){
+  if(!baseline)phase='no_baseline',state='ยังไม่พบภาพก่อนช่วงค่าสูงสุดสำหรับตั้งค่าอ้างอิง';
+  else if(!afterPeak)phase='peak_latest',state='ค่าพื้นที่น้ำสูงสุดอยู่ในภาพล่าสุด ยังไม่ยืนยันช่วงน้ำลด';
+  else if(closeToBaseline)phase='near_baseline',state='สัญญาณน้ำลดใกล้ช่วงอ้างอิง แต่ยังไม่ยืนยันพื้นที่ฟื้นตัว';
+  else if(peakChange<-.01&&latestInterval>.01)phase='rebound',state='ลดจากค่าสูงสุดแล้ว แต่คู่ภาพล่าสุดกลับมีน้ำเพิ่ม';
+  else if(peakChange<-.01)phase='receding',state='สัญญาณน้ำลดลงจากช่วงค่าสูงสุดที่พบ';
+  else phase='plateau',state='ยังไม่พบการลดจากช่วงค่าสูงสุดที่ชัดเจน';
+ }
+ const falling=afterPeak&&peakChange<-.5&&Math.abs(peakChange)>Math.max(1,peak.water)*.03;
+ const rising=first.date<latest.date&&latest.water-first.water>.5;
+ return {all,first,baseline,peak,latest,previous,complete,afterPeak,latestInterval,
+  referenceChange,peakChange,rise,currentDirection,phase,state,falling,rising,delta:peakChange};
+}
 function floodTimeSeries(d){
  const groups=new Map();
  for(const r of d.good){
@@ -378,13 +415,8 @@ function floodTimeSeries(d){
  }
  const answers=new Map();
  for(const [plot,arr] of groups){
-  arr.sort((a,b)=>a.date.localeCompare(b.date));
-  const peak=arr.reduce((best,x)=>x.water>best.water?x:best,arr[0]),first=arr[0],latest=arr.at(-1);
-  const delta=latest.water-peak.water;
-  const falling=peak.date<latest.date&&delta<-.5&&Math.abs(delta)>peak.water*.03;
-  const rising=first.date<latest.date&&latest.water-first.water>.5;
-  const state=falling?'น้ำที่จำแนกได้ลดจากช่วงสูงสุด':rising?'น้ำที่จำแนกได้เพิ่มจากภาพแรก':'ข้อมูลยังไม่ชี้แนวโน้มลดชัดเจน';
-  answers.set(plot,{plot,first,peak,latest,falling,rising,delta,state,all:arr});
+  const result=floodEventPhases(arr);
+  if(result)answers.set(plot,{plot,...result});
  }
  return answers;
 }
