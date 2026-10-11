@@ -82,9 +82,25 @@ export function dayPlanText(plan, heading) {
   if (plan.content.length) {
     lines.push('');
     lines.push('🎬 Content');
+
+    const groups = new Map();
     for (const x of plan.content) {
-      const title = String(x.title || '').trim() || String(x.text || '').split('\n')[0].slice(0,80) || 'คอนเทนต์';
-      lines.push(networkLabel(x.network) + ' ' + timeFromLocalDateTime(x.date) + ' — ' + title);
+      const key = x.drive_file_id || x.drive_url || x.download_url || x.media || x.title || x.text;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(x);
+    }
+
+    for (const items of groups.values()) {
+      const first = items[0];
+      const title = String(first.title || '').trim() || String(first.text || '').split('\n')[0].slice(0,80) || 'คอนเทนต์';
+      lines.push(title);
+
+      const clipUrl = first.download_url || first.drive_url || first.media || '';
+      if (clipUrl) lines.push('📥 ' + clipUrl);
+
+      for (const x of items) {
+        lines.push('• ' + networkLabel(x.network) + ' ' + timeFromLocalDateTime(x.date));
+      }
     }
   }
 
