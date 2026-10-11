@@ -271,10 +271,13 @@ const generalDecision=await page.evaluate(()=>{
 assert.equal(generalDecision.plots,19,'General monitoring report includes all 19 Rayong plots');
 
 assert.equal(generalDecision.audit?.release_status,'SCREENING_ONLY_NOT_APPROVED','General monitoring is explicitly not certified for decision-impact claims');
-assert.equal(generalDecision.audit?.common_valid_pixel_verified,false,'QA-valid dates must not be confused with independently verified common-pixel analysis');
+assert.equal(generalDecision.audit?.common_valid_pixel_verified,false,'Source common-valid masks are screening products without independent accuracy validation');
+assert.ok(generalDecision.audit?.common_valid_classification_pair_count>0,'Actual GeoTIFF common-valid classification pairs must be surfaced where date-matched');
+assert.ok(generalDecision.all.includes('ผลเปรียบเทียบเชิงพื้นที่จากพิกเซลร่วม')&&generalDecision.all.includes('พื้นที่ร่วม (ไร่)'),'Report must explain real pixel-intersection class changes separately from scene mean index differences');
 assert.equal(generalDecision.audit?.independent_validation_available,false,'No field-reference validation should be claimed');
 assert.equal(generalDecision.audit?.unpaired.length,2,'All plots without comparable spectral pairs remain disclosed');
 assert.ok(generalDecision.first.includes('สถานะหลักฐาน')&&generalDecision.first.includes('แนวโน้มอื่น/ไม่ชัด'),'Executive findings must disclose evidence readiness and mutually exclusive trend categories');
+assert.ok(generalDecision.first.includes('ผลจำแนกน้ำ/พืช/ดินบนพิกเซลที่ใช้ได้ร่วมกัน'),'Executive summary must acknowledge genuine raster common-valid class results without treating index deltas as same-pixel changes');
 assert.ok(generalDecision.all.includes('สังเคราะห์สัญญาณจากดัชนีทั้งหก'),'General decision report must synthesize indices rather than display four unprocessed delta pages');
 assert.ok(generalDecision.all.includes('Common Valid Pixel')&&generalDecision.all.includes('เกณฑ์ปิดประเด็นก่อนอนุมัติ'),'A professional report requires common-pixel data QA and named evidence acceptance gates');
 assert.ok(!generalDecision.all.includes('03 / INDICES ndvi'),'Raw plot index matrices should move from the main brief to technical mode or optional appendix');
