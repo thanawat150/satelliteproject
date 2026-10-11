@@ -1073,6 +1073,17 @@ function plotEvidencePlan(d){
    '<p class="rpt-disclaimer">สีในภาพเป็นช่วงค่าในการแสดงผล; ไม่ใช้สีเดียวสรุปความลึกน้ำ คุณภาพน้ำ ความสมบูรณ์หรือต้นไม้ตาย</p>');
  }
  out.push(...visualExtra());
+
+ const qaWater=floodTimeSeries(d).get(code);
+ if(qaWater&&qaWater.all.length>=3){
+  const trajectoryRows=qaWater.all.map(z=>({date:z.date,water:num(z.water),qa:num(z.qa)+'%'}));
+  add('05 / TIME SERIES','ติดตามการเปลี่ยนแปลงหลายวัน · '+code,
+   '<p class="rpt-lead">แสดงทุกวันที่มีพื้นที่น้ำจำแนกและผ่าน QA จริง จึงตรวจได้ว่าสถานการณ์หลังคู่ภาพก่อนหน้าเปลี่ยนต่อไปอย่างไร ไม่สรุปจากภาพเพียงสองวัน</p>'+
+   waterTimelineGraph(qaWater)+
+   '<div class="rpt-finding"><b>แนวโน้มจากวันภาพที่มี</b><p>'+esc(qaWater.state)+' · จุดสูงสุดในข้อมูลวันที่ '+esc(qaWater.peak.date)+' '+num(qaWater.peak.water)+' ไร่ และวันผ่าน QA ล่าสุด '+esc(qaWater.latest.date)+' '+num(qaWater.latest.water)+' ไร่</p></div>'+
+   table(trajectoryRows.slice(-9),[['date','วันภาพ'],['water','น้ำที่จำแนก (ไร่)'],['qa','QA ผ่าน']])+
+   '<p class="rpt-disclaimer">วันภาพไม่ได้ต่อเนื่องทุกวัน และผลต่างอาจขึ้นอยู่กับน้ำขึ้นลง ฤดูกาล หรือความพร้อมของพิกเซล จึงไม่ใช้กราฟนี้เป็นหลักฐานยืนยันน้ำท่วม</p>');
+ }
  const qRows=source.slice(-10).reverse().map(x=>({date:x.date,state:x.analysis_status||'ไม่ระบุ',qa:x.qa_valid_pct==null?'ไม่ทราบ':num(x.qa_valid_pct)+'%',source:x.original_tif10||'ไม่มีชื่อ TIFF'}));
  add('06 / ACTION & AUDIT','ข้อสรุป ข้อจำกัด และหลักฐาน · '+code,
   '<div class="rpt-plot-audit-summary"><b>สถานะรายงาน: Screening Only / Draft</b><p>'+esc(review)+' · '+esc(waterText)+' · ไม่ได้ยืนยันผลกระทบทางนิเวศวิทยาหรือการลงทุน</p></div>'+
