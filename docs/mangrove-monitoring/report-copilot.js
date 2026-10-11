@@ -860,7 +860,11 @@ function monitoringPlan(d){
   const old=legacyDocumentPlan(d);
   for(const p of old.out.filter(item=>/^0[348] \//.test(item.key)))out.push({...p,key:'A / APPENDIX '+p.key});
  }
- return {out,imageCount:out.reduce((n,p)=>n+(p.body.match(/<figure class="rpt-image"/g)||[]).length,0)};
+ return {out,imageCount:out.reduce((n,p)=>n+(p.body.match(/<figure class="rpt-image"/g)||[]).length,0),
+  audit:{type:'monitoring',release_status:'SCREENING_ONLY_NOT_APPROVED',plots:items.length,comparable:compared.length,reviewNeeded:true,
+   common_valid_pixel_verified:false,independent_validation_available:false,tide_corrected:false,
+   evidence_levels:Object.fromEntries(items.map(x=>[x.code,x.readiness.level])),
+   unpaired:pending.map(x=>x.code),image_latest_date:latestScene,qa_latest_date:latestQA}};
 }
 function documentPlan(d){
  if(ui.type==='water')return floodPlan(d);
@@ -1206,7 +1210,7 @@ function fitImageBoundaries(doc){
 function updatePreview(){
  const el=$('rpt-preview');if(!el)return;
  const report=renderPages();
- const auditPanel=$('rpt-readiness');if(auditPanel){const a=report.audit;auditPanel.innerHTML=a?'<strong>ผลประเมินเอกสาร: รายงานคัดกรองเท่านั้น</strong><p>มีคู่ภาพสำหรับวิเคราะห์ '+a.comparable+' / '+a.plots+' แปลง · พบสัญญาณน้ำเพิ่ม '+a.increases+' แปลง · ยังต้องตรวจน้ำขึ้นลงและภาคสนามก่อนสรุปน้ำท่วม</p>':'<strong>Report QA:</strong> ตรวจวันภาพและแหล่งข้อมูลก่อนใช้';}
+ const auditPanel=$('rpt-readiness');if(auditPanel){const a=report.audit;auditPanel.innerHTML=a?.type==='monitoring'?'<strong>สถานะรายงาน: คัดกรองเท่านั้น · ยังไม่ผ่านเกณฑ์รับรองผล</strong><p>มีคู่ภาพดัชนี '+a.comparable+' / '+a.plots+' แปลง · ยังไม่มีผลเปรียบเทียบ Common Valid Pixel ที่ยืนยันแล้ว ไม่มีผลตรวจความถูกต้องอิสระ และยังไม่ปรับแก้ระดับน้ำขึ้นลง</p>':a?'<strong>ผลประเมินเอกสาร: รายงานคัดกรองเท่านั้น</strong><p>มีคู่ภาพสำหรับวิเคราะห์ '+a.comparable+' / '+a.plots+' แปลง · พบสัญญาณน้ำเพิ่ม '+a.increases+' แปลง · ยังต้องตรวจน้ำขึ้นลงและภาคสนามก่อนสรุปน้ำท่วม</p>':'<strong>Report QA:</strong> ตรวจวันภาพและแหล่งข้อมูลก่อนใช้';}
  const previewCount=Math.min(8,report.total),previewPages=report.pages.split('</article>').slice(0,previewCount).map(x=>x+'</article>').join('');
  el.innerHTML='<style>'+paperStyle().replace('body{margin:0;background:#e7eee9;font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#1b3226}','')+'</style><div class="rpt-papers">'+previewPages+'</div>'+(report.total>previewCount?'<p class="rpt-preview-more">แสดงตัวอย่าง '+previewCount+' จาก '+report.total+' หน้า · PDF ฉบับเต็มจะรวมครบทุกหน้า (ภาพ '+report.imageCount+' ภาพ)</p>':'');
  fitImageBoundaries(el);
@@ -1242,7 +1246,7 @@ function printPDF(output='main'){
 function exportBlueprint(){
  const ev=evidence(),data={schema:'MMC_REPORT_BLUEPRINT_V1',interpreter:'LOCAL_RULE_BASED_NOT_LLM',created_at:new Date().toISOString(),request:ui.text,
  settings:{type:ui.type,scope:ui.scope,plot:ui.scope==='plot'?ui.plot:null,province:ui.scope==='province'?ui.province:null,period:ui.period,density:ui.density,image_dates_per_plot:ui.imageDates,include_full_appendix:ui.appendix,metrics:[...ui.metrics],modules:[...ui.modules]},
- evidence:{source_generated_at:ctx.generated_at||null,imagery_manifest_version:ctx.imagery?.version||null,plot_codes:ev.pp.map(x=>x.code),scene_count:ev.all.length,qa_valid_scene_count:ev.good.length},decision_review:ui.type==='water'?floodPlan(ev).audit:null,warnings:ev.cautions};
+ evidence:{source_generated_at:ctx.generated_at||null,imagery_manifest_version:ctx.imagery?.version||null,plot_codes:ev.pp.map(x=>x.code),scene_count:ev.all.length,qa_valid_scene_count:ev.good.length},decision_review:(ui.type==='water'?floodPlan(ev).audit:ui.type==='atlas'?null:monitoringPlan(ev).audit),warnings:ev.cautions};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
  a.href=url;a.download='MMC_Report_Blueprint_'+dateNow()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
