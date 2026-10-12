@@ -654,7 +654,7 @@ assert.ok(await page.locator('[data-action="exportnonqagaps"]').count()===1,'Mis
 assert.ok((await page.locator('#view-root').innerText()).includes('Raster Visual QA'),'QA must expose portfolio-wide visual integrity inspection');
 assert.ok((await page.locator('#view-root').innerText()).includes('Index QA'),'QA view must list spectral formula and report parity checks');
 const indexQaText=await page.locator('#index-audit').innerText();
-assert.match(indexQaText,/มีผลตรวจจาก TIFF\\s+[1-9]\\d*\\s*\\/\\s*\\d+/,'Index QA must report at least one TIFF-verified date against the current manifest total');
+assert.match(indexQaText,/มีผลตรวจจาก TIFF\s+[1-9]\d*\s*\/\s*\d+/,'Index QA must report at least one TIFF-verified date against the current manifest total');
 assert.ok(await page.locator('[data-action="exportindexqa"]').count()===1,'Downloadable source-index parity CSV must be available');
 
 assert.ok(await page.locator('[data-action="exportvisualqa"]').count()===1,'Full RGB display-QA report must export as CSV');
