@@ -1,0 +1,60 @@
+name: MMC Ingest 10-STC Archive
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/mmc_ingest_10stc_archive.py"
+      - "docs/data/nationwide/audit_20261013/10stc_drive_inventory.csv"
+      - ".github/workflows/mmc-ingest-10stc.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mmc-ingest-10-stc
+  cancel-in-progress: false
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install raster processing libraries
+        run: python -m pip install "gdown==6.4.2" numpy rasterio pillow
+      - name: Ingest actual source TIFF archive
+        run: python scripts/mmc_ingest_10stc_archive.py --plot 10-STC
+      - name: Validate published outputs
+        run: |
+          python -m json.tool docs/data/nationwide/plots/10-STC.json > /dev/null
+          python -m json.tool docs/mangrove-monitoring/imagery_manifest.json > /dev/null
+          python -m json.tool docs/data/nationwide/nationwide_results.json > /dev/null
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          p=Path("docs/data/nationwide/audit_20261013")
+          with (p/"10stc_drive_inventory.csv").open(encoding="utf-8-sig",newline="") as f: inv=list(csv.DictReader(f))
+          archive=json.loads(Path("docs/data/nationwide/plots/10-STC.json").read_text())
+          assert len(inv)==588 and archive["scene_count"]==196
+          assert {x["date"] for x in archive["scenes"]}=={x["capture_date"] for x in inv}
+          assert all(x["plot_id"]=="gis:0037" and x["province"]=="จันทบุรี" for x in archive["scenes"])
+          assert all(x.get("status") in {"PARTIAL","ERROR"} for x in archive["scenes"])
+          print("10_STC_ARCHIVE_ACCEPTED",archive["scene_count"])
+          PY
+      - name: Publish archive registry, audit evidence, and generated previews
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/nationwide/plots/10-STC.json \
+            docs/data/nationwide/nationwide_results.json \
+            docs/data/nationwide/audit_20261013/ \
+            docs/mangrove-monitoring/imagery/10-STC/ \
+            docs/mangrove-monitoring/imagery_manifest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(mmc): ingest verified 10-STC satellite archive"
+            git pull --rebase -X theirs origin main
+            git push origin HEAD:main
+          fi
