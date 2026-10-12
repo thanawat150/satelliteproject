@@ -61,10 +61,15 @@ function timeSeriesInfo(key,rows){
   '<div class="series-proof">ตรวจเทียบ Raster TIFF ต้นทางได้ '+refs.length+'/'+rows.length+
   ' วัน • จุด PARTIAL ใช้ตรวจดูค่ารายภาพเท่านั้น ไม่ใช่ผลผ่าน QA</div>':
   (hasSourceStats?'<div class="series-proof">มีค่าสถิติดัชนีจากแบนด์ TIFF ครบ '+refs.length+'/'+rows.length+' วัน แต่ยังยืนยันค่าเทียบกับดัชนีที่ฝังใน TIFF ไม่ครบ • จุด PARTIAL ใช้ดูรายภาพเท่านั้น</div>':(isSpectral?'<div class="series-proof">จุด PARTIAL แสดงค่าเฉลี่ยดัชนีจาก TIFF เพื่อการทบทวนรายภาพเท่านั้น ไม่ถือเป็นผลผ่าน QA</div>':''));
- const sparse=n===0?'<div class="notice">แปลงนี้ยังไม่มี Scene พร้อมค่าที่ใช้วาดกราฟจาก TIFF</div>':
-   n<4?'<div class="notice">มีข้อมูล '+n+
+ const areaSeries=['water_rai','water_pct','vegetation_rai','bare_soil_rai','other_rai','wetness_rai'].includes(key);
+ const sceneCount=plotScenes(plot).length;
+ const partialCountAll=plotScenes(plot).filter(x=>!qaOk(x)).length;
+ const sparse=n===0&&areaSeries&&sceneCount>0&&partialCountAll>0?
+   '<div class="notice">พบภาพ '+sceneCount+' วัน แต่ยังไม่มีผลจำแนกพิกเซลเป็นพื้นที่น้ำ/พืช/ดิน/พื้นที่ชื้นที่ผ่าน AUTO_VALID • ข้อมูล TIFF ปัจจุบันมีเพียงค่าสถิติดัชนีบางชนิดและสถานะ PARTIAL • ไม่คำนวณพื้นที่จากค่าเฉลี่ยดัชนี เพราะใช้แทนการจำแนกพิกเซลไม่ได้</div>':
+   (n===0?'<div class="notice">แปลงนี้ยังไม่มี Scene พร้อมค่าที่ใช้วาดกราฟจาก TIFF</div>':
+   (n<4?'<div class="notice">มีข้อมูล '+n+
    ' วันสำหรับกราฟนี้ • ไม่เพียงพอเป็นค่า Baseline ตามฤดูกาล'+
-   (isRain?' ของฝนตามวันภาพ':' และห้ามสรุปการสูญเสียต้นไม้หรือเหตุการณ์น้ำท่วมจากทิศทางเส้น')+'</div>':'';
+   (isRain?' ของฝนตามวันภาพ':' และห้ามสรุปการสูญเสียต้นไม้หรือเหตุการณ์น้ำท่วมจากทิศทางเส้น')+'</div>':''));
 
  return '<div class="time-series-summary">'+
    '<span>'+(isSpectral?'ค่าดัชนี '+n+' วัน · ผ่าน QA '+qaCount+' · PARTIAL '+partialCount:'ข้อมูลผ่าน QA '+n+' วัน')+'</span>'+
