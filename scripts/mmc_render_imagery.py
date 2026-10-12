@@ -20,7 +20,9 @@ from rasterio.warp import transform_bounds
 BASE=Path(__file__).resolve().parents[1]
 DATA=BASE/"docs"/"data"/"nationwide"
 MODES=("true_color","false_color","ndvi","ndre","ndmi","mndwi","bsi","ndwi")
-SCL_GOOD=(2,4,5,6,7)
+# SCL class 7 is unclassified: keep it visible in RGB but exclude it from the
+# primary analytical mask. Its share is reported separately for review.
+SCL_GOOD=(2,4,5,6)
 MAX_DIM=400
 
 def json_read(path):return json.loads(Path(path).read_text(encoding="utf-8"))
@@ -119,9 +121,10 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         with WarpedVRT(ds20,crs=ds10.crs,transform=grid10,width=w10,height=h10,
                        resampling=Resampling.nearest) as qa10:
             scl10=qa10.read(bands(ds20,"SCL",7),masked=True).astype(np.float32).filled(np.nan)
+        # RGB is a visual-review layer: show cloudy and unclassified source
+        # pixels when the source data exist. SCL filtering applies to index QA.
         usable10=(np.isfinite(n2)&np.isfinite(n3)&np.isfinite(n4)&
-                  np.isfinite(n8)&np.isin(scl10,SCL_GOOD)&
-                  (n2>0)&(n3>0)&(n4>0)&(n8>0))
+                  np.isfinite(n8)&(n2>0)&(n3>0)&(n4>0)&(n8>0))
         native_valid=int(usable10.sum())
         if native_valid<2:
             raise ValueError("Native 10m RGB has no SCL-valid source pixels")
@@ -179,6 +182,20 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
             # No valid polygon = no trustworthy plot-wise index mean;
             # images may still exist for visualization.
             inside20=np.zeros((h,w),dtype=bool)
+        # Plot-scoped quality accounting. Cloud/shadow and data-validity are
+        # separate dimensions; cloudy pixels remain available in visual review.
+        plot_pixels=int(inside20.sum())
+        source_valid=(np.isfinite(scl)&np.isfinite(b2)&np.isfinite(b3)&
+                      np.isfinite(b4)&np.isfinite(b8)&np.isfinite(b11)&
+                      (b2>0)&(b3>0)&(b4>0)&(b8>0)&(b11>0))
+        scl_counts={str(int(c)):int(np.count_nonzero(inside20 & np.isfinite(scl) & (scl==c)))
+                    for c in range(12)}
+        qa_valid=int(np.count_nonzero(inside20&good))
+        def pct(n):return round(100*n/plot_pixels,2) if plot_pixels else None
+        cloud_n=int(np.count_nonzero(inside20 & np.isfinite(scl) & np.isin(scl,(8,9,10))))
+        shadow_n=int(np.count_nonzero(inside20 & np.isfinite(scl) & (scl==3)))
+        snow_n=int(np.count_nonzero(inside20 & np.isfinite(scl) & (scl==11)))
+        unclassified_plot_n=int(np.count_nonzero(inside20 & np.isfinite(scl) & (scl==7)))
         index_stats={}
         for mode,a in indices.items():
             eligible=inside20&good&np.isfinite(a)&(a>=-1.001)&(a<=1.001)
@@ -240,7 +257,7 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
             "source_resolution_m":{"rgb":10,"spectral_index_20m":20},
             "scaling":{"rgb":"fixed 0.01-0.30 reflectance, gamma 0.9, identical across R/G/B; invalid alpha=0",
                        "index":"fixed ramps in code, full -1 to +1 range"},
-            "qa_note":"SCL QA from previous PDD analysis; RGB radiometric QC is a separate warning, not a cloud classification",
+            "qa_note":"SCL classes 2,4,5,6 define index statistics; RGB remains available for visual inspection including cloudy and unclassified source-valid pixels",
             "valid_preview_pixels":valid_pixels,"width":w,"height":h,
             "rgb_native_width":w10,"rgb_native_height":h10,
             "rgb_plot_sample_pixels":n_sample,"rgb_quality_scope":mask_scope,
@@ -248,9 +265,15 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
             "rgb_unclassified_scl_pct":unclassified_pct,
             "rgb_raw_dn_stats":raw_rgb_stats,
             "rgb_display_warning":rgb_warning,
-            "rgb_renderer_version":"mmc-rgb-fixed-reflectance-v2",
-            "index_renderer_version":"mmc-index-source-verified-v1",
+            "rgb_renderer_version":"mmc-rgb-fixed-reflectance-v3",
+            "index_renderer_version":"mmc-index-source-verified-v2",
             "index_stats":index_stats,
+            "plot_qa":{"pixel_count":plot_pixels,"source_data_valid_pct":pct(int(np.count_nonzero(inside20&source_valid))),
+                       "qa_valid_pct":pct(qa_valid),"cloud_pct":pct(cloud_n),
+                       "shadow_pct":pct(shadow_n),"snow_pct":pct(snow_n),
+                       "unclassified_pct":pct(unclassified_plot_n),
+                       "scl_counts":scl_counts,"primary_mask_scl_classes":list(SCL_GOOD),
+                       "cloud_scl_classes":[8,9,10],"shadow_scl_class":3},
             "rgb_quality_note":"Fixed cross-band reflectance display with source-nodata transparency. White or SCL-unclassified areas warrant review, not automatic cloud removal."
         }
 

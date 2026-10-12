@@ -25,7 +25,7 @@ const historyOptions=(m)=>'<option value="all" '+(m==='all'?'selected':'')+'>แ
 function available(item){return item?.modes||[]}
 function srcOK(x){return typeof x==='string'&&(/^data:image\/(?:png|jpeg|webp);base64,/i.test(x)||/^\.\/imagery\/[a-z0-9_()\/.\-]+(?:\?v=[a-z0-9_.\-]+)?$/i.test(x));}
 function previewSrc(row){return srcOK(row?.src)?row.src:null}
-async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261012-1stc-indices-v11',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
+async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261012-1stc-qa2',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
 async function getProduct(item){if(!item||item.source==='missing')return null;if(item.source==='generated'){return {layers:Object.entries(item.assets||{}).map(([mode,u])=>({plot:item.plot,date:item.date,mode,src:u+((mode==='true_color'||mode==='false_color')&&item.rgb_renderer_version?'?v='+encodeURIComponent(item.rgb_renderer_version):item.index_renderer_version?'?v='+encodeURIComponent(item.index_renderer_version):item.rgb_renderer_version?'?v='+encodeURIComponent(item.rgb_renderer_version):''),bounds:item.mode_bounds?.[mode]||item.bounds,resolution_m:mode==='true_color'||mode==='false_color'?10:20}))};}
 const key='part-'+item.part;
 if(!files.has(key)){const url='../data/full_preview_part_'+item.part+'.json';
@@ -49,7 +49,8 @@ function indexStatBrief(item,mode){
  const fmt=metricFmt;
  return '<div class="img-index-brief" data-index-stat="'+esc(mode)+'"><b>เฉลี่ยในขอบเขต '+fmt(st.plot_mean)+'</b> · ต่ำสุด '+fmt(st.plot_min)+' · สูงสุด '+fmt(st.plot_max)+' · '+esc(st.sample_pixels)+' พิกเซล (20 ม.)'+
  (v?'<div>รายงานเดิม '+fmt(v.published_mean)+' · ส่วนต่าง '+fmt(v.difference)+' '+(v.within_0_03?'✓ ตรงกัน':'⚠ ตรวจเพิ่ม')+'</div>':'')+
- (st.source_band_rmse!=null?'<div>ตรวจ Index Band ใน TIFF · RMSE '+fmt(st.source_band_rmse)+'</div>':'')+'</div>';
+ (st.source_band_rmse!=null?'<div>ตรวจ Index Band ใน TIFF · RMSE '+fmt(st.source_band_rmse)+'</div>':'')+
+ (item?.radiometry_status==='PROCESSING_BASELINE_AND_BOA_OFFSETS_UNVERIFIED'?'<div class="muted">สถิติจากพิกเซลจริงรายภาพ • ยังไม่ยืนยันการเทียบค่าข้ามวัน</div>':'')+'</div>';
 }
 function indexAuditTable(item){
  if(item?.source!=='generated'||!item.index_stats||!Object.keys(item.index_stats).length)return '<div class="notice img-missing">ไม่มีผลดัชนีสำหรับภาพนี้ • วันที่ไม่ผ่าน QA แสดงเฉพาะภาพสีจริงและสีเท็จจากต้นฉบับ ไม่ใช้คำนวณการเปลี่ยนแปลง</div>';
@@ -189,7 +190,8 @@ const nav=items.length?
  (active.layout==='single'?'<label>ความโปร่งใส<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label>':'')+
  '<label class="img-boundary-control"><input type="checkbox" id="image-boundary-toggle" '+(active.boundaryVisible?'checked':'')+'> แสดงขอบเขตแปลง</label></div></details>'+
  '</div>':'';
-const visualOnly=target?.preview_kind==='VISUAL_ONLY_NON_QA'?'<div class="notice img-missing"><b>ภาพทั้งหมดจาก TIFF ต้นฉบับ (ไม่ผ่าน QA):</b> สีจริง สีเท็จ และดัชนีที่แสดงเป็นภาพคำนวณเพื่อดูประกอบเท่านั้น อาจมีเมฆ/หมอกปะปน • ไม่มีสถิติดัชนีหรือ Change Detection ที่ผ่านการรับรองสำหรับวันนี้</div>':'';
+const visualOnly=target?.preview_kind==='VISUAL_ONLY_NON_QA'?'<div class="notice img-missing"><b>ภาพจาก TIFF ต้นฉบับ (ยังไม่ผ่าน QA):</b> สีจริง สีเท็จ และดัชนีใช้ดูประกอบเท่านั้น อาจมีเมฆ/หมอกปะปน</div>':'';
+const archiveQa=target?.preview_kind==='SOURCE_TIFF_QA_REVIEW'?'<div class="notice img-missing"><b>ผลตรวจ TIFF รายภาพ</b> · ใช้ได้ '+esc(target.qa_valid_pct??'—')+'% · เมฆ '+esc(target.cloud_coverage_pct??'—')+'% · เงา '+esc(target.shadow_coverage_pct??'—')+'% · SCL ไม่จำแนก '+esc(target.plot_qa?.unclassified_pct??'—')+'%<br>ดัชนีด้านล่างคำนวณจากพิกเซลภายใน polygon และ SCL 2,4,5,6 • ยังไม่ยืนยัน Processing Baseline/BOA Offset สำหรับเทียบข้ามวัน จึงไม่ใช้สรุปพื้นที่น้ำหรือ Change Detection</div>':'';
 const validQaRows=active.rows.filter(x=>x.analysis_status==='AUTO_VALID');
 const previewDates=new Set(items.filter(x=>x.source!=='missing').map(x=>x.date));
 const missingQa=validQaRows.filter(x=>!previewDates.has(x.date));
@@ -207,7 +209,7 @@ const showRgbReview=!!(rgbSource&&(rgbSource.rgb_display_warning||Number(rgbSour
 const rgbWarning=showRgbReview?'<div class="notice img-missing img-rgb-warning"><b>RGB QUALITY REVIEW • ยังไม่รับรองภาพใส:</b> เกือบขาว '+metricFmt(whitePct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(rgbSource.rgb_invalid_pct)+'% · SCL 7 (ไม่จำแนก) '+metricFmt(rgbSource.rgb_unclassified_scl_pct)+'% โปรดตรวจ TIFF ก่อนใช้งาน</div>':'';
 const rgbMeta=rgbSource?.rgb_native_width?'<div class="img-rgb-resolution">RGB Preview '+esc(rgbSource.rgb_native_width)+' × '+esc(rgbSource.rgb_native_height)+' พิกเซล (กริดต้นทาง 10 ม.) · ดัชนีจากกริด 20 ม. · เกือบขาว '+metricFmt(whitePct)+'% · NoData/ไม่ผ่าน SCL '+metricFmt(rgbSource.rgb_invalid_pct)+'% · รุ่น '+esc(rgbSource.rgb_renderer_version||'เดิม')+'</div>':'';
 const boundaryLegend=active.geometry?'<div class="img-boundary-legend"><i></i> เส้นแดง = ขอบเขต '+esc(active.boundaryType==='PDD_136'?'PDD':active.boundaryType==='MOC3'?'MOC 3 (ยังไม่ยืนยัน)':active.boundaryType||'จากฐาน GIS')+' ที่ระบบมีอยู่ (ไม่ใช่การรับรองสิทธิ์)</div>':'<div class="notice img-missing">แปลงนี้ไม่มี Geometry ที่จับคู่ได้ จึงยังไม่สามารถวาดขอบเขตบน Raster</div>';
-const qaLegend='<div class="img-qa-explainer">การแสดงภาพ: SCL QA ระบุพิกเซลที่วิเคราะห์ได้ ไม่ใช่คะแนนความชัด • RGB ใช้การปรับสีแบบค่าการสะท้อนแสงคงที่ • ช่องลายตารางหมายถึง NoData/ไม่ผ่าน SCL ของภาพต้นฉบับ • สีขาวอาจเป็นความสว่างสูงหรือเมฆที่ต้องตรวจสอบ</div>';
+const qaLegend='<div class="img-qa-explainer">การแสดงภาพ: SCL ใช้คัดพิกเซลสำหรับค่าสถิติดัชนี ไม่ใช่เหตุผลซ่อนภาพ • RGB แสดงพิกเซล TIFF ที่อ่านได้รวมเมฆ/พื้นที่ไม่จำแนก • ช่องโปร่งใสหมายถึง NoData • สีขาวอาจเป็นความสว่างสูงหรือเมฆที่ต้องตรวจสอบ</div>';
 const main=active.layout==='single'?
  '<div class="img-preview-grid img-view-single"><div class="img-map-panel"><div class="img-title">'+esc(MODE[active.mode]?.[0]||active.mode)+' · '+esc(active.date)+' '+statusPill(active.date)+'</div>'+
  '<div class="img-geo-map" id="mmc-geo-map"></div>'+
@@ -228,7 +230,7 @@ const indexAudit=target?.index_stats?
 const source=srcMeta?'<div class="img-source"><b>Traceability</b> · Plot '+esc(active.plot)+' • วันที่ภาพ '+esc(active.date)+' • '+esc(srcMeta.algorithm||'Preview จาก TIFF')+' • QA '+esc(srcMeta.analysis_status||'ยังไม่ประมวลผล')+
  '<br><small>Original TIFF: '+esc(srcMeta.original_tif10||'รอต้นฉบับ')+' / '+esc(srcMeta.original_tif20||'รอต้นฉบับ')+'</small>'+
 '<br>'+[['10 m TIFF',srcMeta.original_tif10_file_id],['20 m TIFF / SCL',srcMeta.original_tif20_file_id]].filter(x=>x[1]).map(x=>'<a href="https://drive.google.com/file/d/'+encodeURIComponent(x[1])+'/view" target="_blank" rel="noopener noreferrer">'+esc(x[0])+' ↗</a>').join(' · ')+'</div>':'<div class="img-source">ภาพนี้มี Raster Preview แต่ยังไม่มีผล QA ที่จับคู่กับชุดวิเคราะห์ PDD เดิม จึงไม่ใช้สรุปผลกระทบ</div>';
-return head+nav+boundaryLegend+(active.layout==='single'?qaLegend:'')+(active.layout==='history'?'':visualOnly+noPreview+smallWarning+rgbWarning+rgbMeta)+main+compare+gallery+history+(active.layout==='history'?'':indexAudit+source);
+return head+nav+boundaryLegend+(active.layout==='single'?qaLegend:'')+(active.layout==='history'?'':visualOnly+archiveQa+noPreview+smallWarning+rgbWarning+rgbMeta)+main+compare+gallery+history+(active.layout==='history'?'':indexAudit+source);
 }
 function destroyMap(){if(map){try{map.remove()}catch(e){}map=null;}boundaryMapLayer=null;}
 function plotBounds(geo){const c=[];function walk(a){if(!Array.isArray(a))return;if(a.length>=2&&typeof a[0]==='number'&&typeof a[1]==='number')c.push([a[1],a[0]]);else for(let p of a)walk(p);}walk(geo?.coordinates);if(!c.length)return null;return [[Math.min(...c.map(x=>x[0])),Math.min(...c.map(x=>x[1]))],[Math.max(...c.map(x=>x[0])),Math.max(...c.map(x=>x[1]))]];}
