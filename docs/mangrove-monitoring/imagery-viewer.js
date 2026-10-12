@@ -25,7 +25,7 @@ const historyOptions=(m)=>'<option value="all" '+(m==='all'?'selected':'')+'>แ
 function available(item){return item?.modes||[]}
 function srcOK(x){return typeof x==='string'&&(/^data:image\/(?:png|jpeg|webp);base64,/i.test(x)||/^\.\/imagery\/[a-z0-9_()\/.\-]+(?:\?v=[a-z0-9_.\-]+)?$/i.test(x));}
 function previewSrc(row){return srcOK(row?.src)?row.src:null}
-async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261012-1stc-2017-2026-v10',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
+async function getIndex(){if(index)return index;let r=await fetch('imagery_manifest.json?v=20261012-1stc-indices-v11',{cache:'no-store'});if(!r.ok)throw Error('Imagery manifest HTTP '+r.status);index=await r.json();return index;}
 async function getProduct(item){if(!item||item.source==='missing')return null;if(item.source==='generated'){return {layers:Object.entries(item.assets||{}).map(([mode,u])=>({plot:item.plot,date:item.date,mode,src:u+((mode==='true_color'||mode==='false_color')&&item.rgb_renderer_version?'?v='+encodeURIComponent(item.rgb_renderer_version):item.index_renderer_version?'?v='+encodeURIComponent(item.index_renderer_version):item.rgb_renderer_version?'?v='+encodeURIComponent(item.rgb_renderer_version):''),bounds:item.mode_bounds?.[mode]||item.bounds,resolution_m:mode==='true_color'||mode==='false_color'?10:20}))};}
 const key='part-'+item.part;
 if(!files.has(key)){const url='../data/full_preview_part_'+item.part+'.json';
