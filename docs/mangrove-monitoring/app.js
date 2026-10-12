@@ -59,8 +59,8 @@ function timeSeriesInfo(plot,key,rows){
  const hasSourceStats=isSpectral&&refs.length>0&&refs.every(x=>x&&x.sample_pixels>0&&Number.isFinite(Number(x.plot_mean)));
  const proof=n===0?'':verified?
   '<div class="series-proof">ตรวจเทียบ Raster TIFF ต้นทางได้ '+refs.length+'/'+rows.length+
-  ' วัน • จุด PARTIAL ใช้ตรวจดูค่ารายภาพเท่านั้น ไม่ใช่ผลผ่าน QA</div>':
-  (hasSourceStats?'<div class="series-proof">มีค่าสถิติดัชนีจากแบนด์ TIFF ครบ '+refs.length+'/'+rows.length+' วัน แต่ยังยืนยันค่าเทียบกับดัชนีที่ฝังใน TIFF ไม่ครบ • จุด PARTIAL ใช้ดูรายภาพเท่านั้น</div>':(isSpectral?'<div class="series-proof">จุด PARTIAL แสดงค่าเฉลี่ยดัชนีจาก TIFF เพื่อการทบทวนรายภาพเท่านั้น ไม่ถือเป็นผลผ่าน QA</div>':''));
+  ' วัน • จุด PARTIAL ใช้ตรวจดูค่ารายภาพเท่านั้น ไม่ถือเป็นผลผ่าน QA</div>':
+  (hasSourceStats?'<div class="series-proof">มีค่าสถิติดัชนีจากแบนด์ TIFF ครบ '+refs.length+'/'+rows.length+' วัน แต่ยังยืนยันค่าเทียบกับดัชนีที่ฝังใน TIFF ไม่ครบ • จุด PARTIAL ใช้ดูรายภาพเท่านั้น ไม่ถือเป็นผลผ่าน QA</div>':(isSpectral?'<div class="series-proof">จุด PARTIAL แสดงค่าเฉลี่ยดัชนีจาก TIFF เพื่อการทบทวนรายภาพเท่านั้น ไม่ถือเป็นผลผ่าน QA</div>':''));
  const areaSeries=['water_rai','water_pct','vegetation_rai','bare_soil_rai','other_rai','wetness_rai'].includes(key);
  const sceneCount=plotScenes(plot).length;
  const partialCountAll=plotScenes(plot).filter(x=>!qaOk(x)).length;
