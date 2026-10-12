@@ -57,7 +57,7 @@ function timeSeriesInfo(key,rows){
  const verified=isSpectral&&refs.length>0&&refs.every(x=>x&&x.sample_pixels>0&&
    x.embedded_tif_match!==false&&Number.isFinite(Number(x.plot_mean)));
  const proof=verified?
-  '<div class="series-proof">ตรวจเทียบค่าดัชนีกับ TIFF ต้นทางได้ '+refs.length+'/'+rows.length+
+  '<div class="series-proof">ตรวจเทียบ Raster TIFF ต้นทางได้ '+refs.length+'/'+rows.length+
   ' วัน • จุด PARTIAL ใช้ตรวจดูค่ารายภาพเท่านั้น ไม่ใช่ผลผ่าน QA</div>':
   (isSpectral?'<div class="series-proof">จุด PARTIAL แสดงค่าเฉลี่ยดัชนีที่คำนวณจาก TIFF เพื่อให้ตรวจดูภาพย้อนหลังได้ แต่ไม่ถือเป็นผลผ่าน QA</div>':'');
  const sparse=n<4?'<div class="notice">มีข้อมูลผ่าน QA เพียง '+n+
