@@ -150,7 +150,7 @@
     "source_tiff_count": 399
   },
   "scene_count": 133,
-  "generated_at": "2026-10-12T17:05:35.596624+00:00",
+  "generated_at": "2026-10-12T17:06:19.343766+00:00",
   "scenes": [
     {
       "plot": "1-STC",
@@ -176,6 +176,18 @@
         "ndvi": {
           "sample_pixels": 119,
           "plot_mean": -0.13065
+        },
+        "evi": {
+          "sample_pixels": 119,
+          "plot_mean": 0.00429
+        },
+        "savi": {
+          "sample_pixels": 119,
+          "plot_mean": 0.00274
+        },
+        "gli": {
+          "sample_pixels": 119,
+          "plot_mean": 0.05843
         },
         "ndre": {
           "sample_pixels": 119,
@@ -232,7 +244,10 @@
       "original_tif20_file_id": "1aITD6uozh5mfPZEL3LOPC2OfeF3Mf1XP",
       "original_tif60_file_id": "1_-F7pRdMKK-7Aoyvj5ijMMr7NFA5vkTT",
       "source_folder_id": "1Pw2s8hPZk2B3YikEyECt7aJZfHmmvtMy",
-      "source_folder_path": "/Nationwide Archive/1-STC/2017/02-13"
+      "source_folder_path": "/Nationwide Archive/1-STC/2017/02-13",
+      "evi": 0.00429,
+      "savi": 0.00274,
+      "gli": 0.05843
     },
     {
       "plot": "1-STC",
@@ -258,6 +273,18 @@
         "ndvi": {
           "sample_pixels": 143,
           "plot_mean": -0.03141
+        },
+        "evi": {
+          "sample_pixels": 143,
+          "plot_mean": 0.01101
+        },
+        "savi": {
+          "sample_pixels": 143,
+          "plot_mean": 0.01004
+        },
+        "gli": {
+          "sample_pixels": 143,
+          "plot_mean": 0.097
         },
         "ndre": {
           "sample_pixels": 143,
@@ -314,7 +341,10 @@
       "original_tif20_file_id": "1D2mIVvk9_zu8ORTx-NuBphwKxDxoT48A",
       "original_tif60_file_id": "1I8mpQX3keVV2EY-d7q86sg7H-3fJPvmY",
       "source_folder_id": "114MGwUTEho803wTL4YJKkbbo_YwKaH98",
-      "source_folder_path": "/Nationwide Archive/1-STC/2017/12-20"
+      "source_folder_path": "/Nationwide Archive/1-STC/2017/12-20",
+      "evi": 0.01101,
+      "savi": 0.01004,
+      "gli": 0.097
     },
     {
       "plot": "1-STC",
@@ -340,6 +370,18 @@
         "ndvi": {
           "sample_pixels": 141,
           "plot_mean": -0.02077
+        },
+        "evi": {
+          "sample_pixels": 141,
+          "plot_mean": -5e-05
+        },
+        "savi": {
+          "sample_pixels": 141,
+          "plot_mean": -0.0005
+        },
+        "gli": {
+          "sample_pixels": 141,
+          "plot_mean": 0.037
         },
         "ndre": {
           "sample_pixels": 141,
@@ -396,7 +438,10 @@
       "original_tif20_file_id": "1MGHT_2he4RF5TcsqfV4rw4-uDlJOmYB2",
       "original_tif60_file_id": "1lt3dLAnwGSICqsZ7i6pqozKFdwXyJzID",
       "source_folder_id": "1PWUyTk-j4DbIa3r1i09r2FL4MLO15pTK",
-      "source_folder_path": "/Nationwide Archive/1-STC/2018/02-03"
+      "source_folder_path": "/Nationwide Archive/1-STC/2018/02-03",
+      "evi": -5e-05,
+      "savi": -0.0005,
+      "gli": 0.037
     },
     {
       "plot": "1-STC",
@@ -422,6 +467,18 @@
         "ndvi": {
           "sample_pixels": 95,
           "plot_mean": -0.00339
+        },
+        "evi": {
+          "sample_pixels": 95,
+          "plot_mean": 0.00423
+        },
+        "savi": {
+          "sample_pixels": 95,
+          "plot_mean": 0.00319
+        },
+        "gli": {
+          "sample_pixels": 95,
+          "plot_mean": 0.03551
         },
         "ndre": {
           "sample_pixels": 95,
@@ -478,7 +535,10 @@
       "original_tif20_file_id": "1dH9dYonAPAc4sJ3dwQQ40YfhPAj1bkFn",
       "original_tif60_file_id": "17DEupXnJaiLyg_xlCe0jskOiekOqPk-E",
       "source_folder_id": "12NuJ8gpW4MwOT6DdhmdY-mTZoYTS-Ems",
-      "source_folder_path": "/Nationwide Archive/1-STC/2018/02-08"
+      "source_folder_path": "/Nationwide Archive/1-STC/2018/02-08",
+      "evi": 0.00423,
+      "savi": 0.00319,
+      "gli": 0.03551
     },
     {
       "plot": "1-STC",
@@ -504,6 +564,18 @@
         "ndvi": {
           "sample_pixels": 154,
           "plot_mean": -0.1269
+        },
+        "evi": {
+          "sample_pixels": 154,
+          "plot_mean": -0.00699
+        },
+        "savi": {
+          "sample_pixels": 154,
+          "plot_mean": -0.00873
+        },
+        "gli": {
+          "sample_pixels": 154,
+          "plot_mean": 0.05677
         },
         "ndre": {
           "sample_pixels": 154,
@@ -560,7 +632,10 @@
       "original_tif20_file_id": "1vMUnu6UDTR_7vpalhlmn9HD43M6Oouge",
       "original_tif60_file_id": "19jM6yU-93VKxu2SNxp4OcOEx1kiN7Qeh",
       "source_folder_id": "1qH-uNw2sAvJrUb53okcGzY0I2PBhsN40",
-      "source_folder_path": "/Nationwide Archive/1-STC/2018/02-13"
+      "source_folder_path": "/Nationwide Archive/1-STC/2018/02-13",
+      "evi": -0.00699,
+      "savi": -0.00873,
+      "gli": 0.05677
     },
     {
       "plot": "1-STC",
@@ -586,6 +661,18 @@
         "ndvi": {
           "sample_pixels": 145,
           "plot_mean": -0.14859
+        },
+        "evi": {
+          "sample_pixels": 145,
+          "plot_mean": -0.02729
+        },
+        "savi": {
+          "sample_pixels": 145,
+          "plot_mean": -0.02548
+        },
+        "gli": {
+          "sample_pixels": 145,
+          "plot_mean": 0.04585
         },
         "ndre": {
           "sample_pixels": 145,
@@ -642,7 +729,10 @@
       "original_tif20_file_id": "1lcuglGJ3U911-rRE9cdTTYSHzaOIeNBB",
       "original_tif60_file_id": "1m00QWsD6NoyIGyoQVxBITsWv8rueIk5o",
       "source_folder_id": "1rgaqYMgzvBwlLXO7tTD01T6tgkF8g6pN",
-      "source_folder_path": "/Nationwide Archive/1-STC/2018/03-10"
+      "source_folder_path": "/Nationwide Archive/1-STC/2018/03-10",
+      "evi": -0.02729,
+      "savi": -0.02548,
+      "gli": 0.04585
     },
     {
       "plot": "1-STC",
@@ -668,6 +758,18 @@
         "ndvi": {
           "sample_pixels": 127,
           "plot_mean": 0.01739
+        },
+        "evi": {
+          "sample_pixels": 127,
+          "plot_mean": 0.02177
+        },
+        "savi": {
+          "sample_pixels": 127,
+          "plot_mean": 0.02046
+        },
+        "gli": {
+          "sample_pixels": 127,
+          "plot_mean": 0.06416
         },
         "ndre": {
           "sample_pixels": 127,
@@ -724,7 +826,10 @@
       "original_tif20_file_id": "1mr1WFau8V1cGxlvg_Qi0RPNwOLX1Ly6x",
       "original_tif60_file_id": "1pghDEybVEGu6WKmkfKfKr1KfdjQqZBr_",
       "source_folder_id": "1LWhpXWyGEx0t_SaQui1bqrHlHdapjL80",
-      "source_folder_path": "/Nationwide Archive/1-STC/2018/04-09"
+      "source_folder_path": "/Nationwide Archive/1-STC/2018/04-09",
+      "evi": 0.02177,
+      "savi": 0.02046,
+      "gli": 0.06416
     },
     {
       "plot": "1-STC",
@@ -750,6 +855,18 @@
         "ndvi": {
           "sample_pixels": 151,
           "plot_mean": 0.13894
+        },
+        "evi": {
+          "sample_pixels": 151,
+          "plot_mean": 0.06906
+        },
+        "savi": {
+          "sample_pixels": 151,
+          "plot_mean": 0.07023
+        },
+        "gli": {
+          "sample_pixels": 151,
+          "plot_mean": 0.08119
         },
         "ndre": {
           "sample_pixels": 151,
@@ -806,7 +923,10 @@
       "original_tif20_file_id": "1zd8VSl3g7tlCtyPhFKXFaUojwyeaaLtO",
       "original_tif60_file_id": "1zqiLy4IzFNwF0ehqVxxJv148hVwr_J8J",
       "source_folder_id": "1mhnqZOdj3xPCaun9bNuHBYQZoCj-OeTR",
-      "source_folder_path": "/Nationwide Archive/1-STC/2018/10-31"
+      "source_folder_path": "/Nationwide Archive/1-STC/2018/10-31",
+      "evi": 0.06906,
+      "savi": 0.07023,
+      "gli": 0.08119
     },
     {
       "plot": "1-STC",
@@ -832,6 +952,18 @@
         "ndvi": {
           "sample_pixels": 128,
           "plot_mean": 0.02563
+        },
+        "evi": {
+          "sample_pixels": 128,
+          "plot_mean": 0.02819
+        },
+        "savi": {
+          "sample_pixels": 128,
+          "plot_mean": 0.02884
+        },
+        "gli": {
+          "sample_pixels": 128,
+          "plot_mean": 0.14257
         },
         "ndre": {
           "sample_pixels": 128,
@@ -888,7 +1020,10 @@
       "original_tif20_file_id": "1K2ohGYM8PC-6GjSvtSRz5D_BzHeueyCe",
       "original_tif60_file_id": "1Hji-IOFKutn1-5o9lfakwg3LdDzGX5vm",
       "source_folder_id": "1edW_9q66UyQUhyacBA7LhXhKHFj5bzMv",
-      "source_folder_path": "/Nationwide Archive/1-STC/2018/12-25"
+      "source_folder_path": "/Nationwide Archive/1-STC/2018/12-25",
+      "evi": 0.02819,
+      "savi": 0.02884,
+      "gli": 0.14257
     },
     {
       "plot": "1-STC",
@@ -914,6 +1049,18 @@
         "ndvi": {
           "sample_pixels": 244,
           "plot_mean": 0.04338
+        },
+        "evi": {
+          "sample_pixels": 244,
+          "plot_mean": 0.02486
+        },
+        "savi": {
+          "sample_pixels": 244,
+          "plot_mean": 0.0217
+        },
+        "gli": {
+          "sample_pixels": 244,
+          "plot_mean": 0.07483
         },
         "ndre": {
           "sample_pixels": 244,
@@ -970,7 +1117,10 @@
       "original_tif20_file_id": "1SbeUq--_A6TG8PVmIU1aohwaJrgTs5VI",
       "original_tif60_file_id": "16lS7I6g8Vqn3EIl1o-XJltWvnbOUIsrH",
       "source_folder_id": "1Saf_ZUnU5SRVJ3dG9TQjkOC5mrWIiOqW",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/01-14"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/01-14",
+      "evi": 0.02486,
+      "savi": 0.0217,
+      "gli": 0.07483
     },
     {
       "plot": "1-STC",
@@ -996,6 +1146,18 @@
         "ndvi": {
           "sample_pixels": 145,
           "plot_mean": -0.33567
+        },
+        "evi": {
+          "sample_pixels": 145,
+          "plot_mean": -0.00622
+        },
+        "savi": {
+          "sample_pixels": 145,
+          "plot_mean": -0.0095
+        },
+        "gli": {
+          "sample_pixels": 145,
+          "plot_mean": 0.16486
         },
         "ndre": {
           "sample_pixels": 145,
@@ -1052,7 +1214,10 @@
       "original_tif20_file_id": "1aQeGjPXrCQsD3Ss5eSQC7AUu1fNT10od",
       "original_tif60_file_id": "1i38JK0Hk2zbE0JpC9vn6qRanmZ4naga8",
       "source_folder_id": "1kZA3hd8rFgzl-wWyS4HIbQ83iiaKKAPf",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/01-24"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/01-24",
+      "evi": -0.00622,
+      "savi": -0.0095,
+      "gli": 0.16486
     },
     {
       "plot": "1-STC",
@@ -1078,6 +1243,18 @@
         "ndvi": {
           "sample_pixels": 243,
           "plot_mean": -0.08182
+        },
+        "evi": {
+          "sample_pixels": 243,
+          "plot_mean": 0.01559
+        },
+        "savi": {
+          "sample_pixels": 243,
+          "plot_mean": 0.01493
+        },
+        "gli": {
+          "sample_pixels": 243,
+          "plot_mean": 0.10606
         },
         "ndre": {
           "sample_pixels": 243,
@@ -1134,7 +1311,10 @@
       "original_tif20_file_id": "1geSCmhyejgKPyZOagyn80vHKVPOqd-Zl",
       "original_tif60_file_id": "1hHoAUTl5zW7IHBtbQmgyeCNIo_wmGr1a",
       "source_folder_id": "18ztOv2zvivEtkdQ50MiGhx3B1hQJmBJE",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/01-29"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/01-29",
+      "evi": 0.01559,
+      "savi": 0.01493,
+      "gli": 0.10606
     },
     {
       "plot": "1-STC",
@@ -1160,6 +1340,18 @@
         "ndvi": {
           "sample_pixels": 243,
           "plot_mean": 0.09456
+        },
+        "evi": {
+          "sample_pixels": 243,
+          "plot_mean": 0.03967
+        },
+        "savi": {
+          "sample_pixels": 243,
+          "plot_mean": 0.03507
+        },
+        "gli": {
+          "sample_pixels": 243,
+          "plot_mean": 0.05064
         },
         "ndre": {
           "sample_pixels": 243,
@@ -1216,7 +1408,10 @@
       "original_tif20_file_id": "1anFDq2jiro-ilnxq3o1wIV3wm9kffSss",
       "original_tif60_file_id": "1swfXlcYVo3jhmktMEI2yIBZVncKH45oj",
       "source_folder_id": "1t71rHzodgwWhhkp0BfNFd6U1kEF8My7y",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/02-08"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/02-08",
+      "evi": 0.03967,
+      "savi": 0.03507,
+      "gli": 0.05064
     },
     {
       "plot": "1-STC",
@@ -1242,6 +1437,18 @@
         "ndvi": {
           "sample_pixels": 250,
           "plot_mean": 0.08026
+        },
+        "evi": {
+          "sample_pixels": 250,
+          "plot_mean": 0.03389
+        },
+        "savi": {
+          "sample_pixels": 250,
+          "plot_mean": 0.03323
+        },
+        "gli": {
+          "sample_pixels": 250,
+          "plot_mean": 0.06415
         },
         "ndre": {
           "sample_pixels": 250,
@@ -1298,7 +1505,10 @@
       "original_tif20_file_id": "1tf-eHCiwtBJJIoyF57nrbnHxZggAinRf",
       "original_tif60_file_id": "1tvyavOwtohUYaLwADD36Pk4JU5Pe6Oqk",
       "source_folder_id": "1APGt-qVmim_qml6hDIBDaEaLrLWI69VR",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/02-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/02-18",
+      "evi": 0.03389,
+      "savi": 0.03323,
+      "gli": 0.06415
     },
     {
       "plot": "1-STC",
@@ -1324,6 +1534,18 @@
         "ndvi": {
           "sample_pixels": 243,
           "plot_mean": 0.06402
+        },
+        "evi": {
+          "sample_pixels": 243,
+          "plot_mean": 0.0252
+        },
+        "savi": {
+          "sample_pixels": 243,
+          "plot_mean": 0.02314
+        },
+        "gli": {
+          "sample_pixels": 243,
+          "plot_mean": 0.04607
         },
         "ndre": {
           "sample_pixels": 243,
@@ -1380,7 +1602,10 @@
       "original_tif20_file_id": "1YG7CXRoB22toqoK1CJlcgVaoZvpd_dhU",
       "original_tif60_file_id": "1ry_eR9p-qxRpTGsk8ZBtLUX7Bv9VAqJL",
       "source_folder_id": "17w7pDVnmXlLp3ZkUC7jiSED1wcEByYYJ",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/03-20"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/03-20",
+      "evi": 0.0252,
+      "savi": 0.02314,
+      "gli": 0.04607
     },
     {
       "plot": "1-STC",
@@ -1406,6 +1631,18 @@
         "ndvi": {
           "sample_pixels": 232,
           "plot_mean": -0.01321
+        },
+        "evi": {
+          "sample_pixels": 232,
+          "plot_mean": 0.02421
+        },
+        "savi": {
+          "sample_pixels": 232,
+          "plot_mean": 0.02396
+        },
+        "gli": {
+          "sample_pixels": 232,
+          "plot_mean": 0.06131
         },
         "ndre": {
           "sample_pixels": 232,
@@ -1462,7 +1699,10 @@
       "original_tif20_file_id": "1zid9hLNcp8PCDPDwdLVuUJWd1ReVGY-z",
       "original_tif60_file_id": "1uiRcjXipYUnQpuR7Ypj0ybkVXLhg74Sx",
       "source_folder_id": "1kguAisWmr8rQxL-jlw3mlDa6e9dwqRUp",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/04-04"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/04-04",
+      "evi": 0.02421,
+      "savi": 0.02396,
+      "gli": 0.06131
     },
     {
       "plot": "1-STC",
@@ -1488,6 +1728,18 @@
         "ndvi": {
           "sample_pixels": 110,
           "plot_mean": -0.01418
+        },
+        "evi": {
+          "sample_pixels": 110,
+          "plot_mean": 0.02522
+        },
+        "savi": {
+          "sample_pixels": 110,
+          "plot_mean": 0.0245
+        },
+        "gli": {
+          "sample_pixels": 110,
+          "plot_mean": 0.03919
         },
         "ndre": {
           "sample_pixels": 110,
@@ -1544,7 +1796,10 @@
       "original_tif20_file_id": "1W1G1I-U5fzT-k0qYTC6gy9wrRMbawHuU",
       "original_tif60_file_id": "15SONY1ZnQYR7x2Gqo_qH1LhiNgoPl4Hk",
       "source_folder_id": "1OcH91x3Gl_hk6EiGOmN6BTVMwRTZEGIL",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/04-29"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/04-29",
+      "evi": 0.02522,
+      "savi": 0.0245,
+      "gli": 0.03919
     },
     {
       "plot": "1-STC",
@@ -1570,6 +1825,18 @@
         "ndvi": {
           "sample_pixels": 251,
           "plot_mean": 0.23271
+        },
+        "evi": {
+          "sample_pixels": 251,
+          "plot_mean": 0.10827
+        },
+        "savi": {
+          "sample_pixels": 251,
+          "plot_mean": 0.11114
+        },
+        "gli": {
+          "sample_pixels": 251,
+          "plot_mean": 0.0398
         },
         "ndre": {
           "sample_pixels": 251,
@@ -1626,7 +1893,10 @@
       "original_tif20_file_id": "1aRhovVmUd72P1CZ57Si-XzXUNG6vbH2H",
       "original_tif60_file_id": "13i3YpyUcBqBl0K2ceqpRnPg0K9bIWs3r",
       "source_folder_id": "1lZRuEmMBgRrHzDQ4qDDIopInurTwpeso",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/09-26"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/09-26",
+      "evi": 0.10827,
+      "savi": 0.11114,
+      "gli": 0.0398
     },
     {
       "plot": "1-STC",
@@ -1652,6 +1922,18 @@
         "ndvi": {
           "sample_pixels": 253,
           "plot_mean": 0.29326
+        },
+        "evi": {
+          "sample_pixels": 253,
+          "plot_mean": 0.09352
+        },
+        "savi": {
+          "sample_pixels": 253,
+          "plot_mean": 0.09253
+        },
+        "gli": {
+          "sample_pixels": 253,
+          "plot_mean": 0.07482
         },
         "ndre": {
           "sample_pixels": 253,
@@ -1708,7 +1990,10 @@
       "original_tif20_file_id": "1ZypI7qqSJfNK0a-mzOa6OBgMjRhduJtZ",
       "original_tif60_file_id": "1w90FOOyc3yGxqZHm_eHobzf4P5nsfXUO",
       "source_folder_id": "1_LTMY0QrjOvBxT0EcO4_MTxIfDmuJgZ3",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-05"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-05",
+      "evi": 0.09352,
+      "savi": 0.09253,
+      "gli": 0.07482
     },
     {
       "plot": "1-STC",
@@ -1734,6 +2019,18 @@
         "ndvi": {
           "sample_pixels": 253,
           "plot_mean": 0.29833
+        },
+        "evi": {
+          "sample_pixels": 253,
+          "plot_mean": 0.07858
+        },
+        "savi": {
+          "sample_pixels": 253,
+          "plot_mean": 0.08317
+        },
+        "gli": {
+          "sample_pixels": 253,
+          "plot_mean": 0.1063
         },
         "ndre": {
           "sample_pixels": 253,
@@ -1790,7 +2087,10 @@
       "original_tif20_file_id": "1-NowsT3X8hRSxBeBGMRNPnM0yDxUJPlt",
       "original_tif60_file_id": "1ZqWOmirNqlGIFr5dx_YJLP576NVo1jBl",
       "source_folder_id": "18QWOXe_HJB2wDob0tfxzyreQOFr9Ahjc",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-10"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-10",
+      "evi": 0.07858,
+      "savi": 0.08317,
+      "gli": 0.1063
     },
     {
       "plot": "1-STC",
@@ -1816,6 +2116,18 @@
         "ndvi": {
           "sample_pixels": 253,
           "plot_mean": 0.23605
+        },
+        "evi": {
+          "sample_pixels": 253,
+          "plot_mean": 0.07512
+        },
+        "savi": {
+          "sample_pixels": 253,
+          "plot_mean": 0.07816
+        },
+        "gli": {
+          "sample_pixels": 253,
+          "plot_mean": 0.09329
         },
         "ndre": {
           "sample_pixels": 253,
@@ -1872,7 +2184,10 @@
       "original_tif20_file_id": "1PZx2OYjxvvXRhahLcn9_ZJKHgmRrrkOR",
       "original_tif60_file_id": "1drSGwOY4Pzt1cm3A7V7VJCTeLT2DrKdl",
       "source_folder_id": "1IJAZ-VEkAY2r3et2lufaVvG2LjAD3PqV",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-15"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-15",
+      "evi": 0.07512,
+      "savi": 0.07816,
+      "gli": 0.09329
     },
     {
       "plot": "1-STC",
@@ -1898,6 +2213,18 @@
         "ndvi": {
           "sample_pixels": 248,
           "plot_mean": 0.21959
+        },
+        "evi": {
+          "sample_pixels": 248,
+          "plot_mean": 0.0659
+        },
+        "savi": {
+          "sample_pixels": 248,
+          "plot_mean": 0.06998
+        },
+        "gli": {
+          "sample_pixels": 248,
+          "plot_mean": 0.13298
         },
         "ndre": {
           "sample_pixels": 248,
@@ -1954,7 +2281,10 @@
       "original_tif20_file_id": "1e-zIVvU2G2cB670PSm5w_B3YHJyH8xpk",
       "original_tif60_file_id": "1ZIgTFU2UEofX1KCcklHYCVX8vavXoWJ2",
       "source_folder_id": "1laCDUz0aemvrYu0jGO7Yufb3yhgqym9K",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-20"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-20",
+      "evi": 0.0659,
+      "savi": 0.06998,
+      "gli": 0.13298
     },
     {
       "plot": "1-STC",
@@ -1980,6 +2310,18 @@
         "ndvi": {
           "sample_pixels": 247,
           "plot_mean": 0.18081
+        },
+        "evi": {
+          "sample_pixels": 247,
+          "plot_mean": 0.0625
+        },
+        "savi": {
+          "sample_pixels": 247,
+          "plot_mean": 0.06622
+        },
+        "gli": {
+          "sample_pixels": 247,
+          "plot_mean": 0.15118
         },
         "ndre": {
           "sample_pixels": 247,
@@ -2036,7 +2378,10 @@
       "original_tif20_file_id": "1UUR8yBzQgkl0lgEf2pI8JSXnbWaxWArQ",
       "original_tif60_file_id": "1CO_pfzRLIfiAWn6ip2fxCRtop1NCgXpf",
       "source_folder_id": "1RUTN2Udup_fFc_AMYittU0KX99NYWB9p",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-30"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/11-30",
+      "evi": 0.0625,
+      "savi": 0.06622,
+      "gli": 0.15118
     },
     {
       "plot": "1-STC",
@@ -2062,6 +2407,18 @@
         "ndvi": {
           "sample_pixels": 131,
           "plot_mean": 0.13716
+        },
+        "evi": {
+          "sample_pixels": 131,
+          "plot_mean": 0.05087
+        },
+        "savi": {
+          "sample_pixels": 131,
+          "plot_mean": 0.05122
+        },
+        "gli": {
+          "sample_pixels": 131,
+          "plot_mean": 0.07112
         },
         "ndre": {
           "sample_pixels": 131,
@@ -2118,7 +2475,10 @@
       "original_tif20_file_id": "1YpNaTmS6KTspiO-HLm5qiG_wB-8Lm_Bu",
       "original_tif60_file_id": "1dkYbUkRQQxPH5pZPT909879Zk12g4-oe",
       "source_folder_id": "1_tWcDwOaju3YexGo3ezP7NlFmzA0Nc30",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-05"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-05",
+      "evi": 0.05087,
+      "savi": 0.05122,
+      "gli": 0.07112
     },
     {
       "plot": "1-STC",
@@ -2144,6 +2504,18 @@
         "ndvi": {
           "sample_pixels": 126,
           "plot_mean": 0.13101
+        },
+        "evi": {
+          "sample_pixels": 126,
+          "plot_mean": 0.04818
+        },
+        "savi": {
+          "sample_pixels": 126,
+          "plot_mean": 0.04973
+        },
+        "gli": {
+          "sample_pixels": 126,
+          "plot_mean": 0.11109
         },
         "ndre": {
           "sample_pixels": 126,
@@ -2200,7 +2572,10 @@
       "original_tif20_file_id": "1LT99ahLk3GZ0MEslH0uP6O6UySDPCy9d",
       "original_tif60_file_id": "1_u3rpsnBNt2SJVkeRYZjO3KJ-qelGmno",
       "source_folder_id": "1tG7a6umnkUx4t0qu1DtzCW4x_kvZ-ArI",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-10"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-10",
+      "evi": 0.04818,
+      "savi": 0.04973,
+      "gli": 0.11109
     },
     {
       "plot": "1-STC",
@@ -2226,6 +2601,18 @@
         "ndvi": {
           "sample_pixels": 148,
           "plot_mean": 0.088
+        },
+        "evi": {
+          "sample_pixels": 148,
+          "plot_mean": 0.03865
+        },
+        "savi": {
+          "sample_pixels": 148,
+          "plot_mean": 0.03992
+        },
+        "gli": {
+          "sample_pixels": 148,
+          "plot_mean": 0.0795
         },
         "ndre": {
           "sample_pixels": 148,
@@ -2282,7 +2669,10 @@
       "original_tif20_file_id": "1WNeC6Lat07dRTvSBzoo9sekB-JGbVr4T",
       "original_tif60_file_id": "12-kyN1qbrgie99NNyAwBxKcqzcflq4Qc",
       "source_folder_id": "1A6SiAA6PjVyaACOl6uGbeN1nJfaChCQe",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-15"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-15",
+      "evi": 0.03865,
+      "savi": 0.03992,
+      "gli": 0.0795
     },
     {
       "plot": "1-STC",
@@ -2308,6 +2698,18 @@
         "ndvi": {
           "sample_pixels": 249,
           "plot_mean": 0.14603
+        },
+        "evi": {
+          "sample_pixels": 249,
+          "plot_mean": 0.04715
+        },
+        "savi": {
+          "sample_pixels": 249,
+          "plot_mean": 0.04885
+        },
+        "gli": {
+          "sample_pixels": 249,
+          "plot_mean": 0.11372
         },
         "ndre": {
           "sample_pixels": 249,
@@ -2364,7 +2766,10 @@
       "original_tif20_file_id": "1gH6pMJ5U94ui6hOgQoQnDAVe10ehGr-u",
       "original_tif60_file_id": "1mkuAGPTr-UGwnTfpHJkiQPWoQ-CnpJB-",
       "source_folder_id": "1CLZV5V1c1IsuWySFDiA9qDsy_0rT7S28",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-20"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-20",
+      "evi": 0.04715,
+      "savi": 0.04885,
+      "gli": 0.11372
     },
     {
       "plot": "1-STC",
@@ -2390,6 +2795,18 @@
         "ndvi": {
           "sample_pixels": 113,
           "plot_mean": -0.03864
+        },
+        "evi": {
+          "sample_pixels": 113,
+          "plot_mean": 0.01266
+        },
+        "savi": {
+          "sample_pixels": 113,
+          "plot_mean": 0.01197
+        },
+        "gli": {
+          "sample_pixels": 113,
+          "plot_mean": 0.09096
         },
         "ndre": {
           "sample_pixels": 113,
@@ -2446,7 +2863,10 @@
       "original_tif20_file_id": "1cNnqkh6c04E_d3DR8m_Z9vSvIaZB2Fvu",
       "original_tif60_file_id": "1xkDkue2Toqis0tMHqk2jIZlgXJ1lUUTK",
       "source_folder_id": "1J3I3qnReTNWNxOpK6Qi7BFy3d0YEuWtT",
-      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-30"
+      "source_folder_path": "/Nationwide Archive/1-STC/2019/12-30",
+      "evi": 0.01266,
+      "savi": 0.01197,
+      "gli": 0.09096
     },
     {
       "plot": "1-STC",
@@ -2472,6 +2892,18 @@
         "ndvi": {
           "sample_pixels": 144,
           "plot_mean": 0.01471
+        },
+        "evi": {
+          "sample_pixels": 144,
+          "plot_mean": 0.02248
+        },
+        "savi": {
+          "sample_pixels": 144,
+          "plot_mean": 0.02254
+        },
+        "gli": {
+          "sample_pixels": 144,
+          "plot_mean": 0.05552
         },
         "ndre": {
           "sample_pixels": 144,
@@ -2528,7 +2960,10 @@
       "original_tif20_file_id": "1wQqotpOYehulXMu01AqNzhtGzD9Ro62J",
       "original_tif60_file_id": "1BOOtdjwlvvi0yJ7j0K0HKQ_ERmNme2_u",
       "source_folder_id": "1X1ALJ6p-YBg4q3D3DJwXEnsgaSSXcJ9V",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/01-04"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/01-04",
+      "evi": 0.02248,
+      "savi": 0.02254,
+      "gli": 0.05552
     },
     {
       "plot": "1-STC",
@@ -2554,6 +2989,18 @@
         "ndvi": {
           "sample_pixels": 244,
           "plot_mean": -0.00191
+        },
+        "evi": {
+          "sample_pixels": 244,
+          "plot_mean": 0.02454
+        },
+        "savi": {
+          "sample_pixels": 244,
+          "plot_mean": 0.02446
+        },
+        "gli": {
+          "sample_pixels": 244,
+          "plot_mean": 0.10215
         },
         "ndre": {
           "sample_pixels": 244,
@@ -2610,7 +3057,10 @@
       "original_tif20_file_id": "1WAL_DDWOj_DTCp1cSJGJf2cDvlmg7Y_f",
       "original_tif60_file_id": "1EuCIawmoO_8Si0INPiUEMp994_v-B1MA",
       "source_folder_id": "1V_I1p0Rtww3IHYq-K2A0RanHkPqJytlN",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/01-09"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/01-09",
+      "evi": 0.02454,
+      "savi": 0.02446,
+      "gli": 0.10215
     },
     {
       "plot": "1-STC",
@@ -2636,6 +3086,18 @@
         "ndvi": {
           "sample_pixels": 248,
           "plot_mean": 0.02971
+        },
+        "evi": {
+          "sample_pixels": 248,
+          "plot_mean": 0.02146
+        },
+        "savi": {
+          "sample_pixels": 248,
+          "plot_mean": 0.02095
+        },
+        "gli": {
+          "sample_pixels": 248,
+          "plot_mean": 0.07555
         },
         "ndre": {
           "sample_pixels": 248,
@@ -2692,7 +3154,10 @@
       "original_tif20_file_id": "19X6GqtRr9mDhxFv0PYkz5DmyePx9O_js",
       "original_tif60_file_id": "1-BNcKRDgM_f-TJRikoW9uC7pD0Z20dR0",
       "source_folder_id": "1sGmUl-aBL0a_hqlT_MgEMMXFjZj5wz0R",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/02-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/02-18",
+      "evi": 0.02146,
+      "savi": 0.02095,
+      "gli": 0.07555
     },
     {
       "plot": "1-STC",
@@ -2718,6 +3183,18 @@
         "ndvi": {
           "sample_pixels": 155,
           "plot_mean": -0.18904
+        },
+        "evi": {
+          "sample_pixels": 155,
+          "plot_mean": -0.00562
+        },
+        "savi": {
+          "sample_pixels": 155,
+          "plot_mean": -0.00682
+        },
+        "gli": {
+          "sample_pixels": 155,
+          "plot_mean": 0.03903
         },
         "ndre": {
           "sample_pixels": 155,
@@ -2774,7 +3251,10 @@
       "original_tif20_file_id": "14uUE6W4IK-UVCyNkwcBFmzb1td1dMp52",
       "original_tif60_file_id": "17nKgPtQhuEHm4MgvVgJYjVhiX39eJMsg",
       "source_folder_id": "1uSglqhrVyTowgiLUDYnEeIdd_riXxwtM",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/02-23"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/02-23",
+      "evi": -0.00562,
+      "savi": -0.00682,
+      "gli": 0.03903
     },
     {
       "plot": "1-STC",
@@ -2800,6 +3280,18 @@
         "ndvi": {
           "sample_pixels": 119,
           "plot_mean": 0.00331
+        },
+        "evi": {
+          "sample_pixels": 119,
+          "plot_mean": 0.01283
+        },
+        "savi": {
+          "sample_pixels": 119,
+          "plot_mean": 0.01223
+        },
+        "gli": {
+          "sample_pixels": 119,
+          "plot_mean": 0.06002
         },
         "ndre": {
           "sample_pixels": 119,
@@ -2856,7 +3348,10 @@
       "original_tif20_file_id": "1vfSNqzHW_74BZRtBALtbXEz4dr1e5gHt",
       "original_tif60_file_id": "1xpm-whTc3sKo8aKdEnDReIg3Nh8BF68s",
       "source_folder_id": "1Af9CeBcAG4FVAZHNCZbT1sZ6uOGKSlJY",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/03-09"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/03-09",
+      "evi": 0.01283,
+      "savi": 0.01223,
+      "gli": 0.06002
     },
     {
       "plot": "1-STC",
@@ -2882,6 +3377,18 @@
         "ndvi": {
           "sample_pixels": 235,
           "plot_mean": 0.09816
+        },
+        "evi": {
+          "sample_pixels": 235,
+          "plot_mean": 0.04156
+        },
+        "savi": {
+          "sample_pixels": 235,
+          "plot_mean": 0.04012
+        },
+        "gli": {
+          "sample_pixels": 235,
+          "plot_mean": 0.04715
         },
         "ndre": {
           "sample_pixels": 235,
@@ -2938,7 +3445,10 @@
       "original_tif20_file_id": "1XPVO3jxGF0rNqcTRkweY8QPaOT0pdALT",
       "original_tif60_file_id": "1l0KOJZ34z9w9lUxV5OC8kJI-0zuH6Db2",
       "source_folder_id": "1f5Gewb73USJBfnw2YBf2l_5dwVbvXckF",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/04-08"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/04-08",
+      "evi": 0.04156,
+      "savi": 0.04012,
+      "gli": 0.04715
     },
     {
       "plot": "1-STC",
@@ -2964,6 +3474,18 @@
         "ndvi": {
           "sample_pixels": 205,
           "plot_mean": 0.09953
+        },
+        "evi": {
+          "sample_pixels": 205,
+          "plot_mean": 0.05017
+        },
+        "savi": {
+          "sample_pixels": 205,
+          "plot_mean": 0.04092
+        },
+        "gli": {
+          "sample_pixels": 205,
+          "plot_mean": 0.03788
         },
         "ndre": {
           "sample_pixels": 205,
@@ -3020,7 +3542,10 @@
       "original_tif20_file_id": "1Qz_MD_LqS9SK8IcRpHb3C3jWuwdrAuZ0",
       "original_tif60_file_id": "1a9OLZO5nWikMDve7BZsA5-cCXdrJ5H7g",
       "source_folder_id": "139kDVAaBhKm8BlhN6FJV7QNbkUv5srB8",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/04-28"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/04-28",
+      "evi": 0.05017,
+      "savi": 0.04092,
+      "gli": 0.03788
     },
     {
       "plot": "1-STC",
@@ -3046,6 +3571,18 @@
         "ndvi": {
           "sample_pixels": 19,
           "plot_mean": 0.32054
+        },
+        "evi": {
+          "sample_pixels": 19,
+          "plot_mean": 0.25529
+        },
+        "savi": {
+          "sample_pixels": 19,
+          "plot_mean": 0.18284
+        },
+        "gli": {
+          "sample_pixels": 19,
+          "plot_mean": 0.01793
         },
         "ndre": {
           "sample_pixels": 19,
@@ -3102,7 +3639,10 @@
       "original_tif20_file_id": "1u-OfWC2fawcjoMnslAy89ZTMAHrZ-yaJ",
       "original_tif60_file_id": "1QSIfT4f9sycr__RnfaSTkEYt0PLi0sOl",
       "source_folder_id": "13Jt2KysDbJfY3ivxjff6UKR9RVx5UVyx",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/08-11"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/08-11",
+      "evi": 0.25529,
+      "savi": 0.18284,
+      "gli": 0.01793
     },
     {
       "plot": "1-STC",
@@ -3128,6 +3668,18 @@
         "ndvi": {
           "sample_pixels": 254,
           "plot_mean": 0.30132
+        },
+        "evi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.10848
+        },
+        "savi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.1123
+        },
+        "gli": {
+          "sample_pixels": 254,
+          "plot_mean": 0.08737
         },
         "ndre": {
           "sample_pixels": 254,
@@ -3184,7 +3736,10 @@
       "original_tif20_file_id": "1-K9QXe3IQocQaj00ZOOhUx6VGjtjskL3",
       "original_tif60_file_id": "18O08nhAS_me8T4PsP8w71zv2M-eWcdLy",
       "source_folder_id": "1-JzSX5d28hxQg15LGWKjO54l0td3PNoJ",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/09-25"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/09-25",
+      "evi": 0.10848,
+      "savi": 0.1123,
+      "gli": 0.08737
     },
     {
       "plot": "1-STC",
@@ -3210,6 +3765,18 @@
         "ndvi": {
           "sample_pixels": 254,
           "plot_mean": 0.22757
+        },
+        "evi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.08101
+        },
+        "savi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.08348
+        },
+        "gli": {
+          "sample_pixels": 254,
+          "plot_mean": 0.11042
         },
         "ndre": {
           "sample_pixels": 254,
@@ -3266,7 +3833,10 @@
       "original_tif20_file_id": "1DeB1_LvQnDzFSI61end1z6Yi_v-KRzk7",
       "original_tif60_file_id": "1-BH6tlxBSdRdLextCZPMcLVlklkGcBvh",
       "source_folder_id": "14z0tfCom_d_rz0tTWshsMsziOytrOiJy",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/10-25"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/10-25",
+      "evi": 0.08101,
+      "savi": 0.08348,
+      "gli": 0.11042
     },
     {
       "plot": "1-STC",
@@ -3292,6 +3862,18 @@
         "ndvi": {
           "sample_pixels": 247,
           "plot_mean": 0.22391
+        },
+        "evi": {
+          "sample_pixels": 247,
+          "plot_mean": 0.08234
+        },
+        "savi": {
+          "sample_pixels": 247,
+          "plot_mean": 0.08109
+        },
+        "gli": {
+          "sample_pixels": 247,
+          "plot_mean": 0.08119
         },
         "ndre": {
           "sample_pixels": 247,
@@ -3348,7 +3930,10 @@
       "original_tif20_file_id": "11wJpFKTAoHch66mKLEQNPAjbOLFldPJc",
       "original_tif60_file_id": "1mvXcwPKefRNf73miyJWZAUgc4eHDg_u2",
       "source_folder_id": "1yQcWJ6yPQfDSbJURvaoJpnpKi1CrzELH",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/11-09"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/11-09",
+      "evi": 0.08234,
+      "savi": 0.08109,
+      "gli": 0.08119
     },
     {
       "plot": "1-STC",
@@ -3374,6 +3959,18 @@
         "ndvi": {
           "sample_pixels": 254,
           "plot_mean": 0.10706
+        },
+        "evi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.05129
+        },
+        "savi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.05048
+        },
+        "gli": {
+          "sample_pixels": 254,
+          "plot_mean": 0.10553
         },
         "ndre": {
           "sample_pixels": 254,
@@ -3430,7 +4027,10 @@
       "original_tif20_file_id": "1bVBn4ubGnhv4waB1SW1zG9gR-y0nQbVV",
       "original_tif60_file_id": "1cukHKMEHzagq64SGyyhFnDPH6vGPGGoq",
       "source_folder_id": "1AMOFzNhdXFfuFz3zdKim45JOu8s4P6Qn",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/11-19"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/11-19",
+      "evi": 0.05129,
+      "savi": 0.05048,
+      "gli": 0.10553
     },
     {
       "plot": "1-STC",
@@ -3456,6 +4056,18 @@
         "ndvi": {
           "sample_pixels": 251,
           "plot_mean": 0.10995
+        },
+        "evi": {
+          "sample_pixels": 251,
+          "plot_mean": 0.05475
+        },
+        "savi": {
+          "sample_pixels": 251,
+          "plot_mean": 0.05576
+        },
+        "gli": {
+          "sample_pixels": 251,
+          "plot_mean": 0.13302
         },
         "ndre": {
           "sample_pixels": 251,
@@ -3512,7 +4124,10 @@
       "original_tif20_file_id": "15dsr2jrVMcAOO17X3GAp-yJ34TSXTq6g",
       "original_tif60_file_id": "1GEpJu0T9CCyZS3n57vGiZWtysbgJhQlQ",
       "source_folder_id": "12mz5hbzlTVXHhFbJbMThvH6RVqWBym_i",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/11-24"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/11-24",
+      "evi": 0.05475,
+      "savi": 0.05576,
+      "gli": 0.13302
     },
     {
       "plot": "1-STC",
@@ -3538,6 +4153,18 @@
         "ndvi": {
           "sample_pixels": 254,
           "plot_mean": 0.07725
+        },
+        "evi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.04477
+        },
+        "savi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.04395
+        },
+        "gli": {
+          "sample_pixels": 254,
+          "plot_mean": 0.1199
         },
         "ndre": {
           "sample_pixels": 254,
@@ -3594,7 +4221,10 @@
       "original_tif20_file_id": "16v9k7d6BaB5q30MtHiCZ1mE7B6BlvZyL",
       "original_tif60_file_id": "1mjKqybjlqBT0zVkCF2hh_OKC_c1ekKRl",
       "source_folder_id": "1nKX7EyrEfmXLxuzpDz1o_dJ6u6Q9q_H7",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/12-04"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/12-04",
+      "evi": 0.04477,
+      "savi": 0.04395,
+      "gli": 0.1199
     },
     {
       "plot": "1-STC",
@@ -3620,6 +4250,18 @@
         "ndvi": {
           "sample_pixels": 171,
           "plot_mean": 0.06731
+        },
+        "evi": {
+          "sample_pixels": 171,
+          "plot_mean": 0.04029
+        },
+        "savi": {
+          "sample_pixels": 171,
+          "plot_mean": 0.04038
+        },
+        "gli": {
+          "sample_pixels": 171,
+          "plot_mean": 0.06921
         },
         "ndre": {
           "sample_pixels": 171,
@@ -3676,7 +4318,10 @@
       "original_tif20_file_id": "16YuBhjo3ZlJCzHbp45L-UpQI5qzJUkoP",
       "original_tif60_file_id": "1bSzhVYAqP4yDFlZd1uYngfq_GGSWWTiR",
       "source_folder_id": "1Dp7wKJfPuza6GemVKQukx0cuZ420ztWI",
-      "source_folder_path": "/Nationwide Archive/1-STC/2020/12-09"
+      "source_folder_path": "/Nationwide Archive/1-STC/2020/12-09",
+      "evi": 0.04029,
+      "savi": 0.04038,
+      "gli": 0.06921
     },
     {
       "plot": "1-STC",
@@ -3702,6 +4347,18 @@
         "ndvi": {
           "sample_pixels": 247,
           "plot_mean": 0.06351
+        },
+        "evi": {
+          "sample_pixels": 247,
+          "plot_mean": 0.03389
+        },
+        "savi": {
+          "sample_pixels": 247,
+          "plot_mean": 0.03485
+        },
+        "gli": {
+          "sample_pixels": 247,
+          "plot_mean": 0.13509
         },
         "ndre": {
           "sample_pixels": 247,
@@ -3758,7 +4415,10 @@
       "original_tif20_file_id": "1h7QPyN3qCs_TrHrunoq8wAZRn8O3gZLj",
       "original_tif60_file_id": "1aeaVtx4LJ0hrWb60Xx67QxFNyko8I8an",
       "source_folder_id": "1V3_K5SDgf0ef0oLNN_dIvsoHmCZFRm7g",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/01-03"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/01-03",
+      "evi": 0.03389,
+      "savi": 0.03485,
+      "gli": 0.13509
     },
     {
       "plot": "1-STC",
@@ -3784,6 +4444,18 @@
         "ndvi": {
           "sample_pixels": 176,
           "plot_mean": -0.2724
+        },
+        "evi": {
+          "sample_pixels": 176,
+          "plot_mean": -0.00987
+        },
+        "savi": {
+          "sample_pixels": 176,
+          "plot_mean": -0.01259
+        },
+        "gli": {
+          "sample_pixels": 176,
+          "plot_mean": 0.11872
         },
         "ndre": {
           "sample_pixels": 176,
@@ -3840,7 +4512,10 @@
       "original_tif20_file_id": "1Cnl6HRWAhL_iTq18DOT-d7l-_bwRkFl8",
       "original_tif60_file_id": "1uVEp8oAjXXTm3E9XWh-_4jQ6aWNq6I-_",
       "source_folder_id": "1J4Lt_iiEshQJnePlHQqEeWdUlitIc6Ov",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/01-13"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/01-13",
+      "evi": -0.00987,
+      "savi": -0.01259,
+      "gli": 0.11872
     },
     {
       "plot": "1-STC",
@@ -3866,6 +4541,18 @@
         "ndvi": {
           "sample_pixels": 246,
           "plot_mean": 0.0725
+        },
+        "evi": {
+          "sample_pixels": 246,
+          "plot_mean": 0.03125
+        },
+        "savi": {
+          "sample_pixels": 246,
+          "plot_mean": 0.03015
+        },
+        "gli": {
+          "sample_pixels": 246,
+          "plot_mean": 0.07012
         },
         "ndre": {
           "sample_pixels": 246,
@@ -3922,7 +4609,10 @@
       "original_tif20_file_id": "1F0ZYn0B0WXMBthlNuz4dG5CTZwKui9rz",
       "original_tif60_file_id": "1UnpuGsp060pU6I6n3CALyv4wqyHlAl3m",
       "source_folder_id": "1Ri_xq0No7q0Cq-CFQz4Q5mvw_MgxILRD",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/01-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/01-18",
+      "evi": 0.03125,
+      "savi": 0.03015,
+      "gli": 0.07012
     },
     {
       "plot": "1-STC",
@@ -3948,6 +4638,18 @@
         "ndvi": {
           "sample_pixels": 246,
           "plot_mean": -0.03826
+        },
+        "evi": {
+          "sample_pixels": 246,
+          "plot_mean": 0.0119
+        },
+        "savi": {
+          "sample_pixels": 246,
+          "plot_mean": 0.01167
+        },
+        "gli": {
+          "sample_pixels": 246,
+          "plot_mean": 0.13365
         },
         "ndre": {
           "sample_pixels": 246,
@@ -4004,7 +4706,10 @@
       "original_tif20_file_id": "1A9XeAkhbQJUsYVHoXTTYa9bO45K1g1RK",
       "original_tif60_file_id": "1W8V63pDL0lawgCmryHu0x3EoKFEU8LuU",
       "source_folder_id": "1My3Mnc3KvKbWa-ygS1LH5pXjJxEEeIE6",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/01-23"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/01-23",
+      "evi": 0.0119,
+      "savi": 0.01167,
+      "gli": 0.13365
     },
     {
       "plot": "1-STC",
@@ -4030,6 +4735,18 @@
         "ndvi": {
           "sample_pixels": 239,
           "plot_mean": 0.02118
+        },
+        "evi": {
+          "sample_pixels": 239,
+          "plot_mean": 0.01466
+        },
+        "savi": {
+          "sample_pixels": 239,
+          "plot_mean": 0.0143
+        },
+        "gli": {
+          "sample_pixels": 239,
+          "plot_mean": 0.08895
         },
         "ndre": {
           "sample_pixels": 239,
@@ -4086,7 +4803,10 @@
       "original_tif20_file_id": "1llX1WLTfIo-DwzY8rtZP6Njrx36bZiOW",
       "original_tif60_file_id": "1hXiiWs7wZ4EB5Ys-W5YrzIff-vHMA_Hb",
       "source_folder_id": "1-O25Us_XxtSSVZaX8zDNbwsQhD3I_d2c",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/02-02"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/02-02",
+      "evi": 0.01466,
+      "savi": 0.0143,
+      "gli": 0.08895
     },
     {
       "plot": "1-STC",
@@ -4112,6 +4832,18 @@
         "ndvi": {
           "sample_pixels": 253,
           "plot_mean": -0.06562
+        },
+        "evi": {
+          "sample_pixels": 253,
+          "plot_mean": 0.01211
+        },
+        "savi": {
+          "sample_pixels": 253,
+          "plot_mean": 0.01151
+        },
+        "gli": {
+          "sample_pixels": 253,
+          "plot_mean": 0.12161
         },
         "ndre": {
           "sample_pixels": 253,
@@ -4168,7 +4900,10 @@
       "original_tif20_file_id": "1eriW-6ZbGARL974sF9iuwT2x0WhkNrn8",
       "original_tif60_file_id": "16IsWtgKmpWOHqew3P3I2UzVA5VwI-eiE",
       "source_folder_id": "15CIjYDG23fV2j3sp7p3J6oGj3tHGOHgE",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/02-12"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/02-12",
+      "evi": 0.01211,
+      "savi": 0.01151,
+      "gli": 0.12161
     },
     {
       "plot": "1-STC",
@@ -4194,6 +4929,18 @@
         "ndvi": {
           "sample_pixels": 222,
           "plot_mean": -0.09867
+        },
+        "evi": {
+          "sample_pixels": 222,
+          "plot_mean": -0.02912
+        },
+        "savi": {
+          "sample_pixels": 222,
+          "plot_mean": -0.02541
+        },
+        "gli": {
+          "sample_pixels": 222,
+          "plot_mean": 0.03336
         },
         "ndre": {
           "sample_pixels": 222,
@@ -4250,7 +4997,10 @@
       "original_tif20_file_id": "1zkjHVBHwv93Cy1XAjwDYNwuM8a4IbRmN",
       "original_tif60_file_id": "159k0rZR5YE__qd-VgsYpJf1C6ETiiRtv",
       "source_folder_id": "1bLD-5UNwPwYCHFgh_vMHY2vWyEdSJpEG",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/03-24"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/03-24",
+      "evi": -0.02912,
+      "savi": -0.02541,
+      "gli": 0.03336
     },
     {
       "plot": "1-STC",
@@ -4276,6 +5026,18 @@
         "ndvi": {
           "sample_pixels": 18,
           "plot_mean": 0.16677
+        },
+        "evi": {
+          "sample_pixels": 18,
+          "plot_mean": 0.11276
+        },
+        "savi": {
+          "sample_pixels": 18,
+          "plot_mean": 0.08206
+        },
+        "gli": {
+          "sample_pixels": 18,
+          "plot_mean": 0.04041
         },
         "ndre": {
           "sample_pixels": 18,
@@ -4332,7 +5094,10 @@
       "original_tif20_file_id": "1Vi923zddb8huVSn7WXHN-rG1Rh1Dzq-y",
       "original_tif60_file_id": "1-zDGs2wXRTMo4lASiDh3um2PZ8s29g0d",
       "source_folder_id": "1WOSypCORXHLUDV4-7UCygCdDy4_4_WGz",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/04-13"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/04-13",
+      "evi": 0.11276,
+      "savi": 0.08206,
+      "gli": 0.04041
     },
     {
       "plot": "1-STC",
@@ -4358,6 +5123,18 @@
         "ndvi": {
           "sample_pixels": 239,
           "plot_mean": 0.12231
+        },
+        "evi": {
+          "sample_pixels": 239,
+          "plot_mean": 0.06233
+        },
+        "savi": {
+          "sample_pixels": 239,
+          "plot_mean": 0.06204
+        },
+        "gli": {
+          "sample_pixels": 239,
+          "plot_mean": 0.02171
         },
         "ndre": {
           "sample_pixels": 239,
@@ -4414,7 +5191,10 @@
       "original_tif20_file_id": "1ZXACPh_pjO6GkpZ08u1lFuD63R9iZ28w",
       "original_tif60_file_id": "18Ab412tGfRVLtPqdpf3rnfUTnXo5JYfl",
       "source_folder_id": "1yCXlXPtpsIwYZuTZrK6qGUrDs28A7npN",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/05-08"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/05-08",
+      "evi": 0.06233,
+      "savi": 0.06204,
+      "gli": 0.02171
     },
     {
       "plot": "1-STC",
@@ -4440,6 +5220,18 @@
         "ndvi": {
           "sample_pixels": 251,
           "plot_mean": 0.27213
+        },
+        "evi": {
+          "sample_pixels": 251,
+          "plot_mean": 0.10314
+        },
+        "savi": {
+          "sample_pixels": 251,
+          "plot_mean": 0.10494
+        },
+        "gli": {
+          "sample_pixels": 251,
+          "plot_mean": 0.07534
         },
         "ndre": {
           "sample_pixels": 251,
@@ -4496,7 +5288,10 @@
       "original_tif20_file_id": "1OXaW7ebwbNLZy52xAYyZ21lEUhJLgJiu",
       "original_tif60_file_id": "14hsvsllDSuWWoOxHLiwNOGPbZU5dqYHN",
       "source_folder_id": "1R4VM3LY7lG_Oln-PKsmfGDzuqhsJLw34",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/07-02"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/07-02",
+      "evi": 0.10314,
+      "savi": 0.10494,
+      "gli": 0.07534
     },
     {
       "plot": "1-STC",
@@ -4522,6 +5317,18 @@
         "ndvi": {
           "sample_pixels": 208,
           "plot_mean": 0.33388
+        },
+        "evi": {
+          "sample_pixels": 208,
+          "plot_mean": 0.14437
+        },
+        "savi": {
+          "sample_pixels": 208,
+          "plot_mean": 0.13977
+        },
+        "gli": {
+          "sample_pixels": 208,
+          "plot_mean": 0.07312
         },
         "ndre": {
           "sample_pixels": 208,
@@ -4578,7 +5385,10 @@
       "original_tif20_file_id": "1hy5xD3QHlt6-GQInIGJ-xbcqdcQ7FEPh",
       "original_tif60_file_id": "1Az3kZriW0S9nAj2ZxgiOiodWUIku2sYE",
       "source_folder_id": "1IHZmlgYGaZE4vEk6qcIjDF51PExI0DSd",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/08-21"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/08-21",
+      "evi": 0.14437,
+      "savi": 0.13977,
+      "gli": 0.07312
     },
     {
       "plot": "1-STC",
@@ -4604,6 +5414,18 @@
         "ndvi": {
           "sample_pixels": 162,
           "plot_mean": 0.09253
+        },
+        "evi": {
+          "sample_pixels": 162,
+          "plot_mean": 0.04713
+        },
+        "savi": {
+          "sample_pixels": 162,
+          "plot_mean": 0.04757
+        },
+        "gli": {
+          "sample_pixels": 162,
+          "plot_mean": 0.1607
         },
         "ndre": {
           "sample_pixels": 162,
@@ -4660,7 +5482,10 @@
       "original_tif20_file_id": "1i03PrML1ood8PlpSrWapI5VrbSk_r-02",
       "original_tif60_file_id": "1KstgM9CWNkCfUW8e6jh0D_0gHRVHKd0Z",
       "source_folder_id": "1-f3YOh-plgOKJmW2L6s5GFSK9oR0D2Df",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/12-09"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/12-09",
+      "evi": 0.04713,
+      "savi": 0.04757,
+      "gli": 0.1607
     },
     {
       "plot": "1-STC",
@@ -4686,6 +5511,18 @@
         "ndvi": {
           "sample_pixels": 255,
           "plot_mean": 0.11405
+        },
+        "evi": {
+          "sample_pixels": 255,
+          "plot_mean": 0.04587
+        },
+        "savi": {
+          "sample_pixels": 255,
+          "plot_mean": 0.04832
+        },
+        "gli": {
+          "sample_pixels": 255,
+          "plot_mean": 0.17781
         },
         "ndre": {
           "sample_pixels": 255,
@@ -4742,7 +5579,10 @@
       "original_tif20_file_id": "1yY-h9UfkenjBcYKx3xZtNj8pHKFEgCkj",
       "original_tif60_file_id": "1m7VVo1aFmtqHvHawtybtcbiN6y_xlXjs",
       "source_folder_id": "1dUALMgaeQ0xXyR2VW_Pte9_kQm3IGRUb",
-      "source_folder_path": "/Nationwide Archive/1-STC/2021/12-29"
+      "source_folder_path": "/Nationwide Archive/1-STC/2021/12-29",
+      "evi": 0.04587,
+      "savi": 0.04832,
+      "gli": 0.17781
     },
     {
       "plot": "1-STC",
@@ -4768,6 +5608,18 @@
         "ndvi": {
           "sample_pixels": 254,
           "plot_mean": 0.07421
+        },
+        "evi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.04091
+        },
+        "savi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.04118
+        },
+        "gli": {
+          "sample_pixels": 254,
+          "plot_mean": 0.12206
         },
         "ndre": {
           "sample_pixels": 254,
@@ -4824,7 +5676,10 @@
       "original_tif20_file_id": "1EShOgE2q61cVnHre8dOjuZDR9TPpyZo9",
       "original_tif60_file_id": "1x5M5QiaU5iWG_kC7f0bhzaWF8-At5qW6",
       "source_folder_id": "19FRvFsgM-SPXKpCrzCMiaQfKRS9zpaWA",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/01-03"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/01-03",
+      "evi": 0.04091,
+      "savi": 0.04118,
+      "gli": 0.12206
     },
     {
       "plot": "1-STC",
@@ -4850,6 +5705,18 @@
         "ndvi": {
           "sample_pixels": 254,
           "plot_mean": 0.07755
+        },
+        "evi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.04053
+        },
+        "savi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.0419
+        },
+        "gli": {
+          "sample_pixels": 254,
+          "plot_mean": 0.16052
         },
         "ndre": {
           "sample_pixels": 254,
@@ -4906,7 +5773,10 @@
       "original_tif20_file_id": "1TxzOVpKTOeGwJLStthfKgc3F97Z_Tw9G",
       "original_tif60_file_id": "1I05ep9FH3hqySW-wr4wiEdz001qvw3qB",
       "source_folder_id": "1Q4MioMmLwCeRyvML0VIttm7AjkEuBJPQ",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/01-08"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/01-08",
+      "evi": 0.04053,
+      "savi": 0.0419,
+      "gli": 0.16052
     },
     {
       "plot": "1-STC",
@@ -4932,6 +5802,18 @@
         "ndvi": {
           "sample_pixels": 255,
           "plot_mean": 0.07466
+        },
+        "evi": {
+          "sample_pixels": 255,
+          "plot_mean": 0.03862
+        },
+        "savi": {
+          "sample_pixels": 255,
+          "plot_mean": 0.03917
+        },
+        "gli": {
+          "sample_pixels": 255,
+          "plot_mean": 0.11528
         },
         "ndre": {
           "sample_pixels": 255,
@@ -4988,7 +5870,10 @@
       "original_tif20_file_id": "1-U2SEPF8e2je21cG3H3yv07mper29IhZ",
       "original_tif60_file_id": "1jHx-_M5np4wvKwfhXrVaKytH-sqUgCf5",
       "source_folder_id": "1LhyCq08VEFitNGuGPQagTQSFKQgRrCEv",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/01-13"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/01-13",
+      "evi": 0.03862,
+      "savi": 0.03917,
+      "gli": 0.11528
     },
     {
       "plot": "1-STC",
@@ -5014,6 +5899,18 @@
         "ndvi": {
           "sample_pixels": 254,
           "plot_mean": 0.03607
+        },
+        "evi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.03256
+        },
+        "savi": {
+          "sample_pixels": 254,
+          "plot_mean": 0.03412
+        },
+        "gli": {
+          "sample_pixels": 254,
+          "plot_mean": 0.16143
         },
         "ndre": {
           "sample_pixels": 254,
@@ -5070,7 +5967,10 @@
       "original_tif20_file_id": "1lYpt2biXGnUHKJ1v9bX0uZv3IxY59dsy",
       "original_tif60_file_id": "1fNjwHQaDbrsdA16xxS2ZmV0fcSL3R96Y",
       "source_folder_id": "1iDaLJlKmYk9SYtjtOibLsy2TU2lCbHm7",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/01-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/01-18",
+      "evi": 0.03256,
+      "savi": 0.03412,
+      "gli": 0.16143
     },
     {
       "plot": "1-STC",
@@ -5096,6 +5996,18 @@
         "ndvi": {
           "sample_pixels": 152,
           "plot_mean": -0.05128
+        },
+        "evi": {
+          "sample_pixels": 152,
+          "plot_mean": 0.00785
+        },
+        "savi": {
+          "sample_pixels": 152,
+          "plot_mean": 0.00679
+        },
+        "gli": {
+          "sample_pixels": 152,
+          "plot_mean": 0.09566
         },
         "ndre": {
           "sample_pixels": 152,
@@ -5152,7 +6064,10 @@
       "original_tif20_file_id": "1PUcXRKpR_4uJvh5Ctw3IzlGrJEX-TI0j",
       "original_tif60_file_id": "1AM4UT7B4WFTrAfYTzRapprxg4eD1iMz0",
       "source_folder_id": "1YehF4lpG4w_MphMPEQrfhQF3Tu8DuMaT",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/02-07"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/02-07",
+      "evi": 0.00785,
+      "savi": 0.00679,
+      "gli": 0.09566
     },
     {
       "plot": "1-STC",
@@ -5178,6 +6093,18 @@
         "ndvi": {
           "sample_pixels": 157,
           "plot_mean": -0.22984
+        },
+        "evi": {
+          "sample_pixels": 157,
+          "plot_mean": -0.00966
+        },
+        "savi": {
+          "sample_pixels": 157,
+          "plot_mean": -0.01223
+        },
+        "gli": {
+          "sample_pixels": 157,
+          "plot_mean": 0.10378
         },
         "ndre": {
           "sample_pixels": 157,
@@ -5234,7 +6161,10 @@
       "original_tif20_file_id": "1xU9kWaQ6L3m4voNFxyMeGyuQ_DgiAB2N",
       "original_tif60_file_id": "1ziY2dEaKmf3eHQqMsa0UvJ424Rg8DEwi",
       "source_folder_id": "1SMoBKnG0Mowdp-4XO_OD39u2kzqEYQBg",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/02-27"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/02-27",
+      "evi": -0.00966,
+      "savi": -0.01223,
+      "gli": 0.10378
     },
     {
       "plot": "1-STC",
@@ -5260,6 +6190,18 @@
         "ndvi": {
           "sample_pixels": 91,
           "plot_mean": 0.21944
+        },
+        "evi": {
+          "sample_pixels": 91,
+          "plot_mean": 0.10193
+        },
+        "savi": {
+          "sample_pixels": 91,
+          "plot_mean": 0.10091
+        },
+        "gli": {
+          "sample_pixels": 91,
+          "plot_mean": 0.03745
         },
         "ndre": {
           "sample_pixels": 91,
@@ -5316,7 +6258,10 @@
       "original_tif20_file_id": "1PKWS7FFcL6s-KldpYd6lLu6ixTBDgcOs",
       "original_tif60_file_id": "1Q8seKJgY773vmnzhvpHOSE-q7e-obKQz",
       "source_folder_id": "1wROdMnIkQfpbj3lnERqzKbTJVJQ5f_ht",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/04-03"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/04-03",
+      "evi": 0.10193,
+      "savi": 0.10091,
+      "gli": 0.03745
     },
     {
       "plot": "1-STC",
@@ -5342,6 +6287,18 @@
         "ndvi": {
           "sample_pixels": 76,
           "plot_mean": 0.16919
+        },
+        "evi": {
+          "sample_pixels": 76,
+          "plot_mean": 0.0944
+        },
+        "savi": {
+          "sample_pixels": 76,
+          "plot_mean": 0.07585
+        },
+        "gli": {
+          "sample_pixels": 76,
+          "plot_mean": 0.03717
         },
         "ndre": {
           "sample_pixels": 76,
@@ -5398,7 +6355,10 @@
       "original_tif20_file_id": "1Iu8iw1B7aU11ZKsG4PWsMMSrFyKXr1fL",
       "original_tif60_file_id": "10z9lCLR7agewkgYixFdy8TcILm0xtgZJ",
       "source_folder_id": "1zsgiRjamNR0Zs0YZa1BDV3JS0Z-qd-na",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/04-13"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/04-13",
+      "evi": 0.0944,
+      "savi": 0.07585,
+      "gli": 0.03717
     },
     {
       "plot": "1-STC",
@@ -5424,6 +6384,18 @@
         "ndvi": {
           "sample_pixels": 148,
           "plot_mean": 0.02711
+        },
+        "evi": {
+          "sample_pixels": 148,
+          "plot_mean": 0.03184
+        },
+        "savi": {
+          "sample_pixels": 148,
+          "plot_mean": 0.02984
+        },
+        "gli": {
+          "sample_pixels": 148,
+          "plot_mean": 0.0572
         },
         "ndre": {
           "sample_pixels": 148,
@@ -5480,7 +6452,10 @@
       "original_tif20_file_id": "1YjdkpN8FE7kN6FwQMW_VOk1SLWflv8ly",
       "original_tif60_file_id": "1I2mgR7434g8Q8YEMwLSaKUUUnMCDNjqG",
       "source_folder_id": "1gUYef7sxf_Yh0OtoEqsxm9qWjvIacOHl",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/04-23"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/04-23",
+      "evi": 0.03184,
+      "savi": 0.02984,
+      "gli": 0.0572
     },
     {
       "plot": "1-STC",
@@ -5506,6 +6481,18 @@
         "ndvi": {
           "sample_pixels": 144,
           "plot_mean": 0.44202
+        },
+        "evi": {
+          "sample_pixels": 144,
+          "plot_mean": 0.19284
+        },
+        "savi": {
+          "sample_pixels": 144,
+          "plot_mean": 0.18647
+        },
+        "gli": {
+          "sample_pixels": 144,
+          "plot_mean": 0.11661
         },
         "ndre": {
           "sample_pixels": 144,
@@ -5562,7 +6549,10 @@
       "original_tif20_file_id": "1zVExr4s9cnu8ZJPGsuZP-n7IPGr3-sKb",
       "original_tif60_file_id": "1vMyoklrJp7jtJHBk4ksKZwKmmqjaxO0f",
       "source_folder_id": "1mWiX7rOKholN5_tt4URrHOEpgjsE4NRA",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/10-05"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/10-05",
+      "evi": 0.19284,
+      "savi": 0.18647,
+      "gli": 0.11661
     },
     {
       "plot": "1-STC",
@@ -5588,6 +6578,18 @@
         "ndvi": {
           "sample_pixels": 104,
           "plot_mean": 0.39641
+        },
+        "evi": {
+          "sample_pixels": 104,
+          "plot_mean": 0.18226
+        },
+        "savi": {
+          "sample_pixels": 104,
+          "plot_mean": 0.16759
+        },
+        "gli": {
+          "sample_pixels": 104,
+          "plot_mean": 0.09307
         },
         "ndre": {
           "sample_pixels": 104,
@@ -5644,7 +6646,10 @@
       "original_tif20_file_id": "1lhveiB_NkM92dHMUwMNSlyXUcB0o0_tz",
       "original_tif60_file_id": "12ek2uGcm0SI-NJOfNCZyrrqsKPCp4VXx",
       "source_folder_id": "1Mlgu0j6krzw7vkYfvp7vmp7_BJzYX7KI",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/10-25"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/10-25",
+      "evi": 0.18226,
+      "savi": 0.16759,
+      "gli": 0.09307
     },
     {
       "plot": "1-STC",
@@ -5670,6 +6675,18 @@
         "ndvi": {
           "sample_pixels": 178,
           "plot_mean": 0.2391
+        },
+        "evi": {
+          "sample_pixels": 178,
+          "plot_mean": 0.0986
+        },
+        "savi": {
+          "sample_pixels": 178,
+          "plot_mean": 0.09706
+        },
+        "gli": {
+          "sample_pixels": 178,
+          "plot_mean": 0.13344
         },
         "ndre": {
           "sample_pixels": 178,
@@ -5726,7 +6743,10 @@
       "original_tif20_file_id": "1lWcxumtZikNzcQsFp-xeyi4GV9AOPaG3",
       "original_tif60_file_id": "15YvpD6RylYOCqk8nOKfGSqa9MEFAcdrc",
       "source_folder_id": "1FLXra_oF09mqIwnRYEE7IoDzkmWr-geN",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/10-30"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/10-30",
+      "evi": 0.0986,
+      "savi": 0.09706,
+      "gli": 0.13344
     },
     {
       "plot": "1-STC",
@@ -5752,6 +6772,18 @@
         "ndvi": {
           "sample_pixels": 153,
           "plot_mean": 0.24843
+        },
+        "evi": {
+          "sample_pixels": 153,
+          "plot_mean": 0.10888
+        },
+        "savi": {
+          "sample_pixels": 153,
+          "plot_mean": 0.11076
+        },
+        "gli": {
+          "sample_pixels": 153,
+          "plot_mean": 0.14274
         },
         "ndre": {
           "sample_pixels": 153,
@@ -5808,7 +6840,10 @@
       "original_tif20_file_id": "1sD9Sp7fduXs7Bj_cAFXcuXSZC2DcDBj2",
       "original_tif60_file_id": "1f3bs6XQebBXQVSQDI6YeS8RWz4J2yYr2",
       "source_folder_id": "19A1FPGTH1d3dpiSh6WvyP2t9tmiVW7UG",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/11-04"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/11-04",
+      "evi": 0.10888,
+      "savi": 0.11076,
+      "gli": 0.14274
     },
     {
       "plot": "1-STC",
@@ -5834,6 +6869,18 @@
         "ndvi": {
           "sample_pixels": 101,
           "plot_mean": 0.27208
+        },
+        "evi": {
+          "sample_pixels": 101,
+          "plot_mean": 0.10215
+        },
+        "savi": {
+          "sample_pixels": 101,
+          "plot_mean": 0.09803
+        },
+        "gli": {
+          "sample_pixels": 101,
+          "plot_mean": 0.11915
         },
         "ndre": {
           "sample_pixels": 101,
@@ -5890,7 +6937,10 @@
       "original_tif20_file_id": "10rVU9GEd05kWr3WLMy7JNYbOCCR0kP4-",
       "original_tif60_file_id": "1WMLO6jBesVM8SnCQePzcTLRy1940ALyc",
       "source_folder_id": "1FepFKQeM-o0PjlUDz1HHmRnulIZlFoeF",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/12-14"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/12-14",
+      "evi": 0.10215,
+      "savi": 0.09803,
+      "gli": 0.11915
     },
     {
       "plot": "1-STC",
@@ -5916,6 +6966,18 @@
         "ndvi": {
           "sample_pixels": 156,
           "plot_mean": 0.23614
+        },
+        "evi": {
+          "sample_pixels": 156,
+          "plot_mean": 0.09041
+        },
+        "savi": {
+          "sample_pixels": 156,
+          "plot_mean": 0.08982
+        },
+        "gli": {
+          "sample_pixels": 156,
+          "plot_mean": 0.11883
         },
         "ndre": {
           "sample_pixels": 156,
@@ -5972,7 +7034,10 @@
       "original_tif20_file_id": "1Cgg26g0CRAwvJDo_eR7E5Kq6ZunwVTBJ",
       "original_tif60_file_id": "1QwI_TZ-uzQ2pEuJ790KNjTJ4D7J3SQRb",
       "source_folder_id": "1yDnYsPsGbmJgGS39UaIB9xuVv7SNH-rJ",
-      "source_folder_path": "/Nationwide Archive/1-STC/2022/12-19"
+      "source_folder_path": "/Nationwide Archive/1-STC/2022/12-19",
+      "evi": 0.09041,
+      "savi": 0.08982,
+      "gli": 0.11883
     },
     {
       "plot": "1-STC",
@@ -5998,6 +7063,18 @@
         "ndvi": {
           "sample_pixels": 161,
           "plot_mean": 0.1031
+        },
+        "evi": {
+          "sample_pixels": 161,
+          "plot_mean": 0.04862
+        },
+        "savi": {
+          "sample_pixels": 161,
+          "plot_mean": 0.04962
+        },
+        "gli": {
+          "sample_pixels": 161,
+          "plot_mean": 0.15204
         },
         "ndre": {
           "sample_pixels": 161,
@@ -6054,7 +7131,10 @@
       "original_tif20_file_id": "13XC6hoXw59g7Tz0KyJ24VSS6gSWhlkCn",
       "original_tif60_file_id": "1_EF_TAZJdZZDW-VEioCJR674RdPOq0aZ",
       "source_folder_id": "1HeF3cKm_aXxJH_qET4WvOp3qWiOL8bOH",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/01-03"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/01-03",
+      "evi": 0.04862,
+      "savi": 0.04962,
+      "gli": 0.15204
     },
     {
       "plot": "1-STC",
@@ -6080,6 +7160,18 @@
         "ndvi": {
           "sample_pixels": 142,
           "plot_mean": 0.0773
+        },
+        "evi": {
+          "sample_pixels": 142,
+          "plot_mean": 0.03946
+        },
+        "savi": {
+          "sample_pixels": 142,
+          "plot_mean": 0.03872
+        },
+        "gli": {
+          "sample_pixels": 142,
+          "plot_mean": 0.09505
         },
         "ndre": {
           "sample_pixels": 142,
@@ -6136,7 +7228,10 @@
       "original_tif20_file_id": "1iHma3p-Dq9u1R3n9x6Lj7fFxM7-I4phg",
       "original_tif60_file_id": "1jTZzLPSX5wT8A4KN-a9qZIw_Uwo3K0qF",
       "source_folder_id": "18njVkaexzCoEJbb9PfJ5L_RAP52iwDEV",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/01-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/01-18",
+      "evi": 0.03946,
+      "savi": 0.03872,
+      "gli": 0.09505
     },
     {
       "plot": "1-STC",
@@ -6162,6 +7257,18 @@
         "ndvi": {
           "sample_pixels": 140,
           "plot_mean": -0.01731
+        },
+        "evi": {
+          "sample_pixels": 140,
+          "plot_mean": 0.02167
+        },
+        "savi": {
+          "sample_pixels": 140,
+          "plot_mean": 0.02074
+        },
+        "gli": {
+          "sample_pixels": 140,
+          "plot_mean": 0.12234
         },
         "ndre": {
           "sample_pixels": 140,
@@ -6218,7 +7325,10 @@
       "original_tif20_file_id": "1uLXVPhA5oKJYFxbCrJPwtcb3LWtrGvdK",
       "original_tif60_file_id": "1Q3xEs0h6wU1yr-FV_DyoYoHMM-vsk6rl",
       "source_folder_id": "1cCqdZaqWjepDUL4m7bvzpXPwPM5d2v2W",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/01-23"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/01-23",
+      "evi": 0.02167,
+      "savi": 0.02074,
+      "gli": 0.12234
     },
     {
       "plot": "1-STC",
@@ -6244,6 +7354,18 @@
         "ndvi": {
           "sample_pixels": 142,
           "plot_mean": 0.07071
+        },
+        "evi": {
+          "sample_pixels": 142,
+          "plot_mean": 0.03226
+        },
+        "savi": {
+          "sample_pixels": 142,
+          "plot_mean": 0.03286
+        },
+        "gli": {
+          "sample_pixels": 142,
+          "plot_mean": 0.10528
         },
         "ndre": {
           "sample_pixels": 142,
@@ -6300,7 +7422,10 @@
       "original_tif20_file_id": "1Q_XfuuG7U9yNp4jjJYY0biKlpiKgrKs7",
       "original_tif60_file_id": "1efzX2wVm5OLdiuhbBmO-LHULAGPrOpE8",
       "source_folder_id": "1mtiLM3MJ0umWcujb3tm3XZPKdilMD4N5",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/01-28"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/01-28",
+      "evi": 0.03226,
+      "savi": 0.03286,
+      "gli": 0.10528
     },
     {
       "plot": "1-STC",
@@ -6326,6 +7451,18 @@
         "ndvi": {
           "sample_pixels": 139,
           "plot_mean": -0.01147
+        },
+        "evi": {
+          "sample_pixels": 139,
+          "plot_mean": 0.01935
+        },
+        "savi": {
+          "sample_pixels": 139,
+          "plot_mean": 0.01782
+        },
+        "gli": {
+          "sample_pixels": 139,
+          "plot_mean": 0.0779
         },
         "ndre": {
           "sample_pixels": 139,
@@ -6382,7 +7519,10 @@
       "original_tif20_file_id": "1KUn-BYs4SjcOr9XLyOAPgbYODvuqLa58",
       "original_tif60_file_id": "1bVoTgc-itTpOkYk3QNGVXCJfMOTZYvsK",
       "source_folder_id": "1pccj0O_z7obUOpZfyqO2CGKv3FcRge4c",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/02-17"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/02-17",
+      "evi": 0.01935,
+      "savi": 0.01782,
+      "gli": 0.0779
     },
     {
       "plot": "1-STC",
@@ -6408,6 +7548,18 @@
         "ndvi": {
           "sample_pixels": 115,
           "plot_mean": -0.13021
+        },
+        "evi": {
+          "sample_pixels": 115,
+          "plot_mean": 0.00018
+        },
+        "savi": {
+          "sample_pixels": 115,
+          "plot_mean": -0.00215
+        },
+        "gli": {
+          "sample_pixels": 115,
+          "plot_mean": 0.10635
         },
         "ndre": {
           "sample_pixels": 115,
@@ -6464,7 +7616,10 @@
       "original_tif20_file_id": "1XS7kpUNib0Ckl-rKKKTfJWDE34eOezIz",
       "original_tif60_file_id": "1lNPBJsph-hsZKTCQE9DGKfrvaYVD7kDt",
       "source_folder_id": "1b5kI-FOE_v5TIMzIbL750tFqyY3dYvB1",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/02-22"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/02-22",
+      "evi": 0.00018,
+      "savi": -0.00215,
+      "gli": 0.10635
     },
     {
       "plot": "1-STC",
@@ -6490,6 +7645,18 @@
         "ndvi": {
           "sample_pixels": 151,
           "plot_mean": 0.04273
+        },
+        "evi": {
+          "sample_pixels": 151,
+          "plot_mean": 0.02854
+        },
+        "savi": {
+          "sample_pixels": 151,
+          "plot_mean": 0.02649
+        },
+        "gli": {
+          "sample_pixels": 151,
+          "plot_mean": 0.05342
         },
         "ndre": {
           "sample_pixels": 151,
@@ -6546,7 +7713,10 @@
       "original_tif20_file_id": "1WSRDI2yrL8QSmx-uiuQvRmhgtAakd9cJ",
       "original_tif60_file_id": "14L2iynBn48uWY-WjqrW1hMGKYIz-uPOq",
       "source_folder_id": "1QGyQxmvER5t-VlYf3m8ygjdOqgG-OBWf",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/02-27"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/02-27",
+      "evi": 0.02854,
+      "savi": 0.02649,
+      "gli": 0.05342
     },
     {
       "plot": "1-STC",
@@ -6572,6 +7742,18 @@
         "ndvi": {
           "sample_pixels": 107,
           "plot_mean": 0.03522
+        },
+        "evi": {
+          "sample_pixels": 107,
+          "plot_mean": 0.02305
+        },
+        "savi": {
+          "sample_pixels": 107,
+          "plot_mean": 0.02061
+        },
+        "gli": {
+          "sample_pixels": 107,
+          "plot_mean": 0.05306
         },
         "ndre": {
           "sample_pixels": 107,
@@ -6628,7 +7810,10 @@
       "original_tif20_file_id": "17ElKyEyrJqXqUU2mNAeYsypYqxEH6SWh",
       "original_tif60_file_id": "1UzlZMUilNG06VHXzjiolMrMsGcuSJeCo",
       "source_folder_id": "1gV26k9N09Zm1WdbHwSJzMVNCiW6w5j33",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/03-14"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/03-14",
+      "evi": 0.02305,
+      "savi": 0.02061,
+      "gli": 0.05306
     },
     {
       "plot": "1-STC",
@@ -6654,6 +7839,18 @@
         "ndvi": {
           "sample_pixels": 110,
           "plot_mean": 0.30293
+        },
+        "evi": {
+          "sample_pixels": 110,
+          "plot_mean": 0.13843
+        },
+        "savi": {
+          "sample_pixels": 110,
+          "plot_mean": 0.13453
+        },
+        "gli": {
+          "sample_pixels": 110,
+          "plot_mean": 0.02963
         },
         "ndre": {
           "sample_pixels": 110,
@@ -6710,7 +7907,10 @@
       "original_tif20_file_id": "1e6JKZEaBYhS4qnTXYgnRGWkb8kAnI2H9",
       "original_tif60_file_id": "1rf_DrWtklbmX3J9E_uQcKC-hAmBJ9Dgm",
       "source_folder_id": "1Zjn27iwYn8thFR0sQNWlhOAPTpSQrtys",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/04-08"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/04-08",
+      "evi": 0.13843,
+      "savi": 0.13453,
+      "gli": 0.02963
     },
     {
       "plot": "1-STC",
@@ -6736,6 +7936,18 @@
         "ndvi": {
           "sample_pixels": 59,
           "plot_mean": 0.18362
+        },
+        "evi": {
+          "sample_pixels": 59,
+          "plot_mean": 0.09081
+        },
+        "savi": {
+          "sample_pixels": 59,
+          "plot_mean": 0.08089
+        },
+        "gli": {
+          "sample_pixels": 59,
+          "plot_mean": 0.04521
         },
         "ndre": {
           "sample_pixels": 59,
@@ -6792,7 +8004,10 @@
       "original_tif20_file_id": "1CEGE-3P8JKHJBy9tt7BBG8QkOPQj7c-0",
       "original_tif60_file_id": "1tt5IWW7Thqb5HEn3Gi3VhhBkJsqTM2SO",
       "source_folder_id": "1X_xkA_COBZcLLVX8aoonVa2DWYk6GYHd",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/04-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/04-18",
+      "evi": 0.09081,
+      "savi": 0.08089,
+      "gli": 0.04521
     },
     {
       "plot": "1-STC",
@@ -6818,6 +8033,18 @@
         "ndvi": {
           "sample_pixels": 141,
           "plot_mean": 0.4698
+        },
+        "evi": {
+          "sample_pixels": 141,
+          "plot_mean": 0.19606
+        },
+        "savi": {
+          "sample_pixels": 141,
+          "plot_mean": 0.19744
+        },
+        "gli": {
+          "sample_pixels": 141,
+          "plot_mean": 0.12316
         },
         "ndre": {
           "sample_pixels": 141,
@@ -6874,7 +8101,10 @@
       "original_tif20_file_id": "1TcRTMT86aWCJ8at2lO8E7afwDeKfwvS8",
       "original_tif60_file_id": "1R_COn57-2AYdsnkhHIV70t1dFcQ_mmrY",
       "source_folder_id": "1pZ1naCMIS6Q-LT5Rk7ivLg6GU-toB2kC",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/06-22"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/06-22",
+      "evi": 0.19606,
+      "savi": 0.19744,
+      "gli": 0.12316
     },
     {
       "plot": "1-STC",
@@ -6900,6 +8130,18 @@
         "ndvi": {
           "sample_pixels": 118,
           "plot_mean": 0.43835
+        },
+        "evi": {
+          "sample_pixels": 118,
+          "plot_mean": 0.1789
+        },
+        "savi": {
+          "sample_pixels": 118,
+          "plot_mean": 0.17311
+        },
+        "gli": {
+          "sample_pixels": 118,
+          "plot_mean": 0.14579
         },
         "ndre": {
           "sample_pixels": 118,
@@ -6956,7 +8198,10 @@
       "original_tif20_file_id": "1Ohn5_HVQkbzCQXU80xXPnjX-naCZGCLV",
       "original_tif60_file_id": "12pn7rJB-lgt-JTEMZfewn2a7GKampIJl",
       "source_folder_id": "1C0G5S0ku3sQLdUDGbdQzny7g3ORspp-g",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/10-20"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/10-20",
+      "evi": 0.1789,
+      "savi": 0.17311,
+      "gli": 0.14579
     },
     {
       "plot": "1-STC",
@@ -6982,6 +8227,18 @@
         "ndvi": {
           "sample_pixels": 179,
           "plot_mean": 0.36753
+        },
+        "evi": {
+          "sample_pixels": 179,
+          "plot_mean": 0.14105
+        },
+        "savi": {
+          "sample_pixels": 179,
+          "plot_mean": 0.13619
+        },
+        "gli": {
+          "sample_pixels": 179,
+          "plot_mean": 0.12817
         },
         "ndre": {
           "sample_pixels": 179,
@@ -7038,7 +8295,10 @@
       "original_tif20_file_id": "1pF8M3uVxNuuridBgUlNDdIOuuwfErSYs",
       "original_tif60_file_id": "1hYBXJEwNv2DVsSO86W35_r-MQaSR0_W3",
       "source_folder_id": "1vbHGDbLTTQ6hofx78AMNOOw0uxZ5z7pk",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/11-24"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/11-24",
+      "evi": 0.14105,
+      "savi": 0.13619,
+      "gli": 0.12817
     },
     {
       "plot": "1-STC",
@@ -7064,6 +8324,18 @@
         "ndvi": {
           "sample_pixels": 173,
           "plot_mean": 0.37526
+        },
+        "evi": {
+          "sample_pixels": 173,
+          "plot_mean": 0.12717
+        },
+        "savi": {
+          "sample_pixels": 173,
+          "plot_mean": 0.12626
+        },
+        "gli": {
+          "sample_pixels": 173,
+          "plot_mean": 0.17527
         },
         "ndre": {
           "sample_pixels": 173,
@@ -7120,7 +8392,10 @@
       "original_tif20_file_id": "1AUXWB2qM1c9TZVYusb_QBTHOIgAAj_X1",
       "original_tif60_file_id": "1oT-HrpmpM5Ty7Oh5AN-nkOSJQRIP9Xmz",
       "source_folder_id": "1PKBWO3lhpv8sRROs_oluLQ1YU0F7Bfm2",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/11-29"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/11-29",
+      "evi": 0.12717,
+      "savi": 0.12626,
+      "gli": 0.17527
     },
     {
       "plot": "1-STC",
@@ -7146,6 +8421,18 @@
         "ndvi": {
           "sample_pixels": 176,
           "plot_mean": 0.30011
+        },
+        "evi": {
+          "sample_pixels": 176,
+          "plot_mean": 0.10937
+        },
+        "savi": {
+          "sample_pixels": 176,
+          "plot_mean": 0.11073
+        },
+        "gli": {
+          "sample_pixels": 176,
+          "plot_mean": 0.17017
         },
         "ndre": {
           "sample_pixels": 176,
@@ -7202,7 +8489,10 @@
       "original_tif20_file_id": "14mmzOayBlFuTGxq9Bmp0u4h4kfZtXa9h",
       "original_tif60_file_id": "1TM1Dw3a4aClu3oYkatwwpjLr11dtW7H_",
       "source_folder_id": "1FrveW5y9Eaxkrtf3cW9cNq8cyVx_QXr8",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/12-09"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/12-09",
+      "evi": 0.10937,
+      "savi": 0.11073,
+      "gli": 0.17017
     },
     {
       "plot": "1-STC",
@@ -7228,6 +8518,18 @@
         "ndvi": {
           "sample_pixels": 171,
           "plot_mean": 0.29107
+        },
+        "evi": {
+          "sample_pixels": 171,
+          "plot_mean": 0.09813
+        },
+        "savi": {
+          "sample_pixels": 171,
+          "plot_mean": 0.10145
+        },
+        "gli": {
+          "sample_pixels": 171,
+          "plot_mean": 0.18549
         },
         "ndre": {
           "sample_pixels": 171,
@@ -7284,7 +8586,10 @@
       "original_tif20_file_id": "1xvRptuAg58yuLIgIdSu9KP1nwE9ebP8F",
       "original_tif60_file_id": "17rpcOVoERI5hdQYnVc92EGA8wJnULVU0",
       "source_folder_id": "14ECnW6vKxkvoTWOspWI6tOxuFj8oAVay",
-      "source_folder_path": "/Nationwide Archive/1-STC/2023/12-19"
+      "source_folder_path": "/Nationwide Archive/1-STC/2023/12-19",
+      "evi": 0.09813,
+      "savi": 0.10145,
+      "gli": 0.18549
     },
     {
       "plot": "1-STC",
@@ -7310,6 +8615,18 @@
         "ndvi": {
           "sample_pixels": 169,
           "plot_mean": 0.2176
+        },
+        "evi": {
+          "sample_pixels": 169,
+          "plot_mean": 0.08493
+        },
+        "savi": {
+          "sample_pixels": 169,
+          "plot_mean": 0.08465
+        },
+        "gli": {
+          "sample_pixels": 169,
+          "plot_mean": 0.11646
         },
         "ndre": {
           "sample_pixels": 169,
@@ -7366,7 +8683,10 @@
       "original_tif20_file_id": "1ouGnSNrDftWBVaMuP1jDILbXPGFA5eb7",
       "original_tif60_file_id": "1C6KsF3-hDj1aKiq8_7O_QcHCJhdlKJjz",
       "source_folder_id": "1gruJij36Du1PZ9OYggRfKGh2WlsHOimA",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/01-03"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/01-03",
+      "evi": 0.08493,
+      "savi": 0.08465,
+      "gli": 0.11646
     },
     {
       "plot": "1-STC",
@@ -7392,6 +8712,18 @@
         "ndvi": {
           "sample_pixels": 140,
           "plot_mean": 0.17244
+        },
+        "evi": {
+          "sample_pixels": 140,
+          "plot_mean": 0.07847
+        },
+        "savi": {
+          "sample_pixels": 140,
+          "plot_mean": 0.07727
+        },
+        "gli": {
+          "sample_pixels": 140,
+          "plot_mean": 0.1372
         },
         "ndre": {
           "sample_pixels": 140,
@@ -7448,7 +8780,10 @@
       "original_tif20_file_id": "1upm9z-Shz21KZGMBBwccs9yunSVKzkCZ",
       "original_tif60_file_id": "1sS1Btp9gzWKmfSiiuE_Da01iu-L8wtlE",
       "source_folder_id": "1DKd2eZ4G1dupPq4qos8fzF1pRyoNy6Is",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/01-08"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/01-08",
+      "evi": 0.07847,
+      "savi": 0.07727,
+      "gli": 0.1372
     },
     {
       "plot": "1-STC",
@@ -7474,6 +8809,18 @@
         "ndvi": {
           "sample_pixels": 124,
           "plot_mean": 0.08984
+        },
+        "evi": {
+          "sample_pixels": 124,
+          "plot_mean": 0.05582
+        },
+        "savi": {
+          "sample_pixels": 124,
+          "plot_mean": 0.05483
+        },
+        "gli": {
+          "sample_pixels": 124,
+          "plot_mean": 0.13197
         },
         "ndre": {
           "sample_pixels": 124,
@@ -7530,7 +8877,10 @@
       "original_tif20_file_id": "1FhaDslX5kT85wEs-facLnznVvDUD2bE1",
       "original_tif60_file_id": "1DZnouOqN95-THClJI3AVyje6pRz9h0j0",
       "source_folder_id": "1R7_g5QtESSo5j8cXguriR59Fxx5iMHg2",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/01-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/01-18",
+      "evi": 0.05582,
+      "savi": 0.05483,
+      "gli": 0.13197
     },
     {
       "plot": "1-STC",
@@ -7556,6 +8906,18 @@
         "ndvi": {
           "sample_pixels": 120,
           "plot_mean": 0.04518
+        },
+        "evi": {
+          "sample_pixels": 120,
+          "plot_mean": 0.04045
+        },
+        "savi": {
+          "sample_pixels": 120,
+          "plot_mean": 0.03835
+        },
+        "gli": {
+          "sample_pixels": 120,
+          "plot_mean": 0.10424
         },
         "ndre": {
           "sample_pixels": 120,
@@ -7612,7 +8974,10 @@
       "original_tif20_file_id": "14QvftCmwa8bYvLOZWD5YlwfwDRM8-k6U",
       "original_tif60_file_id": "1xFofPeyHYGm7xoFHOFRZ4qZ5GIneyjY8",
       "source_folder_id": "1qJ233QkFzZSaWF0HVMFoNVeE5j9RhWoc",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/01-28"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/01-28",
+      "evi": 0.04045,
+      "savi": 0.03835,
+      "gli": 0.10424
     },
     {
       "plot": "1-STC",
@@ -7638,6 +9003,18 @@
         "ndvi": {
           "sample_pixels": 130,
           "plot_mean": 0.17138
+        },
+        "evi": {
+          "sample_pixels": 130,
+          "plot_mean": 0.08835
+        },
+        "savi": {
+          "sample_pixels": 130,
+          "plot_mean": 0.0756
+        },
+        "gli": {
+          "sample_pixels": 130,
+          "plot_mean": 0.06518
         },
         "ndre": {
           "sample_pixels": 130,
@@ -7694,7 +9071,10 @@
       "original_tif20_file_id": "1uh7PHvFBa7E6fGXTaRGME8NSl0K4OJsM",
       "original_tif60_file_id": "1cB3QCMhMASOrCsEAviglVCJpaCd0PFxB",
       "source_folder_id": "18jLxZD_v4LN2cdMney9AMbce1oLjONYA",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/02-02"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/02-02",
+      "evi": 0.08835,
+      "savi": 0.0756,
+      "gli": 0.06518
     },
     {
       "plot": "1-STC",
@@ -7720,6 +9100,18 @@
         "ndvi": {
           "sample_pixels": 95,
           "plot_mean": 0.16617
+        },
+        "evi": {
+          "sample_pixels": 95,
+          "plot_mean": 0.07045
+        },
+        "savi": {
+          "sample_pixels": 95,
+          "plot_mean": 0.06773
+        },
+        "gli": {
+          "sample_pixels": 95,
+          "plot_mean": 0.10555
         },
         "ndre": {
           "sample_pixels": 95,
@@ -7776,7 +9168,10 @@
       "original_tif20_file_id": "1_MTz5Q21EdsZbyYiJb3roGg8NEjDLJaV",
       "original_tif60_file_id": "18ZiXfTE-X8F1bAjVM_JmgvqA06dBaivA",
       "source_folder_id": "1MxPwRxpkSDzzJD5ZTmr-oupG5g-yFQ_m",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/02-07"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/02-07",
+      "evi": 0.07045,
+      "savi": 0.06773,
+      "gli": 0.10555
     },
     {
       "plot": "1-STC",
@@ -7802,6 +9197,18 @@
         "ndvi": {
           "sample_pixels": 119,
           "plot_mean": 0.01706
+        },
+        "evi": {
+          "sample_pixels": 119,
+          "plot_mean": 0.03532
+        },
+        "savi": {
+          "sample_pixels": 119,
+          "plot_mean": 0.03278
+        },
+        "gli": {
+          "sample_pixels": 119,
+          "plot_mean": 0.08139
         },
         "ndre": {
           "sample_pixels": 119,
@@ -7858,7 +9265,10 @@
       "original_tif20_file_id": "1p2rIgdnRsLiErYJzXaW3zszLSO_bxm6m",
       "original_tif60_file_id": "1TvQDheW0rnOrlzXyLHSbc6yOqD4aBLN_",
       "source_folder_id": "1x_tEOWW300d80WHxBirM2u3zoyOoES7T",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/02-12"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/02-12",
+      "evi": 0.03532,
+      "savi": 0.03278,
+      "gli": 0.08139
     },
     {
       "plot": "1-STC",
@@ -7884,6 +9294,18 @@
         "ndvi": {
           "sample_pixels": 101,
           "plot_mean": 0.1756
+        },
+        "evi": {
+          "sample_pixels": 101,
+          "plot_mean": 0.09878
+        },
+        "savi": {
+          "sample_pixels": 101,
+          "plot_mean": 0.0826
+        },
+        "gli": {
+          "sample_pixels": 101,
+          "plot_mean": 0.05984
         },
         "ndre": {
           "sample_pixels": 101,
@@ -7940,7 +9362,10 @@
       "original_tif20_file_id": "1Vo1yby2NlRmJALDWqzjtkJxzMjnyr3Or",
       "original_tif60_file_id": "1-Y2M7nffmiknxjeJA7WFL0562_dCnOtp",
       "source_folder_id": "17OfwROXjaiADSrGuDg-e1HZfbZCHPDT1",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/03-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/03-18",
+      "evi": 0.09878,
+      "savi": 0.0826,
+      "gli": 0.05984
     },
     {
       "plot": "1-STC",
@@ -7966,6 +9391,18 @@
         "ndvi": {
           "sample_pixels": 121,
           "plot_mean": 0.13044
+        },
+        "evi": {
+          "sample_pixels": 121,
+          "plot_mean": 0.07238
+        },
+        "savi": {
+          "sample_pixels": 121,
+          "plot_mean": 0.0723
+        },
+        "gli": {
+          "sample_pixels": 121,
+          "plot_mean": 0.11201
         },
         "ndre": {
           "sample_pixels": 121,
@@ -8022,7 +9459,10 @@
       "original_tif20_file_id": "1h3Wo2eM-wT5VOAT4kx94OaVCew31mCcw",
       "original_tif60_file_id": "1Cg4iHBdU81p9UyWfDfIbHP-msnjo0_z6",
       "source_folder_id": "1bZCzy0gqPX3uOXETDq3Is9IsQqwUvEOV",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/04-17"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/04-17",
+      "evi": 0.07238,
+      "savi": 0.0723,
+      "gli": 0.11201
     },
     {
       "plot": "1-STC",
@@ -8048,6 +9488,18 @@
         "ndvi": {
           "sample_pixels": 145,
           "plot_mean": 0.51194
+        },
+        "evi": {
+          "sample_pixels": 145,
+          "plot_mean": 0.22941
+        },
+        "savi": {
+          "sample_pixels": 145,
+          "plot_mean": 0.22767
+        },
+        "gli": {
+          "sample_pixels": 145,
+          "plot_mean": 0.13729
         },
         "ndre": {
           "sample_pixels": 145,
@@ -8104,7 +9556,10 @@
       "original_tif20_file_id": "1COoaoUYB3DS_rK1xQz63mgKTEcPrFNu4",
       "original_tif60_file_id": "1Wdw3SZBx7ebuHQr651C7hzgSia-gbt2f",
       "source_folder_id": "1oDZx6BKMjrrcnKaKJ6rrozusCRPdIr3G",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/07-06"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/07-06",
+      "evi": 0.22941,
+      "savi": 0.22767,
+      "gli": 0.13729
     },
     {
       "plot": "1-STC",
@@ -8130,6 +9585,18 @@
         "ndvi": {
           "sample_pixels": 149,
           "plot_mean": 0.53975
+        },
+        "evi": {
+          "sample_pixels": 149,
+          "plot_mean": 0.25322
+        },
+        "savi": {
+          "sample_pixels": 149,
+          "plot_mean": 0.24731
+        },
+        "gli": {
+          "sample_pixels": 149,
+          "plot_mean": 0.13855
         },
         "ndre": {
           "sample_pixels": 149,
@@ -8186,7 +9653,10 @@
       "original_tif20_file_id": "1yh4Hx03j4v13ZqNsXKK-_fHvEwg3XMYD",
       "original_tif60_file_id": "13y3N1b8hugZXgu_CvRiybRlKnOiy3L3l",
       "source_folder_id": "1sDoEPgUR-m6PuW2VQHh7SGiBYE8PTeDQ",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/08-05"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/08-05",
+      "evi": 0.25322,
+      "savi": 0.24731,
+      "gli": 0.13855
     },
     {
       "plot": "1-STC",
@@ -8212,6 +9682,18 @@
         "ndvi": {
           "sample_pixels": 206,
           "plot_mean": 0.47196
+        },
+        "evi": {
+          "sample_pixels": 206,
+          "plot_mean": 0.26068
+        },
+        "savi": {
+          "sample_pixels": 206,
+          "plot_mean": 0.22622
+        },
+        "gli": {
+          "sample_pixels": 206,
+          "plot_mean": 0.0768
         },
         "ndre": {
           "sample_pixels": 206,
@@ -8268,7 +9750,10 @@
       "original_tif20_file_id": "1oKKv3s234NyFXVsFVFjGoOHBwMqkILC4",
       "original_tif60_file_id": "1rWm9aF3ZJJJPbM3tqXwZZNuyG2GeLljd",
       "source_folder_id": "1Ypd6O8MYbtVc9HB7wQIXCJ5Poqk0SsF6",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/08-30"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/08-30",
+      "evi": 0.26068,
+      "savi": 0.22622,
+      "gli": 0.0768
     },
     {
       "plot": "1-STC",
@@ -8294,6 +9779,18 @@
         "ndvi": {
           "sample_pixels": 188,
           "plot_mean": 0.39981
+        },
+        "evi": {
+          "sample_pixels": 188,
+          "plot_mean": 0.16505
+        },
+        "savi": {
+          "sample_pixels": 188,
+          "plot_mean": 0.16009
+        },
+        "gli": {
+          "sample_pixels": 188,
+          "plot_mean": 0.17344
         },
         "ndre": {
           "sample_pixels": 188,
@@ -8350,7 +9847,10 @@
       "original_tif20_file_id": "1IMGVGCiQNUDc-FjS692DbeBBMTq9m5_G",
       "original_tif60_file_id": "1TdG3nIRLek-xtlB0bvc-5VmxOuGrQ4au",
       "source_folder_id": "1fbQzrja-hw5I1aEj87oh8-GtI113N3Lj",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/10-09"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/10-09",
+      "evi": 0.16505,
+      "savi": 0.16009,
+      "gli": 0.17344
     },
     {
       "plot": "1-STC",
@@ -8376,6 +9876,18 @@
         "ndvi": {
           "sample_pixels": 177,
           "plot_mean": 0.38448
+        },
+        "evi": {
+          "sample_pixels": 177,
+          "plot_mean": 0.12626
+        },
+        "savi": {
+          "sample_pixels": 177,
+          "plot_mean": 0.13159
+        },
+        "gli": {
+          "sample_pixels": 177,
+          "plot_mean": 0.24058
         },
         "ndre": {
           "sample_pixels": 177,
@@ -8432,7 +9944,10 @@
       "original_tif20_file_id": "1XCKDGil6fw4r057KIHf0YcUvTIw3slU1",
       "original_tif60_file_id": "1fzVh5EXGSO7C3DGQGmv8WAxNgKN5dgvJ",
       "source_folder_id": "1pAG5AM293nRNcax0A_t9At33bdLWRyG9",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/10-24"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/10-24",
+      "evi": 0.12626,
+      "savi": 0.13159,
+      "gli": 0.24058
     },
     {
       "plot": "1-STC",
@@ -8458,6 +9973,18 @@
         "ndvi": {
           "sample_pixels": 144,
           "plot_mean": 0.4294
+        },
+        "evi": {
+          "sample_pixels": 144,
+          "plot_mean": 0.16434
+        },
+        "savi": {
+          "sample_pixels": 144,
+          "plot_mean": 0.16157
+        },
+        "gli": {
+          "sample_pixels": 144,
+          "plot_mean": 0.17704
         },
         "ndre": {
           "sample_pixels": 144,
@@ -8514,7 +10041,10 @@
       "original_tif20_file_id": "109BCDCm2Ckauh9vkhjRlYwwjAI7dUL_R",
       "original_tif60_file_id": "1qEqdo1bZHHvBOh8KvgZ1vouVcCz1FyiB",
       "source_folder_id": "1FWz8ZK3TCmXW5DVuXjSZpj-c232wGaA-",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/11-03"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/11-03",
+      "evi": 0.16434,
+      "savi": 0.16157,
+      "gli": 0.17704
     },
     {
       "plot": "1-STC",
@@ -8540,6 +10070,18 @@
         "ndvi": {
           "sample_pixels": 176,
           "plot_mean": 0.36163
+        },
+        "evi": {
+          "sample_pixels": 176,
+          "plot_mean": 0.13809
+        },
+        "savi": {
+          "sample_pixels": 176,
+          "plot_mean": 0.13764
+        },
+        "gli": {
+          "sample_pixels": 176,
+          "plot_mean": 0.17118
         },
         "ndre": {
           "sample_pixels": 176,
@@ -8596,7 +10138,10 @@
       "original_tif20_file_id": "1tf4wMXG_BA4sDuFEnGywmNm_MjyAhHsk",
       "original_tif60_file_id": "1yrQuHfRHYhFABR0Q7LpmkJBp3wHLuDRL",
       "source_folder_id": "13p6mXeVoJsA4FdONZvHgGlVcg5kdeIES",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/11-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/11-18",
+      "evi": 0.13809,
+      "savi": 0.13764,
+      "gli": 0.17118
     },
     {
       "plot": "1-STC",
@@ -8622,6 +10167,18 @@
         "ndvi": {
           "sample_pixels": 177,
           "plot_mean": 0.34098
+        },
+        "evi": {
+          "sample_pixels": 177,
+          "plot_mean": 0.12945
+        },
+        "savi": {
+          "sample_pixels": 177,
+          "plot_mean": 0.13324
+        },
+        "gli": {
+          "sample_pixels": 177,
+          "plot_mean": 0.2256
         },
         "ndre": {
           "sample_pixels": 177,
@@ -8678,7 +10235,10 @@
       "original_tif20_file_id": "11f5Yn2EW6spFu7LH3LYd4N2BzUelmERD",
       "original_tif60_file_id": "1qa2dm4mp0oRQhy1MD0oN89ltXd4IdLaC",
       "source_folder_id": "1KNKUi02ScWDnk5G5vMH6f40bvp2YtpKk",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/11-23"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/11-23",
+      "evi": 0.12945,
+      "savi": 0.13324,
+      "gli": 0.2256
     },
     {
       "plot": "1-STC",
@@ -8704,6 +10264,18 @@
         "ndvi": {
           "sample_pixels": 179,
           "plot_mean": 0.30753
+        },
+        "evi": {
+          "sample_pixels": 179,
+          "plot_mean": 0.11661
+        },
+        "savi": {
+          "sample_pixels": 179,
+          "plot_mean": 0.11544
+        },
+        "gli": {
+          "sample_pixels": 179,
+          "plot_mean": 0.15107
         },
         "ndre": {
           "sample_pixels": 179,
@@ -8760,7 +10332,10 @@
       "original_tif20_file_id": "19Ny9HR7O7fP-lNeW496Ze9CtPE8IAJ3f",
       "original_tif60_file_id": "1KD4pF0Dw2orKQdu3CGvH8pauvKDhtpXc",
       "source_folder_id": "1zoh2C7YR5u7yCdPhtgbwTsIbPKWTmAa7",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/12-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/12-18",
+      "evi": 0.11661,
+      "savi": 0.11544,
+      "gli": 0.15107
     },
     {
       "plot": "1-STC",
@@ -8786,6 +10361,18 @@
         "ndvi": {
           "sample_pixels": 173,
           "plot_mean": 0.24646
+        },
+        "evi": {
+          "sample_pixels": 173,
+          "plot_mean": 0.11735
+        },
+        "savi": {
+          "sample_pixels": 173,
+          "plot_mean": 0.11682
+        },
+        "gli": {
+          "sample_pixels": 173,
+          "plot_mean": 0.17472
         },
         "ndre": {
           "sample_pixels": 173,
@@ -8842,7 +10429,10 @@
       "original_tif20_file_id": "1_8UIZLWVEjhxm2NMVjgY3G_0xvE-4T5I",
       "original_tif60_file_id": "1tq8_OxoSM7C9utUNnA81fs2BrZ9p6g8u",
       "source_folder_id": "1efRwm0h7yEIW_eP2y_ctymMz37AwPtH6",
-      "source_folder_path": "/Nationwide Archive/1-STC/2024/12-28"
+      "source_folder_path": "/Nationwide Archive/1-STC/2024/12-28",
+      "evi": 0.11735,
+      "savi": 0.11682,
+      "gli": 0.17472
     },
     {
       "plot": "1-STC",
@@ -8868,6 +10458,18 @@
         "ndvi": {
           "sample_pixels": 171,
           "plot_mean": 0.31198
+        },
+        "evi": {
+          "sample_pixels": 171,
+          "plot_mean": 0.11349
+        },
+        "savi": {
+          "sample_pixels": 171,
+          "plot_mean": 0.11484
+        },
+        "gli": {
+          "sample_pixels": 171,
+          "plot_mean": 0.18419
         },
         "ndre": {
           "sample_pixels": 171,
@@ -8924,7 +10526,10 @@
       "original_tif20_file_id": "1kIa1Hy1f03rauixMOo9QUXeCSJvJNJpW",
       "original_tif60_file_id": "1ySnn-y4Gb_qRSAY2ENtODzz-hP-EQ07P",
       "source_folder_id": "14--ldqoShvsZq0vEC_8M0bnopA9dcWeG",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/01-02"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/01-02",
+      "evi": 0.11349,
+      "savi": 0.11484,
+      "gli": 0.18419
     },
     {
       "plot": "1-STC",
@@ -8950,6 +10555,18 @@
         "ndvi": {
           "sample_pixels": 139,
           "plot_mean": 0.24263
+        },
+        "evi": {
+          "sample_pixels": 139,
+          "plot_mean": 0.09112
+        },
+        "savi": {
+          "sample_pixels": 139,
+          "plot_mean": 0.09075
+        },
+        "gli": {
+          "sample_pixels": 139,
+          "plot_mean": 0.13656
         },
         "ndre": {
           "sample_pixels": 139,
@@ -9006,7 +10623,10 @@
       "original_tif20_file_id": "18PO8Y_mlqph17P4tpEt0qUiJ8xdIfCbb",
       "original_tif60_file_id": "10CVZXZeEcSnFa-o9m7EXWF_v8mvBw2Qd",
       "source_folder_id": "1lVBbaN2RBFmwJ9QX-3Ifxv4cZW8SvFIN",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/01-12"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/01-12",
+      "evi": 0.09112,
+      "savi": 0.09075,
+      "gli": 0.13656
     },
     {
       "plot": "1-STC",
@@ -9032,6 +10652,18 @@
         "ndvi": {
           "sample_pixels": 125,
           "plot_mean": -0.0432
+        },
+        "evi": {
+          "sample_pixels": 125,
+          "plot_mean": 0.05151
+        },
+        "savi": {
+          "sample_pixels": 125,
+          "plot_mean": 0.05139
+        },
+        "gli": {
+          "sample_pixels": 125,
+          "plot_mean": 0.15366
         },
         "ndre": {
           "sample_pixels": 125,
@@ -9088,7 +10720,10 @@
       "original_tif20_file_id": "1vYAadmVOzof176CA8P9JFQzoVXxOv6yq",
       "original_tif60_file_id": "1uerRYUcqynbzNvqYfmDfSd05c5jGV54H",
       "source_folder_id": "1p8F5XAeFbuJ5pXh8t9r7iMjA6Cwo3wFX",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/02-11"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/02-11",
+      "evi": 0.05151,
+      "savi": 0.05139,
+      "gli": 0.15366
     },
     {
       "plot": "1-STC",
@@ -9114,6 +10749,18 @@
         "ndvi": {
           "sample_pixels": 103,
           "plot_mean": 0.14824
+        },
+        "evi": {
+          "sample_pixels": 103,
+          "plot_mean": 0.07502
+        },
+        "savi": {
+          "sample_pixels": 103,
+          "plot_mean": 0.07036
+        },
+        "gli": {
+          "sample_pixels": 103,
+          "plot_mean": 0.08119
         },
         "ndre": {
           "sample_pixels": 103,
@@ -9170,7 +10817,10 @@
       "original_tif20_file_id": "1mdEMg87mGaJnk7VCaU21vrzUh9UX2ANm",
       "original_tif60_file_id": "1uxcVb8Aw04_kkg3paTdyOko64ocwxCxa",
       "source_folder_id": "17dkROoljhkicvSgPSGI2zO4Jx9flIrba",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/03-23"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/03-23",
+      "evi": 0.07502,
+      "savi": 0.07036,
+      "gli": 0.08119
     },
     {
       "plot": "1-STC",
@@ -9196,6 +10846,18 @@
         "ndvi": {
           "sample_pixels": 111,
           "plot_mean": 0.19922
+        },
+        "evi": {
+          "sample_pixels": 111,
+          "plot_mean": 0.08953
+        },
+        "savi": {
+          "sample_pixels": 111,
+          "plot_mean": 0.08737
+        },
+        "gli": {
+          "sample_pixels": 111,
+          "plot_mean": 0.08524
         },
         "ndre": {
           "sample_pixels": 111,
@@ -9252,7 +10914,10 @@
       "original_tif20_file_id": "1LBgHqN0Ddiq-STyg9PFW5INVkl1jPguL",
       "original_tif60_file_id": "13Yhsvv_gXAE__ThbF_DDJMd69hFcXyJO",
       "source_folder_id": "1bF5pM5TasAQmrVQAOZheswSv0IXxRrol",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/03-28"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/03-28",
+      "evi": 0.08953,
+      "savi": 0.08737,
+      "gli": 0.08524
     },
     {
       "plot": "1-STC",
@@ -9278,6 +10943,18 @@
         "ndvi": {
           "sample_pixels": 192,
           "plot_mean": 0.48389
+        },
+        "evi": {
+          "sample_pixels": 192,
+          "plot_mean": 0.25132
+        },
+        "savi": {
+          "sample_pixels": 192,
+          "plot_mean": 0.23864
+        },
+        "gli": {
+          "sample_pixels": 192,
+          "plot_mean": 0.09337
         },
         "ndre": {
           "sample_pixels": 192,
@@ -9334,7 +11011,10 @@
       "original_tif20_file_id": "1RdMNdCk5UYNFtv3DJZbIv-BDEi3tF06f",
       "original_tif60_file_id": "1fb73eCMpicgJXRHLYQLcWKMeM1oReIel",
       "source_folder_id": "18Vx1oV5BZdHxNLlBAlaTYDojhHvLK99Y",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/07-26"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/07-26",
+      "evi": 0.25132,
+      "savi": 0.23864,
+      "gli": 0.09337
     },
     {
       "plot": "1-STC",
@@ -9360,6 +11040,18 @@
         "ndvi": {
           "sample_pixels": 191,
           "plot_mean": 0.51147
+        },
+        "evi": {
+          "sample_pixels": 191,
+          "plot_mean": 0.27763
+        },
+        "savi": {
+          "sample_pixels": 191,
+          "plot_mean": 0.25426
+        },
+        "gli": {
+          "sample_pixels": 191,
+          "plot_mean": 0.09958
         },
         "ndre": {
           "sample_pixels": 191,
@@ -9416,7 +11108,10 @@
       "original_tif20_file_id": "1434UUX59RGClO0hz-o7mLpr3NJIuF94h",
       "original_tif60_file_id": "1lADwisEeQd41QMAcpBnm_mtmEqVBRr49",
       "source_folder_id": "103RFww_5-vhE1QStJT-jAl1eLGmKEZ8X",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/09-21"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/09-21",
+      "evi": 0.27763,
+      "savi": 0.25426,
+      "gli": 0.09958
     },
     {
       "plot": "1-STC",
@@ -9442,6 +11137,18 @@
         "ndvi": {
           "sample_pixels": 185,
           "plot_mean": 0.45685
+        },
+        "evi": {
+          "sample_pixels": 185,
+          "plot_mean": 0.20604
+        },
+        "savi": {
+          "sample_pixels": 185,
+          "plot_mean": 0.19852
+        },
+        "gli": {
+          "sample_pixels": 185,
+          "plot_mean": 0.14958
         },
         "ndre": {
           "sample_pixels": 185,
@@ -9498,7 +11205,10 @@
       "original_tif20_file_id": "13n1Ly0RrB7eHSG5hcHFFQLIpsVmKZMEX",
       "original_tif60_file_id": "1On4MxA2wTddwjdRh86P7X0mhC-NnjUf_",
       "source_folder_id": "1k9LH8FiifiYX7Lb-zCDpHoG9cezr_mNN",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/10-19"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/10-19",
+      "evi": 0.20604,
+      "savi": 0.19852,
+      "gli": 0.14958
     },
     {
       "plot": "1-STC",
@@ -9524,6 +11234,18 @@
         "ndvi": {
           "sample_pixels": 159,
           "plot_mean": 0.34275
+        },
+        "evi": {
+          "sample_pixels": 159,
+          "plot_mean": 0.14098
+        },
+        "savi": {
+          "sample_pixels": 159,
+          "plot_mean": 0.13421
+        },
+        "gli": {
+          "sample_pixels": 159,
+          "plot_mean": 0.13487
         },
         "ndre": {
           "sample_pixels": 159,
@@ -9580,7 +11302,10 @@
       "original_tif20_file_id": "1vViunRAtNJXgd3-748ht2Bl3c9yfl2he",
       "original_tif60_file_id": "1EdEEV3oOfCIFaxilO4lF-ufPmO3fy0va",
       "source_folder_id": "1Q82VRFB_Z3V9-RXZJRt6sFTsEEZlaF2N",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-03"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-03",
+      "evi": 0.14098,
+      "savi": 0.13421,
+      "gli": 0.13487
     },
     {
       "plot": "1-STC",
@@ -9606,6 +11331,18 @@
         "ndvi": {
           "sample_pixels": 167,
           "plot_mean": 0.35898
+        },
+        "evi": {
+          "sample_pixels": 167,
+          "plot_mean": 0.13991
+        },
+        "savi": {
+          "sample_pixels": 167,
+          "plot_mean": 0.13784
+        },
+        "gli": {
+          "sample_pixels": 167,
+          "plot_mean": 0.15981
         },
         "ndre": {
           "sample_pixels": 167,
@@ -9662,7 +11399,10 @@
       "original_tif20_file_id": "1La_4FHHid0V3uqJtyDzNVSrom4Kc0WDI",
       "original_tif60_file_id": "1CI2JMc4T1kxHbdck-HaFIBgju_fYxVqS",
       "source_folder_id": "1YC8jO-b47g-DKQOV6LTaoxktQN_POSIn",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-08"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-08",
+      "evi": 0.13991,
+      "savi": 0.13784,
+      "gli": 0.15981
     },
     {
       "plot": "1-STC",
@@ -9688,6 +11428,18 @@
         "ndvi": {
           "sample_pixels": 172,
           "plot_mean": 0.32187
+        },
+        "evi": {
+          "sample_pixels": 172,
+          "plot_mean": 0.12263
+        },
+        "savi": {
+          "sample_pixels": 172,
+          "plot_mean": 0.12199
+        },
+        "gli": {
+          "sample_pixels": 172,
+          "plot_mean": 0.17752
         },
         "ndre": {
           "sample_pixels": 172,
@@ -9744,7 +11496,10 @@
       "original_tif20_file_id": "1hpBxNv4mTU48kNSW7F0Ghyw5apokjz4y",
       "original_tif60_file_id": "1lT89V5MisgGNrHcf7q40ZcUMIiFRhzBK",
       "source_folder_id": "1IMBH1oIyHPg6DcYUbG-RZFo-aYfyfwGC",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-10"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-10",
+      "evi": 0.12263,
+      "savi": 0.12199,
+      "gli": 0.17752
     },
     {
       "plot": "1-STC",
@@ -9770,6 +11525,18 @@
         "ndvi": {
           "sample_pixels": 173,
           "plot_mean": 0.37716
+        },
+        "evi": {
+          "sample_pixels": 173,
+          "plot_mean": 0.13927
+        },
+        "savi": {
+          "sample_pixels": 173,
+          "plot_mean": 0.13786
+        },
+        "gli": {
+          "sample_pixels": 173,
+          "plot_mean": 0.17081
         },
         "ndre": {
           "sample_pixels": 173,
@@ -9826,7 +11593,10 @@
       "original_tif20_file_id": "1gprqgrC-xLRvWYq4dNR4UPq_uuRYHkt_",
       "original_tif60_file_id": "1ah6hl_Yaz02GgEVDJPEahxWL5bGVbc2N",
       "source_folder_id": "1peZIvLHSq-4j7mw8FT9isaISW2IMTMvy",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-18"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-18",
+      "evi": 0.13927,
+      "savi": 0.13786,
+      "gli": 0.17081
     },
     {
       "plot": "1-STC",
@@ -9852,6 +11622,18 @@
         "ndvi": {
           "sample_pixels": 176,
           "plot_mean": 0.35164
+        },
+        "evi": {
+          "sample_pixels": 176,
+          "plot_mean": 0.13353
+        },
+        "savi": {
+          "sample_pixels": 176,
+          "plot_mean": 0.13246
+        },
+        "gli": {
+          "sample_pixels": 176,
+          "plot_mean": 0.15883
         },
         "ndre": {
           "sample_pixels": 176,
@@ -9908,7 +11690,10 @@
       "original_tif20_file_id": "19Cfgi9aBHqsn6aqT2QTUDErmlOn0_GAQ",
       "original_tif60_file_id": "17ME1bfOXvWtr9qnYahZch9_PXfW351-z",
       "source_folder_id": "1XgYCXEa3A_KunP9Rtub7ekzV8txjS_fw",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-23"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-23",
+      "evi": 0.13353,
+      "savi": 0.13246,
+      "gli": 0.15883
     },
     {
       "plot": "1-STC",
@@ -9934,6 +11719,18 @@
         "ndvi": {
           "sample_pixels": 181,
           "plot_mean": 0.35989
+        },
+        "evi": {
+          "sample_pixels": 181,
+          "plot_mean": 0.1253
+        },
+        "savi": {
+          "sample_pixels": 181,
+          "plot_mean": 0.12749
+        },
+        "gli": {
+          "sample_pixels": 181,
+          "plot_mean": 0.20271
         },
         "ndre": {
           "sample_pixels": 181,
@@ -9990,7 +11787,10 @@
       "original_tif20_file_id": "1uIUA9Rqalsv-EjihulTNzZp6JJWOPY0B",
       "original_tif60_file_id": "1vrKPb_MDrJllpCYycXbModpNdUG68Bf1",
       "source_folder_id": "17GKf-RoH31MtP7_4SpSdTNdE1J4A6cUr",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-28"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-28",
+      "evi": 0.1253,
+      "savi": 0.12749,
+      "gli": 0.20271
     },
     {
       "plot": "1-STC",
@@ -10016,6 +11816,18 @@
         "ndvi": {
           "sample_pixels": 159,
           "plot_mean": 0.35561
+        },
+        "evi": {
+          "sample_pixels": 159,
+          "plot_mean": 0.13052
+        },
+        "savi": {
+          "sample_pixels": 159,
+          "plot_mean": 0.13252
+        },
+        "gli": {
+          "sample_pixels": 159,
+          "plot_mean": 0.17915
         },
         "ndre": {
           "sample_pixels": 159,
@@ -10072,7 +11884,10 @@
       "original_tif20_file_id": "1CoeouLZW83fHuJFXN5DxTgvJ3J_zpeKF",
       "original_tif60_file_id": "1el4u6R5p2LbXi0uL93iqJ6FcJarS3JIZ",
       "source_folder_id": "1z5D3M-skoPA1Ku3AMe0W0Fr37dSVyhOP",
-      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-30"
+      "source_folder_path": "/Nationwide Archive/1-STC/2025/12-30",
+      "evi": 0.13052,
+      "savi": 0.13252,
+      "gli": 0.17915
     },
     {
       "plot": "1-STC",
@@ -10098,6 +11913,18 @@
         "ndvi": {
           "sample_pixels": 176,
           "plot_mean": 0.35228
+        },
+        "evi": {
+          "sample_pixels": 176,
+          "plot_mean": 0.13128
+        },
+        "savi": {
+          "sample_pixels": 176,
+          "plot_mean": 0.12959
+        },
+        "gli": {
+          "sample_pixels": 176,
+          "plot_mean": 0.15465
         },
         "ndre": {
           "sample_pixels": 176,
@@ -10154,7 +11981,10 @@
       "original_tif20_file_id": "13gcfzl4JmjaoGgC694fRBN2DidOoxdOe",
       "original_tif60_file_id": "1zaGK_W1ow881yREaS-I-DC7hZIvu8IKu",
       "source_folder_id": "1TfHpavzFCeWB-6hfoeBZYxERlSd_BO7k",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/01-02"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/01-02",
+      "evi": 0.13128,
+      "savi": 0.12959,
+      "gli": 0.15465
     },
     {
       "plot": "1-STC",
@@ -10180,6 +12010,18 @@
         "ndvi": {
           "sample_pixels": 164,
           "plot_mean": 0.33267
+        },
+        "evi": {
+          "sample_pixels": 164,
+          "plot_mean": 0.11714
+        },
+        "savi": {
+          "sample_pixels": 164,
+          "plot_mean": 0.11911
+        },
+        "gli": {
+          "sample_pixels": 164,
+          "plot_mean": 0.19131
         },
         "ndre": {
           "sample_pixels": 164,
@@ -10236,7 +12078,10 @@
       "original_tif20_file_id": "1XOwbqee94yXzmiBPQGLUo1KQdiu4waRZ",
       "original_tif60_file_id": "1e7DL9DPeK7w-yUqCExhAF0sRWobV854g",
       "source_folder_id": "11MeDLWschwNvlKj_fn85n3hlEDjHKIRv",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/01-07"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/01-07",
+      "evi": 0.11714,
+      "savi": 0.11911,
+      "gli": 0.19131
     },
     {
       "plot": "1-STC",
@@ -10262,6 +12107,18 @@
         "ndvi": {
           "sample_pixels": 159,
           "plot_mean": 0.28628
+        },
+        "evi": {
+          "sample_pixels": 159,
+          "plot_mean": 0.11868
+        },
+        "savi": {
+          "sample_pixels": 159,
+          "plot_mean": 0.11536
+        },
+        "gli": {
+          "sample_pixels": 159,
+          "plot_mean": 0.13646
         },
         "ndre": {
           "sample_pixels": 159,
@@ -10318,7 +12175,10 @@
       "original_tif20_file_id": "1rYcVDcPBNXcVpFVdgqekv-5wkKpjrB-e",
       "original_tif60_file_id": "1nUGBbdPix4OLbvLIXTzkY0eenGbDw2-Z",
       "source_folder_id": "10UdcLh50O4jbBptH09DlCR6IYGOP8xeQ",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/01-12"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/01-12",
+      "evi": 0.11868,
+      "savi": 0.11536,
+      "gli": 0.13646
     },
     {
       "plot": "1-STC",
@@ -10344,6 +12204,18 @@
         "ndvi": {
           "sample_pixels": 123,
           "plot_mean": 0.12284
+        },
+        "evi": {
+          "sample_pixels": 123,
+          "plot_mean": 0.08048
+        },
+        "savi": {
+          "sample_pixels": 123,
+          "plot_mean": 0.07999
+        },
+        "gli": {
+          "sample_pixels": 123,
+          "plot_mean": 0.14477
         },
         "ndre": {
           "sample_pixels": 123,
@@ -10400,7 +12272,10 @@
       "original_tif20_file_id": "1C2bBVtypVrKistfBy_IJT__09CC2J-Ho",
       "original_tif60_file_id": "1b5rNJw2LS9aSUDFU7LGLf0yXuoFc4r3o",
       "source_folder_id": "1vOv5mw3emoDcrUUtG9jj7S4cxY8AluD1",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/01-27"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/01-27",
+      "evi": 0.08048,
+      "savi": 0.07999,
+      "gli": 0.14477
     },
     {
       "plot": "1-STC",
@@ -10426,6 +12301,18 @@
         "ndvi": {
           "sample_pixels": 135,
           "plot_mean": 0.034
+        },
+        "evi": {
+          "sample_pixels": 135,
+          "plot_mean": 0.07153
+        },
+        "savi": {
+          "sample_pixels": 135,
+          "plot_mean": 0.07236
+        },
+        "gli": {
+          "sample_pixels": 135,
+          "plot_mean": 0.15414
         },
         "ndre": {
           "sample_pixels": 135,
@@ -10482,7 +12369,10 @@
       "original_tif20_file_id": "1L9glevSPaqa1e7BgMwATgr2NA9HObSNx",
       "original_tif60_file_id": "17GXNbHv9FRK8_-Gp79oUN4flNkxLQBJL",
       "source_folder_id": "19CFyQO0V-b8T1emYPfhj8eRBEg-TvVn0",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/02-01"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/02-01",
+      "evi": 0.07153,
+      "savi": 0.07236,
+      "gli": 0.15414
     },
     {
       "plot": "1-STC",
@@ -10508,6 +12398,18 @@
         "ndvi": {
           "sample_pixels": 97,
           "plot_mean": 0.32345
+        },
+        "evi": {
+          "sample_pixels": 97,
+          "plot_mean": 0.15639
+        },
+        "savi": {
+          "sample_pixels": 97,
+          "plot_mean": 0.13839
+        },
+        "gli": {
+          "sample_pixels": 97,
+          "plot_mean": 0.0857
         },
         "ndre": {
           "sample_pixels": 97,
@@ -10564,7 +12466,10 @@
       "original_tif20_file_id": "1qLlTR3ETWVGHojmuP21tDtYV312UFeAe",
       "original_tif60_file_id": "15cjaQbAAItHeObaJBpvNJELq-VuekDoX",
       "source_folder_id": "1n_HrtwK9OL1MNH0KxCxw6WiDcdn1Zyjf",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/02-26"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/02-26",
+      "evi": 0.15639,
+      "savi": 0.13839,
+      "gli": 0.0857
     },
     {
       "plot": "1-STC",
@@ -10590,6 +12495,18 @@
         "ndvi": {
           "sample_pixels": 147,
           "plot_mean": 0.43365
+        },
+        "evi": {
+          "sample_pixels": 147,
+          "plot_mean": 0.21497
+        },
+        "savi": {
+          "sample_pixels": 147,
+          "plot_mean": 0.19984
+        },
+        "gli": {
+          "sample_pixels": 147,
+          "plot_mean": 0.07598
         },
         "ndre": {
           "sample_pixels": 147,
@@ -10646,7 +12563,10 @@
       "original_tif20_file_id": "11d9v3CIY6BS-h3qEy6sYXhxi6z1xEL6B",
       "original_tif60_file_id": "1oVBdi14c2AQE_32N0PXh5-3W89e3cQyH",
       "source_folder_id": "11GjkEkcZoxCLQETCBzjkJlzOvCkBxFWU",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/04-02"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/04-02",
+      "evi": 0.21497,
+      "savi": 0.19984,
+      "gli": 0.07598
     },
     {
       "plot": "1-STC",
@@ -10672,6 +12592,18 @@
         "ndvi": {
           "sample_pixels": 160,
           "plot_mean": 0.31042
+        },
+        "evi": {
+          "sample_pixels": 160,
+          "plot_mean": 0.13896
+        },
+        "savi": {
+          "sample_pixels": 160,
+          "plot_mean": 0.13229
+        },
+        "gli": {
+          "sample_pixels": 160,
+          "plot_mean": 0.10398
         },
         "ndre": {
           "sample_pixels": 160,
@@ -10728,7 +12660,10 @@
       "original_tif20_file_id": "1C4mt5BSO84HfAA7a2DyzpO_J3GyrMywd",
       "original_tif60_file_id": "1OvUWes9OjlptHbm54ib6ekM34wBO6mtm",
       "source_folder_id": "1c_e5OM168JkPKaCwjs2zB3KcaH1_RyxM",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/04-12"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/04-12",
+      "evi": 0.13896,
+      "savi": 0.13229,
+      "gli": 0.10398
     },
     {
       "plot": "1-STC",
@@ -10754,6 +12689,18 @@
         "ndvi": {
           "sample_pixels": 200,
           "plot_mean": 0.37772
+        },
+        "evi": {
+          "sample_pixels": 200,
+          "plot_mean": 0.19957
+        },
+        "savi": {
+          "sample_pixels": 200,
+          "plot_mean": 0.18411
+        },
+        "gli": {
+          "sample_pixels": 200,
+          "plot_mean": 0.0854
         },
         "ndre": {
           "sample_pixels": 200,
@@ -10810,7 +12757,10 @@
       "original_tif20_file_id": "1xIm03dqmCCJs0jT2WHk0vyJBvmyCktP-",
       "original_tif60_file_id": "1mXekg1pN9YXOrs4AksG-EWNS7kMlywVq",
       "source_folder_id": "16R4Hyr0ej2Pw3vU8tWpIkxAEynRUGaFH",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/04-19"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/04-19",
+      "evi": 0.19957,
+      "savi": 0.18411,
+      "gli": 0.0854
     },
     {
       "plot": "1-STC",
@@ -10836,6 +12786,18 @@
         "ndvi": {
           "sample_pixels": 119,
           "plot_mean": 0.31086
+        },
+        "evi": {
+          "sample_pixels": 119,
+          "plot_mean": 0.16435
+        },
+        "savi": {
+          "sample_pixels": 119,
+          "plot_mean": 0.1433
+        },
+        "gli": {
+          "sample_pixels": 119,
+          "plot_mean": 0.06166
         },
         "ndre": {
           "sample_pixels": 119,
@@ -10892,7 +12854,10 @@
       "original_tif20_file_id": "1QaTg5Ep4D3p1oCG87wwOSB5FMIh1trxc",
       "original_tif60_file_id": "1-8vv8-r_84Y0EPaBAkRTQ_47r7q4K076",
       "source_folder_id": "1nmgzWzb7PDzNS_qkmQf8C-aK7qgr6QJf",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/04-22"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/04-22",
+      "evi": 0.16435,
+      "savi": 0.1433,
+      "gli": 0.06166
     },
     {
       "plot": "1-STC",
@@ -10918,6 +12883,18 @@
         "ndvi": {
           "sample_pixels": 186,
           "plot_mean": 0.4935
+        },
+        "evi": {
+          "sample_pixels": 186,
+          "plot_mean": 0.28853
+        },
+        "savi": {
+          "sample_pixels": 186,
+          "plot_mean": 0.25852
+        },
+        "gli": {
+          "sample_pixels": 186,
+          "plot_mean": 0.11918
         },
         "ndre": {
           "sample_pixels": 186,
@@ -10974,7 +12951,10 @@
       "original_tif20_file_id": "1C-2DGRm5Em0ZEePVS28zMIxRqfDrkPGK",
       "original_tif60_file_id": "1MAb1SWlziQkwimYF5WP3PHaLg8p9pE_t",
       "source_folder_id": "1elmdT4OTI9bvGWt6JgFi7FHwrQgA_u-Y",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/09-04"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/09-04",
+      "evi": 0.28853,
+      "savi": 0.25852,
+      "gli": 0.11918
     },
     {
       "plot": "1-STC",
@@ -11000,6 +12980,18 @@
         "ndvi": {
           "sample_pixels": 160,
           "plot_mean": 0.37858
+        },
+        "evi": {
+          "sample_pixels": 160,
+          "plot_mean": 0.20405
+        },
+        "savi": {
+          "sample_pixels": 160,
+          "plot_mean": 0.18357
+        },
+        "gli": {
+          "sample_pixels": 160,
+          "plot_mean": 0.08272
         },
         "ndre": {
           "sample_pixels": 160,
@@ -11056,7 +13048,10 @@
       "original_tif20_file_id": "1-Vlvq9-MbEWRgXYVifeITStRsmGNxVwT",
       "original_tif60_file_id": "1mDYS4OAFa74Tm46ph7uRIsW_YF_zgcaX",
       "source_folder_id": "1z-6fd6FGUIkDR-aTEtAdoqP6OVnwnvMF",
-      "source_folder_path": "/Nationwide Archive/1-STC/2026/09-29"
+      "source_folder_path": "/Nationwide Archive/1-STC/2026/09-29",
+      "evi": 0.20405,
+      "savi": 0.18357,
+      "gli": 0.08272
     }
   ]
 }
