@@ -56,11 +56,12 @@ function timeSeriesInfo(key,rows){
    x.plot===state.plot&&x.date===row.date)?.index_stats?.[key]):[];
  const verified=isSpectral&&refs.length>0&&refs.every(x=>x&&x.sample_pixels>0&&
    x.embedded_tif_match!==false&&Number.isFinite(Number(x.plot_mean)));
- const proof=verified?
+ const proof=n===0?'':verified?
   '<div class="series-proof">ตรวจเทียบ Raster TIFF ต้นทางได้ '+refs.length+'/'+rows.length+
   ' วัน • จุด PARTIAL ใช้ตรวจดูค่ารายภาพเท่านั้น ไม่ใช่ผลผ่าน QA</div>':
   (isSpectral?'<div class="series-proof">จุด PARTIAL แสดงค่าเฉลี่ยดัชนีที่คำนวณจาก TIFF เพื่อให้ตรวจดูภาพย้อนหลังได้ แต่ไม่ถือเป็นผลผ่าน QA</div>':'');
- const sparse=n<4?'<div class="notice">มีข้อมูลผ่าน QA เพียง '+n+
+ const sparse=n===0?'<div class="notice">แปลงนี้ยังไม่มี Scene พร้อมค่าที่ใช้วาดกราฟจาก TIFF</div>':
+   n<4?'<div class="notice">มีข้อมูล '+n+
    ' วันสำหรับกราฟนี้ • ไม่เพียงพอเป็นค่า Baseline ตามฤดูกาล'+
    (isRain?' ของฝนตามวันภาพ':' และห้ามสรุปการสูญเสียต้นไม้หรือเหตุการณ์น้ำท่วมจากทิศทางเส้น')+'</div>':'';
 

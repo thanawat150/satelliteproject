@@ -76,6 +76,11 @@ assert.equal(await page.locator('#time-series-panel .ts-point.is-partial').count
 assert.ok((await page.locator('#time-series-details').innerText()).includes('ไม่ถือเป็นผลผ่าน QA'),'PARTIAL index chart must disclose that it is not QA-passed');
 await page.locator('#plot-select').selectOption('13-STC');
 await page.locator('#timeseries-metric-select').selectOption('mndwi');
+await page.locator('#plot-select').selectOption('7-STC');
+assert.equal(await page.locator('#time-series-panel .ts-point').count(),0,'7-STC has no registry Scene and must not draw invented points');
+assert.ok((await page.locator('#time-series-visual').innerText()).includes('ยังไม่มีข้อมูล Scene'),'No-scene chart should explain why it is empty');
+assert.ok(!(await page.locator('#time-series-details').innerText()).includes('จุด PARTIAL แสดงค่าเฉลี่ย'),'No-scene chart must not claim partial TIFF values exist');
+await page.locator('#plot-select').selectOption('13-STC');
 await page.locator('#timeseries-metric-select').selectOption('water_rai');
 assert.ok((await page.locator('#time-series-title').innerText()).includes('พื้นที่น้ำ'),'Chart title must follow Water metric');
 assert.equal(await page.locator('#metric-select').count(),0,'Only one metric selector is shown for the chart');
