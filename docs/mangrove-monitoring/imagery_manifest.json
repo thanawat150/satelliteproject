@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-09-v1",
+  "version": "2026-10-12-1stc-visual-v1",
   "source": "Original GeoTIFF-derived images from docs/data/full_preview_part_*.json",
   "coverage": "Existing image products, not all STC/VSD/EVR plots",
   "plot_count": 19,
@@ -88767,6 +88767,86 @@
       "original_tif20_file_id": "1nlqHhAsjhw5iuDUtAQNIsnReD7rZ-h6X",
       "archive_backfill": true,
       "original_archive_has_ndwi": false
+    },
+    {
+      "plot": "1-STC",
+      "date": "2026-09-29",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2026-09-29/true_color.webp",
+        "false_color": "./imagery/1-STC/2026-09-29/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.4151182786,
+          102.180405332
+        ],
+        [
+          12.4185318159,
+          102.1873333348
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.4151182786,
+            102.180405332
+          ],
+          [
+            12.4185318159,
+            102.1873333348
+          ]
+        ],
+        "false_color": [
+          [
+            12.4151182786,
+            102.180405332
+          ],
+          [
+            12.4185318159,
+            102.1873333348
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10
+      },
+      "display_grid": "Original 10m RGB; no cloud masking or certified QA",
+      "qa_note": "VISUAL ONLY: raw TIFF-derived RGB for visual review; not QA-approved and not valid for quantitative indices or change analysis.",
+      "source_bands": "Original TIFF bands B4/B3/B2 for true color and B8/B4/B3 for false color",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "source_tif10_file_id": "1xLSRb1FOEEdICFw36Ui6G3_1ZPH_8gtj",
+      "source_tif10_filename": "1-STC_S2_20260929_10m_ALL_SCL0.tif",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_DISPLAY_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "index_stats": {},
+      "index_parity": {},
+      "archive_backfill": true,
+      "original_tif10": "1-STC_S2_20260929_10m_ALL_SCL0.tif",
+      "original_tif10_file_id": "1xLSRb1FOEEdICFw36Ui6G3_1ZPH_8gtj",
+      "analysis_status": "DISCOVERED_VISUAL_ONLY"
     }
   ],
   "render_status": {
