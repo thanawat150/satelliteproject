@@ -576,46 +576,61 @@ function fmtDate(d){
 
 function renderCalendar(){
   const grid=document.getElementById('calendarGrid');
-  if(!grid) return;
+  if(!grid)return;
   const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
-  document.getElementById('calendarTitle').textContent=new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric',timeZone:'Asia/Bangkok'}).format(calendarCursor);
-  const first=new Date(y,m,1);
-  const start=new Date(y,m,1-first.getDay());
+  document.getElementById('calendarTitle').textContent=new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(calendarCursor);
+  const start=new Date(y,m,1-new Date(y,m,1).getDay());
   const cells=[];
   for(let i=0;i<42;i++){
-    const d=new Date(start); d.setDate(start.getDate()+i);
-    const ds=iso(d);
+    const d=new Date(start);d.setDate(start.getDate()+i);
+    const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     const plan=schedule.find(x=>iso(x.date)===ds);
-    const isToday=ds===todayISO();
-    const isOther=d.getMonth()!==m;
+    const content=scheduledPosts.filter(x=>x.date.slice(0,10)===ds);
+    const isToday=ds===todayISO(),isOther=d.getMonth()!==m;
     let item='';
+    if(content.length)item+='<span class="cal-content">🎬 คอนเทนต์ '+content.length+' โพสต์</span>';
     if(plan){
-      const p=plan.product;
-      const st=done[plan.id]||{};
-      const complete=!!(st.tiktok&&st.shopee);
-      item=`<div class="cal-item ${p.key}">
+      const p=plan.product,st=done[plan.id]||{},complete=!!(st.tiktok&&st.shopee);
+      item+=`<div class="cal-item ${escapeHtml(p.key)}">
         <span class="cal-name">${escapeHtml(productShort(p.key))}</span>
         <span class="cal-times">Shopee ${escapeHtml(p.shopee)} · TikTok ${escapeHtml(p.tiktok)}</span>
         ${complete?'<span class="cal-done">✓ โพสต์ครบแล้ว</span>':''}
       </div>`;
     }
-    cells.push(`<div class="cal-day ${isOther?'other':''} ${isToday?'today':''} ${plan?'has-post':''}" data-cal-date="${ds}">
+    cells.push(`<div class="cal-day ${isOther?'other':''} ${isToday?'today':''} ${focusDate()===ds?'selected':''} ${plan||content.length?'has-post':''}" data-cal-date="${ds}">
       <div class="cal-num">${d.getDate()}</div>${item}
     </div>`);
   }
   grid.innerHTML=cells.join('');
-  document.querySelectorAll('[data-cal-date]').forEach(el=>el.onclick=()=>{
-    const ds=el.dataset.calDate;
-    if(!schedule.some(x=>iso(x.date)===ds)) return;
-    range='date:'+ds;
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    render();
-    document.getElementById('affiliateSection')?.scrollIntoView({behavior:'smooth',block:'start'});
-  });
+  document.querySelectorAll('[data-cal-date]').forEach(el=>el.onclick=()=>setSelectedDate(el.dataset.calDate,true));
 }
 function shiftCalendar(delta){
   calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);
   renderCalendar();
+}
+function renderDayOverview(){
+  const ds=focusDate();
+  const entries=[];
+  const posts=scheduledPosts.filter(x=>x.date.slice(0,10)===ds);
+  for(const x of posts){
+    const title=x.title||splitPostText(x.text||'').caption.split('\n')[0]||'คลิปคอนเทนต์';
+    entries.push({time:x.date.slice(11,16),label:networkLabel(x.network),title,anchor:'todayContentSection'});
+  }
+  const sales=schedule.filter(x=>iso(x.date)===ds);
+  for(const x of sales){
+    entries.push({time:x.product.shopee,label:'Shopee Video',title:x.product.name,anchor:'affiliateSection'});
+    entries.push({time:x.product.tiktok,label:'TikTok Affiliate',title:x.product.name,anchor:'affiliateSection'});
+  }
+  entries.sort((a,b)=>a.time.localeCompare(b.time));
+  const pretty=fmtDate(new Date(ds+'T12:00:00+07:00'));
+  const el=document.getElementById('dayOverview');
+  if(el)el.innerHTML=`<div class="overview-top"><span class="overview-title">🗓️ โพสต์วันที่ ${escapeHtml(pretty)}</span>
+    <span class="overview-count">${entries.length} รายการ · ${posts.length} คอนเทนต์ + ${sales.length*2} Affiliate</span></div>
+    <div class="overview-list">${entries.length?entries.map(x=>`<div class="overview-entry"><span class="overview-clock">${escapeHtml(x.time)}</span>
+      <div class="overview-detail"><b>${escapeHtml(x.label)}</b><div>${escapeHtml(x.title)}</div></div></div>`).join(''):
+    '<div style="color:#cbd5e1">ไม่มีรายการในตารางสำหรับวันนี้</div>'}</div>`;
+  const sel=document.getElementById('postDate');
+  if(sel && range.startsWith('date:'))sel.value=ds;
 }
 function renderInventory(){
   const el=document.getElementById('inventoryGrid');
@@ -650,9 +665,12 @@ function renderTodayContent(){
  const el=document.getElementById('todayContentList');
  const badge=document.getElementById('todayContentCount');
  if(!el)return;
- const rows=scheduledPosts.filter(x=>x.date.slice(0,10)===todayISO()).sort((a,b)=>a.date.localeCompare(b.date));
+ const ds=focusDate();
+  const titleEl=document.getElementById('contentByDateTitle');
+  if(titleEl)titleEl.textContent='Ken Monitoring · แคปชั่นวันที่ '+fmtDate(new Date(ds+'T12:00:00+07:00'));
+  const rows=scheduledPosts.filter(x=>x.date.slice(0,10)===ds).sort((a,b)=>a.date.localeCompare(b.date));
  if(badge)badge.textContent=rows.length+' แพลตฟอร์ม';
- if(!rows.length){el.innerHTML='<div class="empty">วันนี้ยังไม่มีคอนเทนต์ที่ตั้งไว้</div>';return;}
+ if(!rows.length){el.innerHTML='<div class="empty">ไม่มีคอนเทนต์สำหรับวันที่เลือก</div>';return;}
  const groups=new Map();
  for(const x of rows){
    const key=x.drive_file_id||x.drive_url||x.download_url||x.media||x.title||x.text;
@@ -661,7 +679,7 @@ function renderTodayContent(){
  }
  el.innerHTML=[...groups.values()].map(items=>{
    const first=items[0];
-   const title=first.title||splitPostText(first.text||'').caption.split('\n')[0]||'Content วันนี้';
+   const title=first.title||splitPostText(first.text||'').caption.split('\n')[0]||'คอนเทนต์ของวันที่เลือก';
    const masterClip=first.drive_url||first.download_url||'';
    const cards=items.map(x=>{
      const hasDraft=!!x.suggested_text;
@@ -678,7 +696,12 @@ function renderTodayContent(){
        ${publishingTitleBlock(x)}
        <div class="label">${x.network==='youtube'?'คำอธิบาย YouTube (Description)':'แคปชั่นพร้อมแฮชแท็ก'}</div>
        <div class="copybox"><p>${escapeHtml(copy)}</p><button class="copy" data-copy="${encodeURIComponent(copy)}">คัดลอกสำหรับ ${escapeHtml(name)}</button></div>
-       <div class="scheduled-actions">${publishedClip?`<a class="btn btn-primary" href="${escapeHtml(publishedClip)}" target="_blank" rel="noopener">▶ ไฟล์ที่ตั้งใน Metricool · ${escapeHtml(name)}</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool — รอตรวจสอบ</span>'}</div>
+       <div class="scheduled-actions">
+          ${x.download_url?`<a class="btn btn-primary" href="${escapeHtml(x.download_url)}" target="_blank" rel="noopener">⬇ ดาวน์โหลดจาก Drive</a>`:''}
+          ${x.drive_url?`<a class="btn btn-secondary" href="${escapeHtml(x.drive_url)}" target="_blank" rel="noopener">📂 เปิดไฟล์ Drive</a>`:''}
+          ${publishedClip?`<a class="btn btn-secondary" href="${escapeHtml(publishedClip)}" target="_blank" rel="noopener">▶ เทียบกับเวอร์ชัน Metricool</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool</span>'}
+        </div>
+        ${x.drive_match_method==='topic_folder_unverified'?'<div class="warn">⚠️ ไฟล์นี้จับคู่จากโฟลเดอร์หัวข้อเท่านั้น ยังไม่ได้ยืนยันเวอร์ชัน</div>':''}
        ${manualTikTokAction(x)}
      </section>`;
    }).join('');
@@ -778,19 +801,35 @@ function renderScheduled(rows){
   }).join('');
 }
 
+function draftAffiliateCaption(x,platform){
+  if(x.product.key==='chair'){
+    const tags=platform==='shopee'?'#เก้าอี้มหัศจรรย์ #คุณตาแสวง #รีวิวของใช้ #ShopeeVideo':
+      '#เก้าอี้มหัศจรรย์ #คุณตาแสวง #รีวิวของใช้ #TikTokAffiliate';
+    return (platform==='shopee'?
+      'คลิปนี้พามาดูเก้าอี้มหัศจรรย์คุณตาแสวงครับ 🪑\nดูตัวสินค้าและวิธีใช้จากคลิปก่อนตัดสินใจ แล้วเช็กรายละเอียดที่ตะกร้าได้เลย':
+      'เคยเห็นเก้าอี้มหัศจรรย์คุณตาแสวงไหม? 👀\nวันนี้พามาดูตัวสินค้าและการใช้งานจากคลิปจริง สนใจดูรายละเอียดเพิ่มเติมที่ตะกร้าครับ')+'\n\n'+tags;
+  }
+  if(x.product.key==='sun'){
+    return 'วันนี้พามาดูครีมกันแดดศิริราช ☀️\nก่อนเลือกใช้ ลองดูรายละเอียดสินค้าและส่วนประกอบที่หน้าสินค้ากันครับ\n\n'+
+      (platform==='shopee'?'#กันแดดศิริราช #ครีมกันแดด #รีวิวของใช้ #ShopeeVideo':'#กันแดดศิริราช #ครีมกันแดด #รีวิวของใช้ #TikTokAffiliate');
+  }
+  return '';
+}
 function affiliateCaptionCards(x,p){
-  return `<div class="label">แคปชั่นแยก Shopee / TikTok · โปรดตรวจเนื้อหาวิดีโอจริงก่อนใช้</div>
+  return `<div class="label">แคปชั่นและแฮชแท็กแยก Shopee / TikTok</div>
     <div class="platform-copy-grid">${['shopee','tiktok'].map(platform=>{
       const name=platform==='shopee'?'Shopee Video':'TikTok Affiliate';
       const approved=(x.platformCaptions&&x.platformCaptions[platform])||'';
+      const draft=approved||draftAffiliateCaption(x,platform);
       return `<section class="platform-post-card">
         <div class="platform-post-head"><span class="chip platform-${platform}">${name}</span><span class="platform-post-meta">${escapeHtml(p[platform])} น.</span></div>
-        ${approved?`<div class="copybox"><p>${escapeHtml(approved)}</p><button class="copy" data-copy="${encodeURIComponent(approved)}">คัดลอกสำหรับ ${name}</button></div>`:
-          '<div class="warn">ยังไม่มีแคปชั่นที่จับคู่กับเนื้อหาคลิปนี้ผ่านการตรวจสอบ จึงไม่สร้างข้อความเดาอัตโนมัติ</div>'}
+        ${!approved?'<div class="draft-notice">⚠️ ร่างแคปชั่นแนะนำจากชื่อสินค้า ยังไม่ได้ตรวจภาพในคลิป / ไม่ใช่ข้อความที่ตั้งโพสต์ไว้</div>':
+           '<div class="draft-notice">แคปชั่นที่บันทึกไว้ในตาราง Affiliate</div>'}
+        ${draft?`<div class="copybox"><p>${escapeHtml(draft)}</p><button class="copy" data-copy="${encodeURIComponent(draft)}">คัดลอกสำหรับ ${name}</button></div>`:
+          '<div class="warn">ไม่มีข้อมูลแคปชั่นสำหรับสินค้านี้ กรุณาเพิ่มใน schedule.json</div>'}
       </section>`;
     }).join('')}</div>`;
 }
-
 function visibleRows(){
   const now=todayISO();
   if(range.startsWith('date:')){
@@ -805,6 +844,7 @@ function visibleRows(){
 }
 function render(){
   renderCalendar();
+  renderDayOverview();
   renderInventory();
   renderTodayContent();
   const srows=scheduledRows();
