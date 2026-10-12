@@ -96,7 +96,7 @@ def main():
                  f"- Verified boundary: PDD registry feature `1-STC` (EPSG:32647 source geometry); index mask: polygon.\n"
                  f"- Scenes processed: {len(done)}/{len(rows)}; failures: {len(errors)}.\n"
                  f"- Date range: {min((x['date'] for x in done),default='—')} to {max((x['date'] for x in done),default='—')}.\n"
-                 f"- Per-scene pixel statistics produced: six indices per scene; SCL primary classes 2,4,5,6.\n"
+                 f"- Per-scene pixel statistics produced: nine indices per scene (NDVI, EVI, SAVI, GLI, NDRE, NDMI, NDWI, MNDWI, BSI); SCL primary classes 2,4,5,6.\n"
                  f"- Embedded TIFF parity (RMSE <= 0.03): NDRE {match['ndre']}/{len(done)}, NDMI {match['ndmi']}/{len(done)}, MNDWI {match['mndwi']}/{len(done)}.\n"
                  f"- SCL cloud/shadow inside polygon: cloud classes 8,9,10; shadow class 3; report percentages are separate from valid-data percentage.\n"
                  f"- {sum((x['valid_pct'] or 0)<60 for x in done)} scenes have <60% SCL-valid pixels; see `1stc_qa_review.csv`. These remain viewable.\n"
@@ -106,3 +106,4 @@ def main():
     print(json.dumps({"total":len(rows),"processed":len(done),"errors":len(errors)},ensure_ascii=False))
     if errors:raise SystemExit(1)
 if __name__=="__main__":main()
+

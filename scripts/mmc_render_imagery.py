@@ -154,6 +154,12 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         # derive from the same per-pixel grid, bands and scientific formulas.
         indices={
             "ndvi":index(b8,b4),
+            # Source archives contain Sentinel-2 L2A-like integer DN values
+            # scaled by 10,000. EVI/SAVI require reflectance units because of
+            # their additive constants; normalized ratios below are scale free.
+            "evi":2.5*(b8/10000.0-b4/10000.0)/(b8/10000.0+6*(b4/10000.0)-7.5*(b2/10000.0)+1),
+            "savi":1.5*(b8/10000.0-b4/10000.0)/(b8/10000.0+b4/10000.0+0.5),
+            "gli":(2*b3-b4-b2)/(2*b3+b4+b2),
             "ndre":index(b8a,b5),
             # B8A variant matches the source TIFF's embedded NDMI band.
             # Do not mislabel as the conventional B8 / B11 variant.
@@ -164,6 +170,9 @@ def generate(ten,twenty,output,plot,date,geometry4326=None):
         }
         source_formulas={
             "ndvi":"(B8-B4)/(B8+B4)",
+            "evi":"2.5*(B8-B4)/(B8+6*B4-7.5*B2+10000); reflectance DN/10000",
+            "savi":"1.5*(B8-B4)/(B8+B4+5000); L=0.5, reflectance DN/10000",
+            "gli":"(2*B3-B4-B2)/(2*B3+B4+B2)",
             "ndre":"(B8A-B5)/(B8A+B5)",
             "ndmi":"(B8A-B11)/(B8A+B11), B8A variant",
             "ndwi":"(B3-B8)/(B3+B8) McFeeters",
@@ -637,3 +646,4 @@ if __name__=="__main__":
     b.add_argument("--shards",type=int,default=8);b.add_argument("--parts",required=True)
     args=parser.parse_args()
     (run_shard if args.cmd=="render" else merge)(args)
+
