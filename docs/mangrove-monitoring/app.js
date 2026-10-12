@@ -132,7 +132,7 @@ function plotScenes(code){
   const stats=image.index_stats||{};
   return {...row,analysis_status:row.analysis_status==='AUTO_VALID'?row.analysis_status:'PARTIAL',
    qa_valid_pct:image.qa_valid_pct??row.qa_valid_pct,cloud_coverage_pct:image.cloud_coverage_pct,
-   source_index_stats:stats,radiometry_status:image.radiometry_status,
+   source_index_stats:{...(row.source_index_stats||{}),...stats},radiometry_status:image.radiometry_status,
    ...Object.fromEntries(['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>[k,stats[k]?.plot_mean??row[k]]))};
  }).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
 }
