@@ -29,7 +29,7 @@ async function pushMessages(messages) {
 function authorized(request) {
   const expected = process.env.LINE_REMINDER_SECRET;
   const auth = request.headers.get('authorization') || '';
-  const supplied = auth.replace(/^Bearer\\s+/i, '');
+  const supplied = auth.replace(/^Bearer\s+/i, '');
   return !!expected && supplied === expected;
 }
 
