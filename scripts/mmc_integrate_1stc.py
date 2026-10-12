@@ -88,9 +88,12 @@ def main() -> None:
                 "source_file_created_times": [a["created_time"] for a in (ten, twenty, sixty)],
                 "source_file_modified_times": [a["modified_time"] for a in (ten, twenty, sixty)],
                 "source_folder_id": sixty["source_folder_id"], "source_folder_path": source_path,
+                "source_index_stats": stats,
             })
+            for key in ("ndvi", "evi", "savi", "gli", "ndre", "ndmi", "ndwi", "mndwi", "bsi"):
+                old[key] = stats.get(key, {}).get("plot_mean")
             continue
-        index_values = {key: stats.get(key, {}).get("plot_mean") for key in ("ndvi", "ndre", "ndmi", "ndwi", "mndwi", "bsi")}
+        index_values = {key: stats.get(key, {}).get("plot_mean") for key in ("ndvi", "evi", "savi", "gli", "ndre", "ndmi", "ndwi", "mndwi", "bsi")}
         row = {
             "plot": "1-STC", "plot_id": identity["plot_id"], "province": "จันทบุรี", "date": date,
             "scene_key": f"Sentinel-2|1-STC|{date}", "satellite": "Sentinel-2", "status": "PARTIAL",
@@ -137,7 +140,7 @@ def main() -> None:
         "qa_valid_pct", "cloud_coverage_pct", "shadow_coverage_pct", "unclassified_pct", "total_pixels",
         "usable_pixels", "pdd_area_rai", "geometry_area_rai", "original_tif10", "original_tif20", "original_tif60",
         "original_tif10_file_id", "original_tif20_file_id", "original_tif60_file_id", "source_folder_id", "source_folder_path",
-        "source_index_stats", "ndvi", "ndre", "ndmi", "ndwi", "mndwi", "bsi",
+        "source_index_stats", "ndvi", "evi", "savi", "gli", "ndre", "ndmi", "ndwi", "mndwi", "bsi",
         "data_integrity_status", "cloud_qa_status", "index_validity_status", "visual_usability_status",
         "radiometry_status", "cross_date_comparison_status", "processing_status", "preview_status", "qa_rule",
         "analysis_warning", "source_checksums", "ingestion_timestamp",
@@ -178,7 +181,7 @@ def main() -> None:
 - Acquisition dates parsed from filenames: {selected_dates[0]} through {selected_dates[-1]}; Drive created/modified timestamps are retained separately in the inventory and are not used as capture dates.
 - Drive inventory pagination: complete for this plot; date folders listed: 133; files listed: 399; errors: 0.
 - GIS identity: {identity['plot_id']} / 1-STC, Chanthaburi, verified native PDD geometry from `{identity['source_path']}`; 9 parts. Registry PDD area 71.6 rai vs geometry area 64.566 rai (difference retained for review, not geometry repair).
-- Scene processing: 133/133 per-scene index statistics computed for NDVI, NDRE, NDMI, NDWI, MNDWI and BSI; 133 RGB/false-color/index preview sets present.
+- Scene processing: 133/133 per-scene index statistics computed for NDVI, EVI, SAVI, GLI, NDRE, NDMI, NDWI, MNDWI and BSI; 133 RGB/false-color/index preview sets present.
 - SCL-valid coverage range: {min(qa):.2f}%–{max(qa):.2f}%; 56 scenes below 60% remain visible with per-scene warnings.
 - Embedded band parity: NDRE 133/133 and NDMI 133/133 (RMSE <= 0.03); MNDWI 20/133. These parity checks do not establish cross-date radiometric comparability.
 - Registry status: all scenes PARTIAL; zero QA-valid scenes, zero event/change conclusions. Missing Sentinel-2 processing baseline and BOA offsets block cross-date quantitative analysis; do not infer flood extent from MNDWI alone.
