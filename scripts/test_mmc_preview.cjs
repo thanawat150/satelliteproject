@@ -260,6 +260,12 @@ assert.ok(await page.locator('#report-copilot-root #rpt-analyze').count()===1,'R
 assert.ok(await page.locator('#rpt-preview .rpt-paper').count()>=3,'Real A4 report preview includes multiple structured pages');
 assert.ok((await page.locator('#rpt-source-summary').innerText()).includes('ข้อมูลจริง'),'Report preview discloses actual source coverage');
 
+await page.locator('#rpt-text').fill('ทำรายงานติดตามแปลง 13-STC');
+await page.locator('#rpt-analyze').click();
+const plotReadiness=await page.locator('#rpt-readiness').innerText();
+assert.ok(!plotReadiness.includes('undefined')&&!plotReadiness.includes('NaN'),'Plot report readiness must not render missing aggregate audit fields');
+assert.ok(plotReadiness.includes('1 แปลง'),'Plot report readiness identifies the selected plot count');
+
 await page.locator('#rpt-text').fill('ทำรายงานติดตามแปลง ระยอง');
 await page.locator('#rpt-analyze').click();
 assert.equal(await page.locator('#rpt-type').inputValue(),'plot','General Rayong monitoring prompt selects plot-monitoring interpretation');
