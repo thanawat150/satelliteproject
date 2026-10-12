@@ -1,4 +1,4 @@
-﻿plot,scene_date,qa_valid_pct,cloud_pct,shadow_pct,unclassified_pct,index_pixels,review_reason
+plot,scene_date,qa_valid_pct,cloud_pct,shadow_pct,unclassified_pct,index_pixels,review_reason
 1-STC,2017-02-13,46.67,0.0,0.0,53.33,"{""ndvi"":119,""ndre"":119,""ndmi"":119,""ndwi"":119,""mndwi"":119,""bsi"":119}",Valid SCL pixels below 60%; inspect before quantitative use
 1-STC,2017-12-20,56.08,0.0,0.0,43.92,"{""ndvi"":143,""ndre"":143,""ndmi"":143,""ndwi"":143,""mndwi"":143,""bsi"":143}",Valid SCL pixels below 60%; inspect before quantitative use
 1-STC,2018-02-03,55.29,0.0,0.0,44.71,"{""ndvi"":141,""ndre"":141,""ndmi"":141,""ndwi"":141,""mndwi"":141,""bsi"":141}",Valid SCL pixels below 60%; inspect before quantitative use
@@ -55,3 +55,4 @@
 1-STC,2026-02-26,38.04,0.0,0.0,61.96,"{""ndvi"":97,""ndre"":97,""ndmi"":97,""ndwi"":97,""mndwi"":97,""bsi"":97}",Valid SCL pixels below 60%; inspect before quantitative use
 1-STC,2026-04-02,57.65,0.0,0.0,42.35,"{""ndvi"":147,""ndre"":147,""ndmi"":147,""ndwi"":147,""mndwi"":147,""bsi"":147}",Valid SCL pixels below 60%; inspect before quantitative use
 1-STC,2026-04-22,46.67,0.0,0.0,53.33,"{""ndvi"":119,""ndre"":119,""ndmi"":119,""ndwi"":119,""mndwi"":119,""bsi"":119}",Valid SCL pixels below 60%; inspect before quantitative use
+
