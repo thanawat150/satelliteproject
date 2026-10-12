@@ -61,7 +61,10 @@ def main():
     for k in ("ndvi","evi","savi","gli","ndre","ndmi","ndwi","mndwi","bsi"):row[k]=stats.get(k,{}).get("plot_mean")
     scenes[(plot,date)]=row;qa.append({"plot":plot,"scene_date":date,"status":"PARTIAL","qa_valid_pct":row["qa_valid_pct"],"cloud_pct":row["cloud_coverage_pct"],"shadow_pct":row["shadow_coverage_pct"],"index_count":len(stats),"visual_review":image["preview_status"],"reason":image["analysis_warning"]})
     print("SCENE",date,"indices",len(stats),flush=True)
-   except Exception as err:failures.append({"plot":plot,"date":date,"error":str(err)[:400]});print("ERROR",date,str(err)[:160],flush=True)
+   except Exception as err:
+    failures.append({"plot":plot,"date":date,"error":str(err)[:400]});print("ERROR",date,str(err)[:160],flush=True)
+    row={"plot":plot,"plot_id":"gis:0037","province":"จันทบุรี","date":date,"scene_key":"Sentinel-2|"+plot+"|"+date,"satellite":"Sentinel-2","status":"ERROR","analysis_status":"PARTIAL","processing_status":"ERROR","preview_status":"UNAVAILABLE","data_integrity_status":"ERROR","cloud_qa_status":"NOT_REVIEWED","index_validity_status":"NOT_AVAILABLE","visual_usability_status":"UNAVAILABLE","radiometry_status":"NOT_ASSESSED","cross_date_comparison_status":"NOT_APPROVED","processing_error":str(err)[:400],"source_file_ids":[groups[date][k]["drive_file_id"] for k in ("10","20","60")],"source_folder_id":groups[date]["10"]["source_folder_id"],"source_folder_path":groups[date]["10"]["source_folder_path"],"ingestion_timestamp":stamp}
+    scenes[(plot,date)]=row
  selected=sorted(groups);plotmeta={"province":"จันทบุรี","plot_id":"gis:0037","pdd_geometry_parts":props.get("geometry_parts",1),"pdd_area_rai":props.get("pdd_area_rai"),"geometry_area_rai":props.get("geometry_area_rai"),"boundary_source":props.get("boundary_source")+" · "+props.get("source_path"),"boundary_verified":True,"pdd_base_member":False,"selected_dates":selected,"completed_dates":len([d for d in selected if (plot,d) in generated]),"qa_valid_dates":0,"processing_status":"PARTIAL","source_tiff_count":len(assets)}
  manifest["generated_items"]=sorted(generated.values(),key=lambda x:(x.get("plot",""),x.get("date","")));manifest["version"]="2026-10-13-10stc-archive-v1";write(mp,manifest)
  results["scenes"]=sorted(scenes.values(),key=lambda x:(x.get("plot",""),x.get("date","")));results.setdefault("plots",{})[plot]=plotmeta;results["generated_at"]=stamp;write(rp,results)
@@ -75,5 +78,5 @@ def main():
  summary="# 10-STC archive integration audit\n\n- Drive location: Nationwide Archive / Chanthaburi / 10-STC.\n- GIS identity: gis:0037 / 10-STC, Chanthaburi; verified native PDD geometry.\n- Inventory: 588 TIFFs in 196 dates, complete 10m/20m/60m sets.\n- Acquisition dates: "+selected[0]+" through "+selected[-1]+" (from filenames; upload timestamps retained separately).\n- Scenes with readable TIFFs and generated records: "+str(len(rows))+"/"+str(len(groups))+"; errors: "+str(len(failures))+".\n- Duplicate checksums: "+str(len(dups))+". All scenes remain PARTIAL pending radiometric metadata; no cross-date quantitative change or flood area is inferred. Original Drive files were read only.\n"
  (AUDIT/"10stc_completion_summary.md").write_text(summary,encoding="utf-8")
  print(json.dumps({"plot":plot,"files":len(assets),"dates":len(groups),"processed":len(rows),"errors":len(failures)},ensure_ascii=False))
- if failures:raise SystemExit(1)
+ 
 if __name__=="__main__":main()
