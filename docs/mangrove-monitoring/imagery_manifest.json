@@ -88851,7 +88851,7 @@
       "source_tif10_band_count": 12,
       "source_tif10_file_id": "1xLSRb1FOEEdICFw36Ui6G3_1ZPH_8gtj",
       "source_tif10_filename": "1-STC_S2_20260929_10m_ALL_SCL0.tif",
-      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_DISPLAY_ONLY",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW",
       "source_qa_status": "QA_REVIEWED",
       "qa_valid_pct": 62.75,
       "cloud_coverage_pct": 0.0,
@@ -89007,13 +89007,14 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:12.503444+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:46.675505+00:00",
       "source_checksum": {
         "10m_sha256": "6f6ee7f6a1b611700d7c759e9f2ae6cbc08d8b7562972ffac8385f50c7ec3cf1",
         "20m_sha256": "124581a1c430366947daee5cacde9434aa609137bcb9509dbccf4f07ba6bd396"
       },
       "plot": "1-STC",
-      "date": "2026-09-29"
+      "date": "2026-09-29",
+      "source": "generated"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -89254,13 +89255,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.660408+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.696178+00:00",
       "source_checksum": {
         "10m_sha256": "4e4e94ed852ca9ecb2a382c1e8eb500fa6a6806972b12c1f7661a503cfcc1d67",
         "20m_sha256": "cd32a896b3a1f50432f876f1c157928a213793f5d1e9c3918ca05a7bdb73823d"
       },
       "plot": "1-STC",
-      "date": "2026-01-02"
+      "date": "2026-01-02",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -89501,13 +89504,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.735470+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.790281+00:00",
       "source_checksum": {
         "10m_sha256": "747501db2fb5aa2b2b7c27f6a25f2f4a1e8a6987c2710d877ad4d8ece27b339d",
         "20m_sha256": "2d690d877e7d4be63821094352cef0269230ad4590b25ea9e252215aa9affe0b"
       },
       "plot": "1-STC",
-      "date": "2026-01-07"
+      "date": "2026-01-07",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -89748,13 +89753,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.815088+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.884603+00:00",
       "source_checksum": {
         "10m_sha256": "b963bc51c7fa6920acb873490e07c70174b846765026d1c73599d06711f93ec6",
         "20m_sha256": "49d6c803ef35da32872ff79a6358d807d766d778d9d11085b6ba8820f30fe0fe"
       },
       "plot": "1-STC",
-      "date": "2026-01-12"
+      "date": "2026-01-12",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -89995,13 +90002,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.893645+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.975665+00:00",
       "source_checksum": {
         "10m_sha256": "1a93d1a6728db6b852c3a16cb0b6e1d019fc1367e7c2103de9c1cf53662341de",
         "20m_sha256": "58c90f5ace8ab1029ef6c2e531539dff1017e7b7d85b9bbf99f1115bdd866f64"
       },
       "plot": "1-STC",
-      "date": "2026-01-27"
+      "date": "2026-01-27",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -90242,13 +90251,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.970061+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:46.069926+00:00",
       "source_checksum": {
         "10m_sha256": "8fbc5358b8a0beb59a0c024973d4b3583108f2ca12373e03a02f078699fc05f7",
         "20m_sha256": "10c8ab0fd23cba6bde6b125f0b9e8ce0ae90848d10ba4ec6c4500da1e6f8008b"
       },
       "plot": "1-STC",
-      "date": "2026-02-01"
+      "date": "2026-02-01",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -90489,13 +90500,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:12.042136+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:46.161985+00:00",
       "source_checksum": {
         "10m_sha256": "e4c420721df440402c5dc09225021cd8806268bcc8d4423d3630032a3c80277a",
         "20m_sha256": "d02e56601240463c787d2ad17dab09a54e73a0be7108d53f9ea3cdc73df18e9b"
       },
       "plot": "1-STC",
-      "date": "2026-02-26"
+      "date": "2026-02-26",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -90736,13 +90749,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:12.120240+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:46.255251+00:00",
       "source_checksum": {
         "10m_sha256": "92a01368a51995db498d890a35c10eea769da83a66532de2f763a0669b516952",
         "20m_sha256": "85fd2b8938070cbb6d4a0eeb4a5344233fce7b80148696bdcd225fb995ccb1c7"
       },
       "plot": "1-STC",
-      "date": "2026-04-02"
+      "date": "2026-04-02",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -90983,13 +90998,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:12.198473+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:46.346862+00:00",
       "source_checksum": {
         "10m_sha256": "c91de8040ec284b1f90d15a443fa5c7e1f5b3c99351ee073c41831cab1d84344",
         "20m_sha256": "c9c5df91c4545fc5eecdb2af941d2b39d1b6bec78d2e030eaf75741a1720d68c"
       },
       "plot": "1-STC",
-      "date": "2026-04-12"
+      "date": "2026-04-12",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -91230,13 +91247,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:12.275012+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:46.436858+00:00",
       "source_checksum": {
         "10m_sha256": "b883f15864c3621f914cb8219afdfd1198bbf90b663ac0c7ee693036575dd2f6",
         "20m_sha256": "2393d2eeefdc3544d6acb1506595dbfd72c4c2f8336154a129e07a1a92477e54"
       },
       "plot": "1-STC",
-      "date": "2026-04-19"
+      "date": "2026-04-19",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -91477,13 +91496,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:12.353556+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:46.529551+00:00",
       "source_checksum": {
         "10m_sha256": "8d99e7a1cd52ce1d32e0e43d44951d6bbac32979a8fbbd8a5186706891c48da8",
         "20m_sha256": "9885c4f1c16b7dee52ff82f85ab4fe4989d3b1126effe1d75c745e89463d1895"
       },
       "plot": "1-STC",
-      "date": "2026-04-22"
+      "date": "2026-04-22",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -91724,13 +91745,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:12.427630+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:46.604272+00:00",
       "source_checksum": {
         "10m_sha256": "4b64d55c6fc4e7a29f5461c110f72940e99640d19a788acb70c0874f81af8257",
         "20m_sha256": "106aae76297f42339bd6a63b216c55cd72bf538899e8c729746840d48f8701b3"
       },
       "plot": "1-STC",
-      "date": "2026-09-04"
+      "date": "2026-09-04",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -91971,13 +91994,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.515548+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.283442+00:00",
       "source_checksum": {
         "10m_sha256": "6257d2204783b3c7913ca7aabc707ab9729908fb0efd6922621eaa7d3b03de99",
         "20m_sha256": "ff94d565ff553de2c39c637339209a20a1d4e0f0b85fec7735bdc4db8ef7ea10"
       },
       "plot": "1-STC",
-      "date": "2025-01-02"
+      "date": "2025-01-02",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -92218,13 +92243,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.587606+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.374482+00:00",
       "source_checksum": {
         "10m_sha256": "99b90ba30fbff9cf91526c5f2c2fe8bf259866678c25a1766265cd56d9850b78",
         "20m_sha256": "65a3bd88980120f63b395e487bef9ee50bdd9007c7589831e08980ce3cb93b24"
       },
       "plot": "1-STC",
-      "date": "2025-01-12"
+      "date": "2025-01-12",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -92465,13 +92492,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.661637+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.464551+00:00",
       "source_checksum": {
         "10m_sha256": "9dc27860851c111204cf195d3a278cf297a5df3653441ebb1ba081ee68a1f3fd",
         "20m_sha256": "d0896821bdf3e454f6a4dc91d4a977090bd55eb8cab80c449d74e7177d0c27d8"
       },
       "plot": "1-STC",
-      "date": "2025-02-11"
+      "date": "2025-02-11",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -92712,13 +92741,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.733553+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.557652+00:00",
       "source_checksum": {
         "10m_sha256": "0b7f14d9f96e4e70602a6e5da2bb94eae56de13cfe97c6c2d3c839a3cadef173",
         "20m_sha256": "e6053a2955b8c1fba83b852d1f80c7de703976f672ac4d9148aa9969da89bb98"
       },
       "plot": "1-STC",
-      "date": "2025-03-23"
+      "date": "2025-03-23",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -92959,13 +92990,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.807134+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.656691+00:00",
       "source_checksum": {
         "10m_sha256": "944d1dd513939e0e41f6acc03f21872c9e4ba7ea9e44fe0bb354c7d792e285a8",
         "20m_sha256": "78f7af93e8ecd185ccaa68a76f8a7c9eb9c2d7402801e4832cd7b0895bc7aea2"
       },
       "plot": "1-STC",
-      "date": "2025-03-28"
+      "date": "2025-03-28",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -93206,13 +93239,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.882687+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.754048+00:00",
       "source_checksum": {
         "10m_sha256": "a29673dd03b5a486841da4886b8388771f4bef6ae542b43f2438a06a0bfad0b0",
         "20m_sha256": "4443f7e180fe50e6778540e01849236e115c284cddd4f58aa06be560a808dcda"
       },
       "plot": "1-STC",
-      "date": "2025-07-26"
+      "date": "2025-07-26",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -93453,13 +93488,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.960502+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.840863+00:00",
       "source_checksum": {
         "10m_sha256": "9c28ecd7a888adf18cbff1f3ced4e27012e32741c78bc2c7b88544235049f3cd",
         "20m_sha256": "3adfbeb15bd2a49cc3b519d3c6682808bf576b2db560a8063041504e75437aa4"
       },
       "plot": "1-STC",
-      "date": "2025-09-21"
+      "date": "2025-09-21",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -93700,13 +93737,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.039557+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.943439+00:00",
       "source_checksum": {
         "10m_sha256": "3ea8945849e4cfbc2853e386c6bd0e4487e84736904efee1daf13f20df2c6791",
         "20m_sha256": "9a1e4d04f4a4971122f347adef067da28c310a0cad9c3542e92a3efbed7ce35f"
       },
       "plot": "1-STC",
-      "date": "2025-10-19"
+      "date": "2025-10-19",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -93947,13 +93986,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.118266+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.041491+00:00",
       "source_checksum": {
         "10m_sha256": "b356406139c33c005af9c0e97808efbbf9525c662efafea97a7e645a237fa42a",
         "20m_sha256": "b7cfffda703b46b007ef6784333f072f87f58a0fc0ff6b511bf8c8d3a8e7fc8b"
       },
       "plot": "1-STC",
-      "date": "2025-12-03"
+      "date": "2025-12-03",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -94194,13 +94235,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.198884+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.140593+00:00",
       "source_checksum": {
         "10m_sha256": "d5793e2fff650795200f91a449b8aacbde916fac841f8f3ee4d5ffd84ccabd61",
         "20m_sha256": "5f2f13ba6353bcb8712ca4d86c7b5e7b0200ed062ea992f09aa5fd9ae213f681"
       },
       "plot": "1-STC",
-      "date": "2025-12-08"
+      "date": "2025-12-08",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -94441,13 +94484,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.277448+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.240756+00:00",
       "source_checksum": {
         "10m_sha256": "4971c003a6751ec984edd9c64eb332c594e723305e7c70b6bc3aaf69c53b94c2",
         "20m_sha256": "4a78b0d9ce7c63eb4b6bbedaaab7d123c95ed1095548cc3e8afcc08c8cd6165d"
       },
       "plot": "1-STC",
-      "date": "2025-12-10"
+      "date": "2025-12-10",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -94688,13 +94733,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.350960+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.330803+00:00",
       "source_checksum": {
         "10m_sha256": "d6e5a00b0e216e4f6743e7744b839e03eed455302353f90e0d7637a55ac9525d",
         "20m_sha256": "0ac26c0b312c02440afd45ec4190716775f515f08681d89dfec14883ad1e15d2"
       },
       "plot": "1-STC",
-      "date": "2025-12-18"
+      "date": "2025-12-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -94935,13 +94982,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.429881+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.422188+00:00",
       "source_checksum": {
         "10m_sha256": "0cbac53c0ff6109c2509a2342787ecb5a5ef5cc34b0f33721ed76e8ee3ded13d",
         "20m_sha256": "c1c61838639d9dabc3aa7793c9103963d383d159af61e08097af5962c9baabf4"
       },
       "plot": "1-STC",
-      "date": "2025-12-23"
+      "date": "2025-12-23",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -95182,13 +95231,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.504323+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.505583+00:00",
       "source_checksum": {
         "10m_sha256": "dc25ee36acc42cc0669c59dc25ce76e81c385502dfc154f4d603987be471a346",
         "20m_sha256": "3f209912ce2ca25a527925187bfc278b0a2c3b14fe502ab2221f31b97d3b10ad"
       },
       "plot": "1-STC",
-      "date": "2025-12-28"
+      "date": "2025-12-28",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -95429,13 +95480,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:11.584864+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:45.599641+00:00",
       "source_checksum": {
         "10m_sha256": "49f012a4afbf7c83be57bbe888d55f5f6b838624bf7fd6b2303dc5010e8c30fc",
         "20m_sha256": "04adf8afcab54752dd428e8feb1c8f6cd7c831499618dc6207a30a2e86f7a955"
       },
       "plot": "1-STC",
-      "date": "2025-12-30"
+      "date": "2025-12-30",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -95676,13 +95729,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.112839+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.741262+00:00",
       "source_checksum": {
         "10m_sha256": "df2f0f7c65b67f93f408d0b6f673fddc2c73d894c4a05e3961cac3b39996adfc",
         "20m_sha256": "05bb951c84ab2b3b1eb48878db02328d6882d914554104532d076e16cccf0fa4"
       },
       "plot": "1-STC",
-      "date": "2024-01-03"
+      "date": "2024-01-03",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -95923,13 +95978,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.177894+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.822807+00:00",
       "source_checksum": {
         "10m_sha256": "b4dd6628bb4daf5c39c9f94705c4ea03e1f7e800f1c432b07052a6d83cc74aba",
         "20m_sha256": "1893e7ed7b3cab06baab7e3aa6a6581f057b747294906679d0457100d068cba1"
       },
       "plot": "1-STC",
-      "date": "2024-01-08"
+      "date": "2024-01-08",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -96170,13 +96227,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.246416+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.904524+00:00",
       "source_checksum": {
         "10m_sha256": "ecee73bab4ecd7102a11a8d0137421da8d6102d6c9cfb7304c95c5291065d7c2",
         "20m_sha256": "c58949d00a08130d7d1eee133364d7cb75720fbdff7916780fc50c9fb3878b54"
       },
       "plot": "1-STC",
-      "date": "2024-01-18"
+      "date": "2024-01-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -96417,13 +96476,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.317459+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.982226+00:00",
       "source_checksum": {
         "10m_sha256": "8faf0fa9cfefef006483dfa3a1873daadfb265f4fce5f6d45501376e314f01dd",
         "20m_sha256": "5b72afa645b3c6fab4bf2afe6635941a4a101634f26263f64c6d85ba14496698"
       },
       "plot": "1-STC",
-      "date": "2024-01-28"
+      "date": "2024-01-28",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -96664,13 +96725,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.388506+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.062772+00:00",
       "source_checksum": {
         "10m_sha256": "a398b91eb3cfd6d950a0577aee35e50f41d876574d7c94934fcb2bc9367b434e",
         "20m_sha256": "a0081b1d9761d6dd03ea7fc6ac5c324d5ef1eeec0302c2a550a1e985108d42ac"
       },
       "plot": "1-STC",
-      "date": "2024-02-02"
+      "date": "2024-02-02",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -96911,13 +96974,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.458045+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.140568+00:00",
       "source_checksum": {
         "10m_sha256": "3c9f04389e46319fd439b05259bb70a97d51e1dd2dd02e04bde37bbbe49036fa",
         "20m_sha256": "c729398cb17a623ebf1af714dddbd5067465c4604e9cee234c27b40101701d32"
       },
       "plot": "1-STC",
-      "date": "2024-02-07"
+      "date": "2024-02-07",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -97158,13 +97223,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.530035+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.214653+00:00",
       "source_checksum": {
         "10m_sha256": "9565d6bb460ebfb63e72a7ca7be3fc97f0bc6d169b4eb5af1c9a5dcfbbe3b23e",
         "20m_sha256": "b0150cfe3e37a0a89deb6e1cfb2a559becfdde652a14e0f1b6c12fb66b898980"
       },
       "plot": "1-STC",
-      "date": "2024-02-12"
+      "date": "2024-02-12",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -97405,13 +97472,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.599925+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.294439+00:00",
       "source_checksum": {
         "10m_sha256": "307ea899a3bfedd8196de4fd31e6b687ccc011731fffc5345118b417f4723656",
         "20m_sha256": "6c5bea408b7c0be6323ed3f08c9ed0b99cb741872fb542e7473921e5183284ef"
       },
       "plot": "1-STC",
-      "date": "2024-03-18"
+      "date": "2024-03-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -97652,13 +97721,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.671456+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.376809+00:00",
       "source_checksum": {
         "10m_sha256": "36beb331660900a9b8a75ba7bfb2cc296096787a10e66d4c5c716dbc725cdc5f",
         "20m_sha256": "e22b79875d7d1c30e57d685b86ee749230dc78f7d76b0d2f279d2e6a950dfcce"
       },
       "plot": "1-STC",
-      "date": "2024-04-17"
+      "date": "2024-04-17",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -97899,13 +97970,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.743987+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.456546+00:00",
       "source_checksum": {
         "10m_sha256": "5be87bf0e03f13409762c4380a01d6ef444ad6ccbe57a9c2ed89f53faf766e62",
         "20m_sha256": "079bb9aedced23b2efe12f6402091f86233609a7c5fd53085c63b766544b6f58"
       },
       "plot": "1-STC",
-      "date": "2024-07-06"
+      "date": "2024-07-06",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -98146,13 +98219,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.815756+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.538312+00:00",
       "source_checksum": {
         "10m_sha256": "5b172ab3efc0fddcc0092b264988cb0fda00f2eb934e910cb9eb57f41129b760",
         "20m_sha256": "75ca4c3855e76b694967f0a111b2caef2d1654a7db84be0208c6bd700643fd81"
       },
       "plot": "1-STC",
-      "date": "2024-08-05"
+      "date": "2024-08-05",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -98393,13 +98468,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.893821+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.619987+00:00",
       "source_checksum": {
         "10m_sha256": "a5b0cf8323cce10ffc1ab1898916b41c63efa353c625752467ea26fe238da860",
         "20m_sha256": "2dd2f65aa1a8f616f9f4b343acc96f31ba7e9f5600c534b3d92f802e3e18e1c8"
       },
       "plot": "1-STC",
-      "date": "2024-08-30"
+      "date": "2024-08-30",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -98640,13 +98717,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.972620+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.699179+00:00",
       "source_checksum": {
         "10m_sha256": "d9a0f8939b45d39848897df990ebb274289c2b65c2cd5ec341cfa19a5720eed3",
         "20m_sha256": "81695c50ae293504d2dd972a54f528bd2296504246911d2e2465e71a6563230f"
       },
       "plot": "1-STC",
-      "date": "2024-10-09"
+      "date": "2024-10-09",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -98887,13 +98966,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.052866+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.773883+00:00",
       "source_checksum": {
         "10m_sha256": "355bf01ce5c4843a1aac384c50bc1519f8af902f8a366a0b76400d7672d091de",
         "20m_sha256": "9e5189fccddb32b70ac9e14a61f0cdef4959299fd3289941b5c151c583dac33c"
       },
       "plot": "1-STC",
-      "date": "2024-10-24"
+      "date": "2024-10-24",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -99134,13 +99215,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.128985+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.849634+00:00",
       "source_checksum": {
         "10m_sha256": "43c544aff2bc0949ad79f388ae322cacfa27fbf32e040b472efe8ded3b323079",
         "20m_sha256": "cafbcc233f6a865e608dd02aab5463c301349c6c3a13f6572655c3b0056b08de"
       },
       "plot": "1-STC",
-      "date": "2024-11-03"
+      "date": "2024-11-03",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -99381,13 +99464,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.208602+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:43.924361+00:00",
       "source_checksum": {
         "10m_sha256": "31d8a0505abc692717bfbdfa25bbe76f6fda3756be2d6616608f938c7f7c136f",
         "20m_sha256": "46768340a727a7eb73eb2eb8295b08931190e099c67f30dd5feec3e8def6bee2"
       },
       "plot": "1-STC",
-      "date": "2024-11-18"
+      "date": "2024-11-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -99628,13 +99713,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.288672+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.004821+00:00",
       "source_checksum": {
         "10m_sha256": "0f8c73b41a7cb1aaf18d82685ac94c32c0c2682f13f6fa9bd2fb4594b77b6bc0",
         "20m_sha256": "b23c1723e3a79b6a0d37d13cc689099284e98b43ccd67894ea1f59dbe2dc87cd"
       },
       "plot": "1-STC",
-      "date": "2024-11-23"
+      "date": "2024-11-23",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -99875,13 +99962,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.364694+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.101443+00:00",
       "source_checksum": {
         "10m_sha256": "45e9a200b38e161f431db7f3e11f97bfe85e3055ed0f8758ae73c741a946c946",
         "20m_sha256": "d0959409b660826a788d86eb1e51a351e82ad7c41ecd4b279fffe029838487fb"
       },
       "plot": "1-STC",
-      "date": "2024-12-18"
+      "date": "2024-12-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -100122,13 +100211,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:10.437878+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:44.195106+00:00",
       "source_checksum": {
         "10m_sha256": "1f2117d971276c7431c86fa4bff9205714fa37c26d8ee12d1b54ad91ae54ab3d",
         "20m_sha256": "c271000e88371277bf64f1db788d2116932d762b6096b246049fef7bd604ad9b"
       },
       "plot": "1-STC",
-      "date": "2024-12-28"
+      "date": "2024-12-28",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -100369,13 +100460,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.976020+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.504615+00:00",
       "source_checksum": {
         "10m_sha256": "dab936b277be75f49ca2c905a34855ed6642e2b7e13da1259fa2d2733d03a862",
         "20m_sha256": "227e8d73cb1a9e3e27c70cf93c44c3363aa7706f01b5fadf49434781de7f488f"
       },
       "plot": "1-STC",
-      "date": "2023-01-03"
+      "date": "2023-01-03",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -100616,13 +100709,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.047537+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.575326+00:00",
       "source_checksum": {
         "10m_sha256": "7c06915c92722b177d430faa93184d22e44e1d1e1c9f33c1845774cc47151d1f",
         "20m_sha256": "ed2f31d304c912bd3118686d24af47e9af163bec6c07d0a15c3d173619d8cf37"
       },
       "plot": "1-STC",
-      "date": "2023-01-18"
+      "date": "2023-01-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -100863,13 +100958,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.114087+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.645409+00:00",
       "source_checksum": {
         "10m_sha256": "fc774a06f9e1cd9e951f18898e7b032fceb7a26204a4622312e12069350c4913",
         "20m_sha256": "332f652667449dfc41e290e53ed4fecc0bcd9c83a70542c21bdc9107f7bf18fe"
       },
       "plot": "1-STC",
-      "date": "2023-01-23"
+      "date": "2023-01-23",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -101110,13 +101207,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.177803+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.721493+00:00",
       "source_checksum": {
         "10m_sha256": "1ce73159694639826e4acd7588db28db8679c2b59b1f761c227f6db5ed54e69e",
         "20m_sha256": "3c662f287a0c0f6ce0ffe5db8fe63aa5ebe9d03199f49f79640089a23118aa46"
       },
       "plot": "1-STC",
-      "date": "2023-01-28"
+      "date": "2023-01-28",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -101357,13 +101456,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.246328+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.797719+00:00",
       "source_checksum": {
         "10m_sha256": "b537be7fd759bb98c4970ab3e57c4b5a5d11557bda39caf42bba0becd7d6a28c",
         "20m_sha256": "aca815dc6a81fa96e314db105c671ede97a768d0816fbaed2e1b64e2fdfdab78"
       },
       "plot": "1-STC",
-      "date": "2023-02-17"
+      "date": "2023-02-17",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -101604,13 +101705,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.314081+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.875522+00:00",
       "source_checksum": {
         "10m_sha256": "40d59b457c45e1afc43fa8f71f371c6c98d72e0eb5d6b3c220ef3785cd529c03",
         "20m_sha256": "9cc001a1625c898d2c971f9439d7e65d3ecf050aa000ad5d8c3caffa37f499f7"
       },
       "plot": "1-STC",
-      "date": "2023-02-22"
+      "date": "2023-02-22",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -101851,13 +101954,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.388933+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.955567+00:00",
       "source_checksum": {
         "10m_sha256": "a901b07387ad040fc137390aaa7129c811ba313211bd4d89af7b5cfc1a54c97e",
         "20m_sha256": "0f723dada8a2db263d9ae58bb76a93ad4a8f708713d3f0485e64a2c86b0daa76"
       },
       "plot": "1-STC",
-      "date": "2023-02-27"
+      "date": "2023-02-27",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -102098,13 +102203,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.459477+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.031804+00:00",
       "source_checksum": {
         "10m_sha256": "6b9ec65e5d597a5dc4f981ce5381725655babc34ffe0c768fe8f78b3da522437",
         "20m_sha256": "45eb6d524cb00b4389a94ed37c6c5b5d9352456fb9f6995ea3788c01ddcc1ddc"
       },
       "plot": "1-STC",
-      "date": "2023-03-14"
+      "date": "2023-03-14",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -102345,13 +102452,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.533330+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.101618+00:00",
       "source_checksum": {
         "10m_sha256": "fc7a9de3f8f51fdf67ebd40103036c78a0d7e527eaf50e96ad13bf6d6e441157",
         "20m_sha256": "88af945fd1e0b72898f101fdab46fbb9bb3882199e3bd5b22173b566649c10f9"
       },
       "plot": "1-STC",
-      "date": "2023-04-08"
+      "date": "2023-04-08",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -102592,13 +102701,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.605375+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.175294+00:00",
       "source_checksum": {
         "10m_sha256": "dfc442b09df064fb4f41fd743a4030065414c4b4bfb763c546d5dff39e40a500",
         "20m_sha256": "7122ff7392c352b52d82f9ac4039d89d28cb668f1100a6953971aec8711fb321"
       },
       "plot": "1-STC",
-      "date": "2023-04-18"
+      "date": "2023-04-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -102839,13 +102950,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.683110+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.258709+00:00",
       "source_checksum": {
         "10m_sha256": "76005251d8888584a56e6da3863640a78d48703c5f6286ecc108c5ad51f4a1af",
         "20m_sha256": "7eec3069eea36be57a3a004bc49db2a77b2318ca6b7e629e4b1c0f6c62590f1d"
       },
       "plot": "1-STC",
-      "date": "2023-06-22"
+      "date": "2023-06-22",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -103086,13 +103199,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.760116+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.344743+00:00",
       "source_checksum": {
         "10m_sha256": "cc171a081f2df19142535976817b0c762e253a29c8199f80c63c681aadff1ab8",
         "20m_sha256": "d596c854e148e21bac4e5cec300e34166eb8535df9a24b41a2fb5e97f2fbcb91"
       },
       "plot": "1-STC",
-      "date": "2023-10-20"
+      "date": "2023-10-20",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -103333,13 +103448,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.834150+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.423392+00:00",
       "source_checksum": {
         "10m_sha256": "cf43efb11adddb49b5525b44a9166921c97bf25eb6c2865948e348feb4440b82",
         "20m_sha256": "e82788febe65e23d42812ce3e8872de40fcdc7ce60e75fc26eefaf5c171f1cbd"
       },
       "plot": "1-STC",
-      "date": "2023-11-24"
+      "date": "2023-11-24",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -103580,13 +103697,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.908192+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.494438+00:00",
       "source_checksum": {
         "10m_sha256": "085353a9c252c9f8ec0eb3a99251f2c6a90dcce8a6432aac9cc49aa063c3bfad",
         "20m_sha256": "5861c5cc4508ccdd12ac35b4f728ace2fb44ff8f1eb5117711728cc4e50cd01c"
       },
       "plot": "1-STC",
-      "date": "2023-11-29"
+      "date": "2023-11-29",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -103827,13 +103946,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:08.975300+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.580006+00:00",
       "source_checksum": {
         "10m_sha256": "4d9e01f668f137243ab343bc4b11b53cde486d520ae05a2f93e5639c30f930b1",
         "20m_sha256": "8a6dde226581a54ca6a5899d65e4fc89a8e93fbd61e87e1d4a40ab08ea94dca1"
       },
       "plot": "1-STC",
-      "date": "2023-12-09"
+      "date": "2023-12-09",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -104074,13 +104195,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:09.045828+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:42.665048+00:00",
       "source_checksum": {
         "10m_sha256": "3fa7c07c791cc8e0d23ff098893129ffaa6c9037c29388b78ead75a85ec30c09",
         "20m_sha256": "246696db3a58a22f19927a5c2f514dcb2f12bcd6a418f4b96565fef01863bbf6"
       },
       "plot": "1-STC",
-      "date": "2023-12-19"
+      "date": "2023-12-19",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -104321,13 +104444,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.940360+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.412108+00:00",
       "source_checksum": {
         "10m_sha256": "151d1b87f21aaa89a6fdd4ca421d01810de0f433f5ad6bd29cd4b29bca990bac",
         "20m_sha256": "b3e92efbfa4447a9941c3d754780f5299ed9971477c42cc597d2856101e56e26"
       },
       "plot": "1-STC",
-      "date": "2022-01-03"
+      "date": "2022-01-03",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -104568,13 +104693,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.006404+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.489199+00:00",
       "source_checksum": {
         "10m_sha256": "914a42a28a6706a578c812ac8db019e72e58a024b48da2daa8b4d2172b77a158",
         "20m_sha256": "6f180e2d0d55fefe4e3b33421f247080dd2e92aa2177026a17032ab2a29b67b0"
       },
       "plot": "1-STC",
-      "date": "2022-01-08"
+      "date": "2022-01-08",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -104815,13 +104942,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.075453+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.564407+00:00",
       "source_checksum": {
         "10m_sha256": "e961e20512e1c6aa45b9dc112b71caa730f3a02234b16c8f1d8964bb117016f5",
         "20m_sha256": "9bee2216db8877a3199d66e8c2cdc41dd307d1b65dc8e59848bd035a026e3fa3"
       },
       "plot": "1-STC",
-      "date": "2022-01-13"
+      "date": "2022-01-13",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -105062,13 +105191,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.140012+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.639672+00:00",
       "source_checksum": {
         "10m_sha256": "e8c6877baa571e682495ae824f4bcc2a979dd7813ec74a4044f23e571273e639",
         "20m_sha256": "d4e9aa166fa7715f6d2da7ac06fcbba239462bd4fd152b135e668ce01ce85c6c"
       },
       "plot": "1-STC",
-      "date": "2022-01-18"
+      "date": "2022-01-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -105309,13 +105440,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.206066+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.710235+00:00",
       "source_checksum": {
         "10m_sha256": "e964285365fef8928914dae62d83ab8fadbabdf5c5d21b157c71035ae860186e",
         "20m_sha256": "4e82281ec8f11e6c2bb6dc5cf1309f9ddc10dc30c3423baf83715432b0d3bd48"
       },
       "plot": "1-STC",
-      "date": "2022-02-07"
+      "date": "2022-02-07",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -105556,13 +105689,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.275598+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.785953+00:00",
       "source_checksum": {
         "10m_sha256": "af757c30e6853998b517f52ed36c1728c1783641a088ea62cbde1ddf9e79968a",
         "20m_sha256": "63649253719227b21293a0d948f418d70ee61113fdba5e2f2fb15ad6c6f35a29"
       },
       "plot": "1-STC",
-      "date": "2022-02-27"
+      "date": "2022-02-27",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -105803,13 +105938,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.346120+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.860165+00:00",
       "source_checksum": {
         "10m_sha256": "4623f044020cfa993bea967deffd5c5959960fddefad903ee26a46fad89e0c78",
         "20m_sha256": "634acbe0f10b94bc51e28418d30b60238e4a376e36fda23a76e24706ab5b7e5f"
       },
       "plot": "1-STC",
-      "date": "2022-04-03"
+      "date": "2022-04-03",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -106050,13 +106187,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.417174+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.931389+00:00",
       "source_checksum": {
         "10m_sha256": "efaad816afc13608f122c67b119e23cc552f49878126da082754bbcd1e15ed58",
         "20m_sha256": "03753f65126a2aa2a629e160cd91e80391b81e029929dd619c217335a0bf47b2"
       },
       "plot": "1-STC",
-      "date": "2022-04-13"
+      "date": "2022-04-13",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -106297,13 +106436,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.491569+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.998936+00:00",
       "source_checksum": {
         "10m_sha256": "c3aad1c8105d11705caece37d2b55275cfd4c4c86798e8a5187a1aae926082e1",
         "20m_sha256": "846bac5ed227ddaf0cc032c15cbdde40a36ab8a1bd77fb347355f797e500c5c2"
       },
       "plot": "1-STC",
-      "date": "2022-04-23"
+      "date": "2022-04-23",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -106544,13 +106685,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.558577+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.067653+00:00",
       "source_checksum": {
         "10m_sha256": "46e12f6e737bf1b371709a881e696050f9b09a808f9e21435b0f26dfa53dffab",
         "20m_sha256": "2e3bc28f2b01a4aed8f518144341aefb1cfe9c25d78ff323cff4e471b9909132"
       },
       "plot": "1-STC",
-      "date": "2022-10-05"
+      "date": "2022-10-05",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -106791,13 +106934,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.627261+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.138722+00:00",
       "source_checksum": {
         "10m_sha256": "71756b2d6dbdc8a67463291cac4d4cc8be9ef6f5ced511a418a142f5130a7b40",
         "20m_sha256": "4cd4cc022f32b5dbfb05de9a8f2b4178bd258928dfd0a65d92abf7e365f952fa"
       },
       "plot": "1-STC",
-      "date": "2022-10-25"
+      "date": "2022-10-25",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -107038,13 +107183,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.695310+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.207259+00:00",
       "source_checksum": {
         "10m_sha256": "5c7fd099e340b3dfe27d4e84f85883c7c1f28e27d63c5a7e46954ae2a5451fe5",
         "20m_sha256": "c48fc964590cccd4aeb0ae9ad14d419f147845ef94b8850b7b6ef4c8c23647e3"
       },
       "plot": "1-STC",
-      "date": "2022-10-30"
+      "date": "2022-10-30",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -107285,13 +107432,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.765316+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.285710+00:00",
       "source_checksum": {
         "10m_sha256": "43450201df06aede51764dd50645b1f7a679f81fa6536758aa2ddff80773354f",
         "20m_sha256": "68d2b9dff3a2321f97da0a7f6ca557144f0e790685c3d417fc0700dddbb8f9af"
       },
       "plot": "1-STC",
-      "date": "2022-11-04"
+      "date": "2022-11-04",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -107532,13 +107681,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.839057+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.358801+00:00",
       "source_checksum": {
         "10m_sha256": "ead800882c43c0be90494f3173a8a67dd4e01631a9799a37ed7bda2dcfd47607",
         "20m_sha256": "b529445a432a8b60841d28d75043d157b19fe2f172fef8c9509f5a0d03e6595b"
       },
       "plot": "1-STC",
-      "date": "2022-12-14"
+      "date": "2022-12-14",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -107779,13 +107930,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:07.907968+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:41.433865+00:00",
       "source_checksum": {
         "10m_sha256": "8884ce3934e48804713b8fbb8690758b2cfe8d2854ed07a4b51cc68ab0c345d9",
         "20m_sha256": "24d889534c6fe98dc3107cd2c9a59d07cd886be679e16f2cfc120e7bf1ad4c1d"
       },
       "plot": "1-STC",
-      "date": "2022-12-19"
+      "date": "2022-12-19",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -108026,13 +108179,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.044261+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.413253+00:00",
       "source_checksum": {
         "10m_sha256": "077c6925e46246922d4c453f1fea475745dc5338a1febce83c48691f4ec0f1b9",
         "20m_sha256": "1773b66e7f5e13b3ab28a45c3c3704e8d35c43724216b148c186a9a941e84a5e"
       },
       "plot": "1-STC",
-      "date": "2021-01-03"
+      "date": "2021-01-03",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -108273,13 +108428,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.112044+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.501317+00:00",
       "source_checksum": {
         "10m_sha256": "0918f31d06e03e0ffdaabb20ad3a86cfcfbb933d7d70951ebfbcc05a591f679f",
         "20m_sha256": "9e6053e9a737800acd9d47885a374c2c47f7aaf4972da42526710d2b1fb975d8"
       },
       "plot": "1-STC",
-      "date": "2021-01-13"
+      "date": "2021-01-13",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -108520,13 +108677,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.178632+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.587618+00:00",
       "source_checksum": {
         "10m_sha256": "a6dac0c2ae1f76db5b25a712bff8b46a5e3c67d515555d0f7a208392846cd890",
         "20m_sha256": "a115277e177aabafb2e68830429043a7dd69f83825c402266021fd8ab98e4a7e"
       },
       "plot": "1-STC",
-      "date": "2021-01-18"
+      "date": "2021-01-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -108767,13 +108926,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.246630+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.665204+00:00",
       "source_checksum": {
         "10m_sha256": "be38b1f7b6b84313d485589e8c2c06baf7bad194d7a8e051bf8bd798c9f25837",
         "20m_sha256": "b21837603526bb1abb5965c6a476613680633f20997c472fbdbbc3a99e7d06a4"
       },
       "plot": "1-STC",
-      "date": "2021-01-23"
+      "date": "2021-01-23",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -109014,13 +109175,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.316385+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.746263+00:00",
       "source_checksum": {
         "10m_sha256": "3b45edcc2bf9ba5ac2c36c1d12198ca9ed58b984847d70f6717d11326d0aa142",
         "20m_sha256": "20a82833eea0ce7e78c5200585fd9b25cce91f2ea73bf25e2d9db88a63f2ad57"
       },
       "plot": "1-STC",
-      "date": "2021-02-02"
+      "date": "2021-02-02",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -109261,13 +109424,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.385435+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.823321+00:00",
       "source_checksum": {
         "10m_sha256": "3937c9d817c07aab6d65fbb508b818b080b51c74dd5dd2dc8e4e4f3512b0ebf6",
         "20m_sha256": "d0c8d0f3bde4f9df747c73a7fc76acea7959a29b642c79918ecf66248deb6cac"
       },
       "plot": "1-STC",
-      "date": "2021-02-12"
+      "date": "2021-02-12",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -109508,13 +109673,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.454598+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.906760+00:00",
       "source_checksum": {
         "10m_sha256": "fc28b26274c9e7717266bcc7b8b82aaefcb4fd94368baef9c33f1f1b979cb094",
         "20m_sha256": "e1ba84d56a87e3086636f9ca91f8028bd79da5c778f602841b2b921fbc2d7952"
       },
       "plot": "1-STC",
-      "date": "2021-03-24"
+      "date": "2021-03-24",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -109755,13 +109922,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.521632+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.975851+00:00",
       "source_checksum": {
         "10m_sha256": "a73b178030c5a530dc89ef923621e7336e581a220fd4a93a175bacd65fdf820b",
         "20m_sha256": "708333ef8ee050840e36d376a5b845307c05f6757aad47e5e50d8447c0aac8b4"
       },
       "plot": "1-STC",
-      "date": "2021-04-13"
+      "date": "2021-04-13",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -110002,13 +110171,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.594678+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.053913+00:00",
       "source_checksum": {
         "10m_sha256": "ecfc638a579db7eec82002010a7652e07f92ec7a0dd881cfd29173d36134c711",
         "20m_sha256": "00d2521522ff80bbf8ddf7644d397a85efa9b09880c4ae3fe27fe16170102a57"
       },
       "plot": "1-STC",
-      "date": "2021-05-08"
+      "date": "2021-05-08",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -110249,13 +110420,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.666190+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.121121+00:00",
       "source_checksum": {
         "10m_sha256": "baadcef3d8def117b8fcb294ca74a67f771022d9fa90a7f5f7c75ff1053e5417",
         "20m_sha256": "61ef24f530d3c8ce8d1ff4bfaf77fe6a027ce207fdc72551c545b5ed68725b31"
       },
       "plot": "1-STC",
-      "date": "2021-07-02"
+      "date": "2021-07-02",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -110496,13 +110669,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.735717+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.194661+00:00",
       "source_checksum": {
         "10m_sha256": "dbc44b455e0d7a5fc0bc813c3dcfc0b88083c7060704fb631311abbabd8af3c3",
         "20m_sha256": "4fa3eb4ec71b4dbca1b09e74f62f206174e800802216b466215ff16672f7c056"
       },
       "plot": "1-STC",
-      "date": "2021-08-21"
+      "date": "2021-08-21",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -110743,13 +110918,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.805771+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.265877+00:00",
       "source_checksum": {
         "10m_sha256": "4ad9260cba678ac309db0267879a7decc3cdd1941906a4e253da878b60993f5e",
         "20m_sha256": "de68a341d240f7f4aeb3b796b2db3aa2ee8f6d4aadaef94f88881622619b0cf6"
       },
       "plot": "1-STC",
-      "date": "2021-12-09"
+      "date": "2021-12-09",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -110990,13 +111167,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:06.873303+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:40.337576+00:00",
       "source_checksum": {
         "10m_sha256": "962ac50f86ee3311521f25be224f7c45d26f2017305b5f7faf5c4c7023622a31",
         "20m_sha256": "03ead28a28e1e8f50be45b2210f54abb4242ac8763bc77c15b35cb96e436c54a"
       },
       "plot": "1-STC",
-      "date": "2021-12-29"
+      "date": "2021-12-29",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -111237,13 +111416,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.009894+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.211497+00:00",
       "source_checksum": {
         "10m_sha256": "f36a0784a47d2449a9be4fb6fa62b8de692d3701bc76f9794b83fb0ca55ffe1c",
         "20m_sha256": "c6be12e31b854306e2cc9ed09b10aa885fdfacef32c7d76d779fe5919b5fdc1f"
       },
       "plot": "1-STC",
-      "date": "2020-01-04"
+      "date": "2020-01-04",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -111484,13 +111665,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.077834+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.295499+00:00",
       "source_checksum": {
         "10m_sha256": "7c591a0114a6a25b8c05c19a4942db41ccef64f4a1ae3894e50177079626ed89",
         "20m_sha256": "f081bcf6c0884aba73ac34abecce82742e0164059d11b57a6a76fa2f09c7dbb9"
       },
       "plot": "1-STC",
-      "date": "2020-01-09"
+      "date": "2020-01-09",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -111731,13 +111914,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.144374+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.367034+00:00",
       "source_checksum": {
         "10m_sha256": "5df5e55db0e9e6ec80b44c76d006799df8e25dd4a1e930b2e945f680b3f7b79d",
         "20m_sha256": "f01458c0e6765948bd8cd3f0e5aa50c1be3bb1fa67fcf124049d6a79ce516309"
       },
       "plot": "1-STC",
-      "date": "2020-02-18"
+      "date": "2020-02-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -111978,13 +112163,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.215427+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.449303+00:00",
       "source_checksum": {
         "10m_sha256": "2f61545510296ae885104bdac88f36f386cf209e53f96bead8154cbf16f9ccc8",
         "20m_sha256": "e49cbf5fee6f27de0881b73d940a4cbba562be5a30763671186a902df38b3544"
       },
       "plot": "1-STC",
-      "date": "2020-02-23"
+      "date": "2020-02-23",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -112225,13 +112412,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.288106+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.527907+00:00",
       "source_checksum": {
         "10m_sha256": "b23c52f2e2347716c4d4fdeb6269be3188d2e6909b6fae178a29c558380618eb",
         "20m_sha256": "8a0a4d7ff8a08b1c3373937302f47fd2e6acff661537ba94984bcb2ffc454669"
       },
       "plot": "1-STC",
-      "date": "2020-03-09"
+      "date": "2020-03-09",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -112472,13 +112661,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.355123+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.609586+00:00",
       "source_checksum": {
         "10m_sha256": "25bf5a8ec472273c6c74efc32f0448c9ebaf947d587cca36841a17d5000d129b",
         "20m_sha256": "e99644f2001297d87b83d18583ac478b72020f526bdce4400ee825afa3e4514c"
       },
       "plot": "1-STC",
-      "date": "2020-04-08"
+      "date": "2020-04-08",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -112719,13 +112910,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.429719+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.685285+00:00",
       "source_checksum": {
         "10m_sha256": "51087de65780592847a2e69751a2e3c8e437c2587e937f986c0ce11738a874ef",
         "20m_sha256": "a6139a477a04740ca285dfe7baeb2c620e9aa3f0f8a9de3f4532dc299c4c9aad"
       },
       "plot": "1-STC",
-      "date": "2020-04-28"
+      "date": "2020-04-28",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -112966,13 +113159,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.499769+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.755538+00:00",
       "source_checksum": {
         "10m_sha256": "e263a833870ac714fcc1875ed9e3d44c6bde7a50d43da8b3d7747942d7ef18e5",
         "20m_sha256": "f57a2cb9d142a93bd80943b3af87adb32181154370e2842c43bf0814fe28e108"
       },
       "plot": "1-STC",
-      "date": "2020-08-11"
+      "date": "2020-08-11",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -113213,13 +113408,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.568291+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.833187+00:00",
       "source_checksum": {
         "10m_sha256": "8a1ade5586981150c442ca193a73a7d2bff99a4f235348dec6f8b7f6aaec15f2",
         "20m_sha256": "def45d908f6476e824c82418ba7373306f750f2a2c7ea533686ff46d230ba2b4"
       },
       "plot": "1-STC",
-      "date": "2020-09-25"
+      "date": "2020-09-25",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -113460,13 +113657,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.636816+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.913359+00:00",
       "source_checksum": {
         "10m_sha256": "2f238d22f35457a74348de44cfb34eccb7c707f0a936c5af81e497b503589d23",
         "20m_sha256": "97ddc0fedd09253f9277b00aa24d5087d630fb8a4138ef9a7cec3a1c9714e805"
       },
       "plot": "1-STC",
-      "date": "2020-10-25"
+      "date": "2020-10-25",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -113707,13 +113906,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.704584+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.988615+00:00",
       "source_checksum": {
         "10m_sha256": "efc685108eb5a683777bbcebc7bc82bd92a0144d7d7ceb60891adfe30d5d6299",
         "20m_sha256": "420e26f6c0dde52d4f3f603d8380a0780b7bc9094d5a449a6aa3aae7d8f66b27"
       },
       "plot": "1-STC",
-      "date": "2020-11-09"
+      "date": "2020-11-09",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -113954,13 +114155,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.771642+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.071820+00:00",
       "source_checksum": {
         "10m_sha256": "6568135fb03f7e8436bf5fb6bee0b16c29af2aa8afe138e8a785e8eab9a0c7ed",
         "20m_sha256": "ec24983f6e3a7266df5fbb59dd9f32af3d18b229f93bcc7c3e05179f6e2cf785"
       },
       "plot": "1-STC",
-      "date": "2020-11-19"
+      "date": "2020-11-19",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -114201,13 +114404,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.838639+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.157324+00:00",
       "source_checksum": {
         "10m_sha256": "f1c9b24af6ab7d475c51a1d35e38eb97c975e6ae371f7b18095e662d55629c67",
         "20m_sha256": "4d41a460e71ce5389c50365eeb17d6699834bc4e28825d90e208edb30ce170e1"
       },
       "plot": "1-STC",
-      "date": "2020-11-24"
+      "date": "2020-11-24",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -114448,13 +114653,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.905687+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.239829+00:00",
       "source_checksum": {
         "10m_sha256": "70895c7e30c3d1cdb3ddad8bd728c02ea8376abfa7f9821d381fe34fddcf82e2",
         "20m_sha256": "5cda9b26c1814a54632207deda6ec3d6c0f2c889f507e68e390c5e301f0d431f"
       },
       "plot": "1-STC",
-      "date": "2020-12-04"
+      "date": "2020-12-04",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -114695,13 +114902,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:05.976263+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:39.325719+00:00",
       "source_checksum": {
         "10m_sha256": "551240378de98ff580e358699e13b6c7a9a98811386c5d08966be1012e59fe1e",
         "20m_sha256": "3e26fb92a5636d4399ea1049e88013cfec2f6442ca3372d040f7835240fe950b"
       },
       "plot": "1-STC",
-      "date": "2020-12-09"
+      "date": "2020-12-09",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -114942,13 +115151,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.651177+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.823764+00:00",
       "source_checksum": {
         "10m_sha256": "cc1886bf2f05fed9d13763313fd9dd15e0fc45b21a60ae12ca3603f9e971625b",
         "20m_sha256": "97bdf5529e059f7ad8b4e6b62812a88f878b6b1347e5b3904b58f97d498972da"
       },
       "plot": "1-STC",
-      "date": "2019-01-14"
+      "date": "2019-01-14",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -115189,13 +115400,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.730309+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.896343+00:00",
       "source_checksum": {
         "10m_sha256": "306bcad769a7ace5bb914ba6d96ec758f65f4ecae957d0ee1d35905fd24fb941",
         "20m_sha256": "09b7d6bb9c20f193eedcb5028d4a49954d454e6bbcd940d837268730ffb93277"
       },
       "plot": "1-STC",
-      "date": "2019-01-24"
+      "date": "2019-01-24",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -115436,13 +115649,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.799363+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.961051+00:00",
       "source_checksum": {
         "10m_sha256": "85cc72174e62e00e6ef747eaeb2d5b7beae80e94c140d2ca1656d7fa89570804",
         "20m_sha256": "693c7a861d6f11aabc98322c66815bd63c8dcb0f33ed06372ec4379210db4a5c"
       },
       "plot": "1-STC",
-      "date": "2019-01-29"
+      "date": "2019-01-29",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -115683,13 +115898,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.868636+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.030278+00:00",
       "source_checksum": {
         "10m_sha256": "8db48f2b4b5af4328fc856399060b719d4cc6b5f35b9fb4b42084facba6f697a",
         "20m_sha256": "0ddb5d65aff002fb49d19667677d1528307afccb3a27de33239fafadba6b0245"
       },
       "plot": "1-STC",
-      "date": "2019-02-08"
+      "date": "2019-02-08",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -115930,13 +116147,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.937166+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.093538+00:00",
       "source_checksum": {
         "10m_sha256": "0b9b361160dc892add1a3fbaa10ae5d3ea1578f8d3e0a3db5eddedf34dda7b9a",
         "20m_sha256": "bd5070771031dac01abf0c04ca6975cb92179185d42c4ee316947465d272adae"
       },
       "plot": "1-STC",
-      "date": "2019-02-18"
+      "date": "2019-02-18",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -116177,13 +116396,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.006213+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.160068+00:00",
       "source_checksum": {
         "10m_sha256": "2f5d3e8707a4618ac31141cdad997c7e6d40f88474e4d77c597c964e7b9d858c",
         "20m_sha256": "b4c486ee6bbae60af3c79624ec4123ae1cc1b92eb4fa7cf74d14afdd526773c6"
       },
       "plot": "1-STC",
-      "date": "2019-03-20"
+      "date": "2019-03-20",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -116424,13 +116645,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.072759+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.225128+00:00",
       "source_checksum": {
         "10m_sha256": "95d1f4bb26a1b68698031f2338ff398d345cf6b102585e398d5a6bed617b527b",
         "20m_sha256": "128c58e5911dbc828e453c54d84e8c20b0902c8f504a0732be5b0468636c545d"
       },
       "plot": "1-STC",
-      "date": "2019-04-04"
+      "date": "2019-04-04",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -116671,13 +116894,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.143294+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.295199+00:00",
       "source_checksum": {
         "10m_sha256": "ffee0b37a8574501eb6b7128d90823aab7820dea82f0bafa5edf0338e8575e98",
         "20m_sha256": "7630a7f0bb4866f1b30f3c26def1cc2d7b20cedd3de044372fd2e463fafd4273"
       },
       "plot": "1-STC",
-      "date": "2019-04-29"
+      "date": "2019-04-29",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -116918,13 +117143,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.214813+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.361873+00:00",
       "source_checksum": {
         "10m_sha256": "39b9c017757d96ed1ea9b046f9101b63e4f67bd94e8f1bf69e823fc44d8cb7e7",
         "20m_sha256": "2fb454473058a1436610fe668c5a54c65113edd86c2d1ea99161338101aef97d"
       },
       "plot": "1-STC",
-      "date": "2019-09-26"
+      "date": "2019-09-26",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -117165,13 +117392,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.285351+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.436267+00:00",
       "source_checksum": {
         "10m_sha256": "220d0492c00edb575ffeed70d78bd9253c9a7d6c79ed76037794ac52a36dbd68",
         "20m_sha256": "7ea042acfef4701fba76cff93c5799fa9523beb678f208ab704cad1a5d2993b6"
       },
       "plot": "1-STC",
-      "date": "2019-11-05"
+      "date": "2019-11-05",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -117412,13 +117641,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.356360+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.513510+00:00",
       "source_checksum": {
         "10m_sha256": "456583739f11f2a1a0cbd99bc629a16fe69d34768d8b186eabf3c95b01b9e074",
         "20m_sha256": "0fa3d0069be9ed70f6b75e8bc2771f7ab0416fe59d6b290e4b0d46a0a10cfcf2"
       },
       "plot": "1-STC",
-      "date": "2019-11-10"
+      "date": "2019-11-10",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -117659,13 +117890,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.426414+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.584475+00:00",
       "source_checksum": {
         "10m_sha256": "78457d5c3cd92e08dc7a4f65f981474337e023499ca1f84fd2c3d622617acac9",
         "20m_sha256": "70ccd2a2d3bcd042ebb4a94fd0cc1dd4b9f9ff777702bc614615d6d3ee2415b0"
       },
       "plot": "1-STC",
-      "date": "2019-11-15"
+      "date": "2019-11-15",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -117906,13 +118139,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.501035+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.655479+00:00",
       "source_checksum": {
         "10m_sha256": "f045775bcd3153e44c999f09a6235e3511d5dd74644ac023bd545fefb8ab63f5",
         "20m_sha256": "cae2a02d043fb5c29d493f580794164042b059a2c2854f3d816f8d4c03c5034a"
       },
       "plot": "1-STC",
-      "date": "2019-11-20"
+      "date": "2019-11-20",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -118153,13 +118388,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.574831+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.726465+00:00",
       "source_checksum": {
         "10m_sha256": "0cd9d9ba928d9da71feedaa04b63405bdcad390ac0a2cdbc390b8c15bb07a2ba",
         "20m_sha256": "fdbc8469e2944952812efe2d7cc30c9f08c842a125065aa50626b447cd44eca4"
       },
       "plot": "1-STC",
-      "date": "2019-11-30"
+      "date": "2019-11-30",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -118400,13 +118637,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.648826+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.802163+00:00",
       "source_checksum": {
         "10m_sha256": "cf1017921ea7d9be84db1324a205e05feca9f2fbc2e3feb95cc27bfbcca6f9ea",
         "20m_sha256": "fa46f3423762828bcbd91497be01bbf1abeb48f0ed7448e987855c1a3e7fa8ef"
       },
       "plot": "1-STC",
-      "date": "2019-12-05"
+      "date": "2019-12-05",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -118647,13 +118886,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.727791+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.879689+00:00",
       "source_checksum": {
         "10m_sha256": "b47d4bdfda6eef3305c0b5da499322f52bc3e05ff13377a8c9ba45aaab805efc",
         "20m_sha256": "f867b53296ce33612e8513990a1526bde6de21e0213cba73e814523391cf36ee"
       },
       "plot": "1-STC",
-      "date": "2019-12-10"
+      "date": "2019-12-10",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -118894,13 +119135,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.799863+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:37.957296+00:00",
       "source_checksum": {
         "10m_sha256": "12665cbc01fb14c50b66600fb944842de9c6d770a874b6a9f25e832092555479",
         "20m_sha256": "38209f292129eb12862e6b7f7005e57adbf0c04b43a93a2de612026baa7a591b"
       },
       "plot": "1-STC",
-      "date": "2019-12-15"
+      "date": "2019-12-15",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -119141,13 +119384,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.868650+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.047867+00:00",
       "source_checksum": {
         "10m_sha256": "8649d0165a294b9ca3e7370d1d112ef819600201700ba0ae41b8eb9c330aa45e",
         "20m_sha256": "95f8da7353f8cfa33bb14375696d1b5766481ffa06a06b06a17e54fa37d643b7"
       },
       "plot": "1-STC",
-      "date": "2019-12-20"
+      "date": "2019-12-20",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -119388,13 +119633,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:04.939843+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:38.130102+00:00",
       "source_checksum": {
         "10m_sha256": "72dd3cb485e8f1aa739149825d53558d6a68ca656e2965e9ac0b29a7da43eabe",
         "20m_sha256": "2158808498cd5cee3c44683ac3a8e9a526d252a3a0c3c619ac8e8a1bf85a97e0"
       },
       "plot": "1-STC",
-      "date": "2019-12-30"
+      "date": "2019-12-30",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -119635,13 +119882,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:02.928584+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.123707+00:00",
       "source_checksum": {
         "10m_sha256": "cc95025d7611b87eee877b0283246bf7491382a0a34cb7a49c5e462ab2793dd8",
         "20m_sha256": "171933f8a0ca1d5859fb971c014daef52cc2cf7d6a5defd4674a977bfb41976d"
       },
       "plot": "1-STC",
-      "date": "2017-02-13"
+      "date": "2017-02-13",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -119882,13 +120131,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.006260+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.194088+00:00",
       "source_checksum": {
         "10m_sha256": "b9e4e3160b4d12b2cd04f5b4bbe787f4d29106a9d514142153af69c55736118a",
         "20m_sha256": "6d88622711ccc17f9a31fdf47540973c6f25e8794d25b3196ba8174ca92c2a93"
       },
       "plot": "1-STC",
-      "date": "2017-12-20"
+      "date": "2017-12-20",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -120129,13 +120380,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.083350+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.336115+00:00",
       "source_checksum": {
         "10m_sha256": "f9d9d7436a4fde7b4505a01788eec27d8912403fcad65a0e6effb6ec7e6497ee",
         "20m_sha256": "13082fbca5565d70d6c15f505c4711d92f6be1c48535324f6d1bfeac04086d2b"
       },
       "plot": "1-STC",
-      "date": "2018-02-03"
+      "date": "2018-02-03",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -120376,13 +120629,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.157887+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.412089+00:00",
       "source_checksum": {
         "10m_sha256": "7a78fe03ef106d1d7cb4174a1342e8a430ba7279bf5397e926b7313968b4a3ef",
         "20m_sha256": "ca6391ad020d306a90bc84664611f1935472b07d079b4f2e8bc7298168711916"
       },
       "plot": "1-STC",
-      "date": "2018-02-08"
+      "date": "2018-02-08",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -120623,13 +120878,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.234596+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.483290+00:00",
       "source_checksum": {
         "10m_sha256": "3fa26c3de8e6844e94a4d124a72fd7e3c640e043a3332adb54c26f234db0bab0",
         "20m_sha256": "47106ef431a0dda87aa276181b29078796033b869d42a4a13b8ca6568de05256"
       },
       "plot": "1-STC",
-      "date": "2018-02-13"
+      "date": "2018-02-13",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -120870,13 +121127,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.311645+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.553518+00:00",
       "source_checksum": {
         "10m_sha256": "756e0622d91fcc5a1992df49a6e31c8ad594f335e8f1de6c068477caf708d797",
         "20m_sha256": "1cd5571e603bf1b2092a595ecea9e58c07e971195d597f6c3d4eb9a513c2ce4e"
       },
       "plot": "1-STC",
-      "date": "2018-03-10"
+      "date": "2018-03-10",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -121117,13 +121376,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.391867+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.620728+00:00",
       "source_checksum": {
         "10m_sha256": "6ab5283c8b11d6f8e675a31863e9c3074dd10929ec9108e94e7f2088bf2c3dc4",
         "20m_sha256": "65964613dd444696c72955ef41875bbec2d1497e7cfb8de19477075770725986"
       },
       "plot": "1-STC",
-      "date": "2018-04-09"
+      "date": "2018-04-09",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -121364,13 +121625,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.475103+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.691176+00:00",
       "source_checksum": {
         "10m_sha256": "14dd10ee792e40cf34547411315ac4810a0b07897cfbe30bd521d960e0bc0656",
         "20m_sha256": "bab991b7b976d62ff6e2889b5bd30344687013f4e1694554bd684f8cb6cdb583"
       },
       "plot": "1-STC",
-      "date": "2018-10-31"
+      "date": "2018-10-31",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     },
     {
       "preview_kind": "SOURCE_TIFF_QA_REVIEW",
@@ -121611,13 +121874,15 @@
       "cross_date_comparison_status": "NOT_APPROVED_PENDING_RADIOMETRIC_METADATA",
       "analysis_warning": "Per-scene index statistics use source TIFF band ratios and SCL classes 2,4,5,6. Source product baseline/BOA offsets are absent; do not infer quantitative cross-date change or flood extent. Cloudy pixels remain viewable in RGB.",
       "processing_status": "PARTIAL",
-      "ingestion_timestamp": "2026-10-12T13:24:03.564168+00:00",
+      "ingestion_timestamp": "2026-10-12T13:32:36.759702+00:00",
       "source_checksum": {
         "10m_sha256": "cbc4558858ce42e34648f7dda0f7840282b4cc56555faf7dfd85d3aff6544bc6",
         "20m_sha256": "ff2342b294b330afe51caeff9cce788c2fbfed6b63d540c78f772da04475f4cd"
       },
       "plot": "1-STC",
-      "date": "2018-12-25"
+      "date": "2018-12-25",
+      "source": "generated",
+      "algorithm": "ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
     }
   ],
   "render_status": {

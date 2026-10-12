@@ -50,6 +50,8 @@ def main():
             row.update(result)
             row.pop("plot",None); row.pop("date",None); row.pop("source",None)
             row["plot"]=args.plot;row["date"]=date
+            row["source"]="generated"
+            row["algorithm"]="ORIGINAL_SENTINEL2_TIFF_ARCHIVE_QA_REVIEW"
             row["preview_kind"]="SOURCE_TIFF_QA_REVIEW"
             row["source_qa_status"]="QA_REVIEWED"
             row["analysis_status"]="PARTIAL"
