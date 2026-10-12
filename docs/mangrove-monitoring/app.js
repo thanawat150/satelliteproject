@@ -45,7 +45,7 @@ function timeSeriesRows(plot,key){
  }).filter(x=>x.series_value!==null&&x.series_value!==undefined&&
              x.series_value!==''&&Number.isFinite(Number(x.series_value)));
 }
-function timeSeriesInfo(key,rows){
+function timeSeriesInfo(plot,key,rows){
  const n=rows.length,first=rows[0],last=rows.at(-1),unit=seriesUnit(key);
  const isRain=seriesMeta(key)[1]==='mm';
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
@@ -98,7 +98,7 @@ function timeSeriesPanel(plot,key){
   '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID')+'</p></div>'+
   '<label class="time-series-select">เลือกค่าที่แสดงบนกราฟ<select id="timeseries-metric-select" aria-label="เลือกค่ากราฟ Time Series">'+seriesOptions(key)+'</select></label>'+
   '</div><div id="time-series-visual">'+svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral})+'</div>'+
-  '<div id="time-series-details">'+timeSeriesInfo(key,good)+'</div></div>';
+  '<div id="time-series-details">'+timeSeriesInfo(plot,key,good)+'</div></div>';
 }
 function changeTimeSeriesMetric(key){
  if(!Object.prototype.hasOwnProperty.call(SERIES,key))return;
@@ -111,7 +111,7 @@ function changeTimeSeriesMetric(key){
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID');
  if(graphic)graphic.innerHTML=svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral});
- if(info)info.innerHTML=timeSeriesInfo(key,good);
+ if(info)info.innerHTML=timeSeriesInfo(plot,key,good);
  if(kpis)kpis.innerHTML=timeSeriesKpis(plot,key);
 }
 const qaOk=r=>r&&r.analysis_status==='AUTO_VALID';
