@@ -950,17 +950,27 @@ document.querySelectorAll('[data-jump]').forEach(x=>x.addEventListener('click',(
 }));
 document.getElementById('calPrev')?.addEventListener('click',()=>shiftCalendar(-1));
 document.getElementById('calNext')?.addEventListener('click',()=>shiftCalendar(1));
-document.getElementById('calToday')?.addEventListener('click',()=>{
-  const n=new Date();
-  calendarCursor=new Date(n.getFullYear(),n.getMonth(),1);
-  range='today';
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  document.querySelector('.tab[data-range="today"]')?.classList.add('active');
-  render();
-});
+document.getElementById('calToday')?.addEventListener('click',()=>setSelectedDate(todayISO(),true));
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active'); range=b.dataset.range; render();
+  b.classList.add('active');
+  range=b.dataset.range;
+  const u=new URL(window.location.href);u.searchParams.delete('date');
+  window.history.replaceState(null,'',u.pathname+u.search+u.hash);
+  if(range==='today'){
+    const date=todayISO();
+    document.getElementById('postDate').value=date;
+    calendarCursor=new Date(Number(date.slice(0,4)),Number(date.slice(5,7))-1,1);
+  }
+  render();
+});
+document.getElementById('dateApply')?.addEventListener('click',()=>setSelectedDate(document.getElementById('postDate').value,true));
+document.getElementById('postDate')?.addEventListener('change',event=>setSelectedDate(event.target.value));
+document.getElementById('dateRefresh')?.addEventListener('click',async()=>{
+  const button=document.getElementById('dateRefresh');button.disabled=true;button.textContent='กำลังอัปเดต…';
+  try{await refreshPostingData();toast('ดึงข้อมูลตาราง GitHub ล่าสุดแล้ว');}
+  catch(error){console.error('DATA_REFRESH_FAILED',error);toast('รีเฟรชไม่สำเร็จ ใช้ข้อมูลที่โหลดไว้ก่อนหน้า');}
+  finally{button.disabled=false;button.textContent='↻ รีเฟรชตาราง';}
 });
 function tick(){
   const now=new Date();
@@ -968,17 +978,27 @@ function tick(){
     timeZone:'Asia/Bangkok',weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false
   }).format(now)+' น.';
 }
-try{
-  tick();
-  setInterval(tick,30000);
-  render();
-}catch(e){
-  console.error('DASHBOARD_STARTUP_ERROR',e);
-  const nowEl=document.getElementById('now');
-  if(nowEl) nowEl.textContent='โหลดข้อมูลไม่สำเร็จ';
-  const contentEl=document.getElementById('todayContentList');
-  if(contentEl) contentEl.innerHTML='<div class="empty">เกิดข้อผิดพลาดในการโหลดหน้า กรุณารีเฟรชอีกครั้ง</div>';
+async function initPostingHub(){
+  tick();setInterval(tick,30000);
+  const params=new URLSearchParams(window.location.search), requested=params.get('date');
+  const ds=validPostDate(requested)?requested:todayISO();
+  document.getElementById('postDate').value=ds;
+  calendarCursor=new Date(Number(ds.slice(0,4)),Number(ds.slice(5,7))-1,1);
+  if(validPostDate(requested))range='date:'+requested;
+  await refreshPostingData();
 }
+initPostingHub().catch(error=>{
+  console.error('DASHBOARD_STARTUP_ERROR',error);
+  const node=document.getElementById('dateSource');
+  if(node)node.textContent='อ่านข้อมูล GitHub ไม่สำเร็จ · กดรีเฟรช';
+  const contentEl=document.getElementById('todayContentList');
+  if(contentEl)contentEl.innerHTML='<div class="empty">อ่านตารางโพสต์ไม่สำเร็จ ลองรีเฟรชอีกครั้ง</div>';
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&postingDataLoaded){
+    refreshPostingData().catch(error=>console.warn('BACKGROUND_REFRESH_FAILED',error));
+  }
+});
 </script>
 </body>
 </html>
