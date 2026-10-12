@@ -32,9 +32,15 @@ function seriesOptions(selected){
 }
 function timeSeriesRows(plot,key){
  const rainKey=key==='rain_prev_1_utc_day_mm'||key==='rain_prev_3_utc_days_mm';
+ const spectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  const rain=new Map((cache.environment?.plots?.[plot]?.scenes||[]).filter(r=>r.data_quality==='COMPLETE').map(r=>[r.date,r]));
- return plotScenes(plot).filter(qaOk).map(x=>{
-  const v=rainKey?rain.get(x.date)?.[key]:x[key];
+ return plotScenes(plot).filter(x=>{
+  if(rainKey||!spectral)return qaOk(x);
+  const source=x.source_index_stats?.[key];
+  return qaOk(x)||(source&&Number(source.sample_pixels)>0&&Number.isFinite(Number(source.plot_mean)));
+ }).map(x=>{
+  const v=rainKey?rain.get(x.date)?.[key]:spectral&&x.source_index_stats?.[key]?
+   x.source_index_stats[key].plot_mean:x[key];
   return {...x,series_value:v};
  }).filter(x=>x.series_value!==null&&x.series_value!==undefined&&
              x.series_value!==''&&Number.isFinite(Number(x.series_value)));
@@ -42,44 +48,49 @@ function timeSeriesRows(plot,key){
 function timeSeriesInfo(key,rows){
  const n=rows.length,first=rows[0],last=rows.at(-1),unit=seriesUnit(key);
  const isRain=seriesMeta(key)[1]==='mm';
+ const isSpectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ const qaCount=rows.filter(qaOk).length,partialCount=rows.length-qaCount;
  const table=rows.map(row=>'<tr><td>'+html(row.date)+'</td><td class="num">'+
-   seriesFmt(key,row.series_value)+' '+html(unit)+'</td><td>AUTO_VALID</td></tr>').join('');
- const spectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
- const refs=spectral?rows.map(row=>(cache.imagery?.generated_items||[]).find(x=>
+   seriesFmt(key,row.series_value)+' '+html(unit)+'</td><td>'+html(row.analysis_status||'AUTO_VALID')+'</td></tr>').join('');
+ const refs=isSpectral?rows.map(row=>(cache.imagery?.generated_items||[]).find(x=>
    x.plot===state.plot&&x.date===row.date)?.index_stats?.[key]):[];
- const verified=spectral&&refs.length>0&&refs.every(x=>x&&x.sample_pixels>0&&
+ const verified=isSpectral&&refs.length>0&&refs.every(x=>x&&x.sample_pixels>0&&
    x.embedded_tif_match!==false&&Number.isFinite(Number(x.plot_mean)));
  const proof=verified?
-  '<div class="series-proof">ตรวจเทียบ Raster TIFF แล้ว '+refs.length+'/'+rows.length+
-  ' วัน • ค่าเฉลี่ยในผลวิเคราะห์กับที่คำนวณจาก TIFF ตรงกันตาม QA • แต่ยังต้องพิจารณาเมฆ น้ำขึ้นลง และฤดูกาล</div>':
-  (spectral?'<div class="series-proof">กราฟใช้ผลวิเคราะห์จริง แต่หลักฐาน Raster QA รายพิกเซลสำหรับทุกวันที่เลือกยังไม่ครบ • ดูข้อจำกัดในหน้า QA</div>':'');
+  '<div class="series-proof">ตรวจเทียบค่าดัชนีกับ TIFF ต้นทางได้ '+refs.length+'/'+rows.length+
+  ' วัน • จุด PARTIAL ใช้ตรวจดูค่ารายภาพเท่านั้น ไม่ใช่ผลผ่าน QA</div>':
+  (isSpectral?'<div class="series-proof">จุด PARTIAL แสดงค่าเฉลี่ยดัชนีที่คำนวณจาก TIFF เพื่อให้ตรวจดูภาพย้อนหลังได้ แต่ไม่ถือเป็นผลผ่าน QA</div>':'');
  const sparse=n<4?'<div class="notice">มีข้อมูลผ่าน QA เพียง '+n+
    ' วันสำหรับกราฟนี้ • ไม่เพียงพอเป็นค่า Baseline ตามฤดูกาล'+
    (isRain?' ของฝนตามวันภาพ':' และห้ามสรุปการสูญเสียต้นไม้หรือเหตุการณ์น้ำท่วมจากทิศทางเส้น')+'</div>':'';
 
  return '<div class="time-series-summary">'+
-   '<span>ข้อมูลผ่าน QA '+n+' วัน</span>'+
+   '<span>'+(isSpectral?'ค่าดัชนี '+n+' วัน · ผ่าน QA '+qaCount+' · PARTIAL '+partialCount:'ข้อมูลผ่าน QA '+n+' วัน')+'</span>'+
    '<span>ล่าสุด '+(last?html(last.date)+' : <b>'+seriesFmt(key,last.series_value)+' '+unit+'</b>':'ไม่มีค่าที่ใช้ได้')+'</span>'+
-   (n>1?'<span>เปลี่ยนจากวันแรก '+seriesFmt(key,last.series_value-first.series_value)+' '+unit+'</span>':'')+
+   (n>1?'<span>'+((isSpectral&&partialCount)?'ส่วนต่างค่าจุดแรก–ล่าสุด ':'เปลี่ยนจากวันแรก ')+seriesFmt(key,last.series_value-first.series_value)+' '+unit+'</span>':'')+
    '</div>'+sparse+proof+'<details class="series-source-table"><summary>ตรวจตัวเลขที่ใช้วาดกราฟ ('+n+' วัน)</summary><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่ Sentinel-2</th><th>ค่าที่ใช้วาดกราฟ</th><th>QA</th></tr></thead><tbody>'+table+'</tbody></table></div></details><p class="muted tiny">'+(isRain?
    'NASA POWER PRECTOTCORR: ฝนสะสมในวัน UTC ก่อนวันถ่ายภาพ ไม่ใช่ 24/72 ชั่วโมงย้อนหลังจากเวลาผ่านดาวเทียม • แสดงเฉพาะวัน Sentinel-2 ผ่าน QA และมีฝนครบ':
-   'ที่มา: docs/data/nationwide/nationwide_results.json • ค่าจาก Sentinel-2 รายแปลงที่ผ่าน AUTO_VALID เท่านั้น • ไม่ปรับน้ำขึ้นน้ำลง • รูปแบบเส้นเป็นการเชื่อมจุดวันที่มีข้อมูลจริง ไม่ใช่ค่ารายวันต่อเนื่อง')+
+   (isSpectral?'ที่มา: ค่าเฉลี่ยดัชนีจาก TIFF ภายใน Polygon • กราฟแสดงจุดวันที่มีข้อมูลจริงและเชื่อมเพื่อช่วยตรวจดูเท่านั้น • สถานะ PARTIAL, cloud QA และ Processing Baseline/BOA Offset ยังจำกัดการเทียบข้ามวัน; ห้ามใช้สรุปน้ำท่วมหรือ Change Detection':
+   'ที่มา: docs/data/nationwide/nationwide_results.json • ค่าจาก Sentinel-2 รายแปลงที่ผ่าน AUTO_VALID เท่านั้น • ไม่ปรับน้ำขึ้นน้ำลง • รูปแบบเส้นเป็นการเชื่อมจุดวันที่มีข้อมูลจริง ไม่ใช่ค่ารายวันต่อเนื่อง'))+
    '</p>';
 }
 function timeSeriesKpis(plot,key){
  const good=timeSeriesRows(plot,key),first=good[0],last=good.at(-1),unit=seriesUnit(key),label=seriesMeta(key)[0];
- return kpi('วันภาพที่มีค่า',good.length+' / '+validScenes(plot).length,'เฉพาะวันผ่าน QA'+(unit==='มม.'?' และฝนครบ':''))+
+ const isSpectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ const qaCount=good.filter(qaOk).length;
+ return kpi(isSpectral?'วันที่มีค่าดัชนี':'วันภาพที่มีค่า',good.length+' / '+(isSpectral?plotScenes(plot).length:validScenes(plot).length),isSpectral?'QA ผ่าน '+qaCount+' · จุด PARTIAL แสดงเพื่อทบทวนเท่านั้น':'เฉพาะวันผ่าน QA'+(unit==='มม.'?' และฝนครบ':''))+
    kpi(label+' ล่าสุด',last?seriesFmt(key,last.series_value)+' '+unit:'—',last?.date||'ไม่มีข้อมูล')+
    kpi('ค่าแรกที่มีข้อมูล',first?seriesFmt(key,first.series_value)+' '+unit:'—',first?.date||'ไม่มีข้อมูล')+
    kpi('ต่างจากค่าแรก',good.length>=2?seriesFmt(key,last.series_value-first.series_value)+' '+unit:'—','เปรียบเทียบวันจริง ไม่ใช่ข้อสรุปผลกระทบ');
 }
 function timeSeriesPanel(plot,key){
  const meta=seriesMeta(key),good=timeSeriesRows(plot,key);
+ const isSpectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  return '<div class="panel" id="time-series-panel"><div class="section-title time-series-toolbar">'+
   '<div><h2 id="time-series-title">Time Series · '+html(meta[0])+'</h2>'+
-  '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+' · เฉพาะ AUTO_VALID</p></div>'+
+  '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID')+'</p></div>'+
   '<label class="time-series-select">เลือกค่าที่แสดงบนกราฟ<select id="timeseries-metric-select" aria-label="เลือกค่ากราฟ Time Series">'+seriesOptions(key)+'</select></label>'+
-  '</div><div id="time-series-visual">'+svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index'})+'</div>'+
+  '</div><div id="time-series-visual">'+svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral})+'</div>'+
   '<div id="time-series-details">'+timeSeriesInfo(key,good)+'</div></div>';
 }
 function changeTimeSeriesMetric(key){
@@ -90,8 +101,9 @@ function changeTimeSeriesMetric(key){
  const plot=state.plot,meta=seriesMeta(key),good=timeSeriesRows(plot,key);
  const title=$('time-series-title'),subtitle=$('time-series-subtitle'),graphic=$('time-series-visual'),info=$('time-series-details'),kpis=$('analysis-metric-kpis');
  if(title)title.textContent='Time Series · '+meta[0];
- if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+' · เฉพาะ AUTO_VALID';
- if(graphic)graphic.innerHTML=svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index'});
+ const isSpectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID');
+ if(graphic)graphic.innerHTML=svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral});
  if(info)info.innerHTML=timeSeriesInfo(key,good);
  if(kpis)kpis.innerHTML=timeSeriesKpis(plot,key);
 }
@@ -284,9 +296,9 @@ function initMap(where,plots,tall=false){clearMap();const div=$(where);if(!div)r
  setTimeout(()=>{try{map.invalidateSize()}catch(e){}},120);
 }
 function svgChart(rows,key,opts={}){
- const good=rows.filter(x=>qaOk(x)&&x[key]!==null&&x[key]!==undefined&&x[key]!==''&&Number.isFinite(Number(x[key])))
+ const good=rows.filter(x=>(qaOk(x)||(opts.includePartial&&x.source_index_stats?.[opts.key]))&&x[key]!==null&&x[key]!==undefined&&x[key]!==''&&Number.isFinite(Number(x[key])))
      .slice().sort((a,b)=>a.date.localeCompare(b.date));
- if(!good.length)return empty('ยังไม่มีค่าที่ใช้แสดงกราฟ','ไม่ใช้ค่า NO_DATA / PARTIAL หรือข้อมูลฝนที่ขาด');
+ if(!good.length)return empty('ยังไม่มีข้อมูล Scene สำหรับกราฟนี้','ระบบจะแสดงกราฟเมื่อมีวันที่และค่าดัชนีจาก TIFF จริง');
  const vals=good.map(x=>Number(x[key])),minimum=Math.min(...vals),maximum=Math.max(...vals);
  const smallest=opts.unit==='ค่าดัชนี'?0.05:opts.unit==='%'?1:opts.unit==='ไร่'?0.5:2;
  const span=Math.max(maximum-minimum,smallest);
@@ -311,11 +323,12 @@ function svgChart(rows,key,opts={}){
  const zero=(low<0&&high>0)?'<line x1="0" y1="'+(ypos(0)*10)+'" x2="1000" y2="'+(ypos(0)*10)+'" class="ts-zero-line" vector-effect="non-scaling-stroke"/>':'';
  const markers=good.map((r,i)=>{
    const tip=r.date+' · '+(opts.label||key)+' '+format(r[key])+' '+(opts.unit||'');
-   return '<span class="ts-point" role="img" tabindex="0" aria-label="'+html(tip)+'" title="'+html(tip)+'" style="left:'+xpos(i).toFixed(3)+'%;top:'+ypos(r[key]).toFixed(3)+'%"></span>';
+   const partial=!qaOk(r),status=partial?' · PARTIAL ตรวจดูเท่านั้น':'';
+   return '<span class="ts-point'+(partial?' is-partial':'')+'" role="img" tabindex="0" aria-label="'+html(tip+status)+'" title="'+html(tip+status)+'" style="left:'+xpos(i).toFixed(3)+'%;top:'+ypos(r[key]).toFixed(3)+'%"></span>';
  }).join('');
  const count=good.length;
  return '<div class="ts-chart" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
-  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1.00 ถึง +1.00 (ไม่ขยายความต่าง)':'')+'</div>'+
+  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1.00 ถึง +1.00 (ไม่ขยายความต่าง)':'')+(opts.includePartial?' • จุดสีอำพัน = PARTIAL':'')+'</div>'+
   '<div class="ts-chart-layout"><div class="ts-y-axis" aria-hidden="true">'+ticks+'</div>'+
   '<div class="ts-plot" role="group" aria-label="จุดข้อมูล '+count+' วัน มีคำอธิบายค่าที่แต่ละจุด">'+
   '<svg class="ts-chart-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+grid+zero+
@@ -678,3 +691,4 @@ document.addEventListener('click',e=>{const nav=e.target.closest('[data-view]');
 document.addEventListener('change',e=>{const id=e.target.id;if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
 })();
+
