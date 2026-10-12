@@ -12,8 +12,9 @@ const archiveCoverage=await page.evaluate(async()=>{
  return r.ok?r.json():null;
 });
 assert.ok(archiveCoverage,'Archived image coverage audit must be published');
-assert.equal(archiveCoverage.total_plot_dates,466);
-assert.equal(archiveCoverage.required_preview_images,3728);
+assert.ok(archiveCoverage.total_plot_dates>=466,'Published coverage includes legacy archive scenes');
+assert.equal(archiveCoverage.total_plot_dates,archiveCoverage.generated_dates+archiveCoverage.archive_only_dates);
+assert.equal(archiveCoverage.required_preview_images,archiveCoverage.total_plot_dates*8);
 assert.equal(archiveCoverage.incomplete_images,0);
 assert.ok((await page.locator('#view-root').innerText()).includes('136 / 136'),'Overview should preserve original PDD cohort');
 assert.ok((await page.locator('#view-root').innerText()).includes('126 / 136'),'Overview should keep QA count');
@@ -119,6 +120,16 @@ assert.equal(await page.locator('.img-large').count(),0,'Duplicate non-map previ
 assert.equal(await page.locator('.img-compare-grid').count(),0,'Comparison must not repeat the selected image by default');
 assert.equal(await page.locator('.img-gallery').count(),0,'All-indices grid must be opt-in');
 assert.ok(await page.locator('#mmc-geo-map .leaflet-image-layer').count()>=1,'Primary viewer uses a single real georeferenced raster');
+await page.locator('#plot-select').selectOption('1-STC');
+await page.waitForFunction(()=>[...document.querySelectorAll('#image-date option')].some(x=>x.value==='2017-02-13'),null,{timeout:20000});
+await page.locator('#image-date').selectOption('2017-02-13');
+const archiveModes=await page.locator('#image-mode option').evaluateAll(nodes=>nodes.map(x=>x.value));
+assert.ok(['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].every(mode=>archiveModes.includes(mode)),'Archive 1-STC scene exposes all source-derived indices');
+await page.locator('#image-mode').selectOption('mndwi');
+await page.waitForFunction(()=>document.querySelector('#mmc-geo-map .leaflet-image-layer')?.getAttribute('src')?.includes('/imagery/1-STC/2017-02-13/mndwi.png'),null,{timeout:20000});
+assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Archive index viewer discloses unprocessed cloud QA');
+await page.locator('#plot-select').selectOption('13-STC');
+await page.waitForFunction(()=>[...document.querySelectorAll('#image-date option')].some(x=>x.value==='2026-09-29'),null,{timeout:20000});
 for(const plot of ['13-STC','14-VSD']){
  if(await page.locator('#plot-select').inputValue()!==plot)await page.locator('#plot-select').selectOption(plot);
  for(const date of ['2026-10-02','2026-10-07']){
