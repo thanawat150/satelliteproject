@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-12-1stc-2019-2026-v9",
+  "version": "2026-10-12-1stc-2017-2026-v10",
   "source": "Original GeoTIFF-derived images from docs/data/full_preview_part_*.json",
   "coverage": "Existing image products, not all STC/VSD/EVR plots",
   "plot_count": 19,
@@ -100163,6 +100163,834 @@
       "cloud_coverage_pct": null,
       "archive_backfill": true,
       "drive_source_url": "https://drive.google.com/file/d/11OfInNGyhStOirmrdJpKXYGa_HeFn_A-/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2017-02-13",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2017-02-13/true_color.webp",
+        "false_color": "./imagery/1-STC/2017-02-13/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1046,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "1DVi347GkFCwbI4nV7ArvAy2vDQQG4Rn0",
+      "original_tif10_file_id": "1DVi347GkFCwbI4nV7ArvAy2vDQQG4Rn0",
+      "source_tif10_filename": "1-STC_S2_20170213_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20170213_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/1DVi347GkFCwbI4nV7ArvAy2vDQQG4Rn0/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2017-12-20",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2017-12-20/true_color.webp",
+        "false_color": "./imagery/1-STC/2017-12-20/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1046,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "1PUGJcMpEKM-pH2Mjw-hMfgBXFlr9B2EO",
+      "original_tif10_file_id": "1PUGJcMpEKM-pH2Mjw-hMfgBXFlr9B2EO",
+      "source_tif10_filename": "1-STC_S2_20171220_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20171220_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/1PUGJcMpEKM-pH2Mjw-hMfgBXFlr9B2EO/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2018-02-03",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2018-02-03/true_color.webp",
+        "false_color": "./imagery/1-STC/2018-02-03/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1046,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "1r_cTfoYzlOoXviLKGvTgDt5erQiFs2cM",
+      "original_tif10_file_id": "1r_cTfoYzlOoXviLKGvTgDt5erQiFs2cM",
+      "source_tif10_filename": "1-STC_S2_20180203_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20180203_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/1r_cTfoYzlOoXviLKGvTgDt5erQiFs2cM/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2018-02-08",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2018-02-08/true_color.webp",
+        "false_color": "./imagery/1-STC/2018-02-08/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1046,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "15lPWHMLO4SbNR4STAx3exCQM4UfkpOSB",
+      "original_tif10_file_id": "15lPWHMLO4SbNR4STAx3exCQM4UfkpOSB",
+      "source_tif10_filename": "1-STC_S2_20180208_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20180208_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/15lPWHMLO4SbNR4STAx3exCQM4UfkpOSB/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2018-02-13",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2018-02-13/true_color.webp",
+        "false_color": "./imagery/1-STC/2018-02-13/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1046,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "1-k1edOlUBLspBM8xanZyscB-vvO2-7eX",
+      "original_tif10_file_id": "1-k1edOlUBLspBM8xanZyscB-vvO2-7eX",
+      "source_tif10_filename": "1-STC_S2_20180213_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20180213_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/1-k1edOlUBLspBM8xanZyscB-vvO2-7eX/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2018-03-10",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2018-03-10/true_color.webp",
+        "false_color": "./imagery/1-STC/2018-03-10/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1046,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "1ENeJNbRTNAip8Sgtj8AAGhVga69sI_og",
+      "original_tif10_file_id": "1ENeJNbRTNAip8Sgtj8AAGhVga69sI_og",
+      "source_tif10_filename": "1-STC_S2_20180310_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20180310_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/1ENeJNbRTNAip8Sgtj8AAGhVga69sI_og/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2018-04-09",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2018-04-09/true_color.webp",
+        "false_color": "./imagery/1-STC/2018-04-09/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1046,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "18w3mqzoa0jjLBR3T3VxjApgTSmU2ow7D",
+      "original_tif10_file_id": "18w3mqzoa0jjLBR3T3VxjApgTSmU2ow7D",
+      "source_tif10_filename": "1-STC_S2_20180409_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20180409_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/18w3mqzoa0jjLBR3T3VxjApgTSmU2ow7D/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2018-10-31",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2018-10-31/true_color.webp",
+        "false_color": "./imagery/1-STC/2018-10-31/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1036,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 1.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "1Iy49fAKpUFSHyLKwhmxwF-YHu1Slkg21",
+      "original_tif10_file_id": "1Iy49fAKpUFSHyLKwhmxwF-YHu1Slkg21",
+      "source_tif10_filename": "1-STC_S2_20181031_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20181031_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/1Iy49fAKpUFSHyLKwhmxwF-YHu1Slkg21/view"
+    },
+    {
+      "plot": "1-STC",
+      "date": "2018-12-25",
+      "source": "generated",
+      "preview_kind": "VISUAL_ONLY_NON_QA",
+      "modes": [
+        "true_color",
+        "false_color"
+      ],
+      "assets": {
+        "true_color": "./imagery/1-STC/2018-12-25/true_color.webp",
+        "false_color": "./imagery/1-STC/2018-12-25/false_color.webp"
+      },
+      "bounds": [
+        [
+          12.415118278601653,
+          102.1804053320009
+        ],
+        [
+          12.418531815886983,
+          102.18733333481849
+        ]
+      ],
+      "mode_bounds": {
+        "true_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ],
+        "false_color": [
+          [
+            12.415118278601653,
+            102.1804053320009
+          ],
+          [
+            12.418531815886983,
+            102.18733333481849
+          ]
+        ]
+      },
+      "mode_dimensions": {
+        "true_color": [
+          75,
+          37
+        ],
+        "false_color": [
+          75,
+          37
+        ]
+      },
+      "rgb_native_width": 75,
+      "rgb_native_height": 37,
+      "width": 75,
+      "height": 37,
+      "source_resolution_m": {
+        "rgb": 10,
+        "spectral_indices_20m": null
+      },
+      "rgb_renderer_version": "mmc-rgb-fixed-reflectance-v2",
+      "rgb_visual_only_version": "mmc-visual-only-source-indices-v2",
+      "rgb_quality_scope": "plot_polygon",
+      "rgb_plot_sample_pixels": 1046,
+      "rgb_near_white_pct": 0.0,
+      "rgb_invalid_pct": 0.0,
+      "rgb_unclassified_scl_pct": null,
+      "rgb_display_warning": false,
+      "index_stats": {},
+      "index_parity": {},
+      "index_parity_warnings": [],
+      "display_grid": "Original 10m RGB + 20m source-computed indices; clouds remain unmasked",
+      "qa_note": "VISUAL ONLY: original TIFF-derived RGB for visual review; unprocessed for QA and invalid for quantitative index/change analysis.",
+      "source_bands": "Original TIFF B4/B3/B2 true color and B8/B4/B3 false color; unmasked visual display",
+      "source_tif10_file_id": "1u8OuBwBHZIkbEFtYpMoh32W1yHiGFB47",
+      "original_tif10_file_id": "1u8OuBwBHZIkbEFtYpMoh32W1yHiGFB47",
+      "source_tif10_filename": "1-STC_S2_20181225_10m_ALL_SCL0.tif",
+      "original_tif10": "1-STC_S2_20181225_10m_ALL_SCL0.tif",
+      "source_crs": "EPSG:32648",
+      "source_tif10_width": 75,
+      "source_tif10_height": 37,
+      "source_tif10_band_count": 12,
+      "analysis_status": "DISCOVERED_VISUAL_ONLY",
+      "source_qa_status": "UNPROCESSED",
+      "qa_valid_pct": null,
+      "cloud_coverage_pct": null,
+      "archive_backfill": true,
+      "drive_source_url": "https://drive.google.com/file/d/1u8OuBwBHZIkbEFtYpMoh32W1yHiGFB47/view"
     }
   ],
   "render_status": {
@@ -100174,10 +101002,11 @@
   },
   "archive_backfill_qa": {
     "source": "original matching 10m+20m TIFF pairs in plot/date Drive folders",
-    "date_count": 4,
-    "rendered_this_run": 4,
+    "date_count": 13,
+    "rendered_this_run": 13,
     "legacy_missing_ndwi_replaced_with_source_computation": true,
     "scientific_status": "VISUAL_ONLY_NOT_QUALITY_VALIDATED",
-    "archive_missing_modes": 0
+    "archive_missing_modes": 0,
+    "latest_archive_batch": "1-STC 2017-02-13 through 2018-12-25; source TIFF-derived visual-only RGB"
   }
 }
