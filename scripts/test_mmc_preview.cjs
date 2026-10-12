@@ -69,6 +69,13 @@ assert.ok(analysis.includes('AUTO_VALID'),'Analysis must show QA state');
 await page.locator('#timeseries-metric-select').selectOption('mndwi');
 assert.ok(await page.locator('#time-series-panel .ts-point').count()>=2,'Actual QA chart has at least 2 points');
 assert.ok(await page.locator('#timeseries-metric-select').count()===1,'Time Series must have a metric selector alongside the chart');
+await page.locator('#plot-select').selectOption('1-STC');
+await page.locator('#timeseries-metric-select').selectOption('mndwi');
+assert.equal(await page.locator('#time-series-panel .ts-point').count(),133,'1-STC must chart every actual TIFF-derived MNDWI date including PARTIAL review points');
+assert.equal(await page.locator('#time-series-panel .ts-point.is-partial').count(),133,'Every 1-STC PARTIAL point is visibly distinguished');
+assert.ok((await page.locator('#time-series-details').innerText()).includes('ไม่ถือเป็นผลผ่าน QA'),'PARTIAL index chart must disclose that it is not QA-passed');
+await page.locator('#plot-select').selectOption('13-STC');
+await page.locator('#timeseries-metric-select').selectOption('mndwi');
 await page.locator('#timeseries-metric-select').selectOption('water_rai');
 assert.ok((await page.locator('#time-series-title').innerText()).includes('พื้นที่น้ำ'),'Chart title must follow Water metric');
 assert.equal(await page.locator('#metric-select').count(),0,'Only one metric selector is shown for the chart');
@@ -752,3 +759,4 @@ console.log('MMC_PREVIEW_PASS registry=160 qa=126 pdd=136 chart sources=actual p
 await mobile.close();
 }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});
+
