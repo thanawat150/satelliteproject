@@ -32,7 +32,7 @@ function seriesOptions(selected){
 }
 function timeSeriesRows(plot,key){
  const rainKey=key==='rain_prev_1_utc_day_mm'||key==='rain_prev_3_utc_days_mm';
- const spectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ const spectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  const rain=new Map((cache.environment?.plots?.[plot]?.scenes||[]).filter(r=>r.data_quality==='COMPLETE').map(r=>[r.date,r]));
  return plotScenes(plot).filter(x=>{
   if(rainKey||!spectral)return qaOk(x);
@@ -48,7 +48,7 @@ function timeSeriesRows(plot,key){
 function timeSeriesInfo(key,rows){
  const n=rows.length,first=rows[0],last=rows.at(-1),unit=seriesUnit(key);
  const isRain=seriesMeta(key)[1]==='mm';
- const isSpectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  const qaCount=rows.filter(qaOk).length,partialCount=rows.length-qaCount;
  const table=rows.map(row=>'<tr><td>'+html(row.date)+'</td><td class="num">'+
    seriesFmt(key,row.series_value)+' '+html(unit)+'</td><td>'+html(row.analysis_status||'AUTO_VALID')+'</td></tr>').join('');
@@ -78,7 +78,7 @@ function timeSeriesInfo(key,rows){
 }
 function timeSeriesKpis(plot,key){
  const good=timeSeriesRows(plot,key),first=good[0],last=good.at(-1),unit=seriesUnit(key),label=seriesMeta(key)[0];
- const isSpectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  const qaCount=good.filter(qaOk).length;
  return kpi(isSpectral?'วันที่มีค่าดัชนี':'วันภาพที่มีค่า',good.length+' / '+(isSpectral?plotScenes(plot).length:validScenes(plot).length),isSpectral?'QA ผ่าน '+qaCount+' · จุด PARTIAL แสดงเพื่อทบทวนเท่านั้น':'เฉพาะวันผ่าน QA'+(unit==='มม.'?' และฝนครบ':''))+
    kpi(label+' ล่าสุด',last?seriesFmt(key,last.series_value)+' '+unit:'—',last?.date||'ไม่มีข้อมูล')+
@@ -87,7 +87,7 @@ function timeSeriesKpis(plot,key){
 }
 function timeSeriesPanel(plot,key){
  const meta=seriesMeta(key),good=timeSeriesRows(plot,key);
- const isSpectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  return '<div class="panel" id="time-series-panel"><div class="section-title time-series-toolbar">'+
   '<div><h2 id="time-series-title">Time Series · '+html(meta[0])+'</h2>'+
   '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID')+'</p></div>'+
@@ -103,7 +103,7 @@ function changeTimeSeriesMetric(key){
  const plot=state.plot,meta=seriesMeta(key),good=timeSeriesRows(plot,key);
  const title=$('time-series-title'),subtitle=$('time-series-subtitle'),graphic=$('time-series-visual'),info=$('time-series-details'),kpis=$('analysis-metric-kpis');
  if(title)title.textContent='Time Series · '+meta[0];
- const isSpectral=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID');
  if(graphic)graphic.innerHTML=svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral});
  if(info)info.innerHTML=timeSeriesInfo(key,good);
@@ -133,7 +133,7 @@ function plotScenes(code){
   return {...row,analysis_status:row.analysis_status==='AUTO_VALID'?row.analysis_status:'PARTIAL',
    qa_valid_pct:image.qa_valid_pct??row.qa_valid_pct,cloud_coverage_pct:image.cloud_coverage_pct,
    source_index_stats:stats,radiometry_status:image.radiometry_status,
-   ...Object.fromEntries(['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>[k,stats[k]?.plot_mean??row[k]]))};
+   ...Object.fromEntries(['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>[k,stats[k]?.plot_mean??row[k]]))};
  }).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
 }
 function plotChanges(code){return cache.changes.get(code)||[];}
@@ -391,7 +391,7 @@ function twinQuality(code){
 function plotTwin(code){
  const q=twinQuality(code),latest=q.latest;
  const imgs=q.images.filter(x=>x.date===latest?.date),idx=imgs[0]?.index_stats||{};
- const metric=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>{
+ const metric=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>{
   const v=idx[k],raw=latest?.[k],n=v?.plot_mean??raw;
   return '<tr><td>'+html(k.toUpperCase())+'</td><td class="num">'+(n==null?'—':fmt(n,4))+'</td><td>'+html(v?.formula||'ดูวิธีคำนวณใน Index QA')+'</td></tr>';
  }).join('');
@@ -507,7 +507,7 @@ function analysisPage(){const p=plotOf(state.plot),sc=plotScenes(state.plot);
  '<div class="controls"><label>แปลง <select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label>'+btn('ดูแปลงบนแผนที่','setview','map')+'</div>'+
  (p?'<div class="grid kpis" id="analysis-metric-kpis">'+timeSeriesKpis(state.plot,key)+'</div>':'')+
  '<section class="panel" id="imagery-explorer"></section>'+timeSeriesPanel(state.plot,key)+
- '<div class="panel"><div class="panel-header"><h2>ประวัติค่าดัชนีและคุณภาพภาพ</h2><small>ดัชนีจาก TIFF แสดงค่าเฉลี่ยจริงรายภาพ • พื้นที่น้ำ/พืชแสดงเฉพาะผล QA ที่อนุมัติ</small></div><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่ถ่ายภาพ</th><th>QA</th><th>% ใช้ได้</th><th>NDVI</th><th>NDRE</th><th>NDMI (B8A)</th><th>NDWI</th><th>MNDWI</th><th>BSI</th><th>Water ไร่</th><th>Vegetation ไร่</th></tr></thead><tbody>'+sc.map(x=>'<tr><td>'+html(x.date)+'</td><td>'+tag(x.analysis_status,qaOk(x)?'':x.analysis_status==='PARTIAL'?'warn':'danger')+'</td><td class="num">'+fmt(x.qa_valid_pct)+'</td>'+['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>'<td class="num">'+(qaOk(x)||x.source_index_stats?fmt(x[k],4):'—')+'</td>').join('')+['water_rai','vegetation_rai'].map(k=>'<td class="num">'+(qaOk(x)?fmt(x[k],2):'—')+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></div>'+
+ '<div class="panel"><div class="panel-header"><h2>ประวัติค่าดัชนีและคุณภาพภาพ</h2><small>ดัชนีจาก TIFF แสดงค่าเฉลี่ยจริงรายภาพ • พื้นที่น้ำ/พืชแสดงเฉพาะผล QA ที่อนุมัติ</small></div><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่ถ่ายภาพ</th><th>QA</th><th>% ใช้ได้</th><th>NDVI</th><th>NDRE</th><th>NDMI (B8A)</th><th>NDWI</th><th>MNDWI</th><th>BSI</th><th>Water ไร่</th><th>Vegetation ไร่</th></tr></thead><tbody>'+sc.map(x=>'<tr><td>'+html(x.date)+'</td><td>'+tag(x.analysis_status,qaOk(x)?'':x.analysis_status==='PARTIAL'?'warn':'danger')+'</td><td class="num">'+fmt(x.qa_valid_pct)+'</td>'+['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>'<td class="num">'+(qaOk(x)||x.source_index_stats?fmt(x[k],4):'—')+'</td>').join('')+['water_rai','vegetation_rai'].map(k=>'<td class="num">'+(qaOk(x)?fmt(x[k],2):'—')+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></div>'+
  message('การเพิ่มน้ำไม่ได้แปลว่า “น้ำท่วม” ทุกครั้ง โดยเฉพาะป่าชายเลนที่มีอิทธิพลน้ำขึ้นน้ำลง ต้องพิจารณาเวลา ฤดูกาล ภาพหลายวัน และหลักฐานภาคสนาม','blue')+
  message('คำอธิบายดัชนี: NDMI ชุดนี้ใช้ B8A/B11 ตาม TIFF • NDWI ใช้ Green B3 กับ NIR B8 (McFeeters) จึงติดลบได้ตามปกติในพื้นที่ป่าที่พืชสะท้อน NIR สูง • MNDWI ติดลบในป่าเป็นเรื่องปกติ และ BSI ติดลบในพื้นที่พืชไม่ได้หมายความว่าข้อมูลผิด • ค่ารายงานเดิมเทียบได้กับค่า TIFF ตรวจใหม่ใน Satellite Explorer','blue');
 }
@@ -647,7 +647,7 @@ function download(name,content,type){const b=new Blob([content],{type});const u=
 function doAction(action,value){if(action==='waterimage'){const plot=value||state.waterPlot||state.plot;setView('insights',plot);window.MMCImagery?.selectDate(state.waterDatePlot===plot?state.waterDate:plotScenes(plot).at(-1)?.date,'mndwi');return;}if(action==='setview'){setView(value);return;}if(action==='plot'){setView('plots',value);return;}if(action==='analyse'){setView('analysis',value);return;}if(action==='insight'){setView('insights',value);return;}if(action==='print'){window.print();return;}if(action==='external'){window.open(new URL(value,location.href).href,'_blank','noopener');return;}
  if(action==='exportgeo'){const arr=value==='filter'?filtered().filter(x=>x.geometry):[plotOf(value)].filter(x=>x&&x.geometry);if(!arr.length){toast('แปลงนี้ไม่มี Boundary ที่สามารถส่งออกได้');return;}download(value==='filter'?'mmc_filtered_plots.geojson':value+'_boundary.geojson',JSON.stringify({type:'FeatureCollection',features:arr.map(x=>({type:'Feature',properties:{plot:x.code,province:x.province,boundary_source:x.group},geometry:x.geometry}))}),'application/geo+json');return;}
  if(action==='exportindexqa'){
- const modes=['ndvi','ndre','ndmi','ndwi','mndwi','bsi'];
+ const modes=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'];
  const rows=[];
  for(const item of cache.imagery?.generated_items||[]){
   for(const m of modes){
