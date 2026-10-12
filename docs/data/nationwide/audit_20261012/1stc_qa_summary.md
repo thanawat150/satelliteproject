@@ -10,3 +10,4 @@
 - 56 scenes have <60% SCL-valid pixels; see `1stc_qa_review.csv`. These remain viewable.
 - All scenes remain `PARTIAL`: archive TIFFs omit processing baseline and BOA offsets. Do not compare cross-date index values or infer inundated area until radiometric metadata is verified.
 - RGB and false color retain all source-valid pixels, including SCL cloud/unclassified classes, for visual review.
+
