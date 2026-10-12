@@ -70,6 +70,8 @@ function appendDriveLinks(lines, post, prefix = '') {
     lines.push(prefix + '⚠️ ยังไม่พบลิงก์ Google Drive ที่ยืนยันแล้วสำหรับคลิปนี้');
   } else if (post.drive_match_method === 'manual_visual_topic_match') {
     lines.push(prefix + 'หมายเหตุ: ตรวจว่าไฟล์ Drive ตรงกับหัวข้อแล้ว แต่ยังไม่ได้เทียบไฟล์ว่าตรงกับเวอร์ชันใน Metricool ทุกเฟรม');
+  } else if (post.drive_match_method === 'topic_folder_unverified') {
+    lines.push(prefix + '⚠️ ลิงก์นี้เป็นไฟล์ที่พบในโฟลเดอร์หัวข้อเดียวกัน ยังไม่ได้ยืนยันว่าเป็นคลิปหรือเวอร์ชันเดียวกับ Metricool โปรดตรวจภาพก่อนโพสต์');
   }
 }
 function titleForPost(post) { return String(post.title || '').trim(); }
