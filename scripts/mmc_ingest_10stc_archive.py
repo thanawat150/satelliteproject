@@ -70,6 +70,10 @@ def main():
  mp=MMC/"imagery_manifest.json";manifest=read(mp);generated={(x.get("plot"),x.get("date")):x for x in manifest.get("generated_items",[])}
  rp=DATA/"nationwide_results.json";results=read(rp);scenes={(x.get("plot"),x.get("date")):x for x in results.get("scenes",[])}
  failures=[];qa=[];dups=[];seen={};stamp=datetime.now(timezone.utc).isoformat()
+ if (AUDIT/"10stc_qa_review.csv").exists():
+  with (AUDIT/"10stc_qa_review.csv").open(encoding="utf-8-sig",newline="") as f:qa=list(csv.DictReader(f))
+ if (AUDIT/"10stc_duplicate_files.csv").exists():
+  with (AUDIT/"10stc_duplicate_files.csv").open(encoding="utf-8-sig",newline="") as f:dups=list(csv.DictReader(f))
  with tempfile.TemporaryDirectory(prefix="mmc-10stc-") as td:
   for date in sorted(groups):
    files=groups[date];old=generated.get((plot,date),{});
