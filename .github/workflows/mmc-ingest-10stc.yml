@@ -25,6 +25,10 @@ jobs:
           python-version: "3.11"
       - name: Install raster processing libraries
         run: python -m pip install "gdown==6.4.2" numpy rasterio pillow
+      - name: Check ingestion and browser script syntax
+        run: |
+          python -m py_compile scripts/mmc_ingest_10stc_archive.py scripts/mmc_render_imagery.py
+          node --check docs/mangrove-monitoring/app.js
       - name: Ingest actual source TIFF archive
         run: python scripts/mmc_ingest_10stc_archive.py --plot 10-STC
       - name: Validate published outputs
