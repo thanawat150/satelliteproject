@@ -33,6 +33,26 @@ function authorized(request) {
   return !!expected && supplied === expected;
 }
 
+
+function verifiedDriveLink(value) {
+  try {
+    const url = new URL(String(value || '').trim());
+    return url.protocol === 'https:' && url.hostname === 'drive.google.com' ? url.toString() : '';
+  } catch { return ''; }
+}
+
+function resolveDriveDownload(body) {
+  const id = String(body.drive_file_id || '').trim();
+  if (/^[a-zA-Z0-9_-]{12,}$/.test(id)) {
+    return 'https://drive.google.com/uc?export=download&id=' + encodeURIComponent(id);
+  }
+  return verifiedDriveLink(body.download_url) || verifiedDriveLink(body.drive_url);
+}
+
+function containsMetricoolUrl(value) {
+  return /https?:\/\/[^\s]*metricool\.com\//i.test(String(value || ''));
+}
+
 function platformText(platforms) {
   if (!platforms) return '';
   if (Array.isArray(platforms)) return platforms.map(x => String(x).trim()).filter(Boolean).join(' + ');
@@ -51,9 +71,13 @@ export async function POST(request) {
 
   if (Array.isArray(body.messages)) {
     messages = body.messages;
-  } else if (body.download_url || body.platforms || body.post_text) {
-    // 1) Download link for the clip only.
-    if (body.download_url) messages.push(String(body.download_url).trim());
+  } else if (body.download_url || body.drive_url || body.drive_file_id || body.platforms || body.post_text) {
+    // The caller must supply a verified Google Drive file, not a Metricool media URL.
+    const drive = resolveDriveDownload(body);
+    if ((body.download_url || body.drive_url || body.drive_file_id) && !drive) {
+      return Response.json({ok:false,error:'Google Drive link or drive_file_id required; Metricool media links cannot be used for downloads'}, {status:422});
+    }
+    if (drive) messages.push(drive);
 
     // 2) Platform(s) for this same clip, kept as a separate LINE message.
     const p = platformText(body.platforms);
@@ -63,6 +87,10 @@ export async function POST(request) {
     if (body.post_text) messages.push(String(body.post_text).trim());
   } else if (body.text) {
     messages = [body.text];
+  }
+
+  if (messages.some(containsMetricoolUrl)) {
+    return Response.json({ok:false,error:'Metricool media links are not accepted for LINE downloads; supply a verified Google Drive link'}, {status:422});
   }
 
   try {
