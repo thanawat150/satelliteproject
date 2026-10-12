@@ -68,6 +68,8 @@ function appendDriveLinks(lines, post, prefix = '') {
   if (links.download) lines.push(prefix + '📥 ดาวน์โหลดจาก Google Drive: ' + links.download);
   if (!links.view && !links.download) {
     lines.push(prefix + '⚠️ ยังไม่พบลิงก์ Google Drive ที่ยืนยันแล้วสำหรับคลิปนี้');
+  } else if (post.drive_match_method === 'manual_visual_topic_match') {
+    lines.push(prefix + 'หมายเหตุ: ตรวจว่าไฟล์ Drive ตรงกับหัวข้อแล้ว แต่ยังไม่ได้เทียบไฟล์ว่าตรงกับเวอร์ชันใน Metricool ทุกเฟรม');
   }
 }
 function titleForPost(post) { return String(post.title || '').trim(); }
@@ -97,7 +99,10 @@ export function dayPlanText(plan, heading = 'วันนี้ต้องล�
     lines.push('Shopee Video ' + a.shopee + ' — ' + a.product);
     lines.push('TikTok ขาย ' + a.tiktok + ' — ' + a.product);
     lines.push('ไฟล์: ' + a.file);
-    if (a.file_id) lines.push('Drive: https://drive.google.com/file/d/' + encodeURIComponent(a.file_id) + '/view');
+    if (a.file_id) {
+      lines.push('📂 เปิดใน Google Drive: https://drive.google.com/file/d/' + encodeURIComponent(a.file_id) + '/view');
+      lines.push('📥 ดาวน์โหลด Google Drive: https://drive.google.com/uc?export=download&id=' + encodeURIComponent(a.file_id));
+    }
   }
   if (plan.content.length) {
     lines.push('', '🎬 คิวคอนเทนต์แยกแพลตฟอร์ม');
@@ -120,13 +125,17 @@ export function affiliatePostMessage(affiliate, date) {
   const link = affiliate.file_id
     ? 'https://drive.google.com/file/d/' + encodeURIComponent(affiliate.file_id) + '/view'
     : 'ยังไม่พบลิงก์ไฟล์';
+  const download = affiliate.file_id
+    ? 'https://drive.google.com/uc?export=download&id=' + encodeURIComponent(affiliate.file_id)
+    : '';
   return [
     '🛒 Affiliate | ' + shortDate(date),
     'Shopee Video ' + affiliate.shopee,
     'TikTok ขาย ' + affiliate.tiktok,
     'สินค้าตามแผน: ' + affiliate.product,
     'ไฟล์: ' + affiliate.file,
-    '📂 Google Drive: ' + link,
+    '📂 เปิดใน Google Drive: ' + link,
+    ...(download ? ['📥 ดาวน์โหลดจาก Google Drive: ' + download] : []),
     '',
     '⚠️ ยังไม่ได้ตรวจว่าเนื้อหาไฟล์ตรงกับสินค้า และยังไม่มีแคปชั่นรายแพลตฟอร์มที่ตรวจแล้ว จึงไม่ดึงแคปชั่นจาก queue.json เก่ามาใช้',
     'เลือกดูสถานะที่บันทึกเอง: พิมพ์ “สถานะ”',
