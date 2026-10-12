@@ -18,12 +18,40 @@ def digest(p):
   for b in iter(lambda:f.read(1048576),b""):h.update(b)
  return h.hexdigest()
 def download(fid,p):
- got=gdown.download(id=fid,output=str(p),quiet=True,timeout=120,retries=3,use_cookies=False)
- if not got or not p.is_file() or p.stat().st_size<1024:raise RuntimeError("Drive download unavailable or incomplete")
- with rasterio.open(p) as d:
-  if not d.crs or not d.width or not d.height or not d.count:raise RuntimeError("Unreadable TIFF")
-  valid=int(np.count_nonzero(d.dataset_mask()))
-  return {"crs":d.crs.to_string(),"width":d.width,"height":d.height,"pixel_size":[abs(d.transform.a),abs(d.transform.e)],"bands":d.count,"band_descriptions":[x or "" for x in d.descriptions],"nodata":d.nodata,"valid_coverage_pct":round(100*valid/(d.width*d.height),4)}
+ p.parent.mkdir(parents=True,exist_ok=True)
+ errors=[]
+ from urllib.parse import quote
+ from urllib.request import Request,urlopen
+ urls=["https://drive.usercontent.google.com/download?id="+quote(fid)+"&export=download&confirm=t","https://drive.google.com/uc?export=download&id="+quote(fid)]
+ for url in urls:
+  try:
+   req=Request(url,headers={"User-Agent":"Mozilla/5.0 MMC-source-raster"})
+   with urlopen(req,timeout=45) as response, p.open("wb") as out:
+    if "text/html" in response.headers.get("content-type","").lower():raise RuntimeError("Google Drive returned HTML")
+    total=0
+    while True:
+     block=response.read(256*1024)
+     if not block:break
+     total+=len(block)
+     if total>512*1024*1024:raise RuntimeError("Source exceeds safety limit")
+     out.write(block)
+   if p.stat().st_size<1024:raise RuntimeError("Downloaded source is too small")
+   with rasterio.open(p) as d:
+    if not d.crs or not d.width or not d.height or not d.count:raise RuntimeError("Unreadable TIFF")
+    valid=int(np.count_nonzero(d.dataset_mask()))
+    return {"crs":d.crs.to_string(),"width":d.width,"height":d.height,"pixel_size":[abs(d.transform.a),abs(d.transform.e)],"bands":d.count,"band_descriptions":[x or "" for x in d.descriptions],"nodata":d.nodata,"valid_coverage_pct":round(100*valid/(d.width*d.height),4)}
+  except Exception as exc:
+   errors.append(str(exc)[:140]);p.unlink(missing_ok=True)
+ try:
+  got=gdown.download(id=fid,output=str(p),quiet=True,timeout=25,retries=1,use_cookies=True)
+  if got and p.is_file() and p.stat().st_size>=1024:
+   with rasterio.open(p) as d:
+    if d.crs and d.count:
+     valid=int(np.count_nonzero(d.dataset_mask()))
+     return {"crs":d.crs.to_string(),"width":d.width,"height":d.height,"pixel_size":[abs(d.transform.a),abs(d.transform.e)],"bands":d.count,"band_descriptions":[x or "" for x in d.descriptions],"nodata":d.nodata,"valid_coverage_pct":round(100*valid/(d.width*d.height),4)}
+ except Exception as exc:errors.append(str(exc)[:140])
+ p.unlink(missing_ok=True)
+ raise RuntimeError("Drive download failed: "+" | ".join(errors))
 def main():
  ap=argparse.ArgumentParser();ap.add_argument("--plot",default="10-STC");a=ap.parse_args();plot=a.plot
  if plot!="10-STC":raise SystemExit("This ingestion is pinned to 10-STC")
@@ -42,9 +70,15 @@ def main():
  mp=MMC/"imagery_manifest.json";manifest=read(mp);generated={(x.get("plot"),x.get("date")):x for x in manifest.get("generated_items",[])}
  rp=DATA/"nationwide_results.json";results=read(rp);scenes={(x.get("plot"),x.get("date")):x for x in results.get("scenes",[])}
  failures=[];qa=[];dups=[];seen={};stamp=datetime.now(timezone.utc).isoformat()
+ if (AUDIT/"10stc_qa_review.csv").exists():
+  with (AUDIT/"10stc_qa_review.csv").open(encoding="utf-8-sig",newline="") as f:qa=list(csv.DictReader(f))
+ if (AUDIT/"10stc_duplicate_files.csv").exists():
+  with (AUDIT/"10stc_duplicate_files.csv").open(encoding="utf-8-sig",newline="") as f:dups=list(csv.DictReader(f))
  with tempfile.TemporaryDirectory(prefix="mmc-10stc-") as td:
   for date in sorted(groups):
-   files=groups[date];tmp=Path(td)/date;tmp.mkdir(parents=True);paths={};meta={};checks={}
+   files=groups[date];old=generated.get((plot,date),{});
+   if old.get("assets") and old.get("source_checksum") and old.get("original_tif10_file_id")==files["10"]["drive_file_id"] and old.get("original_tif20_file_id")==files["20"]["drive_file_id"]:continue
+   tmp=Path(td)/date;tmp.mkdir(parents=True);paths={};meta={};checks={}
    try:
     for res in ("10","20","60"):
      p=tmp/(res+"m.tif");meta[res]=download(files[res]["drive_file_id"],p);paths[res]=p;checks[res]=digest(p)
