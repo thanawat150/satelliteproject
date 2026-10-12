@@ -72,6 +72,8 @@ function appendDriveLinks(lines, post, prefix = '') {
     lines.push(prefix + 'หมายเหตุ: ตรวจว่าไฟล์ Drive ตรงกับหัวข้อแล้ว แต่ยังไม่ได้เทียบไฟล์ว่าตรงกับเวอร์ชันใน Metricool ทุกเฟรม');
   } else if (post.drive_match_method === 'topic_folder_unverified') {
     lines.push(prefix + '⚠️ ลิงก์นี้เป็นไฟล์ที่พบในโฟลเดอร์หัวข้อเดียวกัน ยังไม่ได้ยืนยันว่าเป็นคลิปหรือเวอร์ชันเดียวกับ Metricool โปรดตรวจภาพก่อนโพสต์');
+  } else if (post.drive_match_method === 'named_topic_video_outside_demo_folder') {
+    lines.push(prefix + 'หมายเหตุ: เลือกไฟล์วิดีโอที่มีชื่อเดียวกับหัวข้อโพสต์ โดยไม่นำไฟล์ Demo มาใช้ แต่ยังไม่ได้เปรียบเทียบไฟล์กับ Metricool ทุกเฟรม');
   }
 }
 function titleForPost(post) { return String(post.title || '').trim(); }
