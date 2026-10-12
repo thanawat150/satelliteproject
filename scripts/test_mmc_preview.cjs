@@ -127,7 +127,9 @@ const archiveModes=await page.locator('#image-mode option').evaluateAll(nodes=>n
 assert.ok(['ndvi','ndre','ndmi','ndwi','mndwi','bsi'].every(mode=>archiveModes.includes(mode)),'Archive 1-STC scene exposes all source-derived indices');
 await page.locator('#image-mode').selectOption('mndwi');
 await page.waitForFunction(()=>document.querySelector('#mmc-geo-map .leaflet-image-layer')?.getAttribute('src')?.includes('/imagery/1-STC/2017-02-13/mndwi.png'),null,{timeout:20000});
-assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ไม่ผ่าน QA'),'Archive index viewer discloses unprocessed cloud QA');
+assert.ok((await page.locator('#imagery-explorer').innerText()).includes('ยังไม่ยืนยัน Processing Baseline/BOA Offset'),'Archive index viewer discloses radiometric cross-date limitation');
+assert.equal(await page.locator('#imagery-explorer [data-index-stat="mndwi"]').count(),1,'Archive MNDWI shows statistics calculated from verified plot pixels');
+assert.ok((await page.locator('#imagery-explorer [data-index-stat="mndwi"]').innerText()).includes('พิกเซล (20 ม.)'),'Per-scene MNDWI includes its valid pixel count');
 await page.locator('#plot-select').selectOption('13-STC');
 await page.waitForFunction(()=>[...document.querySelectorAll('#image-date option')].some(x=>x.value==='2026-09-29'),null,{timeout:20000});
 for(const plot of ['13-STC','14-VSD']){
