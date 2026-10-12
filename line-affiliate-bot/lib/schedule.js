@@ -42,8 +42,34 @@ export function networkLabel(network) {
 
 function localTime(value) { return String(value || '').slice(11, 16) || '--:--'; }
 function localDay(value) { return String(value || '').slice(0, 10); }
-function mediaUrl(post) { return String(post.media || '').trim(); }
-function masterUrl(post) { return String(post.drive_url || post.download_url || '').trim(); }
+// LINE links MUST point only to an explicitly linked Google Drive asset.
+ // Metricool media URLs are source metadata, never a download fallback.
+function validatedDriveUrl(value) {
+  try {
+    const url = new URL(String(value || '').trim());
+    return url.protocol === 'https:' && url.hostname === 'drive.google.com' ? url.toString() : '';
+  } catch { return ''; }
+}
+
+function googleDriveLinks(post) {
+  const fileId = String(post.drive_file_id || '').trim();
+  const isValidId = /^[a-zA-Z0-9_-]{12,}$/.test(fileId);
+  const view = validatedDriveUrl(post.drive_url) ||
+    (isValidId ? 'https://drive.google.com/file/d/' + encodeURIComponent(fileId) + '/view' : '');
+  const download = validatedDriveUrl(post.download_url) ||
+    (isValidId ? 'https://drive.google.com/uc?export=download&id=' + encodeURIComponent(fileId) : '');
+  return { view, download };
+}
+
+function appendDriveLinks(lines, post, prefix = '') {
+  const links = googleDriveLinks(post);
+  if (post.drive_file_name) lines.push(prefix + 'ไฟล์ต้นฉบับ: ' + String(post.drive_file_name));
+  if (links.view) lines.push(prefix + '📂 เปิดใน Google Drive: ' + links.view);
+  if (links.download) lines.push(prefix + '📥 ดาวน์โหลดจาก Google Drive: ' + links.download);
+  if (!links.view && !links.download) {
+    lines.push(prefix + '⚠️ ยังไม่พบลิงก์ Google Drive ที่ยืนยันแล้วสำหรับคลิปนี้');
+  }
+}
 function titleForPost(post) { return String(post.title || '').trim(); }
 
 function statusLabel(post) {
@@ -80,7 +106,7 @@ export function dayPlanText(plan, heading = 'วันนี้ต้องล�
       lines.push('• ' + networkLabel(x.network) + ' ' + localTime(x.date) + ' — ' + statusLabel(x));
       if (title) lines.push('  ชื่อคลิป: ' + title);
       else if (x.network === 'youtube' || x.network === 'facebook') lines.push('  ชื่อคลิป: รอตรวจสอบ');
-      lines.push('  ไฟล์ที่ตั้งโพสต์: ' + (mediaUrl(x) || 'ไม่พบลิงก์'));
+      appendDriveLinks(lines, x, '  ');
     }
   }
   if (!plan.affiliate && !plan.content.length) lines.push('', 'ยังไม่มีกำหนดการ');
@@ -100,7 +126,7 @@ export function affiliatePostMessage(affiliate, date) {
     'TikTok ขาย ' + affiliate.tiktok,
     'สินค้าตามแผน: ' + affiliate.product,
     'ไฟล์: ' + affiliate.file,
-    '📥 Google Drive: ' + link,
+    '📂 Google Drive: ' + link,
     '',
     '⚠️ ยังไม่ได้ตรวจว่าเนื้อหาไฟล์ตรงกับสินค้า และยังไม่มีแคปชั่นรายแพลตฟอร์มที่ตรวจแล้ว จึงไม่ดึงแคปชั่นจาก queue.json เก่ามาใช้',
     'เลือกดูสถานะที่บันทึกเอง: พิมพ์ “สถานะ”',
@@ -121,10 +147,7 @@ export function contentPostMessage(post) {
     lines.push('ชื่อคอนเทนต์: ' + title);
   }
   lines.push('สถานะจาก Metricool: ' + statusLabel(post));
-  lines.push('📹 คลิปที่ตั้งโพสต์ใน Metricool: ' + (mediaUrl(post) || 'ยังไม่พบไฟล์สื่อ'));
-  if (masterUrl(post)) {
-    lines.push('📂 ไฟล์ต้นฉบับ Drive (อาจเป็นคนละเวอร์ชัน): ' + masterUrl(post));
-  }
+  appendDriveLinks(lines, post);
   const rawText = String(post.text || '').trim();
   const draft = String(post.suggested_text || '').trim();
   if (rawText) lines.push('', (post.network === 'youtube' ? 'คำอธิบายจาก Metricool:' : 'แคปชั่นจาก Metricool:') + '\n' + rawText);
