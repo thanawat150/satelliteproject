@@ -501,7 +501,7 @@ function plotDetail(p){const scenes=plotScenes(p.code),valid=validScenes(p.code)
 function analysisPage(){const p=plotOf(state.plot),sc=plotScenes(state.plot);
  const key=Object.prototype.hasOwnProperty.call(SERIES,state.metric)?state.metric:'ndvi';
  const metricChoices=seriesOptions(key);
- root.innerHTML=commonHead('Environmental Analytics','กราฟใช้วันที่ผ่าน QA • ตารางแสดงดัชนีที่คำนวณจาก TIFF จริงราย Scene พร้อมสถานะและข้อจำกัด',btn('Export CSV','exportscenes',state.plot,'primary'))+
+ root.innerHTML=commonHead('Environmental Analytics','กราฟดัชนีแสดงค่า TIFF ตามวันที่มีจริงพร้อม QA • จุด PARTIAL ใช้ตรวจดูเท่านั้น • พื้นที่/ฝนใช้เฉพาะผลผ่าน QA',btn('Export CSV','exportscenes',state.plot,'primary'))+
  '<div class="controls"><label>แปลง <select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label>'+btn('ดูแปลงบนแผนที่','setview','map')+'</div>'+
  (p?'<div class="grid kpis" id="analysis-metric-kpis">'+timeSeriesKpis(state.plot,key)+'</div>':'')+
  '<section class="panel" id="imagery-explorer"></section>'+timeSeriesPanel(state.plot,key)+
