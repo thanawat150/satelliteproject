@@ -142,7 +142,7 @@ function timeSeriesEventAnalysis(plot){
  const shadow=Number.isFinite(Number(after.shadow_coverage_pct))?Number(after.shadow_coverage_pct):null;
  const card=(label,row)=>'<div class="panel"><b>'+label+' · '+html(row.date)+'</b><div class="kv"><span>สถานะ QA</span><b>'+status(row)+'</b><span>NDVI</span><b>'+Number(value(row,'ndvi')).toFixed(4)+'</b><span>MNDWI</span><b>'+Number(value(row,'mndwi')).toFixed(4)+'</b></div></div>';
  const gap=scenes.find(row=>row.date===year+'-10-02');
- return '<section class="panel series-event-analysis" aria-labelledby="series-event-title"><div class="section-title"><div><span class="eyebrow">13-STC · '+html(year)+'</span><h2 id="series-event-title">สรุปเชิงตัวเลขและสมการเปรียบเทียบ</h2><p class="muted">30 เม.ย. ใช้เป็นภาพก่อนเหตุการณ์ ไม่ถือเป็นค่าปกติระยะยาว</p></div></div>'+
+ return '<section class="panel series-event-analysis" aria-labelledby="series-event-title"><div class="section-title"><div><span class="eyebrow">'+html(plot)+' · '+html(year)+'</span><h2 id="series-event-title">สรุปเชิงตัวเลขและสมการเปรียบเทียบ</h2><p class="muted">30 เม.ย. ใช้เป็นภาพก่อนเหตุการณ์ ไม่ถือเป็นค่าปกติระยะยาว</p></div></div>'+
   '<div class="grid three">'+card('ก่อนเหตุการณ์',april)+card('29 ก.ย. · ช่วงที่เฝ้าระวัง',september)+card('ภาพล่าสุดที่มีดัชนี',after)+'</div>'+
   '<h3>ก่อนเหตุการณ์ → 29 ก.ย.</h3><div class="series-proof">'+formula('NDVI',september,april,'ndvi')+formula('MNDWI',september,april,'mndwi')+'</div>'+
   '<h3>29 ก.ย. → '+html(after.date)+'</h3><div class="series-proof">'+formula('NDVI',after,september,'ndvi')+formula('MNDWI',after,september,'mndwi')+'</div>'+
