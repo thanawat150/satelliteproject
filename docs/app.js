@@ -11,7 +11,7 @@ let dataset=null, plots=[], selected=null, overviewMap=null, fullMap=null, chart
 let satelliteFiles=[], satellitePartsMeta=null, jpgPreviewMap={};
 let satelliteBounds=[], satelliteBoundsByKey=new Map();
 const satelliteImageLayers={overview:null,full:null};
-let mapSatelliteDate=null, mapSatelliteOpacity=.65, mapSatelliteVisible=true, mapSatelliteFileId='auto';
+let mapSatelliteDate=null, mapSatelliteOpacity=1, mapSatelliteVisible=true, mapSatelliteFileId='auto';
 let boundaryFC=null, boundaryByPlot=new Map();
 let newWaterFC=null, newWaterByPlot=new Map();
 const mapLayers={overview:new Map(),full:new Map()};
@@ -274,7 +274,20 @@ function syncSatelliteControls(){
     const el=document.getElementById(id);if(el)el.textContent=Math.round(mapSatelliteOpacity*100)+'%';
   }
   const mode=document.getElementById('overview-sat-mode');
-  if(mode)mode.value=window.MapStudio?.state?.mode==='false'?'false':'true';
+  if(mode){
+    const current=window.MapStudio?.state?.mode||'true';
+    // Do not lie about available spectral bands; disable unavailable index modes.
+    const layers=window.MapStudio?.entries?.()||[];
+    const nativeMode=k=>k==='true'?'true_color':k==='false'?'false_color':k;
+    for(const option of mode.options){
+      const available=layers.some(x=>x.plot===selected?.plot&&x.mode===nativeMode(option.value))||
+        (option.value==='true'&&mapSatelliteCandidates(selected?.plot).length>0);
+      option.disabled=!available;
+      option.title=available?'':'ยังไม่มีดัชนีนี้จาก Raster ต้นฉบับ';
+    }
+    if([...mode.options].some(x=>x.value===current&&!x.disabled))mode.value=current;
+    else mode.value='true';
+  }
 }
 function setSatelliteOpacity(value){
   const v=Math.min(100,Math.max(0,Number(value)||0));
