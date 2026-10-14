@@ -354,3 +354,20 @@ html{scroll-behavior:smooth}
 #time-series-panel .ts-chart-mode{min-height:32px;padding:5px 9px;font-size:11px}
 #time-series-panel .ts-chart.is-trendline .ts-chart-svg{z-index:2;pointer-events:none}
 #time-series-panel .ts-chart.is-trendline .ts-point{z-index:1}
+
+/* High visibility event context for the 13-STC NDVI/MNDWI chart */
+.ts-event-alert{margin:14px 0 18px;padding:0 16px 15px;border:2px solid #f0a54a;border-left:7px solid #ffbd59;border-radius:12px;background:linear-gradient(120deg,rgba(111,61,14,.34),rgba(21,42,35,.98) 68%);color:#f4f8f5;box-shadow:0 5px 18px rgba(0,0,0,.2)}
+.ts-event-alert-head{display:flex;gap:11px;align-items:center;padding:14px 0 10px}
+.ts-event-alert-icon{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:#ffbd59;color:#242116;font-weight:900;font-size:21px}
+.ts-event-alert-head b{display:block;font-size:1.08rem;color:#ffd18d}
+.ts-event-alert-head small,.ts-event-caveat{display:block;color:#c7d4cf;line-height:1.6}
+.ts-event-alert-summary{margin:5px 0 12px;font-weight:700;color:#fff;font-size:1rem}
+.ts-event-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:9px;margin:0 0 12px}
+.ts-event-metrics>div{padding:10px 12px;border:1px solid rgba(208,224,215,.28);border-radius:9px;background:rgba(4,21,17,.55)}
+.ts-event-metrics small{display:block;margin-bottom:5px;color:#c7d4cf;font-size:.82rem}
+.ts-event-metrics b{display:block;color:#fff;font-size:1rem;line-height:1.5}
+.ts-event-metrics em{font-size:.9rem;font-style:normal;white-space:nowrap}
+.ts-event-metrics .down{color:#83dfb6}.ts-event-metrics .up{color:#ffd18d}
+.ts-event-interpretation{margin:0 0 9px;padding:10px 12px;border-radius:8px;background:rgba(255,189,89,.12);line-height:1.55}
+.ts-event-partial{margin:8px 0;color:#f8d79f;line-height:1.55}
+@media(max-width:600px){.ts-event-alert{padding:0 12px 12px}.ts-event-alert-head b{font-size:1rem}.ts-event-metrics{grid-template-columns:1fr}}
