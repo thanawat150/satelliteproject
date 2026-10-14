@@ -451,3 +451,41 @@
 .overview-index-legend strong{font-size:10px}
 .overview-index-ramp{min-width:140px;width:30%;height:10px;border-radius:3px;border:1px solid #547080}
 .overview-index-legend span{white-space:nowrap;color:#8eb2c6}
+
+
+/* Independent scroll for the long Selected Plot panel on desktop.
+   Keep the Situation Map visible while reviewing metrics, Report and KMZ. */
+@media (min-width:1101px) {
+  #tab-overview .overview-grid > .detail-card {
+    align-self: start;
+    min-height: 420px;
+    height: min(760px, calc(100dvh - 205px));
+    max-height: min(760px, calc(100dvh - 205px));
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #38657f #102536;
+  }
+  #tab-overview .overview-grid > .detail-card::-webkit-scrollbar { width: 9px; }
+  #tab-overview .overview-grid > .detail-card::-webkit-scrollbar-thumb {
+    background: #38657f;
+    border: 2px solid #102536;
+    border-radius: 8px;
+  }
+  #tab-overview .overview-grid > .detail-card::-webkit-scrollbar-track { background: #102536; }
+  #tab-overview .overview-grid > .detail-card > .card-head {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #0d1d2b;
+    border-bottom: 1px solid #1f3850;
+  }
+}
+@media (max-width:1100px), print {
+  #tab-overview .overview-grid > .detail-card {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
