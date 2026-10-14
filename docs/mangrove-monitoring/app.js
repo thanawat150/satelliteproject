@@ -147,35 +147,61 @@ function timeSeriesEventNote(plot,key){
  if(plot!=='13-STC')return '';
  const from=Number(state.tsYearFrom),to=Number(state.tsYearTo),step=Math.max(1,Number(state.tsYearInterval)||1);
  if(!Number.isFinite(from)||!Number.isFinite(to)||2026<from||2026>to||(2026-from)%step!==0)return '';
- const ndviRows=timeSeriesRows(plot,'ndvi'),waterRows=timeSeriesRows(plot,'mndwi');
- const ndviBefore=ndviRows.find(row=>row.date==='2026-04-30'&&qaOk(row));
- const ndviDuring=ndviRows.find(row=>row.date==='2026-09-29'&&qaOk(row));
- const mndwiBefore=waterRows.find(row=>row.date==='2026-04-30'&&qaOk(row));
- const mndwiDuring=waterRows.find(row=>row.date==='2026-09-29'&&qaOk(row));
- const sceneBefore=plotScenes(plot).find(row=>row.date==='2026-04-30'&&qaOk(row));
- const sceneDuring=plotScenes(plot).find(row=>row.date==='2026-09-29'&&qaOk(row));
- const partialNdvi=ndviRows.find(row=>row.date==='2026-10-07'&&!qaOk(row));
- const waterDelta=sceneBefore&&sceneDuring?Number(sceneDuring.water_rai)-Number(sceneBefore.water_rai):null;
- const ndviDelta=ndviBefore&&ndviDuring?Number(ndviDuring.series_value)-Number(ndviBefore.series_value):null;
- const mndwiDelta=mndwiBefore&&mndwiDuring?Number(mndwiDuring.series_value)-Number(mndwiBefore.series_value):null;
- return '<aside class="ts-event-alert" role="note" aria-label="หมายเหตุสัญญาณน้ำท่วมที่ผู้ใช้ระบุ">'+
-  '<div class="ts-event-alert-head"><span class="ts-event-alert-icon" aria-hidden="true">!</span><div><b>สัญญาณบนกราฟสอดคล้องกับน้ำท่วมที่ระบุ</b><small>13-STC · เปรียบเทียบภาพก่อนเหตุการณ์ เม.ย. กับช่วง ก.ย.–ต.ค. 2569</small></div></div>'+
-  '<p class="ts-event-alert-summary">ช่วง 30 เม.ย. → 29 ก.ย. 2569: ความเขียวลดลง ขณะที่สัญญาณน้ำและพื้นที่น้ำเพิ่มขึ้น</p>'+
-  '<div class="ts-event-metrics">'+
-   (ndviBefore&&ndviDuring?'<div><small>NDVI · ความเขียว</small><b>'+seriesFmt('ndvi',ndviBefore.series_value)+' → '+seriesFmt('ndvi',ndviDuring.series_value)+' <em class="down">↓ '+seriesFmt('ndvi',Math.abs(ndviDelta))+'</em></b></div>':'')+
-   (mndwiBefore&&mndwiDuring?'<div><small>MNDWI · สัญญาณน้ำ</small><b>'+seriesFmt('mndwi',mndwiBefore.series_value)+' → '+seriesFmt('mndwi',mndwiDuring.series_value)+' <em class="up">↑ '+seriesFmt('mndwi',mndwiDelta)+'</em></b></div>':'')+
-   (sceneBefore&&sceneDuring?'<div><small>พื้นที่ที่จำแนกเป็นน้ำ · QA ผ่าน</small><b>'+seriesFmt('water_rai',sceneBefore.water_rai)+' → '+seriesFmt('water_rai',sceneDuring.water_rai)+' ไร่'+(waterDelta>0?' <em class="up">↑ '+seriesFmt('water_rai',waterDelta)+'</em>':'')+'</b></div>':'')+
-  '</div>'+
-  '<p class="ts-event-interpretation"><b>การอ่านผล:</b> NDVI ลง + MNDWI/พื้นที่น้ำขึ้น เป็นสัญญาณสวนทางที่สอดคล้องกับภาพเหตุการณ์นี้</p>'+
-  (partialNdvi?'<p class="ts-event-partial">7 ต.ค. NDVI '+seriesFmt('ndvi',partialNdvi.series_value)+' เป็น PARTIAL — ใช้ดูประกอบเท่านั้น ยังยืนยันการฟื้นตัวไม่ได้</p>':'')+
-  '<small class="ts-event-caveat">ข้อจำกัด: สัญญาณคัดกรอง ไม่ใช่การยืนยันน้ำท่วมหรือสาเหตุ; Processing Baseline/BOA Offset ยังไม่ยืนยันและยังไม่อนุมัติการเทียบข้ามวัน ควรตรวจภาพจริง ฝน/ระดับน้ำ และข้อมูลภาคสนามร่วมด้วย</small></aside>';
+ const scenes=plotScenes(plot);
+ const baseline=scenes.find(row=>row.date==='2026-04-30'&&qaOk(row));
+ const event=scenes.find(row=>row.date==='2026-09-29'&&qaOk(row));
+ if(!baseline||!event)return '';
+ const keys=['ndvi','ndre','evi','savi','gli','ndmi','ndwi','mndwi','bsi','water_rai','water_pct','vegetation_rai','bare_soil_rai','other_rai','wetness_rai'];
+ const value=(scene,k)=>{
+  const stat=scene.source_index_stats?.[k];
+  const raw=stat&&Number(stat.sample_pixels)>0?stat.plot_mean:scene[k];
+  return raw!==null&&raw!==undefined&&raw!==''&&Number.isFinite(Number(raw))?Number(raw):null;
+ };
+ const rows=keys.map(k=>({key:k,label:seriesMeta(k)[0],unit:seriesUnit(k),before:value(baseline,k),during:value(event,k)}))
+  .filter(x=>x.before!==null&&x.during!==null);
+ const fmtDelta=x=>(x>0?'+':'')+seriesFmt(x.key,x.during-x.before);
+ const table=rows.map(x=>'<tr><td>'+html(x.label)+'</td><td>'+seriesFmt(x.key,x.before)+' '+html(x.unit)+'</td><td>'+seriesFmt(x.key,x.during)+' '+html(x.unit)+'</td><td>'+fmtDelta(x)+' '+html(x.unit)+'</td></tr>').join('');
+ const recoveryKeys=['ndvi','mndwi','water_rai'];
+ const nearBaseline=scene=>recoveryKeys.every(k=>{
+  const b=value(baseline,k),e=value(event,k),v=value(scene,k);
+  return b!==null&&e!==null&&v!==null&&Math.abs(e-b)>0&&Math.abs(v-b)<=Math.max(Math.abs(e-b)*0.2,0.01);
+ });
+ const postScenes=scenes.filter(row=>String(row.date||'')>'2026-09-29'&&qaOk(row)).sort((a,b)=>a.date.localeCompare(b.date));
+ const completePost=postScenes.filter(row=>recoveryKeys.every(k=>value(row,k)!==null));
+ const lastTwo=completePost.slice(-2);
+ const latestScene=scenes.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).at(-1);
+ let currentStatus,currentClass;
+ if(lastTwo.length===2&&lastTwo.every(nearBaseline)){
+  currentStatus='กลับมาใกล้ค่าก่อนเหตุการณ์ต่อเนื่อง 2 ภาพ QA ผ่าน — แจ้งสถานะฟื้นตัว';
+  currentClass='recovered';
+ }else if(completePost.length&&nearBaseline(completePost.at(-1))){
+  currentStatus='ภาพ QA ล่าสุดเริ่มกลับใกล้ค่าก่อนเหตุการณ์ แต่รอภาพ QA ถัดไปยืนยัน';
+  currentClass='watch';
+ }else if(completePost.length){
+  currentStatus='ภาพ QA ล่าสุดหลังเหตุการณ์ยังไม่เข้าเกณฑ์กลับใกล้ค่าก่อนเหตุการณ์';
+  currentClass='watch';
+ }else{
+  currentStatus='ยังสรุปการกลับสู่ปกติไม่ได้ — ไม่มีภาพหลัง 29 ก.ย. ที่ผ่าน QA ครบ NDVI, MNDWI และพื้นที่น้ำ';
+  currentClass='unknown';
+ }
+ const latestNote=latestScene&&latestScene.date>'2026-09-29'&&!qaOk(latestScene)?
+  ' ภาพล่าสุด '+html(latestScene.date)+' เป็น '+html(latestScene.analysis_status||'PARTIAL')+' จึงยังใช้ยืนยันการฟื้นตัวไม่ได้.':'';
+ const ndviChange=value(event,'ndvi')-value(baseline,'ndvi');
+ const mndwiChange=value(event,'mndwi')-value(baseline,'mndwi');
+ const waterChange=value(event,'water_rai')-value(baseline,'water_rai');
+ return '<aside class="ts-event-alert" role="note" aria-label="สรุปสัญญาณและสถานะฟื้นตัวแปลง 13-STC">'+
+  '<div class="ts-event-alert-head"><span class="ts-event-alert-icon" aria-hidden="true">!</span><div><b>สรุปเหตุการณ์และสถานะล่าสุด · 13-STC</b><small>ภาพก่อนเหตุการณ์ 30 เม.ย. เทียบช่วงที่ผู้ใช้ระบุว่าเกิดน้ำท่วม 29 ก.ย. 2569</small></div></div>'+
+  '<p class="ts-event-alert-summary">สัญญาณสวนทางกัน: NDVI '+(ndviChange<0?'ลด':'เพิ่ม')+' '+seriesFmt('ndvi',Math.abs(ndviChange))+' · MNDWI '+(mndwiChange>0?'เพิ่ม':'ลด')+' '+seriesFmt('mndwi',Math.abs(mndwiChange))+' · พื้นที่น้ำ '+(waterChange>0?'เพิ่ม':'ลด')+' '+seriesFmt('water_rai',Math.abs(waterChange))+' ไร่</p>'+
+  '<div class="ts-event-current '+currentClass+'"><b>สถานะการฟื้นตัว:</b> '+currentStatus+latestNote+'<small>เกณฑ์เฝ้าระวังเบื้องต้นสำหรับแจ้ง “กลับใกล้ค่าก่อนเหตุการณ์” ต้องมี 2 ภาพหลังเหตุการณ์ที่ผ่าน QA ต่อเนื่อง และ NDVI, MNDWI, พื้นที่น้ำแต่ละค่าอยู่ห่าง baseline ไม่เกิน 20% ของช่วงการเปลี่ยนแปลงที่วัดได้</small></div>'+
+  '<details class="ts-event-table"><summary>ตรวจค่าก่อน–ช่วงเหตุการณ์ทุกตัวชี้วัด ('+rows.length+' รายการ · QA ผ่านทั้งสองภาพ)</summary><div class="table-wrap"><table class="tbl"><thead><tr><th>ตัวชี้วัด</th><th>30 เม.ย. ก่อน</th><th>29 ก.ย. ช่วงเหตุการณ์</th><th>ส่วนต่าง</th></tr></thead><tbody>'+table+'</tbody></table></div></details>'+
+  '<small class="ts-event-caveat">อ่านผลเป็นสัญญาณคัดกรอง ไม่ใช่การยืนยันน้ำท่วมหรือสาเหตุ; Processing Baseline/BOA Offset ยังไม่ยืนยันและระบบยังไม่อนุมัติการเทียบข้ามวัน ควรตรวจภาพจริง ฝน/ระดับน้ำ และข้อมูลภาคสนามร่วมด้วย</small></aside>';
 }
 function timeSeriesChartSet(plot,key){
  if(!Array.isArray(state.tsMetrics))state.tsMetrics=[];
  const selected=[key,...state.tsMetrics.filter(k=>k!==key&&Object.prototype.hasOwnProperty.call(SERIES,k)&&timeSeriesRows(plot,k).length)];
- const cards=selected.map(metric=>'<article class="ts-metric-card"><h3>'+html(seriesMeta(metric)[0])+' <small>· '+html(seriesUnit(metric))+'</small></h3>'+timeSeriesEventNote(plot,metric)+'<div class="ts-metric-chart">'+timeSeriesChartMarkup(plot,metric,state.tsChartMode,metric===key?timeSeriesRowsInRange(plot,metric):timeSeriesMultiRows(plot,metric))+'</div></article>').join('');
+ const cards=selected.map(metric=>'<article class="ts-metric-card"><h3>'+html(seriesMeta(metric)[0])+' <small>· '+html(seriesUnit(metric))+'</small></h3><div class="ts-metric-chart">'+timeSeriesChartMarkup(plot,metric,state.tsChartMode,metric===key?timeSeriesRowsInRange(plot,metric):timeSeriesMultiRows(plot,metric))+'</div></article>').join('');
  const options=Object.entries(SERIES).filter(([metric])=>metric!==key&&timeSeriesRows(plot,metric).length).map(([metric,[label]])=>'<label class="ts-metric-option"><input type="checkbox" data-ts-metric="'+html(metric)+'" '+(state.tsMetrics.includes(metric)?'checked':'')+'> <span>'+html(label)+'</span></label>').join('');
- return '<details class="ts-metric-picker"><summary>เพิ่มกราฟเปรียบเทียบ <span>แสดง '+selected.length+' กราฟ</span></summary><div class="ts-metric-options">'+(options||'<span class="muted">ไม่มีตัวชี้วัดอื่นที่มีข้อมูลในแปลงนี้</span>')+'</div></details><div class="ts-multi-grid">'+cards+'</div>';
+ return timeSeriesEventNote(plot,key)+'<details class="ts-metric-picker"><summary>เพิ่มกราฟเปรียบเทียบ <span>แสดง '+selected.length+' กราฟ</span></summary><div class="ts-metric-options">'+(options||'<span class="muted">ไม่มีตัวชี้วัดอื่นที่มีข้อมูลในแปลงนี้</span>')+'</div></details><div class="ts-multi-grid">'+cards+'</div>';
 }
 function timeSeriesPanel(plot,key){
  key=firstAvailableSeries(plot,key);
