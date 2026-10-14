@@ -91,6 +91,9 @@
                 <span class="field-export-ready" id="field-export-ready">—</span>
               </div>
               <p id="field-export-summary">เลือกแปลงที่มีขอบเขตน้ำท่วมเพื่อสร้างจุดตรวจ</p>
+              <div class="field-source-picker"><label>ขอบเขตน้ำที่จะส่งออก
+                  <select id="field-flood-source" aria-label="เลือกแหล่งขอบเขตน้ำ"><option value="auto">Auto — เลือกชั้นที่ผ่าน QA ล่าสุด</option></select>
+                </label><small id="field-source-description">กำลังตรวจสอบชั้นน้ำที่ใช้ได้...</small></div>
               <div class="field-export-controls">
                 <label>จำนวนจุด
                   <select id="field-point-count">
@@ -104,8 +107,9 @@
                 </label>
                 <label>รูปแบบสุ่ม
                   <select id="field-sample-mode">
-                    <option value="edge">ใกล้ขอบน้ำ — แนะนำลงพื้นที่</option>
-                    <option value="full">สุ่มทั่วพื้นที่น้ำ</option>
+                    <option value="land_edge">บนพื้นที่ไม่ถูกจัดเป็นน้ำ ใกล้ขอบน้ำ (แนะนำ)</option>
+                    <option value="water_edge">ในพื้นที่น้ำ ใกล้ขอบน้ำ (ตรวจสอบโดยเรือ)</option>
+                    <option value="water_full">ในพื้นที่น้ำทั่วแปลง</option>
                   </select>
                 </label>
               </div>
@@ -119,7 +123,8 @@
                 <button class="field-action" id="field-export-kmz-btn" type="button">Export KMZ</button>
                 <button class="field-action subtle" id="field-clear-btn" type="button">ล้างจุด</button>
               </div>
-              <small class="field-export-note">โหมดใกล้ขอบน้ำช่วยเลือกจุดที่อยู่ไม่ลึกจากแนวขอบน้ำ แต่ไม่ได้ยืนยันเส้นทางถนนหรือสิทธิ์การเข้าพื้นที่</small>
+              <small class="field-export-note">จุดสุ่มจากเรขาคณิตภายในแปลงเท่านั้น ยังไม่ได้ตรวจสอบถนน ทางเดิน น้ำขึ้นลง ความปลอดภัย หรือสิทธิ์เข้าแปลง โปรดทวนสอบหน้างานก่อนออกสำรวจ</small>
+              <details class="field-auto-help"><summary>ระบบวงขอบเขตน้ำ Auto อย่างไร?</summary><p>ใช้ Sentinel-2 MNDWI = (B3−B11)/(B3+B11) และจำแนกน้ำเบื้องต้นเมื่อ MNDWI &gt; 0 โดยใช้ SCL ตัดเมฆ เงา และพิกเซลไม่มีข้อมูล ก่อนตัดตามขอบเขตแปลงและแปลง Raster mask เป็น Polygon วันใดไม่มีข้อมูลผ่าน QA จะไม่สร้างขอบเขต Auto ให้เอง</p><p>“น้ำปัจจุบัน” คือบริเวณที่จำแนกเป็นน้ำในวันนั้น ส่วน “น้ำเพิ่ม” คือพื้นที่ที่วันก่อนหน้าไม่ใช่น้ำแต่วันปัจจุบันเป็นน้ำ ไม่เท่ากับพื้นที่น้ำทั้งหมด และไม่ใช่ข้อยืนยันความเสียหายจากน้ำท่วม เพราะอาจมีอิทธิพลของน้ำขึ้นลง</p></details>
             </section>
           </section>
         </div>
@@ -361,7 +366,7 @@
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
   <script src="app.js?v=20261014-field1"></script>
-  <script src="field-export.js?v=20261014-field2"></script>
+  <script src="field-export.js?v=20261014-field3"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
