@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261014-image-select4" />
+  <link rel="stylesheet" href="styles.css?v=20261014-water-sharp5" />
 </head>
 <body>
   <header class="topbar">
@@ -74,9 +74,17 @@
             <div class="overview-sat-controls">
               <label>วันที่<select id="overview-sat-date" aria-label="วันที่ภาพบนแผนที่ภาพรวม"><option value="">กำลังโหลด...</option></select></label>
               <label>ไฟล์ภาพ<select id="overview-sat-file" aria-label="เลือกไฟล์ภาพแผนที่ภาพรวม"><option value="auto">อัตโนมัติ</option></select></label>
-              <label>สีภาพ<select id="overview-sat-mode"><option value="true">สีจริง</option><option value="false">สีเท็จ</option></select></label>
-              <label>ความทึบ <output id="overview-sat-opacity-value">65%</output><input id="overview-sat-opacity" type="range" min="0" max="100" value="65"></label>
+              <label>สีภาพ / ดัชนี<select id="overview-sat-mode">
+                <option value="true">สีจริง B4-B3-B2</option>
+                <option value="false">สีเท็จ B8-B4-B3</option>
+                <option value="mndwi">MNDWI • น้ำเปิด</option>
+                <option value="ndwi">NDWI • น้ำ (เมื่อมีข้อมูล)</option>
+                <option value="ndmi">NDMI • ความชื้น</option>
+                <option value="ndvi">NDVI • พืช</option>
+              </select></label>
+              <label>ความทึบ <output id="overview-sat-opacity-value">100%</output><input id="overview-sat-opacity" type="range" min="0" max="100" value="100"></label>
             </div>
+            <p class="sat-visual-notice">ภาพดัชนีใช้ข้อมูล Raster ที่มีอยู่จริงเท่านั้น • ดูภาพได้แม้มีเมฆ แต่ QA ยังมีผลต่อค่า Report • ความละเอียด Sentinel-2 จริง 10–20 เมตร/พิกเซล</p>
             <div id="overview-map" class="map"></div>
           </section>
 
@@ -166,8 +174,8 @@
                 <select id="map-sat-file"><option value="auto">Auto — ภาพที่เหมาะกับโหมด</option></select>
               </label>
               <label class="toggle-line"><input id="map-sat-visible" type="checkbox" checked> แสดงภาพดาวเทียม</label>
-              <label>ความทึบของภาพ <output id="map-sat-opacity-value">65%</output>
-                <input id="map-sat-opacity" type="range" min="0" max="100" value="65">
+              <label>ความทึบของภาพ <output id="map-sat-opacity-value">100%</output>
+                <input id="map-sat-opacity" type="range" min="0" max="100" value="100">
               </label>
             </div>
           </div>
@@ -175,8 +183,9 @@
             <label>รูปแบบภาพ<select id="studio-mode">
               <option value="true">สีจริง (B4-B3-B2)</option>
               <option value="false">สีเท็จพืช (B8-B4-B3)</option>
-              <option value="mndwi">MNDWI (ดัชนีน้ำเปิด)</option>
-              <option value="ndmi">NDMI (ความชื้นพืช/พื้นที่)</option>
+              <option value="mndwi">MNDWI (ดัชนีน้ำเปิด • B3/B11)</option>
+              <option value="ndwi">NDWI (ดัชนีน้ำ • B3/B8 เมื่อมีข้อมูล)</option>
+              <option value="ndmi">NDMI (ความชื้นพืช/พื้นที่ • B8/B11)</option>
               <option value="ndvi">NDVI (ความเขียวพืช)</option>
               <option value="ndre">NDRE (สภาพใบพืช)</option>
               <option value="bsi">BSI (ดินเปิดโล่ง)</option>
@@ -184,6 +193,10 @@
             <label class="studio-check"><input id="studio-boundary" type="checkbox" checked> ขอบเขต</label>
             <label class="studio-check"><input id="studio-water" type="checkbox"> แสดงชั้นน้ำใหม่</label>
             <label class="studio-check"><input id="studio-labels" type="checkbox"> ชื่อแปลง</label>
+            <label>ความคมขอบพิกเซล<select id="studio-resampling">
+              <option value="sharp">คมขอบ (แสดงพิกเซลจริง)</option>
+              <option value="smooth">นุ่มนวล (Interpolation)</option>
+            </select></label>
             <label>รูปแบบสำหรับรายงาน<select id="studio-preset">
               <option value="custom">กำหนดเอง</option>
               <option value="natural">สีจริง + ขอบเขต</option>
@@ -382,11 +395,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="map-studio.js?v=20261014-image-select4"></script>
+  <script src="map-studio.js?v=20261014-water-sharp5"></script>
   <script src="report-selector.js?v=20261009-reportselect1"></script>
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261014-image-select4"></script>
+  <script src="app.js?v=20261014-water-sharp5"></script>
   <script src="field-export.js?v=20261014-image-select4"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
