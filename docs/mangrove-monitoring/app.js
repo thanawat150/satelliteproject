@@ -143,10 +143,23 @@ function timeSeriesMultiRows(plot,key){
  const from=Number(state.tsYearFrom),to=Number(state.tsYearTo),step=Math.max(1,Number(state.tsYearInterval)||1);
  return timeSeriesRows(plot,key).filter(row=>{const year=Number(String(row.date||'').slice(0,4));return year>=from&&year<=to&&(year-from)%step===0;});
 }
+function timeSeriesEventNote(plot,key){
+ if(plot!=='13-STC'||key!=='ndvi')return '';
+ const rows=timeSeriesRows(plot,key);
+ const before=rows.find(row=>row.date==='2026-04-30'&&qaOk(row));
+ const during=rows.find(row=>row.date==='2026-09-29'&&qaOk(row));
+ if(!before||!during||!timeSeriesDateSelected(plot,before.date,key)||!timeSeriesDateSelected(plot,during.date,key))return '';
+ const delta=Number(during.series_value)-Number(before.series_value);
+ const partial=rows.find(row=>row.date==='2026-10-07'&&!qaOk(row));
+ return '<aside class="notice ts-event-note"><b>หมายเหตุเหตุการณ์น้ำท่วม · ก.ย.–ต.ค. 2569</b>'+
+  '<p>บันทึกตามบริบทเหตุการณ์ที่ผู้ใช้ระบุ: เปรียบเทียบภาพก่อนเหตุการณ์ 30 เม.ย. 2569 (NDVI '+seriesFmt(key,before.series_value)+', QA ผ่าน) กับภาพช่วงเหตุการณ์ 29 ก.ย. 2569 (NDVI '+seriesFmt(key,during.series_value)+', QA ผ่าน) พบค่าลดลง '+seriesFmt(key,Math.abs(delta))+' หน่วย NDVI ('+(delta<0?'ลดลง':'เพิ่มขึ้น')+'). เป็นสัญญาณการลดลงของความเขียวที่สอดคล้องกับข้อสังเกตนี้ แต่ NDVI เพียงอย่างเดียวยืนยันน้ำท่วมไม่ได้ ควรพิจารณาดัชนีน้ำ ภาพจริง และหลักฐานภาคสนามร่วมด้วย</p>'+
+  (partial?'<p>ภาพ 7 ต.ค. 2569 มีค่า NDVI '+seriesFmt(key,partial.series_value)+' แต่สถานะ PARTIAL: แสดงเพื่อทบทวนเท่านั้น ไม่นับเป็นผลผ่าน QA หรือหลักฐานยืนยันการฟื้นตัว</p>':'')+
+  '<small>ข้อจำกัด: ใช้วันภาพจริง ไม่ใช่วันอัปโหลด; การเปรียบเทียบนี้เป็นการคัดกรองจากข้อมูลกราฟและไม่ได้ยืนยันสาเหตุเชิงเหตุการณ์</small></aside>';
+}
 function timeSeriesChartSet(plot,key){
  if(!Array.isArray(state.tsMetrics))state.tsMetrics=[];
  const selected=[key,...state.tsMetrics.filter(k=>k!==key&&Object.prototype.hasOwnProperty.call(SERIES,k)&&timeSeriesRows(plot,k).length)];
- const cards=selected.map(metric=>'<article class="ts-metric-card"><h3>'+html(seriesMeta(metric)[0])+' <small>· '+html(seriesUnit(metric))+'</small></h3><div class="ts-metric-chart">'+timeSeriesChartMarkup(plot,metric,state.tsChartMode,metric===key?timeSeriesRowsInRange(plot,metric):timeSeriesMultiRows(plot,metric))+'</div></article>').join('');
+ const cards=selected.map(metric=>'<article class="ts-metric-card"><h3>'+html(seriesMeta(metric)[0])+' <small>· '+html(seriesUnit(metric))+'</small></h3>'+timeSeriesEventNote(plot,metric)+'<div class="ts-metric-chart">'+timeSeriesChartMarkup(plot,metric,state.tsChartMode,metric===key?timeSeriesRowsInRange(plot,metric):timeSeriesMultiRows(plot,metric))+'</div></article>').join('');
  const options=Object.entries(SERIES).filter(([metric])=>metric!==key&&timeSeriesRows(plot,metric).length).map(([metric,[label]])=>'<label class="ts-metric-option"><input type="checkbox" data-ts-metric="'+html(metric)+'" '+(state.tsMetrics.includes(metric)?'checked':'')+'> <span>'+html(label)+'</span></label>').join('');
  return '<details class="ts-metric-picker"><summary>เพิ่มกราฟเปรียบเทียบ <span>แสดง '+selected.length+' กราฟ</span></summary><div class="ts-metric-options">'+(options||'<span class="muted">ไม่มีตัวชี้วัดอื่นที่มีข้อมูลในแปลงนี้</span>')+'</div></details><div class="ts-multi-grid">'+cards+'</div>';
 }
