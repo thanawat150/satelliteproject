@@ -30,11 +30,12 @@ for(const p of plots){
 ctx.selected=p;elements.get("field-sample-mode").value="land_edge";field.onPlotChange(p);
 assert.equal(elements.get("field-flood-source").value,"auto");
 const approvedHere=approved.includes(p.plot);
-assert.equal(elements.get("field-export-kmz-btn").disabled,!approvedHere,"KMZ availability: "+p.plot);
+assert.equal(elements.get("field-random-btn").disabled,!approvedHere,"random QA eligibility: "+p.plot);
+assert.equal(elements.get("field-export-kmz-btn").disabled,true,"combined KMZ requires points: "+p.plot);
 if(!approvedHere){assert.equal(field.generatePoints().length,0,"unsafe automatic sampling: "+p.plot);continue}
 const plotGeom=ctx.boundaryByPlot.get(p.plot),flood=ctx.newWaterByPlot.get(p.plot);
 let pts=field.generatePoints();
-if(pts.length){land++;assert(pts.every(x=>inside([x.lon,x.lat],plotGeom)&&!inside([x.lon,x.lat],flood)),"land constraint: "+p.plot)}
+if(pts.length){assert.equal(elements.get("field-export-kmz-btn").disabled,false,"KMZ ready with points: "+p.plot);land++;assert(pts.every(x=>inside([x.lon,x.lat],plotGeom)&&!inside([x.lon,x.lat],flood)),"land constraint: "+p.plot)}
 elements.get("field-sample-mode").value="water_full";field.clearPoints(true);pts=field.generatePoints();
 if(pts.length){water++;assert(pts.every(x=>inside([x.lon,x.lat],plotGeom)&&inside([x.lon,x.lat],flood)),"water constraint: "+p.plot)}
 }
