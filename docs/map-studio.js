@@ -102,7 +102,7 @@ async function init(){
    try{const r=await fetch("data/visual_layers.json",{cache:"no-store"});if(r.ok){const j=await r.json();entries=Array.isArray(j.layers)?j.layers:[];}}catch(_){}
  }
  ["boundary","water","labels"].forEach(k=>{const e=$("studio-"+k);if(e)e.addEventListener("change",()=>{state[k]=e.checked;applyVisibility();})});
- $("studio-mode")?.addEventListener("change",e=>{state.mode=e.target.value;state.preset="custom";updateInputs();render(selected)});
+ $("studio-mode")?.addEventListener("change",e=>setMode(e.target.value));
  $("studio-resampling")?.addEventListener("change",e=>{state.resampling=e.target.value;applyResampling()});
  $("studio-preset")?.addEventListener("change",e=>preset(e.target.value));
  $("studio-reset")?.addEventListener("click",()=>{const p={mode:state.mode,boundary:state.boundary,water:state.water,labels:state.labels};Object.assign(state,defaults,p);updateInputs();applyColor();});
@@ -279,6 +279,10 @@ function setMode(mode){
      (mode==="true"&&mapSatelliteCandidates(selected.plot).length>0);
    if(!availableForPlot)return notify("ยังไม่มีภาพ "+(MODES[mode]?.name||mode)+" จาก Raster ต้นฉบับของแปลงนี้");
  }
+ // Index imagery may live in a different TIFF resolution than the file currently selected.
+ // Clear the explicit file so the matching real raster index is used for the same plot/date.
+ if(typeof mapSatelliteFileId!=="undefined")mapSatelliteFileId="auto";
+ if(typeof selected!=="undefined"&&selected&&typeof populateMapSatelliteFiles==="function")populateMapSatelliteFiles(selected);
  state.mode=mode;state.preset="custom";updateInputs();if(typeof selected!=="undefined"&&selected)render(selected);
 }
 window.MapStudio={state,init,render,refresh:()=>selected&&render(selected),applyVisibility,reportMarkup,saveReport,entries:()=>entries,setMode,nativePreview:clipPlotImage};
