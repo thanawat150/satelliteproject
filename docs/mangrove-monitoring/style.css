@@ -129,7 +129,7 @@ html{scroll-behavior:smooth}
 #time-series-panel .time-series-select select{height:46px;width:100%;min-width:0;border-radius:9px;font-size:14px;font-weight:600}
 #time-series-panel .ts-chart{display:block;width:100%;min-width:0;border:1px solid var(--border);background:#0c211d;border-radius:12px;padding:19px 18px 15px;box-sizing:border-box}
 #time-series-panel .ts-chart-modes{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 13px}
-#time-series-panel .ts-chart-mode{min-height:40px;padding:8px 13px;border:1px solid #416b56;border-radius:8px;background:#142c23;color:#c3dccd;font:600 12px inherit;cursor:pointer}
+#time-series-panel .ts-chart-mode{min-height:40px;padding:8px 13px;border:1px solid #416b56;border-radius:8px;background:#142c23;color:#c3dccd;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
 #time-series-panel .ts-chart-mode:hover{background:#234c38}
 #time-series-panel .ts-chart-mode.active,#time-series-panel .ts-chart-mode[aria-pressed="true"]{background:#328957;border-color:#72c99a;color:#fff}
 #time-series-panel .ts-chart-mode:focus-visible{outline:3px solid #a6f2c1;outline-offset:2px}
