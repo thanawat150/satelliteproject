@@ -488,22 +488,25 @@ function modeLabel(){
 }
 function updatePanel(edgeDepth){
   const p=activePlot||selected,ready=$("field-export-ready"),sum=$("field-export-summary");
-  const randomBtn=$("field-random-btn"),exportBtn=$("field-export-kmz-btn"),scope=$("field-kmz-scope")?.value||"both";
-  const canExport=(flood,pointsCount)=>scope==="points"?pointsCount>0:scope==="boundary"?!!flood:!!flood&&(!pointsEdited||pointsCount>0);
+  const action=$("field-random-btn"),exportBtn=$("field-export-kmz-btn"),scope=$("field-kmz-scope")?.value||"both";
   if(!p||!ready||!sum)return;
-  const flood=floodFeature(p.plot),info=plotInfo(p.plot)||p;
+  const flood=floodFeature(p.plot),info=plotInfo(p.plot)||p,manual=pointEntryMode()==="manual";
+  const canExport=scope==="points"?points.length>0:scope==="boundary"?!!flood:!!flood&&points.length>0;
   const hint=$("field-source-description");if(hint)hint.textContent=sourceDescription(flood);
   if(!flood){
-    ready.textContent="ต้องวาดขอบเขต";ready.className="field-export-ready is-missing";
-     sum.textContent=p.plot+" • "+qaFailure(p.plot)+" • ใช้วาดขอบเขตน้ำบนแผนที่อย่างน้อย 3 จุด เพื่อจัดทำ KMZ ชั่วคราว (ยังไม่ยืนยัน)";
-    if(randomBtn)randomBtn.disabled=true;if(exportBtn)exportBtn.disabled=!canExport(flood,points.length);renderPointList();return;
+    ready.textContent=points.length?points.length+" จุด":"ไม่มีขอบเขตน้ำ";
+    ready.className="field-export-ready "+(points.length?"is-ready":"is-missing");
+    sum.textContent=p.plot+" • "+qaFailure(p.plot)+" • วางจุดเองภายในแปลงและส่งออกเฉพาะจุดได้ หรือวาดขอบเขตน้ำเพื่อสุ่มจุด";
+  }else{
+    const area=activeArea(info,flood);
+    ready.textContent=points.length?points.length+" จุด":pointPlacement?"กำลังวางจุด":"พร้อมใช้งาน";
+    ready.className="field-export-ready is-ready";
+    sum.textContent=p.plot+" • "+sourceDescription(flood)+" • ประมาณ "+fmtLocal(area)+" ไร่"+
+      (points.length?" • "+points.length+" จุด":"");
   }
-  const area=activeArea(info,flood),auto=recommendedCount(area),wanted=desiredCount(info,flood);
-  ready.textContent=points.length?points.length+" จุดพร้อม Export":pointsEdited?"ไม่มีจุดที่เลือก":"พร้อมสุ่มจุด";ready.className="field-export-ready is-ready";
-  sum.textContent=p.plot+" • "+sourceDescription(flood)+" • "+fmtLocal(area)+" ไร่ • "+($("field-point-count")?.value==="auto"?"แนะนำ "+auto+" จุด":"กำหนด "+wanted+" จุด")+" • "+modeLabel()+(edgeDepth?" (ระยะจากขอบน้ำ ≤ "+Math.round(edgeDepth)+" ม.)":"");
-  if(randomBtn)randomBtn.disabled=false;if(exportBtn)exportBtn.disabled=!canExport(flood,points.length);
+  if(action)action.disabled=!manual&&!flood;
+  if(exportBtn)exportBtn.disabled=!canExport;
 }
-
 function fmtLocal(n){return Number.isFinite(Number(n))?Number(n).toLocaleString("th-TH",{maximumFractionDigits:2}):"—"}
 function notify(s){try{showToast(s)}catch(_){console.info(s)}}
 
@@ -558,8 +561,8 @@ async function exportKmz(){
   const includePoints=scope==="both"||scope==="points";
   const flood=floodFeature(p.plot);
   if(includeBoundary&&!flood){notify("ขอบเขตน้ำยังไม่พร้อมส่งออก กรุณาเลือกวันที่ผ่าน QA หรือวาดขอบเขต");return}
-  if(includePoints&&!points.length&&scope==="both"&&!pointsEdited)generatePoints();
-  if(includePoints&&!points.length){notify("ยังไม่มีจุดที่เลือกสำหรับส่งออก — กรุณาสุ่มจุดก่อน");return}
+  // Export never creates random points silently; only operator-approved points leave the system.
+  if(includePoints&&!points.length){notify("ยังไม่มีจุดสำหรับส่งออก • กรุณาวางจุดเองหรือสุ่มจุดก่อน");return}
   if(typeof JSZip==="undefined"){notify("โหลดตัวสร้าง KMZ ไม่สำเร็จ กรุณารีเฟรชหน้าเว็บ");return}
   const kml=buildKml(p,scope),zip=new JSZip();
   zip.file("doc.kml",kml);
@@ -570,8 +573,8 @@ Flood source: ${flood?.properties?._kmzSource||"none"}
 Manual polygon count: ${flood?.properties?._kmzSource==="manual"?manualPartsFor(p.plot).length:0}
 Water image date: ${flood?.properties?._kmzDate||"not recorded"}
 QA: ${flood?.properties?._kmzQA||"UNVERIFIED"}
-Random points included: ${includePoints?points.length:0}
-Sampling mode: ${modeLabel()}
+Survey points included: ${includePoints?points.length:0}
+Point generation options: ${modeLabel()} (manual points are separately labelled)
 CRS: WGS84 (EPSG:4326)
 CAUTION: outside newly mapped water does NOT imply dry ground; no route or field accessibility guarantee.`);
   const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}});
