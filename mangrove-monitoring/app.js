@@ -355,7 +355,7 @@ function svgChart(rows,key,opts={}){
   '<div class="ts-x-axis"><span>'+html(good[0].date)+'</span><span>'+html(good.at(-1).date)+'</span></div>'+
   '<div class="ts-year-axis" role="group" aria-label="ปีที่มีข้อมูล">'+years.map(year=>
    '<span class="ts-year-tick" style="left:'+yearX(year).toFixed(3)+'%">'+year+'</span>').join('')+'</div>'+
-  '<div class="ts-chart-footer">ข้อมูลที่ใช้วาดกราฟ '+count+' วัน • เลื่อนเมาส์หรือแตะจุดเพื่ออ่านค่าของวันนั้น</div></div>';
+  '<div class="ts-chart-footer">ปีที่แสดง: '+years.join(' · ')+' • ข้อมูลที่ใช้วาดกราฟ '+count+' วัน • เลื่อนเมาส์หรือแตะจุดเพื่ออ่านค่าของวันนั้น</div></div>';
 }
 
 function previewCoverage(){
