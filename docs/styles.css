@@ -368,3 +368,27 @@
 .live-footprint-chip i{height:10px;width:10px;display:inline-block;border-radius:3px}
 @media(max-width:650px){.report-imagery-grid{grid-template-columns:1fr}.report-graph-checkboxes{grid-template-columns:1fr}.report-selector-actions{flex-wrap:wrap}}
 @media print{.report-selection-panel{display:none!important}.report-imagery-item{break-inside:avoid}}
+
+
+/* Field survey / KMZ export */
+.field-export-panel{margin-top:12px;padding:12px;border:1px solid #24485f;border-radius:12px;background:linear-gradient(180deg,#0b2231,#0a1c29);color:#d9eaf4}
+.field-export-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+.field-export-head strong{display:block;font-size:12px;color:#f4fbff;line-height:1.35}
+.field-export-eyebrow{display:block;font:700 8px Inter,sans-serif;letter-spacing:.12em;color:#63c8ef;margin-bottom:3px}
+.field-export-ready{font-size:8px;font-weight:700;border-radius:999px;padding:4px 7px;background:#16364a;color:#9bcce0;white-space:nowrap}
+.field-export-ready.is-ready{background:#12392f;color:#78d8b4}
+.field-export-ready.is-missing{background:#3b2727;color:#efa1a1}
+.field-export-panel>p{margin:0 0 9px;font-size:9px;line-height:1.5;color:#9fb8c8}
+.field-export-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field-export-controls label{display:flex;flex-direction:column;gap:4px;font-size:8px;color:#8faabc}
+.field-export-controls select{width:100%;min-width:0;background:#0e2939;color:#eff8fd;border:1px solid #31546c;border-radius:8px;padding:7px 8px;font:600 9px 'IBM Plex Sans Thai',sans-serif}
+.field-export-actions{display:grid;grid-template-columns:1.2fr 1fr .8fr;gap:7px;margin-top:9px}
+.field-action{border:1px solid #35556a;border-radius:8px;background:#112c3d;color:#dcecf5;padding:8px 7px;font:700 9px 'IBM Plex Sans Thai',sans-serif;cursor:pointer}
+.field-action:hover{border-color:#5d8aa5;background:#17384c}
+.field-action.primary{background:#137da5;border-color:#2196c3;color:#fff}
+.field-action.subtle{background:transparent;color:#93a9b7}
+.field-action:disabled{opacity:.42;cursor:not-allowed}
+.field-export-note{display:block;margin-top:8px;color:#728e9f;font-size:7.5px;line-height:1.45}
+.field-point-icon{background:transparent!important;border:0!important}
+.field-point-icon span{display:grid;place-items:center;width:34px;height:22px;border-radius:999px;background:#0d92c7;color:#fff;border:2px solid #e8f8ff;box-shadow:0 1px 5px rgba(0,0,0,.35);font:800 9px Inter,sans-serif}
+@media(max-width:720px){.field-export-controls{grid-template-columns:1fr}.field-export-actions{grid-template-columns:1fr 1fr}.field-action.subtle{grid-column:1/-1}.field-export-head{align-items:center}}
