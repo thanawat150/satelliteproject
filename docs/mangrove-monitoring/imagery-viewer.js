@@ -191,8 +191,8 @@ const nav=items.length?
  '<button type="button" class="img-layout-tab '+(active.layout===id?'active':'')+'" data-image-layout="'+id+'" aria-pressed="'+(active.layout===id)+'">'+label+'</button>').join('')+
  '</div><div class="img-controls">'+
  (active.layout==='compare'?'<label>ก่อน · วันที่ภาพ<select id="image-before">'+(!active.before?'<option value="" selected disabled>ไม่มีภาพก่อนหน้าผ่าน QA</option>':'')+dateChoices(items.filter(x=>x.date<active.date),active.before)+'</select></label>':'')+
- (active.layout==='history'?'':'<label>'+(active.layout==='compare'?'หลัง · วันที่ภาพ':'วันที่ภาพ')+'<select id="image-date">'+dateChoices(items,active.date)+'</select></label>')+
  (active.layout==='single'||active.layout==='compare'?'<label>ชนิดภาพ<select id="image-mode">'+modeOptions(active.mode)+'</select></label>':'')+
+ (active.layout==='history'?'':'<label>'+(active.layout==='compare'?'หลัง · วันที่ภาพ':'วันที่ภาพ')+'<select id="image-date">'+dateChoices(items,active.date)+'</select></label>')+
  (active.layout==='history'?'<label class="img-history-filter">แสดงภาพ<select id="image-history-mode" aria-label="เลือกภาพหรือดัชนีในทุกวัน">'+historyOptions(active.historyMode)+'</select></label>':'')+
  '<details class="img-display-options"><summary>ตัวเลือกการแสดงผล</summary><div class="img-extra-controls">'+
  (active.layout==='single'?'<label>ความโปร่งใส<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label>':'')+
