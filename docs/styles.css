@@ -428,3 +428,14 @@
 .field-popup-delete{padding:7px 10px;margin-top:8px;border-radius:6px;border:1px solid #bd6572;background:#832f43;color:#fff;cursor:pointer;font:700 11px 'IBM Plex Sans Thai',sans-serif}
 .field-popup-delete:hover{background:#a33d54}
 @media(max-width:650px){.field-point-position{font-size:9px}.field-point-row{gap:5px}}
+
+/* Image controls for all archive dates (QA never blocks visual preview). */
+.overview-sat-controls{display:grid;grid-template-columns:minmax(100px,1fr) minmax(140px,1.6fr) minmax(95px,.7fr) minmax(115px,1fr);gap:10px;padding:10px 13px;background:#0d2433;border-block:1px solid #224354}
+.overview-sat-controls label{display:flex;flex-direction:column;gap:5px;font-size:10px;font-weight:700;color:#b1d7e8;min-width:0}
+.overview-sat-controls select{width:100%;min-width:0;background:#12384b;color:#eaf7ff;border:1px solid #385e73;border-radius:7px;min-height:33px;padding:5px 7px;font:600 10px 'IBM Plex Sans Thai',sans-serif}
+.overview-sat-controls input[type=range],.map-sat-controls input[type=range]{width:100%;accent-color:#39c2ed;cursor:pointer}
+.overview-sat-controls output,.map-sat-controls output{font-family:Inter,sans-serif;font-size:11px;color:#8de4fb}
+.field-kmz-scope{display:flex;flex-direction:column;gap:5px;margin-top:11px;color:#b8dbec;font-size:11px;font-weight:700}
+.field-kmz-scope select{width:100%;min-width:0;min-height:37px;border:1px solid #3d647b;background:#102d40;color:#f2fbff;border-radius:8px;padding:6px 9px;font:600 10px 'IBM Plex Sans Thai',sans-serif}
+@media(max-width:720px){.overview-sat-controls{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.field-kmz-scope select{font-size:11px}}
+@media(max-width:420px){.overview-sat-controls{grid-template-columns:1fr 1fr}}
