@@ -404,7 +404,15 @@ function addPlotLayer(m,p,store){
     layer=L.circleMarker([p.lat,p.lon],{radius:9,color:'#07111c',weight:2,fillColor:STATUS[p.status].color,fillOpacity:.92}).addTo(m);
   }
   layer.bindPopup(popupHtml(p));
-  layer.on('click',()=>selectPlot(p));
+  // During manual flood digitizing, a click on a plot polygon is a vertex,
+  // not a request to reselect the plot (reselection used to erase the draft).
+  layer.on('click',e=>{
+    if(window.FieldExport?.isDrawing?.()){
+      layer.closePopup?.();
+      return;
+    }
+    selectPlot(p);
+  });
   store.set(p.plot,layer);
 }
 function initBaseMap(id,store){
