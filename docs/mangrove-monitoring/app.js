@@ -121,6 +121,34 @@ function timeSeriesInfo(plot,key,rows){
    'ที่มา: docs/data/nationwide/nationwide_results.json • ค่าจาก Sentinel-2 รายแปลงที่ผ่าน AUTO_VALID เท่านั้น • ไม่ปรับน้ำขึ้นน้ำลง • กราฟจุดเชื่อมเฉพาะวันภาพจริง ส่วน Trendline เป็นเส้นถดถอยเชิงเส้นเพื่อดูทิศทางรวม ไม่ใช่ค่ารายวันต่อเนื่อง'))+
    '</p>';
 }
+function timeSeriesEventAnalysis(plot){
+ if(plot!=='13-STC')return '';
+ const scenes=plotScenes(plot).filter(row=>typeof row.date==='string'&&row.date.length===10);
+ const value=(row,key)=>{const raw=row?.source_index_stats?.[key]?.plot_mean??row?.[key];return raw===null||raw===undefined||raw===''||!Number.isFinite(Number(raw))?null:Number(raw);};
+ const years=[...new Set(scenes.map(row=>row.date.slice(0,4)))].sort().reverse();
+ let selected=null;
+ for(const year of years){
+  const september=scenes.filter(row=>row.date.startsWith(year+'-09-')&&value(row,'ndvi')!==null&&value(row,'mndwi')!==null).at(-1);
+  const after=scenes.filter(row=>row.date>=(year+'-10-01')&&row.date.startsWith(year+'-')&&value(row,'ndvi')!==null&&value(row,'mndwi')!==null).at(-1);
+  if(september&&after){selected={year,september,after};break;}
+ }
+ if(!selected)return '';
+ const {year,september,after}=selected;
+ const deltaNdvi=value(after,'ndvi')-value(september,'ndvi');
+ const deltaMndwi=value(after,'mndwi')-value(september,'mndwi');
+ const fmtSigned=n=>(n>0?'+':'')+Number(n).toFixed(4);
+ const gap=scenes.find(row=>row.date===year+'-10-02');
+ const shadow=Number.isFinite(Number(after.shadow_coverage_pct))?Number(after.shadow_coverage_pct):null;
+ const status=row=>html(row.analysis_status||row.status||'ไม่ระบุ');
+ const opposite=deltaNdvi>0&&deltaMndwi<0;
+ return '<section class="panel series-event-analysis" aria-labelledby="series-event-title"><div class="section-title"><div><span class="eyebrow">13-STC · '+html(year)+'</span><h2 id="series-event-title">ตัวเลขหลังช่วง 29 ก.ย.</h2><p class="muted">เทียบค่าดัชนีจากภาพจริงสองวัน</p></div></div>'+
+  '<div class="grid three"><div class="panel"><b>29 ก.ย. · '+status(september)+'</b><div class="kv"><span>NDVI</span><b>'+Number(value(september,'ndvi')).toFixed(4)+'</b><span>MNDWI</span><b>'+Number(value(september,'mndwi')).toFixed(4)+'</b></div></div>'+
+  '<div class="panel"><b>'+html(after.date)+' · '+status(after)+'</b><div class="kv"><span>NDVI</span><b>'+Number(value(after,'ndvi')).toFixed(4)+'</b><span>MNDWI</span><b>'+Number(value(after,'mndwi')).toFixed(4)+'</b></div></div>'+
+  '<div class="panel"><b>ผลต่าง 29 ก.ย. → '+html(after.date)+'</b><div class="kv"><span>NDVI</span><b>'+fmtSigned(deltaNdvi)+'</b><span>MNDWI</span><b>'+fmtSigned(deltaMndwi)+'</b></div></div></div>'+
+  '<div class="notice">'+(opposite?'NDVI สูงขึ้นพร้อมกับ MNDWI ลดลง เป็นทิศทางที่สอดคล้องกับสัญญาณน้ำลดและค่าพืชสูงขึ้นหลัง 29 ก.ย.':'ค่าดัชนีไม่ได้เปลี่ยนในทิศทางเดียวกับสัญญาณน้ำลด/ค่าพืชสูงขึ้น')+' แต่ภาพ '+html(after.date)+' มีสถานะ '+status(after)+(shadow===null?'':', เงาบัง '+shadow.toFixed(1)+'%')+' จึงยังใช้ยืนยันการฟื้นตัวไม่ได้</div>'+
+  (gap&&value(gap,'ndvi')===null&&value(gap,'mndwi')===null?'<div class="series-proof">วันที่ 2 ต.ค. มี Scene แต่ไม่มีค่า NDVI/MNDWI จึงยังบอกไม่ได้ว่าการเปลี่ยนเกิดขึ้นช่วงใด</div>':'')+
+  '<div class="series-proof">ค่าระหว่างวันยังไม่ได้รับอนุมัติให้เทียบเชิงปริมาณ เพราะ radiometric baseline/BOA offset ยังไม่ยืนยัน และไม่มีค่าพื้นที่น้ำที่ใช้ได้ในภาพหลัง 29 ก.ย. • อ่านเป็นแนวโน้มประกอบเท่านั้น</div></section>';
+}
 function timeSeriesKpis(plot,key){
  const good=timeSeriesRowsInRange(plot,key),first=good[0],last=good.at(-1),unit=seriesUnit(key),label=seriesMeta(key)[0];
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
@@ -209,7 +237,7 @@ function timeSeriesPanel(plot,key){
   '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+' · แสดงค่าที่มีจริงทุกภาพ พร้อมสถานะ QA'+'</p></div>'+
   '<label class="time-series-select">เลือกค่าที่แสดงบนกราฟ<select id="timeseries-metric-select" aria-label="เลือกค่ากราฟ Time Series">'+seriesOptions(key)+'</select></label>'+
   '</div>'+timeSeriesYearControls(plot,key)+'<div id="time-series-visual">'+timeSeriesChartSet(plot,key)+'</div>'+
-  '<div id="time-series-details">'+timeSeriesInfo(plot,key,good)+'</div></div>';
+  '<div id="time-series-details">'+timeSeriesInfo(plot,key,good)+'</div>'+timeSeriesEventAnalysis(plot)+'</div>';
 }
 function changeTimeSeriesMetric(key){
  if(!Object.prototype.hasOwnProperty.call(SERIES,key)||!seriesAvailability(state.plot,key).rows.length)return;
