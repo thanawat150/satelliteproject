@@ -382,7 +382,7 @@ function clearPoints(silent=false){
   points=[];
   pointsEdited=!silent;
   try{clearLayer(overviewMap,"overview");clearLayer(fullMap,"full")}catch(_){}
-  renderPointList();
+  renderPointList();syncPointModeUI();
   updatePanel();
   if(!silent)notify("ล้างจุดตรวจแล้ว");
 }
@@ -394,7 +394,7 @@ function removePoint(id){
   points.forEach((p,i)=>{p.id="P"+String(i+1).padStart(2,"0")});
   pointsEdited=true;
   drawPoints();
-  renderPointList();
+  renderPointList();syncPointModeUI();
   updatePanel();
   notify("ลบจุด "+id+" แล้ว • เหลือ "+points.length+" จุด");
   return true;
@@ -411,7 +411,7 @@ function renderPointList(){
   list.innerHTML=points.map(p=>
     '<div class="field-point-row"><span class="field-point-number">'+esc(p.id)+'</span>'+
     '<span class="field-point-position">'+Number(p.lat).toFixed(6)+', '+Number(p.lon).toFixed(6)+
-    '<small>อยู่ในขอบเขตน้ำ • ห่างจากขอบน้ำ ~'+Math.round(p.edge_distance_m)+' ม. • ลากหมุดบนแผนที่เพื่อย้าย</small></span>'+
+    '<small>'+(p.method==="manual_point"?"วางเอง • ปรับได้ภายในแปลง": "สุ่มในน้ำ • ปรับได้ภายในน้ำ")+' • ลากหมุดเพื่อย้าย</small></span>'+
     '<button type="button" class="field-point-delete" data-remove-point="'+esc(p.id)+'" aria-label="ลบจุด '+esc(p.id)+'">ลบ ×</button></div>'
   ).join("");
 }
@@ -419,19 +419,19 @@ function renderPointList(){
 function repositionPoint(id,longitude,latitude){
   const p=activePlot||selected,pt=points.find(x=>x.id===id);
   if(!p||!pt)return {ok:false,reason:"missing_point"};
-  const x=Number(longitude),y=Number(latitude);
+  const x=Number(longitude),y=Number(latitude),xy=[x,y];
   if(!Number.isFinite(x)||!Number.isFinite(y))return {ok:false,reason:"invalid_coordinates"};
-  const boundary=plotFeature(p.plot),flood=floodFeature(p.plot),xy=[x,y];
-  if(!flood)return {ok:false,reason:"missing_flood"};
-  if(boundary&&!pointInFeature(xy,boundary))return {ok:false,reason:"outside_plot"};
-  // Every draggable survey marker is confined to the selected mapped-water
-  // footprint, including its interior holes and disjoint manual polygons.
-  if(!pointInFeature(xy,flood))return {ok:false,reason:"outside_water"};
+  const boundary=plotFeature(p.plot),flood=floodFeature(p.plot),manuallyPlaced=pt.method==="manual_point";
+  if(!boundary||!pointInFeature(xy,boundary))return {ok:false,reason:"outside_plot"};
+  // Operator-placed points may be on dry land or water inside the plot.
+  // Automatically sampled points remain constrained to mapped flood water.
+  if(!manuallyPlaced&&(!flood||!pointInFeature(xy,flood)))return {ok:false,reason:"outside_water"};
   pt.lon=+x.toFixed(7);pt.lat=+y.toFixed(7);
-  pt.edge_distance_m=+distanceToBoundaryM(xy,flood).toFixed(1);
-  pt.method="water_adjusted";pt.in_water=true;pt.flood_source=flood.properties?._kmzSource||"manual";
-  pointsEdited=true;
-  renderPointList();updatePanel();
+  pt.edge_distance_m=flood?+distanceToBoundaryM(xy,flood).toFixed(1):null;
+  if(!manuallyPlaced)pt.method="water_adjusted";
+  pt.in_water=!!flood&&pointInFeature(xy,flood);
+  pt.flood_source=flood?.properties?._kmzSource||"none";
+  pointsEdited=true;renderPointList();updatePanel();
   return {ok:true,point:{...pt}};
 }
 function markerFor(pt,plot){
@@ -439,8 +439,8 @@ function markerFor(pt,plot){
     draggable:true,
     autoPan:true,
     riseOnHover:true,
-    icon:L.divIcon({className:"field-point-icon is-water is-draggable",html:`<span>${esc(pt.id)}</span>`,iconSize:[36,24],iconAnchor:[18,12]})
-  }).bindPopup(`<b>${esc(plot)} • ${esc(pt.id)}</b><br>Lat ${pt.lat.toFixed(6)}<br>Lon ${pt.lon.toFixed(6)}<br><small>ลากหมุดเพื่อย้ายจุดภายในขอบเขตน้ำได้ • ระยะจากขอบน้ำ ~${Math.round(pt.edge_distance_m)} ม.</small><br><button type="button" class="field-popup-delete">ลบจุดนี้ ×</button>`);
+    icon:L.divIcon({className:"field-point-icon "+(pt.method==="manual_point"?"is-manual":"is-water")+" is-draggable",html:`<span>${esc(pt.id)}</span>`,iconSize:[36,24],iconAnchor:[18,12]})
+  }).bindPopup(`<b>${esc(plot)} • ${esc(pt.id)}</b><br>Lat ${pt.lat.toFixed(6)}<br>Lon ${pt.lon.toFixed(6)}<br><small>ลากหมุดย้ายได้${pt.method==="manual_point"?"ภายในแปลง":"ภายในขอบเขตน้ำ"} • ${pt.edge_distance_m==null?"จุดที่วางเอง":"ระยะจากขอบน้ำ ~"+Math.round(pt.edge_distance_m)+" ม."}</small><br><button type="button" class="field-popup-delete">ลบจุดนี้ ×</button>`);
   marker.on?.("popupopen",e=>{
     const btn=e.popup?.getElement?.()?.querySelector(".field-popup-delete");
     btn?.addEventListener("click",event=>{
@@ -463,7 +463,7 @@ function markerFor(pt,plot){
     const result=repositionPoint(pt.id,location.lng,location.lat);
     if(!result.ok){
       marker.setLatLng?.(old);
-      notify(result.reason==="outside_water"?"ต้องวางจุดภายในขอบเขตน้ำที่เลือกเท่านั้น":"ตำแหน่งอยู่นอกขอบเขตแปลงหรือไม่ถูกต้อง — คืนจุดเดิมแล้ว");
+      notify(result.reason==="outside_water"?"จุดสุ่มต้องอยู่ภายในขอบเขตน้ำ • คืนตำแหน่งเดิม": "ต้องวางภายในขอบเขตแปลง • คืนตำแหน่งเดิมแล้ว");
       return;
     }
     // Keep both the Overview and full-map markers in sync with the saved
