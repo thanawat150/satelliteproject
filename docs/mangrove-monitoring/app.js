@@ -315,6 +315,17 @@ function svgChart(rows,key,opts={}){
  const high=isStandardIndex?1:Math.max(maximum+span*.18,low+smallest);
  const timestamps=good.map(x=>Date.parse(x.date+'T00:00:00Z'));
  const earliest=Math.min(...timestamps),latest=Math.max(...timestamps);
+ const firstYear=new Date(earliest).getUTCFullYear(),lastYear=new Date(latest).getUTCFullYear();
+ const yearStep=Math.max(1,Math.ceil((lastYear-firstYear+1)/12));
+ const years=[];
+ for(let year=firstYear;year<=lastYear;year+=yearStep)years.push(year);
+ if(years.at(-1)!==lastYear)years.push(lastYear);
+ const yearX=year=>earliest===latest?50:year===firstYear?4:
+  4+92*(Date.UTC(year,0,1)-earliest)/(latest-earliest);
+ const yearLines=years.slice(1).map(year=>{
+  const x=yearX(year)*10;
+  return '<line x1="'+x.toFixed(2)+'" y1="0" x2="'+x.toFixed(2)+'" y2="1000" class="ts-year-line" vector-effect="non-scaling-stroke"/>';
+ }).join('');
  // The line uses SVG vector-effect=non-scaling-stroke, while markers/ticks
  // are HTML. This prevents huge desktop SVGs from escaping the fixed chart
  // and keeps axis text/point circles legible at any screen width.
@@ -338,10 +349,12 @@ function svgChart(rows,key,opts={}){
   '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1.00 ถึง +1.00 (ไม่ขยายความต่าง)':'')+(opts.includePartial?' • จุดสีอำพัน = PARTIAL':'')+'</div>'+
   '<div class="ts-chart-layout"><div class="ts-y-axis" aria-hidden="true">'+ticks+'</div>'+
   '<div class="ts-plot" role="group" aria-label="จุดข้อมูล '+count+' วัน มีคำอธิบายค่าที่แต่ละจุด">'+
-  '<svg class="ts-chart-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+grid+zero+
+  '<svg class="ts-chart-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+grid+yearLines+zero+
   '<polyline class="ts-chart-line" points="'+points+'" fill="none" vector-effect="non-scaling-stroke"/></svg>'+
   markers+'</div></div>'+
   '<div class="ts-x-axis"><span>'+html(good[0].date)+'</span><span>'+html(good.at(-1).date)+'</span></div>'+
+  '<div class="ts-year-axis" role="group" aria-label="ปีที่มีข้อมูล">'+years.map(year=>
+   '<span class="ts-year-tick" style="left:'+yearX(year).toFixed(3)+'%">'+year+'</span>').join('')+'</div>'+
   '<div class="ts-chart-footer">ข้อมูลที่ใช้วาดกราฟ '+count+' วัน • เลื่อนเมาส์หรือแตะจุดเพื่ออ่านค่าของวันนั้น</div></div>';
 }
 
