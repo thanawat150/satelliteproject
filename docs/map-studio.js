@@ -5,12 +5,13 @@ const MODES={
  true:{name:"สีจริง (B4–B3–B2)",type:"rgb"},
  false:{name:"สีเท็จพืช (B8–B4–B3)",type:"rgb"},
  mndwi:{name:"MNDWI (ดัชนีน้ำเปิด)",type:"index",colors:["#916533","#d4b882","#faf2ca","#73b9d1","#095ba3"]},
+ ndwi:{name:"NDWI (ดัชนีน้ำ)",type:"index",colors:["#a16f42","#dfc794","#f6f6dc","#77bddb","#0969aa"]},
  ndmi:{name:"NDMI (ความชื้นพืช/พื้นที่)",type:"index",colors:["#995037","#e3ae68","#efe2b8","#69afc7","#125b92"]},
  ndvi:{name:"NDVI (ความเขียวพืช)",type:"index",colors:["#965032","#d8bb70","#e5dea8","#77b96b","#116b38"]},
  ndre:{name:"NDRE (สภาพใบพืช)",type:"index",colors:["#8e4738","#d1b671","#e6e8bd","#85b895","#2c7155"]},
  bsi:{name:"BSI (ดินเปิดโล่ง)",type:"index",colors:["#2b7152","#86a86f","#e9dfac","#d9a36e","#975534"]}
 };
-const defaults={mode:"true",boundary:true,water:false,labels:false,brightness:100,contrast:100,saturation:100,gamma:100,r:100,g:100,b:100,preset:"custom"};
+const defaults={mode:"true",boundary:true,water:false,labels:false,resampling:"sharp",brightness:100,contrast:100,saturation:100,gamma:100,r:100,g:100,b:100,preset:"custom"};
 const state={...defaults};let entries=[],current=null,saved=null,initialized=false;
 const $=id=>document.getElementById(id);
 const notify=s=>{if(typeof showToast==="function")showToast(s);else console.info(s)};
@@ -53,10 +54,14 @@ function pick(p,d,mode){
     // A selected file is always displayed, even if clouds, shadows or NO_DATA prevent analysis.
     // A 20m/60m TIFF is a native-band preview, NOT a fabricated RGB false-color composite.
     let specific=null;
-    if(file.resolution==="10m"){
-      const variants=entries.filter(v=>v.plot===p.plot&&v.date===d&&v.mode===dataMode(mode));
-      specific=variants.find(v=>v.source_suffix==="DIRECT"&&!/_(?:LATEST_RECT|HIST_CLEAR_RECT_SCL0|NO_CLOUD_FILTER)/.test(file.title))||
-        variants.find(v=>v.source_suffix&&file.title.includes(v.source_suffix))||null;
+    if(true){
+      const nativeResolution=(mode==="mndwi"||mode==="ndmi"||mode==="ndre")?"20m":"10m";
+      if(file.resolution===nativeResolution || (file.resolution==="10m" && mode==="bsi")){
+        const variants=entries.filter(v=>v.plot===p.plot&&v.date===d&&v.mode===dataMode(mode));
+        const directFile=/^(?!RYF__)/.test(file.title);
+        specific=variants.find(v=>directFile&&v.source_suffix==="DIRECT")||
+          variants.find(v=>v.source_suffix&&v.source_suffix!=="DIRECT"&&file.title.includes(v.source_suffix))||null;
+      }
     }
     const bounds=specific?.bounds||file.preview_bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
     if(specific?.src && bounds) return {plot:p.plot,date:d,mode,url:specific.src,bounds,
@@ -66,6 +71,8 @@ function pick(p,d,mode){
       source:"Sentinel-2 GeoTIFF "+file.resolution+" • "+file.title,
       previewResolution:file.preview_native_size?file.preview_native_size.join("×")+" px":null,
       resolution_m:file.resolution,selectedFile:file.title,nativePreview:true,
+      webPreviewUpscaled:Array.isArray(file.preview_native_size)&&Array.isArray(file.preview_display_size)&&file.preview_display_size[0]>file.preview_native_size[0]*1.5,
+      nativePixelSize:file.preview_native_size,
       displayNote:mode!=="true"?"ไฟล์นี้ไม่มีชุดแบนด์สำหรับแสดงตามโหมดที่เลือก จึงแสดง Preview จากไฟล์โดยตรง":""};
     return null;
   }
@@ -75,12 +82,13 @@ function pick(p,d,mode){
   if(mode==="true"){
     const row=satelliteRowForMap(p.plot,d),bounds=row?.preview_bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
     if(row?.web_preview_url&&bounds)return {plot:p.plot,date:d,mode,url:row.web_preview_url,bounds,source:"Sentinel-2",
-      previewResolution:row.preview_native_size?row.preview_native_size.join("×")+" px":null};
+      previewResolution:row.preview_native_size?row.preview_native_size.join("×")+" px":null,
+      nativePreview:true,webPreviewUpscaled:Array.isArray(row.preview_native_size)&&Array.isArray(row.preview_display_size)&&row.preview_display_size[0]>row.preview_native_size[0]*1.5,nativePixelSize:row.preview_native_size};
     // A date containing only 20m or 60m products should still be visible.
     const any=satelliteFilesForMap(p.plot,d).find(x=>x.preview_bounds&&x.web_preview_url);
     if(any)return {plot:p.plot,date:d,mode,url:any.web_preview_url,bounds:any.preview_bounds,source:any.title,
       previewResolution:any.preview_native_size?any.preview_native_size.join("×")+" px":null,
-      nativePreview:true,resolution_m:any.resolution,displayNote:"ไม่มีภาพ 10m ในวันนี้ — แสดงไฟล์ "+any.resolution+" ที่มี"};
+      nativePreview:true,resolution_m:any.resolution,webPreviewUpscaled:Array.isArray(any.preview_native_size)&&Array.isArray(any.preview_display_size)&&any.preview_display_size[0]>any.preview_native_size[0]*1.5,nativePixelSize:any.preview_native_size,displayNote:"ไม่มีภาพ 10m ในวันนี้ — แสดงไฟล์ "+any.resolution+" ที่มี"};
   }
   return null;
 }
@@ -95,6 +103,7 @@ async function init(){
  }
  ["boundary","water","labels"].forEach(k=>{const e=$("studio-"+k);if(e)e.addEventListener("change",()=>{state[k]=e.checked;applyVisibility();})});
  $("studio-mode")?.addEventListener("change",e=>{state.mode=e.target.value;state.preset="custom";updateInputs();render(selected)});
+ $("studio-resampling")?.addEventListener("change",e=>{state.resampling=e.target.value;applyResampling()});
  $("studio-preset")?.addEventListener("change",e=>preset(e.target.value));
  $("studio-reset")?.addEventListener("click",()=>{const p={mode:state.mode,boundary:state.boundary,water:state.water,labels:state.labels};Object.assign(state,defaults,p);updateInputs();applyColor();});
  ["brightness","contrast","saturation","gamma","r","g","b"].forEach(k=>{
@@ -111,6 +120,7 @@ async function init(){
 }
 function updateInputs(){
  $("studio-mode").value=state.mode;$("studio-preset").value=state.preset;
+ if($("studio-resampling"))$("studio-resampling").value=state.resampling;
  ["boundary","water","labels"].forEach(k=>{$("studio-"+k).checked=!!state[k]});
  ["brightness","contrast","saturation","gamma","r","g","b"].forEach(k=>{$("studio-"+k).value=state[k];$("studio-value-"+k).textContent=state[k]+"%"});
  if(typeof syncSatelliteControls==="function")syncSatelliteControls();
@@ -120,7 +130,7 @@ function syncModes(p){
  const d=date(),e=$("studio-mode");
  const plotHas=mode=>entries.some(v=>v.plot===p.plot&&v.mode===dataMode(mode))||(mode==="true"&&mapSatelliteCandidates(p.plot).length>0);
  [...e.options].forEach(o=>{o.disabled=!plotHas(o.value);o.title=o.disabled?"ไม่มีภาพโหมดนี้สำหรับแปลงที่เลือก":"";});
- if(!plotHas(state.mode))state.mode=["true","false","mndwi","ndvi","ndre","ndmi","bsi"].find(plotHas)||"true";
+ if(!plotHas(state.mode))state.mode=["true","false","mndwi","ndwi","ndmi","ndvi","ndre","bsi"].find(plotHas)||"true";
  e.value=state.mode;
  const isIndex=MODES[state.mode].type==="index", legend=$("studio-legend");
  legend.hidden=!isIndex;
@@ -128,7 +138,36 @@ function syncModes(p){
 }
 /* Satellite imagery is displayed at its full rectangular raster extent; PDD is a separate vector overlay. */
 let renderSerial=0;
-function clipPlotImage(p,layer){return Promise.resolve(layer.url);}
+const nativePreviewCache=new Map();
+async function clipPlotImage(p,layer){
+ // Older web previews have been stretched by 6x-12x with bilinear interpolation.
+ // Sample the centre of each original Sentinel pixel once and let the browser
+ // display the native 10m/20m image without synthesising extra ground detail.
+ if(!layer.webPreviewUpscaled||!Array.isArray(layer.nativePixelSize)||!layer.url.startsWith("data:image/"))return layer.url;
+ const [nw,nh]=layer.nativePixelSize;
+ if(nw<1||nh<1||nw*nh>2000000)return layer.url;
+ if(nativePreviewCache.has(layer.url))return nativePreviewCache.get(layer.url);
+ try{
+   const image=new Image();image.src=layer.url;await image.decode();
+   if(image.naturalWidth<=nw*1.5)return layer.url;
+   const canvas=document.createElement("canvas");canvas.width=nw;canvas.height=nh;
+   const ctx=canvas.getContext("2d",{willReadFrequently:false});
+   if(!ctx)return layer.url;
+   ctx.imageSmoothingEnabled=false;
+   // A nearest-neighbour reduction retrieves the source pixel closest to its
+   // centre; no upscaling or hallucinated information is performed.
+   ctx.drawImage(image,0,0,nw,nh);
+   const native=canvas.toDataURL("image/png");
+   nativePreviewCache.set(layer.url,native);
+   return native;
+ }catch(e){console.warn("Native preview reduction unavailable",e);return layer.url}
+}
+function applyResampling(){
+ const sharp=state.resampling!=="smooth";
+ Object.values(satelliteImageLayers).forEach(l=>{const el=l?.getElement();if(el){
+   el.style.imageRendering=sharp?"pixelated":"auto";
+ }});
+}
 function render(p){
  if(!p)return;const callId=++renderSerial;syncModes(p);current=null;removeMapSatelliteLayers();
  if(!mapSatelliteVisible){status("ภาพดาวเทียมถูกซ่อน");applyVisibility();return}
@@ -149,10 +188,10 @@ function render(p){
   [[overviewMap,"overview"],[fullMap,"full"]].forEach(([map,k])=>{
    if(!map)return;
    satelliteImageLayers[k]=L.imageOverlay(url,b,{pane:"satellitePane",opacity:mapSatelliteOpacity,interactive:false}).addTo(map);
-   satelliteImageLayers[k].on("load",applyColor);
+   satelliteImageLayers[k].on("load",()=>{applyColor();applyResampling()});
    satelliteImageLayers[k].on("error",()=>status("เปิดชั้นภาพนี้ไม่สำเร็จ ลองเลือกวันอื่น"));
   });
-  applyColor();applyVisibility();
+  applyColor();applyResampling();applyVisibility();
   const qa=window.TrendReport?.rows?.(p.plot)?.find(x=>x.date===d);
   const qualityWarning=qa?.analysis_status==="NO_DATA"?" • ⚠ ภาพวันดังกล่าวผ่าน QA ไม่เพียงพอ":
     qa?.analysis_status==="PARTIAL"?" • ⚠ มีเมฆ/เงาบางส่วน ไม่ครอบคลุมทั้งแปลง":"";
