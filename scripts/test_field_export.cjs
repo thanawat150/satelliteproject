@@ -16,8 +16,8 @@ const makeMap=()=>{
 };
 const overviewMap=makeMap(),fullMap=makeMap();
 const elements=new Map();
-for(const id of ["field-point-count","field-sample-mode","field-flood-source","field-export-ready","field-export-summary","field-source-description","field-random-btn","field-export-kmz-btn","field-draw-btn","field-finish-btn","field-reset-boundary-btn","field-clear-btn","field-points-panel","field-points-list","field-points-count"]){
- const val=id==="field-point-count"?"10":id==="field-sample-mode"?"land_edge":"auto";
+for(const id of ["field-point-count","field-sample-mode","field-flood-source","field-export-ready","field-export-summary","field-source-description","field-random-btn","field-export-kmz-btn","field-draw-btn","field-finish-btn","field-reset-boundary-btn","field-clear-btn","field-kmz-scope","field-points-panel","field-points-list","field-points-count"]){
+ const val=id==="field-point-count"?"10":id==="field-sample-mode"?"land_edge":id==="field-kmz-scope"?"both":"auto";
  elements.set(id,{value:val,disabled:false,textContent:"",className:"",options:[],listeners:{},addEventListener(event,fn){this.listeners[event]=fn;},replaceChildren(){this.options=[];this.value="";},appendChild(o){this.options.push(o)}});
 }
 const document={readyState:"loading",getElementById:id=>elements.get(id)||null,addEventListener:()=>{},createElement:tag=>({tag,value:"",textContent:"",click:()=>{},remove:()=>{}}),body:{appendChild:()=>{}}};
@@ -70,18 +70,28 @@ console.log("PASS: QA-safe KMZ sampling, polygon containment, NO_DATA and manual
   const originalById=new Map(original.map(x=>[x.id,[x.lon,x.lat]]));
   const removedId=original[1].id;
   assert.equal(field.removePoint(removedId),true);
-  assert.equal(field.removePoint(removedId),false,"already deleted point must not be deleted again");
   let remaining=field.getPoints();
   assert.equal(remaining.length,9);
-  assert(!remaining.some(x=>x.id===removedId));
-  for(const pt of remaining)assert.deepEqual([pt.lon,pt.lat],originalById.get(pt.id),"untouched point moved");
+  assert.deepEqual(remaining.map(x=>x.id),Array.from({length:9},(_,i)=>"P"+String(i+1).padStart(2,"0")),"point names must run consecutively");
+  const expected=original.filter(x=>x.id!==removedId);
+  for(let i=0;i<remaining.length;i++)assert.deepEqual([remaining[i].lon,remaining[i].lat],[expected[i].lon,expected[i].lat],"surviving point moved");
   const saved={};
   ctx.JSZip=class{file(name,content){saved[name]=content} async generateAsync(){return {placeholder:true}}};
   ctx.URL={createObjectURL:()=>"blob:fake-field-kmz",revokeObjectURL:()=>{}};
   await field.exportKmz();
   assert(saved["doc.kml"].includes("P01"),"remaining points must be present in KMZ");
-  assert(!saved["doc.kml"].includes("<name>"+removedId+"</name>"),"removed point must not be in KMZ");
+  assert(!saved["doc.kml"].includes(original.find(x=>x.id===removedId).lon+","+original.find(x=>x.id===removedId).lat+",0"),"removed coordinates must not be in KMZ");
   assert(saved["doc.kml"].includes('<Folder><name>03 Random Field Check Points</name>'));
+  elements.get("field-kmz-scope").value="boundary";
+  await field.exportKmz();
+  assert(saved["doc.kml"].includes('<Folder><name>02 Flood Boundary</name>'));
+  assert(!saved["doc.kml"].includes("<name>P01</name>"),"boundary-only should not contain points");
+  elements.get("field-kmz-scope").value="points";
+  await field.exportKmz();
+  assert(saved["doc.kml"].includes("<name>P01</name>"));
+  assert(!saved["doc.kml"].includes('<Folder><name>01 Plot Boundary</name><Placemark>'),"points-only must not include plot geometry");
+  assert(!saved["doc.kml"].includes('<Folder><name>02 Flood Boundary</name><Placemark>'),"points-only must not include water geometry");
+  elements.get("field-kmz-scope").value="both";
   const lastKml=saved["doc.kml"];
   for(const x of field.getPoints())assert.equal(field.removePoint(x.id),true);
   assert.equal(field.getPoints().length,0);
