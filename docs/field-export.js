@@ -4,7 +4,8 @@
 let activePlot=null;
 let points=[];
 let pointsEdited=false; // Prevent KMZ export from regenerating points intentionally deleted.
-let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null, confirmedLayer=null, listeningMap=null;
+let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null, confirmedLayer=null;
+const listeningMaps=new Set(), processedClickEvents=new WeakSet();
 const surveyLayers={overview:null,full:null};
 const floodLayers={overview:null,full:null};
 const $=id=>document.getElementById(id);
@@ -412,27 +413,48 @@ CAUTION: outside newly mapped water does NOT imply dry ground; no route or field
   setTimeout(()=>URL.revokeObjectURL(u),1500);
   notify(`Export KMZ ${p.plot} • ${scope==="both"?"ขอบเขตและจุด":scope==="boundary"?"เฉพาะขอบเขต":"เฉพาะจุด"}${includePoints?" • "+points.length+" จุด":""}`);
 }
-function removeDrawing(){
-  drawing=false;drawVertices=[];
+function drawStatus(message,show=true){
+  const el=$("field-draw-status");if(!el)return;
+  el.hidden=!show;
+  el.textContent=message;
+}
+function removeDraftLayer(){
   if(drawLayer){try{overviewMap?.removeLayer(drawLayer)}catch(_){}drawLayer=null}
-  const btn=$("field-draw-btn");if(btn)btn.textContent="วาดขอบเขตน้ำ";
+}
+function removeDrawing(){
+  drawing=false;drawVertices=[];removeDraftLayer();
+  const btn=$("field-draw-btn");if(btn){btn.textContent="วาดขอบเขตน้ำ";btn.setAttribute?.("aria-pressed","false")}
   const finish=$("field-finish-btn");if(finish)finish.disabled=true;
+  const undo=$("field-undo-vertex-btn");if(undo)undo.disabled=true;
+  try{overviewMap?.getContainer?.()?.classList.remove("field-map-drawing")}catch(_){}
+  drawStatus("",false);
 }
 function renderDraft(){
-  if(drawLayer){try{overviewMap.removeLayer(drawLayer)}catch(_){}}
-  if(!drawVertices.length){drawLayer=null;return}
-  drawLayer=L.polyline(drawVertices.map(c=>[c[1],c[0]]),{color:"#f59e0b",weight:3,dashArray:"6 6"}).addTo(overviewMap);
+  removeDraftLayer();
+  if(!drawVertices.length)return;
+  const latlngs=drawVertices.map(c=>[c[1],c[0]]);
+  const segments=[L.polyline(latlngs,{color:"#ffb347",weight:3,dashArray:"7 5",interactive:false})];
+  if(drawVertices.length>=3&&typeof L.polygon==="function"){
+    segments.push(L.polygon(latlngs,{color:"#ffb347",weight:2,dashArray:"7 5",fillColor:"#ffb347",fillOpacity:.18,interactive:false}));
+  }
+  if(typeof L.circleMarker==="function"){
+    latlngs.forEach((xy,i)=>segments.push(L.circleMarker(xy,{radius:5,color:"#fff",weight:2,fillColor:"#ffab32",fillOpacity:1,interactive:false})));
+  }
+  drawLayer=L.layerGroup(segments).addTo(overviewMap);
 }
 function startDrawing(){
   if(!activePlot&&!selected)return;
   if(drawing){removeDrawing();notify("ยกเลิกการวาด");return}
   const map=overviewMap;
   if(!map){notify("ยังไม่พร้อมแสดงแผนที่");return}
-  removeDrawing();drawing=true;
-  $("field-draw-btn").textContent="ยกเลิกวาด";
-  $("field-finish-btn").disabled=false;
-  document.getElementById("tab-overview")?.scrollIntoView({behavior:"smooth",block:"center"});
-  notify("คลิกบนแผนที่ภาพรวมเพื่อกำหนดแนวขอบน้ำ อย่างน้อย 3 จุด แล้วกดยืนยัน");
+  removeDrawing();drawing=true;ensureDrawingListeners();
+  const btn=$("field-draw-btn");if(btn){btn.textContent="ยกเลิกวาด";btn.setAttribute?.("aria-pressed","true")}
+  const finish=$("field-finish-btn");if(finish)finish.disabled=true;
+  try{map.closePopup?.();map.getContainer?.()?.classList.add("field-map-drawing")}catch(_){}
+  const mapCard=document.querySelector?.("#tab-overview .map-card");
+  mapCard?.scrollIntoView?.({behavior:"smooth",block:"nearest"});
+  drawStatus("โหมดวาดเปิดอยู่ • คลิกบนแผนที่ภายในแปลงเพื่อเพิ่มจุดที่ 1 • อย่างน้อย 3 จุด");
+  notify("เปิดโหมดวาดขอบเขตแล้ว — คลิกในแปลงบนแผนที่ซ้ายเพื่อปักจุด");
 }
 function finishDrawing(){
   const p=activePlot||selected;
@@ -458,26 +480,58 @@ function clearDrawing(){
   notify("ล้างขอบเขตที่วาดแล้ว");
 }
 function onMapClick(e){
-  if(!drawing)return;
-  const p=activePlot||selected, boundary=plotFeature(p?.plot);
+  if(!drawing||!e?.latlng)return false;
+  const raw=e.originalEvent;
+  if(raw&&typeof raw==="object"){
+    if(processedClickEvents.has(raw))return false;
+    processedClickEvents.add(raw);
+  }
+  const p=activePlot||selected,boundary=plotFeature(p?.plot);
   const xy=[e.latlng.lng,e.latlng.lat];
-  if(boundary&&!pointInFeature(xy,boundary)){notify("จุดอยู่นอกขอบเขตแปลง กรุณาคลิกภายในแปลง");return}
-  drawVertices.push(xy);renderDraft();
+  if(!Number.isFinite(xy[0])||!Number.isFinite(xy[1]))return false;
+  if(boundary&&!pointInFeature(xy,boundary)){
+    drawStatus("อยู่นอกขอบเขต "+p.plot+" • คลิกภายในขอบเขตสีแดงเท่านั้น");
+    notify("จุดอยู่นอกขอบเขตแปลง กรุณาคลิกภายในแปลง");return false;
+  }
+  drawVertices.push(xy);
+  renderDraft();
+  const finish=$("field-finish-btn");if(finish)finish.disabled=drawVertices.length<3;
+  const undo=$("field-undo-vertex-btn");if(undo)undo.disabled=false;
+  drawStatus("วาดแล้ว "+drawVertices.length+" จุด"+(drawVertices.length<3?" • เพิ่มอีก "+(3-drawVertices.length)+" จุด":" • กด 'ยืนยันขอบเขตที่วาด' ได้"));
+  return true;
+}
+function undoDrawingVertex(){
+  if(!drawing||!drawVertices.length)return;
+  drawVertices.pop();renderDraft();
+  const finish=$("field-finish-btn");if(finish)finish.disabled=drawVertices.length<3;
+  const undo=$("field-undo-vertex-btn");if(undo)undo.disabled=!drawVertices.length;
+  drawStatus("เหลือ "+drawVertices.length+" จุด • คลิกบนแผนที่เพื่อแก้แนวขอบเขต");
+}
+function ensureDrawingListeners(){
+  try{
+    for(const map of [overviewMap]){
+      if(map&&!listeningMaps.has(map)){map.on("click",onMapClick);listeningMaps.add(map)}
+    }
+  }catch(e){console.warn("Cannot attach map digitizing",e)}
 }
 function onPlotChange(p){
-  removeDrawing();manualFlood=null;if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
+  if(!p)return;
+  // Clicks on the currently selected plot should NEVER discard a draft.
+  if(drawing&&activePlot?.plot===p.plot)return;
+  removeDrawing();manualFlood=null;
+  if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
   activePlot=p;
   const sourceSelect=$("field-flood-source");if(sourceSelect)sourceSelect.value="auto";
-  if(typeof overviewMap!=="undefined"&&overviewMap!==listeningMap){listeningMap?.off("click",onMapClick);overviewMap.on("click",onMapClick);listeningMap=overviewMap}
+  ensureDrawingListeners();
   refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();updatePanel();
 }
 function bind(){
   $("field-random-btn")?.addEventListener("click",generatePoints);
   $("field-draw-btn")?.addEventListener("click",startDrawing);
   $("field-finish-btn")?.addEventListener("click",finishDrawing);
+  $("field-undo-vertex-btn")?.addEventListener("click",undoDrawingVertex);
   $("field-reset-boundary-btn")?.addEventListener("click",clearDrawing);
-  const attach=()=>{if(typeof overviewMap!=="undefined"&&overviewMap){overviewMap.on("click",onMapClick);return true}return false};
-  if(!attach())window.addEventListener("load",attach,{once:true});
+  ensureDrawingListeners();
   $("field-export-kmz-btn")?.addEventListener("click",exportKmz);
   $("field-clear-btn")?.addEventListener("click",()=>clearPoints(false));
   $("field-kmz-scope")?.addEventListener("change",()=>updatePanel());
@@ -491,6 +545,6 @@ function bind(){
   $("field-sample-mode")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   loadHistoricalFlood();renderPointList();updatePanel();
 }
-window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint};
+window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,addVertex:onMapClick,getDraftVertices:()=>drawVertices.slice()};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
 })();
