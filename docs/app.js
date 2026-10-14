@@ -11,7 +11,7 @@ let dataset=null, plots=[], selected=null, overviewMap=null, fullMap=null, chart
 let satelliteFiles=[], satellitePartsMeta=null, jpgPreviewMap={};
 let satelliteBounds=[], satelliteBoundsByKey=new Map();
 const satelliteImageLayers={overview:null,full:null};
-let mapSatelliteDate=null, mapSatelliteOpacity=.65, mapSatelliteVisible=true;
+let mapSatelliteDate=null, mapSatelliteOpacity=.65, mapSatelliteVisible=true, mapSatelliteFileId='auto';
 let boundaryFC=null, boundaryByPlot=new Map();
 let newWaterFC=null, newWaterByPlot=new Map();
 const mapLayers={overview:new Map(),full:new Map()};
@@ -75,9 +75,14 @@ function bindUI(){
   document.getElementById('report-plot').addEventListener('change',renderReportPreview);
   document.getElementById('report-type').addEventListener('change',renderReportPreview);
   ['sat-filter-plot','sat-filter-date','sat-filter-sensor','sat-filter-resolution'].forEach(id=>document.getElementById(id)?.addEventListener('change',e=>{if(e.target.id==='sat-filter-date' && e.target.value!=='ALL')checkedSatelliteDates.clear();renderSatelliteGallery();}));
-  document.getElementById('map-sat-date')?.addEventListener('change',e=>{mapSatelliteDate=e.target.value;updateMapSatelliteOverlay(selected)});
+  document.getElementById('map-sat-date')?.addEventListener('change',e=>setSatelliteDate(e.target.value));
+  document.getElementById('overview-sat-date')?.addEventListener('change',e=>setSatelliteDate(e.target.value));
+  document.getElementById('map-sat-file')?.addEventListener('change',e=>setSatelliteFile(e.target.value));
+  document.getElementById('overview-sat-file')?.addEventListener('change',e=>setSatelliteFile(e.target.value));
+  document.getElementById('overview-sat-mode')?.addEventListener('change',e=>window.MapStudio?.setMode?.(e.target.value));
+  document.getElementById('overview-sat-opacity')?.addEventListener('input',e=>setSatelliteOpacity(e.target.value));
   document.getElementById('map-sat-visible')?.addEventListener('change',e=>{mapSatelliteVisible=e.target.checked;updateMapSatelliteOverlay(selected)});
-  document.getElementById('map-sat-opacity')?.addEventListener('input',e=>{mapSatelliteOpacity=Number(e.target.value)/100;Object.values(satelliteImageLayers).forEach(l=>l?.setOpacity(mapSatelliteOpacity))});
+  document.getElementById('map-sat-opacity')?.addEventListener('input',e=>setSatelliteOpacity(e.target.value));
 }
 function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap){fullMap.invalidateSize();if(selected){populateMapSatelliteDates(selected);updateMapSatelliteOverlay(selected);focusMaps(selected)}}if(tab==='overview'&&overviewMap)overviewMap.invalidateSize();window.MonitoringStudio?.showTab?.(tab);if(tab==='alerts')window.AlertCenter?.show?.();if(tab==='report')renderReportPreview()},160)}
 function openReportCenter(){switchTab('report');renderReportPreview()}
@@ -85,7 +90,7 @@ function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};plots.forEach(
 function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)&&(!alertOnly||new Set(window.AlertCenter?.alerts?.().map(x=>x.plot)||[]).has(p.plot))).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div><div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.onclick=()=>selectPlot(p);list.appendChild(d)})}
 function renderPriority(){const el=document.getElementById('priority-list');el.innerHTML='';const sorted=plots.filter(p=>p.status!=='NO_DATA').sort((a,b)=>(b.water_change_pp??-999)-(a.water_change_pp??-999)).slice(0,7);sorted.forEach((p,i)=>{const d=document.createElement('div');d.className='priority-item';d.innerHTML=`<div class="priority-rank">${i+1}</div><div><strong>${p.plot}</strong><small>${STATUS[p.status].label} • น้ำล่าสุด ${fmt(p.water_current_pct)}%</small></div><div class="priority-value">${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} pp</div>`;d.onclick=()=>selectPlot(p);el.appendChild(d)})}
 function summaryText(p){if(p.status==='NO_DATA')return 'ภาพปัจจุบันไม่มี valid pixels เพียงพอ จึงยังไม่ควรสรุปผลกระทบของแปลงนี้';const veg=VEG[p.vegetation_status];if(p.status==='HIGH')return `พบสัญญาณน้ำเพิ่มขึ้นอย่างชัดเจนภายในแปลง โดยมีพื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;if(p.status==='WATCH')return `พบการเปลี่ยนแปลงของน้ำที่ควรติดตามต่อ พื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;return `ไม่พบสัญญาณน้ำเพิ่มสูงในรอบเปรียบเทียบนี้ • ${veg}`}
-function selectPlot(p,updateUrl=true){selected=p;renderSidebar();document.getElementById('detail-title').textContent=p.plot;const st=document.getElementById('detail-status');st.textContent=STATUS[p.status].label;st.className=`status-pill status-${p.status}`;document.getElementById('detail-area').textContent=`พื้นที่ PDD ${fmt(p.area_rai)} ไร่`;const mapBoundaryNote=document.getElementById('pdd-boundary-note');if(mapBoundaryNote){const f=boundaryByPlot.get(p.plot);mapBoundaryNote.textContent=f?.properties?.boundary_role==='primary'?('ขอบเขตหลัก PDD • '+p.plot+' • พื้นที่จากแนวขอบเขต '+fmt(f.properties.geometry_area_rai)+' ไร่ • ขอบเขตยืนยันกรมเก็บเป็นข้อมูลสำรอง'):'ขอบเขตหลัก PDD';}document.getElementById('detail-dates').textContent=`${dateTH(p.baseline)} → ${dateTH(p.current)}`;document.getElementById('plain-summary').textContent=summaryText(p);document.getElementById('water-values').textContent=`${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่`;document.getElementById('water-delta').textContent=p.water_change_pp==null?'N/A':`${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} จุดเปอร์เซ็นต์`;document.getElementById('ndvi-values').textContent=`${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}`;document.getElementById('ndvi-delta').textContent=delta(p.ndvi_before,p.ndvi_current);document.getElementById('ndre-values').textContent=`${idx(p.ndre_before)} → ${idx(p.ndre_current)}`;document.getElementById('ndre-delta').textContent=delta(p.ndre_before,p.ndre_current);document.getElementById('ndmi-values').textContent=`${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}`;document.getElementById('ndmi-delta').textContent=delta(p.ndmi_before,p.ndmi_current);updateChart(p);focusMaps(p);document.getElementById('report-plot').value=p.plot;updateMapHighlight();syncSatellitePlotFilter(p.plot);populateMapSatelliteDates(p);updateMapSatelliteOverlay(p);if(updateUrl)updateQuery({plot:p.plot});window.MonitoringStudio?.onPlotChange?.(p);window.FieldExport?.onPlotChange?.(p)}
+function selectPlot(p,updateUrl=true){selected=p;renderSidebar();document.getElementById('detail-title').textContent=p.plot;const st=document.getElementById('detail-status');st.textContent=STATUS[p.status].label;st.className=`status-pill status-${p.status}`;document.getElementById('detail-area').textContent=`พื้นที่ PDD ${fmt(p.area_rai)} ไร่`;const mapBoundaryNote=document.getElementById('pdd-boundary-note');if(mapBoundaryNote){const f=boundaryByPlot.get(p.plot);mapBoundaryNote.textContent=f?.properties?.boundary_role==='primary'?('ขอบเขตหลัก PDD • '+p.plot+' • พื้นที่จากแนวขอบเขต '+fmt(f.properties.geometry_area_rai)+' ไร่ • ขอบเขตยืนยันกรมเก็บเป็นข้อมูลสำรอง'):'ขอบเขตหลัก PDD';}document.getElementById('detail-dates').textContent=`${dateTH(p.baseline)} → ${dateTH(p.current)}`;document.getElementById('plain-summary').textContent=summaryText(p);document.getElementById('water-values').textContent=`${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่`;document.getElementById('water-delta').textContent=p.water_change_pp==null?'N/A':`${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} จุดเปอร์เซ็นต์`;document.getElementById('ndvi-values').textContent=`${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}`;document.getElementById('ndvi-delta').textContent=delta(p.ndvi_before,p.ndvi_current);document.getElementById('ndre-values').textContent=`${idx(p.ndre_before)} → ${idx(p.ndre_current)}`;document.getElementById('ndre-delta').textContent=delta(p.ndre_before,p.ndre_current);document.getElementById('ndmi-values').textContent=`${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}`;document.getElementById('ndmi-delta').textContent=delta(p.ndmi_before,p.ndmi_current);updateChart(p);mapSatelliteFileId='auto';focusMaps(p);document.getElementById('report-plot').value=p.plot;updateMapHighlight();syncSatellitePlotFilter(p.plot);populateMapSatelliteDates(p);updateMapSatelliteOverlay(p);if(updateUrl)updateQuery({plot:p.plot});window.MonitoringStudio?.onPlotChange?.(p);window.FieldExport?.onPlotChange?.(p)}
 function datePretty(s){
   if(!s)return '—';
   const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -130,7 +135,7 @@ async function loadSatelliteLibrary(){
     }).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(a.plot||'').localeCompare(String(b.plot||''))||String(a.resolution||'').localeCompare(String(b.resolution||'')));
     const ready=satelliteFiles.filter(x=>x.preview_ready).length;
     const src=document.getElementById('satellite-source-folder'); if(src)src.href=satellitePartsMeta.source_root?.url||'#';
-    if(status)status.textContent=`ภาพพร้อมแสดง ${ready}/${satelliteFiles.length} ไฟล์ • TIFF ต้นฉบับอยู่ใน Google Drive • อัปเดตรายการ ${new Date(satellitePartsMeta.updated_at).toLocaleString('th-TH')}`;
+    if(status)status.textContent=`ภาพพร้อมแสดง ${ready}/${satelliteFiles.length} ไฟล์ • แสดงทุกภาพโดยไม่กรองเมฆหรือ QA • TIFF ต้นฉบับอยู่ใน Google Drive • อัปเดตรายการ ${new Date(satellitePartsMeta.updated_at).toLocaleString('th-TH')}`;
     populateSatelliteFilters();
     renderSatelliteGallery();
     populateMapSatelliteDates(selected);
@@ -252,14 +257,68 @@ function mapSatelliteCandidates(plot){
     .filter(x=>x.web_preview_url && (x.preview_bounds || satelliteBoundsByKey.has(`${x.plot}|${x.date}`)))
     .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
 }
+function satelliteFilesForMap(plot,date){
+  return satelliteFiles.filter(x=>x.plot===plot && x.date===date && x.web_preview_url);
+}
+function syncSatelliteControls(){
+  const d=document.getElementById('overview-sat-date'),base=document.getElementById('map-sat-date');
+  if(d&&base){d.innerHTML=base.innerHTML;d.value=base.value;}
+  for(const id of ['map-sat-file','overview-sat-file']){
+    const el=document.getElementById(id);if(!el)continue;
+    el.value=[...el.options].some(x=>x.value===mapSatelliteFileId)?mapSatelliteFileId:'auto';
+  }
+  for(const id of ['map-sat-opacity','overview-sat-opacity']){
+    const el=document.getElementById(id);if(el)el.value=Math.round(mapSatelliteOpacity*100);
+  }
+  for(const id of ['map-sat-opacity-value','overview-sat-opacity-value']){
+    const el=document.getElementById(id);if(el)el.textContent=Math.round(mapSatelliteOpacity*100)+'%';
+  }
+  const mode=document.getElementById('overview-sat-mode');
+  if(mode)mode.value=window.MapStudio?.state?.mode==='false'?'false':'true';
+}
+function setSatelliteOpacity(value){
+  const v=Math.min(100,Math.max(0,Number(value)||0));
+  mapSatelliteOpacity=v/100;
+  Object.values(satelliteImageLayers).forEach(l=>l?.setOpacity(mapSatelliteOpacity));
+  syncSatelliteControls();
+}
+function setSatelliteDate(d){
+  if(!d||!selected)return;
+  mapSatelliteDate=d;mapSatelliteFileId='auto';
+  const m=document.getElementById('map-sat-date');if(m)m.value=d;
+  populateMapSatelliteFiles(selected);
+  syncSatelliteControls();
+  updateMapSatelliteOverlay(selected);
+}
+function setSatelliteFile(id){
+  mapSatelliteFileId=id||'auto';
+  syncSatelliteControls();
+  updateMapSatelliteOverlay(selected);
+}
+function selectedSatelliteFile(plot,date){
+  return mapSatelliteFileId==='auto'?null:satelliteFiles.find(x=>x.id===mapSatelliteFileId&&x.plot===plot&&x.date===date&&x.web_preview_url)||null;
+}
+function populateMapSatelliteFiles(p){
+  if(!p)return;
+  const rows=satelliteFilesForMap(p.plot,mapSatelliteDate);
+  const choices='<option value="auto">Auto — ภาพตามโหมด</option>'+rows.map(x=>'<option value="'+x.id+'">'+(x.resolution||'?')+' • '+x.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')+'</option>').join('');
+  for(const id of ['map-sat-file','overview-sat-file']){
+    const sel=document.getElementById(id);if(!sel)continue;sel.innerHTML=choices;
+  }
+  if(!rows.some(x=>x.id===mapSatelliteFileId))mapSatelliteFileId='auto';
+  syncSatelliteControls();
+}
 function populateMapSatelliteDates(p){
-  const sel=document.getElementById('map-sat-date'); if(!sel||!p)return;
-  const from10m=mapSatelliteCandidates(p.plot).map(x=>x.date);
+  const sel=document.getElementById('map-sat-date');if(!sel||!p)return;
+  // Date availability is driven by the entire image catalog, never report QA.
+  const fromAll=satelliteFiles.filter(x=>x.plot===p.plot&&x.web_preview_url).map(x=>x.date);
   const fromVisual=window.MapStudio?.entries?.()?.filter(x=>x.plot===p.plot).map(x=>x.date)||[];
-  const dates=[...new Set([...from10m,...fromVisual].filter(Boolean))].sort().reverse();
-  const current=mapSatelliteDate && dates.includes(mapSatelliteDate) ? mapSatelliteDate : (dates[0]||'');
-  sel.innerHTML=dates.length?dates.map(d=>`<option value="${d}">${datePretty(d)}</option>`).join(''):'<option value="">ไม่มีภาพ</option>';
-  sel.value=current; mapSatelliteDate=current||null;
+  const dates=[...new Set([...fromAll,...fromVisual].filter(Boolean))].sort().reverse();
+  const current=mapSatelliteDate&&dates.includes(mapSatelliteDate)?mapSatelliteDate:(dates[0]||'');
+  sel.innerHTML=dates.length?dates.map(d=>'<option value="'+d+'">'+datePretty(d)+'</option>').join(''):'<option value="">ไม่มีภาพ</option>';
+  sel.value=current;mapSatelliteDate=current||null;
+  populateMapSatelliteFiles(p);
+  syncSatelliteControls();
 }
 function satelliteRowForMap(plot,date){
   const rows=mapSatelliteCandidates(plot).filter(x=>x.date===date);
