@@ -229,24 +229,35 @@ function renderSatelliteGallery(){
     else{im.style.display='none';im.nextElementSibling.style.display='grid'}
   });
 }
-function openSatelliteViewer(id){
-  const x=satelliteFiles.find(f=>f.id===id); if(!x)return;
+let satelliteModalRequest=0;
+async function openSatelliteViewer(id){
+  const x=satelliteFiles.find(f=>f.id===id);if(!x)return;
+  const ticket=++satelliteModalRequest;
   const modal=document.getElementById('satellite-modal');
   const img=document.getElementById('sat-modal-image');
   const waiting=document.getElementById('sat-modal-waiting');
   document.getElementById('sat-modal-title').textContent=`${x.plot} • ${datePretty(x.date)}`;
-  document.getElementById('sat-modal-meta').textContent=`${x.sensor} • ${x.resolution||'ไม่ระบุ resolution'} • ${x.preview_kind||'GeoTIFF'} • ${x.title}`;
+  document.getElementById('sat-modal-meta').textContent=`${x.sensor} • ${x.resolution||'ไม่ระบุ resolution'} • ${x.preview_kind||'GeoTIFF'} • ${x.title} • แสดงพิกเซลต้นฉบับโดยไม่อัปสเกลเพิ่มรายละเอียด`;
   document.getElementById('sat-modal-drive').href=x.url;
   document.getElementById('sat-modal-original').href=x.url;
-  if(x.web_preview_url){
-    img.src=x.web_preview_url; img.style.display='block'; waiting.style.display='none';
-    img.onerror=()=>{img.style.display='none';waiting.style.display='grid'};
-  }else{
-    img.removeAttribute('src'); img.style.display='none'; waiting.style.display='grid';
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+  img.style.imageRendering='pixelated';
+  img.onerror=()=>{if(ticket!==satelliteModalRequest)return;img.style.display='none';waiting.style.display='grid'};
+  if(!x.web_preview_url){
+    img.removeAttribute('src');img.style.display='none';waiting.style.display='grid';return;
   }
-  modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+  waiting.style.display='none';img.style.display='block';
+  img.src=x.web_preview_url;
+  if(!x.preview_native_size||!x.preview_display_size||x.preview_display_size[0]<=x.preview_native_size[0]*1.5)return;
+  try{
+    const enhanced=await window.MapStudio?.nativePreview?.(null,{
+      url:x.web_preview_url,webPreviewUpscaled:true,nativePixelSize:x.preview_native_size
+    });
+    if(ticket===satelliteModalRequest&&enhanced)img.src=enhanced;
+  }catch(e){console.warn("Satellite native preview",e)}
 }
 function closeSatelliteViewer(){
+  ++satelliteModalRequest;
   const modal=document.getElementById('satellite-modal'); if(!modal)return;
   modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
   const img=document.getElementById('sat-modal-image'); if(img){img.removeAttribute('src');img.style.display='none'}
