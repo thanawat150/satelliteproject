@@ -1,0 +1,79 @@
+{
+  "updated_at": "2026-10-08T05:59:48.929Z",
+  "source_root": {
+    "name": "ระยอง",
+    "id": "1GCXxPg2raNpEtSLRz9sOIluAg4LBcmHy",
+    "url": "https://drive.google.com/drive/folders/1GCXxPg2raNpEtSLRz9sOIluAg4LBcmHy"
+  },
+  "parts": [
+    {
+      "file": "satellite_part_1.json",
+      "plots": [
+        "13-STC",
+        "14(1)-STC"
+      ]
+    },
+    {
+      "file": "satellite_part_2.json",
+      "plots": [
+        "14-STC",
+        "14-VSD"
+      ]
+    },
+    {
+      "file": "satellite_part_3.json",
+      "plots": [
+        "15-STC",
+        "15-VSD"
+      ]
+    },
+    {
+      "file": "satellite_part_4.json",
+      "plots": [
+        "16-STC",
+        "16-VSD"
+      ]
+    },
+    {
+      "file": "satellite_part_5.json",
+      "plots": [
+        "17-STC",
+        "17-VSD"
+      ]
+    },
+    {
+      "file": "satellite_part_6.json",
+      "plots": [
+        "18(1)-STC",
+        "18-STC"
+      ]
+    },
+    {
+      "file": "satellite_part_7.json",
+      "plots": [
+        "19-STC",
+        "20-STC"
+      ]
+    },
+    {
+      "file": "satellite_part_8.json",
+      "plots": [
+        "21-STC",
+        "22(1)-STC"
+      ]
+    },
+    {
+      "file": "satellite_part_9.json",
+      "plots": [
+        "22-STC",
+        "23(1)-STC"
+      ]
+    },
+    {
+      "file": "satellite_part_10.json",
+      "plots": [
+        "23-STC"
+      ]
+    }
+  ]
+}
