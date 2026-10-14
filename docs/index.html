@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261014-cleanmap3" />
+  <link rel="stylesheet" href="styles.css?v=20261014-select-points1" />
 </head>
 <body>
   <header class="topbar">
@@ -123,6 +123,11 @@
                 <button class="field-action" id="field-export-kmz-btn" type="button">Export KMZ</button>
                 <button class="field-action subtle" id="field-clear-btn" type="button">ล้างจุด</button>
               </div>
+              <section class="field-points-panel" id="field-points-panel" aria-live="polite" hidden>
+                <div class="field-points-title"><strong>จุดสำรวจที่เลือกไว้</strong><span id="field-points-count">0 จุด</span></div>
+                <div id="field-points-list" class="field-points-list"></div>
+                <small>แตะ “ลบ” เฉพาะจุดที่ไม่ต้องการได้ หรือกดบนหมุดในแผนที่เพื่อเอาจุดนั้นออก จุดที่เหลือจะอยู่ตำแหน่งเดิมและส่งออกเข้า KMZ เท่านั้น</small>
+              </section>
               <small class="field-export-note">จุดสุ่มจากเรขาคณิตภายในแปลงเท่านั้น ยังไม่ได้ตรวจสอบถนน ทางเดิน น้ำขึ้นลง ความปลอดภัย หรือสิทธิ์เข้าแปลง โปรดทวนสอบหน้างานก่อนออกสำรวจ</small>
               <details class="field-auto-help"><summary>ระบบวงขอบเขตน้ำ Auto อย่างไร?</summary><p>ใช้ Sentinel-2 MNDWI = (B3−B11)/(B3+B11) และจำแนกน้ำเบื้องต้นเมื่อ MNDWI &gt; 0 โดยใช้ SCL ตัดเมฆ เงา และพิกเซลไม่มีข้อมูล ก่อนตัดตามขอบเขตแปลงและแปลง Raster mask เป็น Polygon วันใดไม่มีข้อมูลผ่าน QA จะไม่สร้างขอบเขต Auto ให้เอง</p><p>“น้ำปัจจุบัน” คือบริเวณที่จำแนกเป็นน้ำในวันนั้น ส่วน “น้ำเพิ่ม” คือพื้นที่ที่วันก่อนหน้าไม่ใช่น้ำแต่วันปัจจุบันเป็นน้ำ ไม่เท่ากับพื้นที่น้ำทั้งหมด และไม่ใช่ข้อยืนยันความเสียหายจากน้ำท่วม เพราะอาจมีอิทธิพลของน้ำขึ้นลง</p></details>
             </section>
@@ -366,7 +371,7 @@
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
   <script src="app.js?v=20261014-cleanmap3"></script>
-  <script src="field-export.js?v=20261014-cleanmap3"></script>
+  <script src="field-export.js?v=20261014-select-points1"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
