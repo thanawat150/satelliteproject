@@ -379,9 +379,8 @@ function buildKml(p,scope="both"){
 <Style id="plotBoundary"><LineStyle><color>ff4c4cff</color><width>3</width></LineStyle><PolyStyle><color>00ffffff</color></PolyStyle></Style>
 <Style id="floodArea"><LineStyle><color>fff8bd38</color><width>2</width></LineStyle><PolyStyle><color>66f8bd38</color></PolyStyle></Style>
 <Style id="surveyPoint"><IconStyle><scale>1.05</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/blu-circle.png</href></Icon></IconStyle><LabelStyle><scale>0.8</scale></LabelStyle></Style>
-<Folder><name>01 Plot Boundary</name>${plotPm}</Folder>
-<Folder><name>02 Flood Boundary</name>${floodPm}</Folder>
-<Folder><name>03 Random Field Check Points</name>${pointPm}</Folder>
+${includeBoundary?`<Folder><name>01 Plot Boundary</name>${plotPm}</Folder><Folder><name>02 Flood Boundary</name>${floodPm}</Folder>`:""}
+${includePoints?`<Folder><name>03 Random Field Check Points</name>${pointPm}</Folder>`:""}
 </Document></kml>`;
 }
 async function exportKmz(){
