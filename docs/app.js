@@ -407,10 +407,10 @@ function addPlotLayer(m,p,store){
   // During manual flood digitizing, a click on a plot polygon is a vertex,
   // not a request to reselect the plot (reselection used to erase the draft).
   layer.on('click',e=>{
-    if(window.FieldExport?.isDrawing?.()){
-      // Polygon paths intercept clicks before they reach the base map in some
-      // Leaflet browsers. Add the vertex explicitly rather than selecting the
-      // same plot and wiping the drawing state.
+    if(window.FieldExport?.isDrawing?.()||window.FieldExport?.isPointPlacement?.()){
+      // Active sketch or manual point modes intercept clicks before the base map in some
+      // Leaflet browsers. Route to the active tool instead of selecting the
+      // plot and clearing in-progress geometry or manually placed points.
       window.FieldExport.addVertex?.(e);
       layer.closePopup?.();
       if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
