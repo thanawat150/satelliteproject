@@ -16,7 +16,7 @@ const makeMap=()=>{
 };
 const overviewMap=makeMap(),fullMap=makeMap();
 const elements=new Map();
-for(const id of ["field-point-count","field-sample-mode","field-flood-source","field-export-ready","field-export-summary","field-source-description","field-random-btn","field-export-kmz-btn","field-draw-btn","field-finish-btn","field-reset-boundary-btn","field-clear-btn"]){
+for(const id of ["field-point-count","field-sample-mode","field-flood-source","field-export-ready","field-export-summary","field-source-description","field-random-btn","field-export-kmz-btn","field-draw-btn","field-finish-btn","field-reset-boundary-btn","field-clear-btn","field-points-panel","field-points-list","field-points-count"]){
  const val=id==="field-point-count"?"10":id==="field-sample-mode"?"land_edge":"auto";
  elements.set(id,{value:val,disabled:false,textContent:"",className:"",options:[],listeners:{},addEventListener(event,fn){this.listeners[event]=fn;},replaceChildren(){this.options=[];this.value="";},appendChild(o){this.options.push(o)}});
 }
@@ -59,3 +59,35 @@ assert.equal(elements.get("field-export-kmz-btn").disabled,false);
 pts=field.generatePoints();
 assert(pts.length>0,"manual water polygon must support field sampling");
 console.log("PASS: QA-safe KMZ sampling, polygon containment, NO_DATA and manual fallback");
+
+// Regression: removing one survey point must retain coordinates of all other points
+// and export precisely those remaining without repopulating removed points.
+(async()=>{
+  ctx.selected=plots[0];field.onPlotChange(plots[0]);
+  elements.get("field-sample-mode").value="land_edge";
+  let original=field.generatePoints();
+  assert.equal(original.length,10);
+  const originalById=new Map(original.map(x=>[x.id,[x.lon,x.lat]]));
+  const removedId=original[1].id;
+  assert.equal(field.removePoint(removedId),true);
+  assert.equal(field.removePoint(removedId),false,"already deleted point must not be deleted again");
+  let remaining=field.getPoints();
+  assert.equal(remaining.length,9);
+  assert(!remaining.some(x=>x.id===removedId));
+  for(const pt of remaining)assert.deepEqual([pt.lon,pt.lat],originalById.get(pt.id),"untouched point moved");
+  const saved={};
+  ctx.JSZip=class{file(name,content){saved[name]=content} async generateAsync(){return {placeholder:true}}};
+  ctx.URL={createObjectURL:()=>"blob:fake-field-kmz",revokeObjectURL:()=>{}};
+  await field.exportKmz();
+  assert(saved["doc.kml"].includes("P01"),"remaining points must be present in KMZ");
+  assert(!saved["doc.kml"].includes("<name>"+removedId+"</name>"),"removed point must not be in KMZ");
+  assert(saved["doc.kml"].includes('<Folder><name>03 Random Field Check Points</name>'));
+  const lastKml=saved["doc.kml"];
+  for(const x of field.getPoints())assert.equal(field.removePoint(x.id),true);
+  assert.equal(field.getPoints().length,0);
+  assert.equal(elements.get("field-export-kmz-btn").disabled,true);
+  await field.exportKmz();
+  assert.equal(saved["doc.kml"],lastKml,"export must not regenerate points after removing all of them");
+  assert.equal(field.getPoints().length,0);
+  console.log("PASS: one-point removal preserves other points; KMZ uses only remaining points; delete-all never regenerates points");
+})().catch(e=>{console.error(e);process.exitCode=1});
