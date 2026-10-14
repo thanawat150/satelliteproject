@@ -494,3 +494,13 @@
     overflow: visible;
   }
 }
+
+
+/* Manual flood footprint digitizing: visible active state and vertex feedback. */
+#overview-map.field-map-drawing{cursor:crosshair!important;outline:3px solid #e6a64b;outline-offset:-3px}
+#overview-map.field-map-drawing .leaflet-container,
+#overview-map.field-map-drawing .leaflet-interactive{cursor:crosshair!important}
+#field-draw-btn[aria-pressed="true"]{background:#755023;color:#fff5de;border-color:#edb155}
+.field-draw-status{margin-top:9px;padding:9px 11px;background:#473416;border:1px solid #b98b43;border-radius:8px;color:#ffe4ad;font-size:11px;line-height:1.55}
+.field-draw-status[hidden]{display:none}
+#field-undo-vertex-btn:disabled,#field-finish-btn:disabled{opacity:.42;cursor:not-allowed}
