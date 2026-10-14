@@ -149,20 +149,28 @@ function timeSeriesEventNote(plot,key){
  const before=rows.find(row=>row.date==='2026-04-30'&&qaOk(row));
  const during=rows.find(row=>row.date==='2026-09-29'&&qaOk(row));
  if(!before||!during||!timeSeriesDateSelected(plot,before.date,key)||!timeSeriesDateSelected(plot,during.date,key))return '';
- const delta=Number(during.series_value)-Number(before.series_value);
- const waterRows=timeSeriesRows(plot,'mndwi');
+ const ndviRows=timeSeriesRows(plot,'ndvi'),waterRows=timeSeriesRows(plot,'mndwi');
+ const ndviBefore=ndviRows.find(row=>row.date==='2026-04-30'&&qaOk(row));
+ const ndviDuring=ndviRows.find(row=>row.date==='2026-09-29'&&qaOk(row));
  const mndwiBefore=waterRows.find(row=>row.date==='2026-04-30'&&qaOk(row));
  const mndwiDuring=waterRows.find(row=>row.date==='2026-09-29'&&qaOk(row));
  const sceneBefore=plotScenes(plot).find(row=>row.date==='2026-04-30'&&qaOk(row));
  const sceneDuring=plotScenes(plot).find(row=>row.date==='2026-09-29'&&qaOk(row));
- const partialNdvi=timeSeriesRows(plot,'ndvi').find(row=>row.date==='2026-10-07'&&!qaOk(row));
- const mndwiNote=mndwiBefore&&mndwiDuring?
-  '<p><b>สัญญาณน้ำสวนทางกับ NDVI:</b> MNDWI เปลี่ยนจาก '+seriesFmt('mndwi',mndwiBefore.series_value)+' เป็น '+seriesFmt('mndwi',mndwiDuring.series_value)+' (เพิ่ม '+seriesFmt('mndwi',Number(mndwiDuring.series_value)-Number(mndwiBefore.series_value))+'). พื้นที่ที่จำแนกเป็นน้ำเปลี่ยนจาก '+(sceneBefore?seriesFmt('water_rai',sceneBefore.water_rai):'—')+' เป็น '+(sceneDuring?seriesFmt('water_rai',sceneDuring.water_rai):'—')+' ไร่ ทั้งสองวันผ่าน QA; ทิศทางนี้สอดคล้องกับสัญญาณน้ำที่เพิ่มขึ้นในช่วงที่ NDVI ลดลง</p>':'';
- return '<aside class="notice ts-event-note"><b>หมายเหตุเหตุการณ์น้ำท่วมที่ผู้ใช้ระบุ · ก.ย.–ต.ค. 2569</b>'+
-  '<p>เปรียบเทียบภาพก่อนเหตุการณ์ 30 เม.ย. 2569 ('+html(seriesMeta(key)[0])+' '+seriesFmt(key,before.series_value)+', QA ผ่าน) กับภาพช่วงเหตุการณ์ 29 ก.ย. 2569 ('+html(seriesMeta(key)[0])+' '+seriesFmt(key,during.series_value)+', QA ผ่าน) พบค่า'+(delta<0?'ลดลง ':'เพิ่มขึ้น ')+seriesFmt(key,Math.abs(delta))+' หน่วยดัชนี'+(key==='ndvi'?' NDVI':' MNDWI')+'.</p>'+
-  mndwiNote+
-  (partialNdvi?'<p>ภาพ 7 ต.ค. 2569 มี NDVI '+seriesFmt('ndvi',partialNdvi.series_value)+' แต่สถานะ PARTIAL จึงใช้ทบทวนรายภาพเท่านั้น ไม่ถือเป็นผลผ่าน QA หรือหลักฐานยืนยันการฟื้นตัว</p>':'')+
-  '<small>ข้อจำกัด: ค่าดัชนีและพื้นที่น้ำเป็นสัญญาณคัดกรองรายภาพ ไม่ยืนยันน้ำท่วมหรือสาเหตุเชิงเหตุการณ์; Processing Baseline/BOA Offset ยังไม่ยืนยันและระบบยังไม่อนุมัติการเปรียบเทียบข้ามวัน ควรตรวจภาพจริง ระดับน้ำ/ฝน และหลักฐานภาคสนามร่วมด้วย</small></aside>';
+ const partialNdvi=ndviRows.find(row=>row.date==='2026-10-07'&&!qaOk(row));
+ const waterDelta=sceneBefore&&sceneDuring?Number(sceneDuring.water_rai)-Number(sceneBefore.water_rai):null;
+ const ndviDelta=ndviBefore&&ndviDuring?Number(ndviDuring.series_value)-Number(ndviBefore.series_value):null;
+ const mndwiDelta=mndwiBefore&&mndwiDuring?Number(mndwiDuring.series_value)-Number(mndwiBefore.series_value):null;
+ return '<aside class="ts-event-alert" role="note" aria-label="หมายเหตุสัญญาณน้ำท่วมที่ผู้ใช้ระบุ">'+
+  '<div class="ts-event-alert-head"><span class="ts-event-alert-icon" aria-hidden="true">!</span><div><b>สัญญาณบนกราฟสอดคล้องกับน้ำท่วมที่ระบุ</b><small>13-STC · เปรียบเทียบภาพก่อนเหตุการณ์ เม.ย. กับช่วง ก.ย.–ต.ค. 2569</small></div></div>'+
+  '<p class="ts-event-alert-summary">ช่วง 30 เม.ย. → 29 ก.ย. 2569: ความเขียวลดลง ขณะที่สัญญาณน้ำและพื้นที่น้ำเพิ่มขึ้น</p>'+
+  '<div class="ts-event-metrics">'+
+   (ndviBefore&&ndviDuring?'<div><small>NDVI · ความเขียว</small><b>'+seriesFmt('ndvi',ndviBefore.series_value)+' → '+seriesFmt('ndvi',ndviDuring.series_value)+' <em class="down">↓ '+seriesFmt('ndvi',Math.abs(ndviDelta))+'</em></b></div>':'')+
+   (mndwiBefore&&mndwiDuring?'<div><small>MNDWI · สัญญาณน้ำ</small><b>'+seriesFmt('mndwi',mndwiBefore.series_value)+' → '+seriesFmt('mndwi',mndwiDuring.series_value)+' <em class="up">↑ '+seriesFmt('mndwi',mndwiDelta)+'</em></b></div>':'')+
+   (sceneBefore&&sceneDuring?'<div><small>พื้นที่ที่จำแนกเป็นน้ำ · QA ผ่าน</small><b>'+seriesFmt('water_rai',sceneBefore.water_rai)+' → '+seriesFmt('water_rai',sceneDuring.water_rai)+' ไร่'+(waterDelta>0?' <em class="up">↑ '+seriesFmt('water_rai',waterDelta)+'</em>':'')+'</b></div>':'')+
+  '</div>'+
+  '<p class="ts-event-interpretation"><b>การอ่านผล:</b> NDVI ลง + MNDWI/พื้นที่น้ำขึ้น เป็นสัญญาณสวนทางที่สอดคล้องกับภาพเหตุการณ์นี้</p>'+
+  (partialNdvi?'<p class="ts-event-partial">7 ต.ค. NDVI '+seriesFmt('ndvi',partialNdvi.series_value)+' เป็น PARTIAL — ใช้ดูประกอบเท่านั้น ยังยืนยันการฟื้นตัวไม่ได้</p>':'')+
+  '<small class="ts-event-caveat">ข้อจำกัด: สัญญาณคัดกรอง ไม่ใช่การยืนยันน้ำท่วมหรือสาเหตุ; Processing Baseline/BOA Offset ยังไม่ยืนยันและยังไม่อนุมัติการเทียบข้ามวัน ควรตรวจภาพจริง ฝน/ระดับน้ำ และข้อมูลภาคสนามร่วมด้วย</small></aside>';
 }
 function timeSeriesChartSet(plot,key){
  if(!Array.isArray(state.tsMetrics))state.tsMetrics=[];
