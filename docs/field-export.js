@@ -595,7 +595,7 @@ function onPlotChange(p){
   activePlot=p;
   syncManualFlood(p.plot);
   redrawManualBoundaries();renderManualList();
-  const sourceSelect=$("field-flood-source");if(sourceSelect)sourceSelect.value="auto";
+  const sourceSelect=$("field-flood-source");if(sourceSelect)sourceSelect.value=manualPartsFor(p.plot).length?"manual":"auto";
   ensureDrawingListeners();
   refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();updatePanel();
 }
