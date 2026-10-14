@@ -37,7 +37,7 @@ const click=(x,y,originalEvent={})=>events.click({latlng:{lng:x,lat:y},originalE
  field.togglePointPlacement();assert(field.isPointPlacement());
  click(101.701,12.701);click(101.706,12.706);click(102,13);
  assert.equal(field.getPoints().length,2,"only points inside plot are accepted");
- assert.equal(els.get("field-kmz-scope").value,"points","manual without flood defaults to points-only KMZ");
+ assert.equal(els.get("field-kmz-scope").value,"both","manual without flood defaults to combined KMZ");
  assert.equal(overviewMarkers.length,2);assert.equal(fullMarkers.length,2);
  let marker=overviewMarkers[0];
  marker.fire("dragstart");marker.setLatLng([12.704,101.704]);marker.fire("dragend");
@@ -46,13 +46,18 @@ const click=(x,y,originalEvent={})=>events.click({latlng:{lng:x,lat:y},originalE
  assert.equal(field.getPoints()[0].lat,12.704,"outside-plot drag must revert");
  await field.exportKmz();
  assert(kmz.at(-1).includes("<coordinates>101.704,12.704,0</coordinates>"),"KMZ uses moved manual coords");
- assert(!kmz.at(-1).includes('02 Flood Boundary'),"points-only KMZ includes no flood polygon");
+ assert(kmz.at(-1).includes('<name>01 Plot Boundary</name>'),"combined KMZ includes plot boundary");
+  assert(!kmz.at(-1).includes('— Water Extent'),"missing-water plot cannot claim water was detected");
  assert(field.removePoint("P01"));
  assert.deepEqual(field.getPoints().map(x=>x.id),["P01"],"delete renumbers remaining points");
  field.togglePointPlacement();assert.equal(field.isPointPlacement(),false);
  // When real water is available, random mode samples ONLY that water.
  ctx.newWaterByPlot.set(plot.plot,water);
  els.get("field-point-entry-mode").value="random";
+ const mixed=field.generatePoints();
+ assert.equal(mixed.length,5,"random fills requested count without removing manually placed points");
+ assert.equal(mixed.filter(p=>p.method==="manual_point").length,1,"manual points must survive sampling");
+ assert.equal(mixed[0].lat,12.706,"manual coordinate stays fixed during sampling");
  field.clearPoints(true);
  const random=field.generatePoints();
  assert.equal(random.length,5);
@@ -60,5 +65,5 @@ const click=(x,y,originalEvent={})=>events.click({latlng:{lng:x,lat:y},originalE
    "random points must be within the chosen water polygon");
  marker=overviewMarkers[0];marker.fire("dragstart");marker.setLatLng([12.706,101.706]);marker.fire("dragend");
  assert(random[0].lon<101.703,"random-water points cannot be dragged onto dry land");
- console.log("PASS: consolidated studio, manual clicks without water, move/reject, points-only KMZ, delete, random water-only mode");
+ console.log("PASS: unified studio, manual points, combined KMZ, mixed sampling, draggable points");
 })().catch(e=>{console.error(e);process.exitCode=1});
