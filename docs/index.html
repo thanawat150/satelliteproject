@@ -118,6 +118,13 @@
                 <button class="field-action" id="field-finish-btn" type="button" disabled>ยืนยันขอบเขตที่วาด</button>
                 <button class="field-action subtle" id="field-reset-boundary-btn" type="button">ล้างขอบเขตที่วาด</button>
               </div>
+              <label class="field-kmz-scope">สิ่งที่ต้องการ Export
+                <select id="field-kmz-scope">
+                  <option value="both">ขอบเขตแปลง + น้ำ + จุดสุ่ม (รวม)</option>
+                  <option value="boundary">ขอบเขตแปลง + น้ำเท่านั้น</option>
+                  <option value="points">จุดสุ่มเท่านั้น</option>
+                </select>
+              </label>
               <div class="field-export-actions">
                 <button class="field-action primary" id="field-random-btn" type="button">สุ่มจุดบนแผนที่</button>
                 <button class="field-action" id="field-export-kmz-btn" type="button">Export KMZ</button>
@@ -126,7 +133,7 @@
               <section class="field-points-panel" id="field-points-panel" aria-live="polite" hidden>
                 <div class="field-points-title"><strong>จุดสำรวจที่เลือกไว้</strong><span id="field-points-count">0 จุด</span></div>
                 <div id="field-points-list" class="field-points-list"></div>
-                <small>แตะ “ลบ” เฉพาะจุดที่ไม่ต้องการได้ หรือกดบนหมุดในแผนที่เพื่อเอาจุดนั้นออก จุดที่เหลือจะอยู่ตำแหน่งเดิมและส่งออกเข้า KMZ เท่านั้น</small>
+                <small>แตะ “ลบ” เฉพาะจุดที่ไม่ต้องการได้ หรือกดบนหมุดในแผนที่เพื่อเอาจุดนั้นออก จุดที่เหลือจะอยู่ตำแหน่งเดิมและส่งออกเข้า KMZ เท่านั้น โดยหมายเลขจุดจะเรียงใหม่ P01, P02, P03…</small>
               </section>
               <small class="field-export-note">จุดสุ่มจากเรขาคณิตภายในแปลงเท่านั้น ยังไม่ได้ตรวจสอบถนน ทางเดิน น้ำขึ้นลง ความปลอดภัย หรือสิทธิ์เข้าแปลง โปรดทวนสอบหน้างานก่อนออกสำรวจ</small>
               <details class="field-auto-help"><summary>ระบบวงขอบเขตน้ำ Auto อย่างไร?</summary><p>ใช้ Sentinel-2 MNDWI = (B3−B11)/(B3+B11) และจำแนกน้ำเบื้องต้นเมื่อ MNDWI &gt; 0 โดยใช้ SCL ตัดเมฆ เงา และพิกเซลไม่มีข้อมูล ก่อนตัดตามขอบเขตแปลงและแปลง Raster mask เป็น Polygon วันใดไม่มีข้อมูลผ่าน QA จะไม่สร้างขอบเขต Auto ให้เอง</p><p>“น้ำปัจจุบัน” คือบริเวณที่จำแนกเป็นน้ำในวันนั้น ส่วน “น้ำเพิ่ม” คือพื้นที่ที่วันก่อนหน้าไม่ใช่น้ำแต่วันปัจจุบันเป็นน้ำ ไม่เท่ากับพื้นที่น้ำทั้งหมด และไม่ใช่ข้อยืนยันความเสียหายจากน้ำท่วม เพราะอาจมีอิทธิพลของน้ำขึ้นลง</p></details>
