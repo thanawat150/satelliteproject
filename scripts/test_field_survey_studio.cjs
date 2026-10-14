@@ -49,7 +49,7 @@ const click=(x,y,originalEvent={})=>events.click({latlng:{lng:x,lat:y},originalE
  assert(kmz.at(-1).includes('<name>01 Plot Boundary</name>'),"combined KMZ includes plot boundary");
   assert(!kmz.at(-1).includes('— Water Extent'),"missing-water plot cannot claim water was detected");
  assert(field.removePoint("P01"));
- assert.deepEqual(field.getPoints().map(x=>x.id),["P01"],"delete renumbers remaining points");
+ assert.deepEqual(Array.from(field.getPoints(),x=>x.id),["P01"],"delete renumbers remaining points");
  field.togglePointPlacement();assert.equal(field.isPointPlacement(),false);
  // When real water is available, random mode samples ONLY that water.
  ctx.newWaterByPlot.set(plot.plot,water);
