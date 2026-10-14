@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261014-drawfix8" />
+  <link rel="stylesheet" href="styles.css?v=20261014-multipolygon9" />
 </head>
 <body>
   <header class="topbar">
@@ -132,9 +132,14 @@
                 <button class="field-action" id="field-draw-btn" type="button">วาดขอบเขตน้ำ</button>
                 <button class="field-action" id="field-finish-btn" type="button" disabled>ยืนยันขอบเขตที่วาด</button>
                 <button class="field-action subtle" id="field-undo-vertex-btn" type="button" disabled>ย้อนกลับ 1 จุด</button>
-                <button class="field-action subtle" id="field-reset-boundary-btn" type="button">ล้างขอบเขตที่วาด</button>
+                <button class="field-action subtle" id="field-reset-boundary-btn" type="button">ล้างขอบเขตที่วาดทั้งหมด</button>
               </div>
               <div class="field-draw-status" id="field-draw-status" role="status" aria-live="polite" hidden></div>
+              <section class="field-manual-polygons" id="field-manual-polygons" hidden>
+                <div class="field-manual-title"><strong>ขอบเขตน้ำที่วาดเอง</strong><span id="field-manual-polygon-count">0 ขอบเขต</span></div>
+                <div id="field-manual-polygon-list" class="field-manual-polygon-list"></div>
+                <small>หลังยืนยันพื้นที่แรก กด “วาดขอบเขตเพิ่ม” แล้ววาดพื้นที่อื่นได้อีก • กดลบเฉพาะพื้นที่ที่ไม่ต้องการ • KMZ แยกแต่ละพื้นที่เป็น Polygon ของตัวเอง</small>
+              </section>
               <label class="field-kmz-scope">สิ่งที่ต้องการ Export
                 <select id="field-kmz-scope">
                   <option value="both">ขอบเขตแปลง + น้ำ + จุดสุ่ม (รวม)</option>
@@ -403,7 +408,7 @@
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
   <script src="app.js?v=20261014-drawfix8"></script>
-  <script src="field-export.js?v=20261014-drawfix8"></script>
+  <script src="field-export.js?v=20261014-multipolygon9"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
