@@ -199,7 +199,7 @@ function timeSeriesEventNote(plot,key){
 function timeSeriesChartSet(plot,key){
  if(!Array.isArray(state.tsMetrics))state.tsMetrics=[];
  const selected=[key,...state.tsMetrics.filter(k=>k!==key&&Object.prototype.hasOwnProperty.call(SERIES,k)&&timeSeriesRows(plot,k).length)];
- const cards=selected.map(metric=>'<article class="ts-metric-card"><h3>'+html(seriesMeta(metric)[0])+' <small>· '+html(seriesUnit(metric))+'</small></h3'+'<div class="ts-metric-chart">'+timeSeriesChartMarkup(plot,metric,state.tsChartMode,metric===key?timeSeriesRowsInRange(plot,metric):timeSeriesMultiRows(plot,metric))+'</div></article>').join('');
+ const cards=selected.map(metric=>'<article class="ts-metric-card"><h3>'+html(seriesMeta(metric)[0])+' <small>· '+html(seriesUnit(metric))+'</small></h3><div class="ts-metric-chart">'+timeSeriesChartMarkup(plot,metric,state.tsChartMode,metric===key?timeSeriesRowsInRange(plot,metric):timeSeriesMultiRows(plot,metric))+'</div></article>').join('');
  const options=Object.entries(SERIES).filter(([metric])=>metric!==key&&timeSeriesRows(plot,metric).length).map(([metric,[label]])=>'<label class="ts-metric-option"><input type="checkbox" data-ts-metric="'+html(metric)+'" '+(state.tsMetrics.includes(metric)?'checked':'')+'> <span>'+html(label)+'</span></label>').join('');
  return timeSeriesEventNote(plot,key)+'<details class="ts-metric-picker"><summary>เพิ่มกราฟเปรียบเทียบ <span>แสดง '+selected.length+' กราฟ</span></summary><div class="ts-metric-options">'+(options||'<span class="muted">ไม่มีตัวชี้วัดอื่นที่มีข้อมูลในแปลงนี้</span>')+'</div></details><div class="ts-multi-grid">'+cards+'</div>';
 }
