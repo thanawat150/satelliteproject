@@ -22,11 +22,23 @@ const SERIES={
 function seriesMeta(key){return SERIES[key]||SERIES.ndvi;}
 function seriesUnit(key){return {index:'ค่าดัชนี',rai:'ไร่',percent:'%',mm:'มม.'}[seriesMeta(key)[1]];}
 function seriesFmt(key,v){return Number.isFinite(Number(v))&&v!==null?Number(v).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';}
-function seriesOptions(selected){
+function seriesAvailability(plot,key){
+ const rows=timeSeriesRows(plot,key);
+ const years=[...new Set(rows.map(row=>String(row.date||'').slice(0,4)).filter(year=>/^\d{4}$/.test(year)))].sort();
+ return {rows,years};
+}
+function firstAvailableSeries(plot,preferred='ndvi'){
+ if(Object.prototype.hasOwnProperty.call(SERIES,preferred)&&seriesAvailability(plot,preferred).rows.length)return preferred;
+ return Object.keys(SERIES).find(key=>seriesAvailability(plot,key).rows.length)||preferred;
+}
+function seriesOptions(selected,plot=state.plot){
  const groups=new Map();
  for(const [key,[label,unit,group]] of Object.entries(SERIES)){
   if(!groups.has(group))groups.set(group,[]);
-  groups.get(group).push('<option value="'+html(key)+'" '+(key===selected?'selected':'')+'>'+html(label)+'</option>');
+  const {rows,years}=seriesAvailability(plot,key),available=rows.length>0;
+  const availability=available?' · '+years.join(', ')+' ('+rows.length+' วัน)':' · ไม่มีข้อมูลในแปลงนี้';
+  groups.get(group).push('<option value="'+html(key)+'" '+(key===selected?'selected':'')+
+   (available?'':' disabled title="ไม่มีค่าที่ใช้วาดกราฟสำหรับแปลงนี้"')+'>'+html(label+availability)+'</option>');
  }
  return [...groups].map(([g,opts])=>'<optgroup label="'+html(g)+'">'+opts.join('')+'</optgroup>').join('');
 }
@@ -95,6 +107,8 @@ function timeSeriesChartMarkup(plot,key,mode=state.tsChartMode){
  return svgChart(timeSeriesRows(plot,key),'series_value',{key,unit,decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral,mode});
 }
 function timeSeriesPanel(plot,key){
+ key=firstAvailableSeries(plot,key);
+ state.metric=key;
  const meta=seriesMeta(key),good=timeSeriesRows(plot,key);
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  return '<div class="panel" id="time-series-panel"><div class="section-title time-series-toolbar">'+
@@ -105,7 +119,7 @@ function timeSeriesPanel(plot,key){
   '<div id="time-series-details">'+timeSeriesInfo(plot,key,good)+'</div></div>';
 }
 function changeTimeSeriesMetric(key){
- if(!Object.prototype.hasOwnProperty.call(SERIES,key))return;
+ if(!Object.prototype.hasOwnProperty.call(SERIES,key)||!seriesAvailability(state.plot,key).rows.length)return;
  state.metric=key;
  const q=$('metric-select'),selector=$('timeseries-metric-select');
  if(q)q.value=key;if(selector)selector.value=key;
@@ -540,8 +554,8 @@ function plotDetail(p){const scenes=plotScenes(p.code),valid=validScenes(p.code)
  '</div>';
 }
 function analysisPage(){const p=plotOf(state.plot),sc=plotScenes(state.plot);
- const key=Object.prototype.hasOwnProperty.call(SERIES,state.metric)?state.metric:'ndvi';
- const metricChoices=seriesOptions(key);
+ const key=firstAvailableSeries(state.plot,Object.prototype.hasOwnProperty.call(SERIES,state.metric)?state.metric:'ndvi');
+ state.metric=key;
  root.innerHTML=commonHead('Environmental Analytics','กราฟดัชนีแสดงค่า TIFF ตามวันที่มีจริงพร้อม QA • จุด PARTIAL ใช้ตรวจดูเท่านั้น • พื้นที่/ฝนใช้เฉพาะผลผ่าน QA',btn('Export CSV','exportscenes',state.plot,'primary'))+
  '<div class="controls"><label>แปลง <select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label>'+btn('ดูแปลงบนแผนที่','setview','map')+'</div>'+
  (p?'<div class="grid kpis" id="analysis-metric-kpis">'+timeSeriesKpis(state.plot,key)+'</div>':'')+
