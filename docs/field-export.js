@@ -5,6 +5,7 @@ let activePlot=null;
 let points=[];
 let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null, confirmedLayer=null, listeningMap=null;
 const surveyLayers={overview:null,full:null};
+const floodLayers={overview:null,full:null};
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]));
@@ -53,7 +54,7 @@ function refreshSourceOptions(plot){
 }
 async function loadHistoricalFlood(){
   try{const response=await fetch("data/water_history.geojson",{cache:"no-store"});if(!response.ok)return;const j=await response.json();waterHistoryFeatures=Array.isArray(j.features)?j.features:[];
-    const p=activePlot||((typeof selected!=="undefined")?selected:null);if(p){refreshSourceOptions(p.plot);clearPoints(true);updatePanel();}
+    const p=activePlot||((typeof selected!=="undefined")?selected:null);if(p){refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();updatePanel();}
   }catch(e){console.warn("Field water history not available",e)}
 }
 function plotFeature(plot){
@@ -190,6 +191,17 @@ function generatePoints(){
   return points;
 }
 
+function redrawFloodBoundary(){
+  const p=activePlot||((typeof selected!=="undefined")?selected:null);
+  try{
+    [[overviewMap,"overview"],[fullMap,"full"]].forEach(([map,key])=>{
+      if(!map)return;
+      if(floodLayers[key]){map.removeLayer(floodLayers[key]);floodLayers[key]=null;}
+      if(!p)return;const f=floodFeature(p.plot);if(!f||f.properties?._kmzSource==="manual")return;
+      floodLayers[key]=L.geoJSON(f,{style:{color:"#00dbff",weight:2,opacity:0.95,dashArray:"6 5",fillColor:"#32b8f4",fillOpacity:0.08},interactive:false}).addTo(map);
+    });
+  }catch(e){console.warn("Field flood drawing",e)}
+}
 function clearLayer(map,key){
   if(map&&surveyLayers[key]){map.removeLayer(surveyLayers[key]);surveyLayers[key]=null}
 }
@@ -329,14 +341,14 @@ function finishDrawing(){
   feature.properties._kmzArea=areaRai;
   feature.properties._kmzSource="manual";feature.properties._kmzQA="UNVERIFIED";feature.properties._kmzDate="";
   removeDrawing();manualFlood=feature;
-  refreshSourceOptions(p.plot);$("field-flood-source").value="manual";
+  refreshSourceOptions(p.plot);$("field-flood-source").value="manual";redrawFloodBoundary();
   if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
   confirmedLayer=L.geoJSON(feature,{style:{color:"#f59e0b",weight:3,fillColor:"#f59e0b",fillOpacity:0.22}}).addTo(overviewMap);
   clearPoints(true);updatePanel();
   notify("สร้างขอบเขตน้ำจากการวาดแล้ว (ยังไม่ยืนยัน) — สุ่มจุดและ Export KMZ ได้");
 }
 function clearDrawing(){
-  manualFlood=null;removeDrawing();if(activePlot)refreshSourceOptions(activePlot.plot);if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}clearPoints(true);updatePanel();
+  manualFlood=null;removeDrawing();if(activePlot)refreshSourceOptions(activePlot.plot);redrawFloodBoundary();if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}clearPoints(true);updatePanel();
   notify("ล้างขอบเขตที่วาดแล้ว");
 }
 function onMapClick(e){
@@ -350,7 +362,7 @@ function onPlotChange(p){
   removeDrawing();manualFlood=null;if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
   activePlot=p;
   if(typeof overviewMap!=="undefined"&&overviewMap!==listeningMap){listeningMap?.off("click",onMapClick);overviewMap.on("click",onMapClick);listeningMap=overviewMap}
-  refreshSourceOptions(p.plot);clearPoints(true);updatePanel();
+  refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();updatePanel();
 }
 function bind(){
   $("field-random-btn")?.addEventListener("click",generatePoints);
@@ -361,7 +373,7 @@ function bind(){
   if(!attach())window.addEventListener("load",attach,{once:true});
   $("field-export-kmz-btn")?.addEventListener("click",exportKmz);
   $("field-clear-btn")?.addEventListener("click",()=>clearPoints(false));
-  $("field-flood-source")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
+  $("field-flood-source")?.addEventListener("change",()=>{clearPoints(true);redrawFloodBoundary();updatePanel()});
   $("field-point-count")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   $("field-sample-mode")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   loadHistoricalFlood();updatePanel();
