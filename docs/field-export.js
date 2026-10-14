@@ -298,7 +298,7 @@ function syncPointModeUI(){
   if(randomSettings)randomSettings.hidden=manual;
   const help=$("field-point-help");
   if(help)help.textContent=manual?
-    "คลิกวางจุดภายในขอบเขตแปลงได้เอง ไม่ต้องมี Polygon น้ำ • ลากจุดย้ายหรือลบรายจุดได้":
+    "ปักจุดเองได้ภายในแปลง ไม่ต้องสุ่มหรือมี Polygon น้ำ • ลากย้าย/ลบจุดได้":
     "สุ่มโดยอัตโนมัติภายในขอบเขตน้ำที่เลือกเท่านั้น • ลากจุดเพื่อปรับภายในน้ำ";
   const action=$("field-random-btn");
   if(action)action.textContent=manual?(pointPlacement?"เสร็จสิ้นการวางจุด":"เริ่มวางจุดบนแผนที่"):"สุ่มจุดในขอบเขตน้ำ";
@@ -340,7 +340,7 @@ function placeManualPoint(lon,lat){
   };
   points.push(pt);pointsEdited=true;
   // A manually placed point can be exported without a water polygon.
-  const scope=$("field-kmz-scope");if(scope&&!flood&&scope.value==="both")scope.value="points";
+  // Both mode can export the project boundary and manually placed points even without mapped flood water.
   drawPoints();renderPointList();updatePanel();syncPointModeUI();
   return {ok:true,point:{...pt}};
 }
@@ -351,18 +351,23 @@ function generatePoints(){
   const count=desiredCount(info,flood),mode=$("field-sample-mode")?.value||"water_full";
   if(pointPlacement)stopPointPlacement();
   if(mode==="land_edge"&&!boundary){notify("ยังไม่มีขอบเขตแปลงสำหรับเลือกจุดด้านนอกน้ำ");return[]}
-  const {pool,edgeDepth}=candidatePool(flood,boundary,count,mode,activeArea(info,flood));
-  if(pool.length<count){points=[];drawPoints();updatePanel();notify("พื้นที่ที่ตรงเงื่อนไขมีน้อยเกินไป: ลดจำนวนจุดหรือเปลี่ยนวิธีสุ่ม ห้ามใช้จุดที่ไม่ผ่านเงื่อนไข");return[]}
-  pointsEdited=false;
-  points=spreadSelect(pool,count).map((c,i)=>({
-    id:"P"+String(i+1).padStart(2,"0"),
+  // Only replace previous RANDOM samples. Never remove operator-placed points.
+  const keep=points.filter(x=>x.method==="manual_point");
+  const needed=Math.max(0,Math.min(99-keep.length,count-keep.length));
+  if(!needed){notify("จุดที่ปักเองครบจำนวนที่กำหนดแล้ว • เปลี่ยนจำนวนจุดหากต้องการสุ่มเพิ่ม");return points}
+  const {pool,edgeDepth}=candidatePool(flood,boundary,needed,mode,activeArea(info,flood));
+  const available=pool.filter(c=>keep.every(x=>metersBetween(c,[x.lon,x.lat])>=8));
+  if(available.length<needed){notify("พื้นที่ที่ตรงเงื่อนไขมีน้อยเกินไป • จุดที่ปักเองและจุดเดิมจะไม่ถูกลบ");return points}
+  const added=spreadSelect(available,needed).map(c=>({
     lon:+c[0].toFixed(7),lat:+c[1].toFixed(7),
     edge_distance_m:+distanceToBoundaryM(c,flood).toFixed(1),
     method:mode==="land_edge"?"land_near_water":mode==="water_edge"?"water_near_edge":"water_interior",
     in_water:mode!=="land_edge",
     flood_source:flood.properties._kmzSource||"manual"
   }));
-  drawPoints();renderPointList();updatePanel(edgeDepth);syncPointModeUI();notify("สุ่ม "+points.length+" จุดในพื้นที่น้ำแล้ว • ลากเพื่อปรับตำแหน่งได้");
+  points=[...keep,...added].map((p,i)=>({...p,id:"P"+String(i+1).padStart(2,"0")}));
+  pointsEdited=true;
+  drawPoints();renderPointList();updatePanel(edgeDepth);syncPointModeUI();notify("สุ่มเพิ่ม "+added.length+" จุด • เก็บจุดที่ปักเอง "+keep.length+" จุดไว้แล้ว");
   return points;
 }
 
@@ -425,7 +430,7 @@ function renderPointList(){
   panel.hidden=!points.length&&!pointsEdited;
   if(count)count.textContent=points.length+" จุด";
   if(!points.length){
-    list.innerHTML='<div class="field-points-empty">ไม่มีจุดที่เลือกอยู่ กด “สุ่มจุดบนแผนที่” เพื่อสร้างชุดใหม่</div>';
+    list.innerHTML='<div class="field-points-empty">ยังไม่มีจุด • เลือก “คลิกวางจุดเอง” หรือ “สุ่มเพิ่มเติม” ด้านบน</div>';
     return;
   }
   list.innerHTML=points.map(p=>
@@ -511,7 +516,8 @@ function updatePanel(edgeDepth){
   const action=$("field-random-btn"),exportBtn=$("field-export-kmz-btn"),scope=$("field-kmz-scope")?.value||"both";
   if(!p||!ready||!sum)return;
   const flood=floodFeature(p.plot),info=plotInfo(p.plot)||p,manual=pointEntryMode()==="manual";
-  const canExport=scope==="points"?points.length>0:scope==="boundary"?!!flood:!!flood&&points.length>0;
+  const hasPlot=!!plotFeature(p.plot);
+  const canExport=scope==="points"?points.length>0:scope==="boundary"?hasPlot:hasPlot&&points.length>0;
   const hint=$("field-source-description");if(hint)hint.textContent=sourceDescription(flood);
   if(!flood){
     ready.textContent=points.length?points.length+" จุด":"ไม่มีขอบเขตน้ำ";
@@ -526,6 +532,7 @@ function updatePanel(edgeDepth){
   }
   if(action)action.disabled=!manual&&!flood;
   if(exportBtn)exportBtn.disabled=!canExport;
+  updateWorkspaceCounts();
 }
 function fmtLocal(n){return Number.isFinite(Number(n))?Number(n).toLocaleString("th-TH",{maximumFractionDigits:2}):"—"}
 function notify(s){try{showToast(s)}catch(_){console.info(s)}}
@@ -562,7 +569,7 @@ function buildKml(p,scope="both"){
   placemarkPolygon(p.plot+" — Manual Water "+(i+1)+" (unverified)",{type:"Feature",geometry:part.geometry},"#floodArea",
     "Plot: "+esc(p.plot)+"<br>Manual boundary: "+(i+1)+" of "+manualPartsFor(p.plot).length+"<br>QA: UNVERIFIED<br>Area: "+fmtLocal(part.areaRai)+" rai")
   ).join(""):placemarkPolygon(`${p.plot} — ${source==="water_extent"?"Water Extent":"New Water"}`,flood,"#floodArea",`Plot: ${esc(p.plot)}<br>Source: ${esc(source)}<br>Date: ${esc(sourceDate)}<br>Baseline: ${esc(baseline)}<br>QA: ${esc(flood.properties?._kmzQA||"UNVERIFIED")}<br>Mapped area: ${fmtLocal(area)} rai`)):"";
-  const pointPm=(includePoints?points:[]).map(pt=>`<Placemark><name>${pt.id}</name><styleUrl>#surveyPoint</styleUrl><description><![CDATA[Plot: ${esc(p.plot)}<br>Date: ${esc(current)}<br>Sampling: ${esc(modeLabel())}<br>Point in mapped water: ${pt.in_water?"YES — access by water may be required":"NO — outside selected polygon; dry land not confirmed"}<br>Lat: ${pt.lat.toFixed(7)}<br>Lon: ${pt.lon.toFixed(7)}<br>Distance to flood edge: ~${Math.round(pt.edge_distance_m)} m]]></description><ExtendedData><Data name="plot"><value>${esc(p.plot)}</value></Data><Data name="sample_id"><value>${pt.id}</value></Data><Data name="sample_method"><value>${esc(pt.method)}</value></Data><Data name="in_water"><value>${pt.in_water?"true":"false"}</value></Data><Data name="flood_source"><value>${esc(source)}</value></Data><Data name="water_date"><value>${esc(sourceDate)}</value></Data><Data name="edge_distance_m"><value>${pt.edge_distance_m}</value></Data></ExtendedData><Point><coordinates>${pt.lon},${pt.lat},0</coordinates></Point></Placemark>`).join("");
+  const pointPm=(includePoints?points:[]).map(pt=>`<Placemark><name>${pt.id}</name><styleUrl>#surveyPoint</styleUrl><description><![CDATA[Plot: ${esc(p.plot)}<br>Date: ${esc(current)}<br>Sampling: ${esc(pt.method==="manual_point"?"Manual placement":"Random "+pt.method)}<br>Point in mapped water: ${pt.in_water?"YES — access by water may be required":"NO — outside selected polygon; dry land not confirmed"}<br>Lat: ${pt.lat.toFixed(7)}<br>Lon: ${pt.lon.toFixed(7)}<br>Distance to flood edge: ${pt.edge_distance_m==null?"N/A":("~"+Math.round(pt.edge_distance_m)+" m")}]]></description><ExtendedData><Data name="plot"><value>${esc(p.plot)}</value></Data><Data name="sample_id"><value>${pt.id}</value></Data><Data name="sample_method"><value>${esc(pt.method)}</value></Data><Data name="in_water"><value>${pt.in_water?"true":"false"}</value></Data><Data name="flood_source"><value>${esc(source)}</value></Data><Data name="water_date"><value>${esc(sourceDate)}</value></Data><Data name="edge_distance_m"><value>${pt.edge_distance_m==null?"":pt.edge_distance_m}</value></Data></ExtendedData><Point><coordinates>${pt.lon},${pt.lat},0</coordinates></Point></Placemark>`).join("");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document>
 <name>${esc(p.plot)} Flood Field Survey</name>
@@ -571,7 +578,7 @@ function buildKml(p,scope="both"){
 <Style id="floodArea"><LineStyle><color>fff8bd38</color><width>2</width></LineStyle><PolyStyle><color>66f8bd38</color></PolyStyle></Style>
 <Style id="surveyPoint"><IconStyle><scale>1.05</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/blu-circle.png</href></Icon></IconStyle><LabelStyle><scale>0.8</scale></LabelStyle></Style>
 ${includeBoundary?`<Folder><name>01 Plot Boundary</name>${plotPm}</Folder><Folder><name>02 Flood Boundary</name>${floodPm}</Folder>`:""}
-${includePoints?`<Folder><name>03 Random Field Check Points</name>${pointPm}</Folder>`:""}
+${includePoints?`<Folder><name>03 Survey Points (Manual and Sampled)</name>${pointPm}</Folder>`:""}
 </Document></kml>`;
 }
 async function exportKmz(){
@@ -580,7 +587,7 @@ async function exportKmz(){
   const includeBoundary=scope==="both"||scope==="boundary";
   const includePoints=scope==="both"||scope==="points";
   const flood=floodFeature(p.plot);
-  if(includeBoundary&&!flood){notify("ขอบเขตน้ำยังไม่พร้อมส่งออก กรุณาเลือกวันที่ผ่าน QA หรือวาดขอบเขต");return}
+  if(includeBoundary&&!plotFeature(p.plot)){notify("ไม่พบขอบเขตแปลง กรุณาตรวจข้อมูล GIS ก่อนส่งออก");return}
   // Export never creates random points silently; only operator-approved points leave the system.
   if(includePoints&&!points.length){notify("ยังไม่มีจุดสำหรับส่งออก • กรุณาวางจุดเองหรือสุ่มจุดก่อน");return}
   if(typeof JSZip==="undefined"){notify("โหลดตัวสร้าง KMZ ไม่สำเร็จ กรุณารีเฟรชหน้าเว็บ");return}
@@ -727,9 +734,36 @@ function onPlotChange(p){
   redrawManualBoundaries();renderManualList();
   const sourceSelect=$("field-flood-source");if(sourceSelect)sourceSelect.value=manualPartsFor(p.plot).length?"manual":"auto";
   ensureDrawingListeners();
-  refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();syncPointModeUI();updatePanel();
+  refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();syncPointModeUI();setWorkspaceTab("points");updatePanel();
+}
+
+// Compact workbench: one operation visible at a time (not endless stacked buttons).
+let workspaceTab="points";
+function updateWorkspaceCounts(){
+  const p=activePlot||((typeof selected!=="undefined")?selected:null);
+  const parts=p?manualPartsFor(p.plot):[];
+  const boundaryCount=$("field-tab-boundary-count"),pointCount=$("field-tab-points-count"),exportCount=$("field-tab-export-count");
+  if(boundaryCount)boundaryCount.textContent=parts.length?parts.length+" วาดเอง":"เลือกข้อมูล";
+  if(pointCount)pointCount.textContent=points.length+" จุด";
+  if(exportCount)exportCount.textContent=points.length+" จุด • "+parts.length+" พื้นที่วาด";
+}
+function setWorkspaceTab(next){
+  if(!["boundary","points","export"].includes(next))return false;
+  if(next!=="boundary"&&drawing)removeDrawing();
+  if(next!=="points"&&pointPlacement)stopPointPlacement();
+  workspaceTab=next;
+  for(const tab of ["boundary","points","export"]){
+    const control=$("field-tab-"+tab),section=$("field-stage-"+tab);
+    if(control){control.setAttribute?.("aria-selected",String(tab===next));control.tabIndex=tab===next?0:-1;}
+    if(section)section.hidden=tab!==next;
+  }
+  updateWorkspaceCounts();return true;
 }
 function bind(){
+  for(const tab of ["boundary","points","export"]){
+    $("field-tab-"+tab)?.addEventListener("click",()=>setWorkspaceTab(tab));
+  }
+  setWorkspaceTab(workspaceTab);
   $("field-random-btn")?.addEventListener("click",togglePointPlacement);
   $("field-point-entry-mode")?.addEventListener("change",()=>{stopPointPlacement();syncPointModeUI();updatePanel()});
   $("field-draw-btn")?.addEventListener("click",startDrawing);
@@ -751,6 +785,6 @@ function bind(){
   $("field-sample-mode")?.addEventListener("change",()=>updatePanel());
   loadHistoricalFlood();renderPointList();renderManualList();syncPointModeUI();updatePanel();
 }
-window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,isPointPlacement:()=>pointPlacement,addVertex:onMapClick,placeManualPoint,togglePointPlacement,getDraftVertices:()=>drawVertices.slice(),repositionPoint,getManualBoundaries:plot=>manualPartsFor(plot||(activePlot||selected)?.plot).slice(),removeManualBoundary};
+window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,isPointPlacement:()=>pointPlacement,addVertex:onMapClick,placeManualPoint,togglePointPlacement,getDraftVertices:()=>drawVertices.slice(),repositionPoint,getManualBoundaries:plot=>manualPartsFor(plot||(activePlot||selected)?.plot).slice(),removeManualBoundary,setWorkspaceTab,getWorkspaceTab:()=>workspaceTab};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
 })();
