@@ -136,26 +136,66 @@ function distanceToBoundaryM(pt,feature){
   }
   return best;
 }
+// Edge-seeded candidates avoid wasting thousands of attempts in a broad bbox
+// when water is fragmented into many narrow disjoint polygons.
 function candidatePool(flood,plotBoundary,count,mode,areaRai){
-  const land=mode==="land_edge";
+  const land=mode==="land_edge", edge=mode!=="water_full";
   const region=land?plotBoundary:flood;
-  if(!region)return {pool:[],edgeDepth:0};
+  if(!region||!ringsFromGeometry(flood.geometry).length)return {pool:[],edgeDepth:0};
   const [minX,minY,maxX,maxY]=bbox(region);
-  const target=Math.max(1000,count*110),pool=[];
+  const target=Math.max(260,count*35), pool=[],seen=new Set();
   const typical=Math.sqrt(Math.max(1600,Number(areaRai||1)*1600)/Math.max(1,count));
   const edgeDepth=land?clamp(typical*1.5,35,125):clamp(typical*.55,18,55);
-  let tries=0;const maxTries=120000;
-  while(pool.length<target&&tries++<maxTries){
-    const xy=[minX+Math.random()*(maxX-minX),minY+Math.random()*(maxY-minY)];
-    if(!pointInFeature(xy,region))continue;
-    const inWater=pointInFeature(xy,flood),d=distanceToBoundaryM(xy,flood);
-    if(land){if(inWater||d<4||d>edgeDepth)continue;}
-    else if(mode==="water_edge" && d>edgeDepth)continue;
+  const edges=[], polys=ringsFromGeometry(flood.geometry);
+  let totalLength=0;
+  for(const poly of polys){for(const ring of poly){
+    for(let i=1;i<ring.length;i++){
+      const a=ring[i-1],b=ring[i],length=metersBetween(a,b);
+      if(!Number.isFinite(length)||length<.2)continue;
+      totalLength+=length;edges.push({a,b,total:totalLength,length});
+    }
+  }}
+  function seeded(){
+    if(!edges.length)return null;
+    const cut=Math.random()*totalLength;
+    let left=0,right=edges.length-1;
+    while(left<right){const mid=(left+right)>>1;if(edges[mid].total<cut)left=mid+1;else right=mid}
+    const seg=edges[left],t=Math.random();
+    const ax=seg.a[0],ay=seg.a[1],bx=seg.b[0],by=seg.b[1];
+    const x=ax+(bx-ax)*t,y=ay+(by-ay)*t;
+    const sx=111320*Math.cos(y*Math.PI/180),sy=110540;
+    const vx=(bx-ax)*sx,vy=(by-ay)*sy,l=Math.hypot(vx,vy);
+    if(l<.01||Math.abs(sx)<1)return null;
+    const d=(edge?6+Math.random()*Math.max(0,edgeDepth-6):2+Math.random()*edgeDepth)* (Math.random()<.5?-1:1);
+    return [x-vy/l*d/sx,y+vx/l*d/sy];
+  }
+  // For full-water sampling, use individual polygon bounding boxes instead
+  // of the all-islands envelope, then fall back to edge-seeded candidates.
+  const parts=polys.map(poly=>{const c=poly[0];const x0=Math.min(...c.map(p=>p[0])),x1=Math.max(...c.map(p=>p[0])),y0=Math.min(...c.map(p=>p[1])),y1=Math.max(...c.map(p=>p[1]));return {x0,x1,y0,y1,weight:Math.max(1,(x1-x0)*(y1-y0)*Math.cos(y0*Math.PI/180))}});
+  const totalWeight=parts.reduce((sum,p)=>sum+p.weight,0);
+  function polygonCandidate(){
+    if(!parts.length)return null;
+    let r=Math.random()*totalWeight,part=parts[parts.length-1];
+    for(const p of parts){r-=p.weight;if(r<=0){part=p;break}}
+    return [part.x0+Math.random()*(part.x1-part.x0),part.y0+Math.random()*(part.y1-part.y0)];
+  }
+  const maxTries=Math.min(28000,Math.max(6000,count*650));
+  for(let tries=0;tries<maxTries&&pool.length<target;tries++){
+    const xy=(!edge && tries%3!==0)?polygonCandidate():seeded();
+    if(!xy||!Number.isFinite(xy[0])||!Number.isFinite(xy[1]))continue;
+    if(xy[0]<minX||xy[0]>maxX||xy[1]<minY||xy[1]>maxY)continue;
+    if(plotBoundary&&!pointInFeature(xy,plotBoundary))continue;
+    const inWater=pointInFeature(xy,flood);
+    if(land&&inWater)continue;
+    if(!land&&!inWater)continue;
+    const dist=distanceToBoundaryM(xy,flood);
+    if(land&&(dist<4||dist>edgeDepth))continue;
+    if(mode==="water_edge"&&dist>edgeDepth)continue;
+    const key=xy.map(x=>x.toFixed(6)).join(",");if(seen.has(key))continue;seen.add(key);
     pool.push(xy);
   }
   return {pool,edgeDepth};
 }
-
 function spreadSelect(pool,count){
   if(!pool.length)return[];
   const chosen=[pool[Math.floor(Math.random()*pool.length)]];
@@ -361,6 +401,7 @@ function onMapClick(e){
 function onPlotChange(p){
   removeDrawing();manualFlood=null;if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
   activePlot=p;
+  const sourceSelect=$("field-flood-source");if(sourceSelect)sourceSelect.value="auto";
   if(typeof overviewMap!=="undefined"&&overviewMap!==listeningMap){listeningMap?.off("click",onMapClick);overviewMap.on("click",onMapClick);listeningMap=overviewMap}
   refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();updatePanel();
 }
