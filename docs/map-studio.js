@@ -281,6 +281,6 @@ function setMode(mode){
  }
  state.mode=mode;state.preset="custom";updateInputs();if(typeof selected!=="undefined"&&selected)render(selected);
 }
-window.MapStudio={state,init,render,refresh:()=>selected&&render(selected),applyVisibility,reportMarkup,saveReport,entries:()=>entries,setMode};
+window.MapStudio={state,init,render,refresh:()=>selected&&render(selected),applyVisibility,reportMarkup,saveReport,entries:()=>entries,setMode,nativePreview:clipPlotImage};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
