@@ -594,7 +594,8 @@ function removeDraftLayer(){
 }
 function removeDrawing(){
   drawing=false;drawVertices=[];removeDraftLayer();
-  const btn=$("field-draw-btn");if(btn){btn.textContent=activePlot&&manualPartsFor(activePlot.plot).length?"วาดขอบเขตเพิ่ม":"วาดขอบเขตน้ำ";btn.setAttribute?.("aria-pressed","false")}
+  const btn=$("field-draw-btn");if(btn){btn.textContent=activePlot&&manualPartsFor(activePlot.plot).length?"วาดขอบเขตเพิ่ม":"วาดขอบเขตใหม่";btn.setAttribute?.("aria-pressed","false")}
+  const tools=$("field-draw-tools");if(tools)tools.hidden=true;
   const finish=$("field-finish-btn");if(finish)finish.disabled=true;
   const undo=$("field-undo-vertex-btn");if(undo)undo.disabled=true;
   try{overviewMap?.getContainer?.()?.classList.remove("field-map-drawing")}catch(_){}
@@ -618,7 +619,8 @@ function startDrawing(){
   if(drawing){removeDrawing();notify("ยกเลิกการวาด");return}
   const map=overviewMap;
   if(!map){notify("ยังไม่พร้อมแสดงแผนที่");return}
-  removeDrawing();drawing=true;ensureDrawingListeners();
+  stopPointPlacement();removeDrawing();drawing=true;ensureDrawingListeners();
+  const tools=$("field-draw-tools");if(tools)tools.hidden=false;
   const btn=$("field-draw-btn");if(btn){btn.textContent="ยกเลิกวาด";btn.setAttribute?.("aria-pressed","true")}
   const finish=$("field-finish-btn");if(finish)finish.disabled=true;
   try{map.closePopup?.();map.getContainer?.()?.classList.add("field-map-drawing")}catch(_){}
@@ -655,7 +657,7 @@ function clearDrawing(){
   notify("ล้างขอบเขตที่วาดทั้งหมดของ "+p.plot+" แล้ว");
 }
 function onMapClick(e){
-  if(!drawing||!e?.latlng)return false;
+  if((!drawing&&!pointPlacement)||!e?.latlng)return false;
   const raw=e.originalEvent;
   if(raw&&typeof raw==="object"){
     if(processedClickEvents.has(raw))return false;
@@ -663,6 +665,12 @@ function onMapClick(e){
   }
   const p=activePlot||selected,boundary=plotFeature(p?.plot);
   const xy=[e.latlng.lng,e.latlng.lat];
+  if(pointPlacement&&!drawing){
+    const result=placeManualPoint(xy[0],xy[1]);
+    if(!result.ok){notify(result.reason==="outside_plot"?"คลิกภายในขอบเขตแปลงที่เลือกเท่านั้น":"ยังไม่สามารถวางจุดตรงนี้ได้");return false}
+    notify("เพิ่มจุด "+result.point.id+" แล้ว • คลิกเพิ่มได้อีก หรือลากแก้ไขตำแหน่ง");
+    return true;
+  }
   if(!Number.isFinite(xy[0])||!Number.isFinite(xy[1]))return false;
   if(boundary&&!pointInFeature(xy,boundary)){
     drawStatus("อยู่นอกขอบเขต "+p.plot+" • คลิกภายในขอบเขตสีแดงเท่านั้น");
@@ -692,17 +700,18 @@ function ensureDrawingListeners(){
 function onPlotChange(p){
   if(!p)return;
   // Clicks on the currently selected plot should NEVER discard a draft.
-  if(drawing&&activePlot?.plot===p.plot)return;
-  removeDrawing();
+  if((drawing||pointPlacement)&&activePlot?.plot===p.plot)return;
+  stopPointPlacement();removeDrawing();
   activePlot=p;
   syncManualFlood(p.plot);
   redrawManualBoundaries();renderManualList();
   const sourceSelect=$("field-flood-source");if(sourceSelect)sourceSelect.value=manualPartsFor(p.plot).length?"manual":"auto";
   ensureDrawingListeners();
-  refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();updatePanel();
+  refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();syncPointModeUI();updatePanel();
 }
 function bind(){
-  $("field-random-btn")?.addEventListener("click",generatePoints);
+  $("field-random-btn")?.addEventListener("click",togglePointPlacement);
+  $("field-point-entry-mode")?.addEventListener("change",()=>{stopPointPlacement();syncPointModeUI();updatePanel()});
   $("field-draw-btn")?.addEventListener("click",startDrawing);
   $("field-finish-btn")?.addEventListener("click",finishDrawing);
   $("field-undo-vertex-btn")?.addEventListener("click",undoDrawingVertex);
@@ -716,12 +725,12 @@ function bind(){
     const btn=e.target?.closest?.("[data-remove-point]");
     if(btn){e.preventDefault();removePoint(btn.getAttribute("data-remove-point"));}
   });
-  $("field-flood-source")?.addEventListener("change",()=>{clearPoints(true);redrawFloodBoundary();updatePanel()});
+  $("field-flood-source")?.addEventListener("change",()=>{stopPointPlacement();clearPoints(true);redrawFloodBoundary();updatePanel()});
   $("field-preview-boundary")?.addEventListener("change",()=>{redrawFloodBoundary();});
-  $("field-point-count")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
-  $("field-sample-mode")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
-  loadHistoricalFlood();renderPointList();renderManualList();updatePanel();
+  $("field-point-count")?.addEventListener("change",()=>updatePanel());
+  $("field-sample-mode")?.addEventListener("change",()=>updatePanel());
+  loadHistoricalFlood();renderPointList();renderManualList();syncPointModeUI();updatePanel();
 }
-window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,addVertex:onMapClick,getDraftVertices:()=>drawVertices.slice(),repositionPoint,getManualBoundaries:plot=>manualPartsFor(plot||(activePlot||selected)?.plot).slice(),removeManualBoundary};
+window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,isPointPlacement:()=>pointPlacement,addVertex:onMapClick,placeManualPoint,togglePointPlacement,getDraftVertices:()=>drawVertices.slice(),repositionPoint,getManualBoundaries:plot=>manualPartsFor(plot||(activePlot||selected)?.plot).slice(),removeManualBoundary};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
 })();
