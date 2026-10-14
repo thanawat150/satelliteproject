@@ -48,13 +48,41 @@ function available(p,d,mode){
 }
 function date(){return mapSatelliteDate||(selected&&mapSatelliteCandidates(selected.plot)[0]?.date)||null;}
 function pick(p,d,mode){
- const v=available(p,d,mode);
- if(v)return {plot:p.plot,date:d,mode,url:v.src||compactToImage(v),bounds:v.bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds,source:"Sentinel-2 GeoTIFF",previewResolution:(v.width&&v.height)?v.width+"×"+v.height+" px":null,sourceSuffix:v.source_suffix,resolution_m:v.resolution_m};
- if(mode==="true"){
-  const row=satelliteRowForMap(p.plot,d),bounds=row?.preview_bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
-  if(row?.web_preview_url&&bounds)return {plot:p.plot,date:d,mode,url:row.web_preview_url,bounds,source:"Sentinel-2",previewResolution:row.preview_native_size?row.preview_native_size.join("×")+" px":null};
- }
- return null;
+  const file=typeof selectedSatelliteFile==="function"?selectedSatelliteFile(p.plot,d):null;
+  if(file){
+    // A selected file is always displayed, even if clouds, shadows or NO_DATA prevent analysis.
+    // A 20m/60m TIFF is a native-band preview, NOT a fabricated RGB false-color composite.
+    let specific=null;
+    if(file.resolution==="10m"){
+      const variants=entries.filter(v=>v.plot===p.plot&&v.date===d&&v.mode===dataMode(mode));
+      specific=variants.find(v=>v.source_suffix==="DIRECT"&&!/_(?:LATEST_RECT|HIST_CLEAR_RECT_SCL0|NO_CLOUD_FILTER)/.test(file.title))||
+        variants.find(v=>v.source_suffix&&file.title.includes(v.source_suffix))||null;
+    }
+    const bounds=specific?.bounds||file.preview_bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
+    if(specific?.src && bounds) return {plot:p.plot,date:d,mode,url:specific.src,bounds,
+      source:"Sentinel-2 "+file.resolution+" / "+file.title,previewResolution:(specific.width&&specific.height)?specific.width+"×"+specific.height+" px":null,
+      resolution_m:specific.resolution_m,selectedFile:file.title};
+    if(file.web_preview_url && bounds)return {plot:p.plot,date:d,mode,url:file.web_preview_url,bounds,
+      source:"Sentinel-2 GeoTIFF "+file.resolution+" • "+file.title,
+      previewResolution:file.preview_native_size?file.preview_native_size.join("×")+" px":null,
+      resolution_m:file.resolution,selectedFile:file.title,nativePreview:true,
+      displayNote:mode!=="true"?"ไฟล์นี้ไม่มีชุดแบนด์สำหรับแสดงตามโหมดที่เลือก จึงแสดง Preview จากไฟล์โดยตรง":""};
+    return null;
+  }
+  const v=available(p,d,mode);
+  if(v)return {plot:p.plot,date:d,mode,url:v.src||compactToImage(v),bounds:v.bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds,source:"Sentinel-2 GeoTIFF",
+    previewResolution:(v.width&&v.height)?v.width+"×"+v.height+" px":null,sourceSuffix:v.source_suffix,resolution_m:v.resolution_m};
+  if(mode==="true"){
+    const row=satelliteRowForMap(p.plot,d),bounds=row?.preview_bounds||satelliteBoundsByKey.get(p.plot+"|"+d)?.bounds;
+    if(row?.web_preview_url&&bounds)return {plot:p.plot,date:d,mode,url:row.web_preview_url,bounds,source:"Sentinel-2",
+      previewResolution:row.preview_native_size?row.preview_native_size.join("×")+" px":null};
+    // A date containing only 20m or 60m products should still be visible.
+    const any=satelliteFilesForMap(p.plot,d).find(x=>x.preview_bounds&&x.web_preview_url);
+    if(any)return {plot:p.plot,date:d,mode,url:any.web_preview_url,bounds:any.preview_bounds,source:any.title,
+      previewResolution:any.preview_native_size?any.preview_native_size.join("×")+" px":null,
+      nativePreview:true,resolution_m:any.resolution,displayNote:"ไม่มีภาพ 10m ในวันนี้ — แสดงไฟล์ "+any.resolution+" ที่มี"};
+  }
+  return null;
 }
 async function init(){
  if(initialized)return;initialized=true;
@@ -66,7 +94,7 @@ async function init(){
    try{const r=await fetch("data/visual_layers.json",{cache:"no-store"});if(r.ok){const j=await r.json();entries=Array.isArray(j.layers)?j.layers:[];}}catch(_){}
  }
  ["boundary","water","labels"].forEach(k=>{const e=$("studio-"+k);if(e)e.addEventListener("change",()=>{state[k]=e.checked;applyVisibility();})});
- $("studio-mode")?.addEventListener("change",e=>{state.mode=e.target.value;render(selected)});
+ $("studio-mode")?.addEventListener("change",e=>{state.mode=e.target.value;state.preset="custom";updateInputs();render(selected)});
  $("studio-preset")?.addEventListener("change",e=>preset(e.target.value));
  $("studio-reset")?.addEventListener("click",()=>{const p={mode:state.mode,boundary:state.boundary,water:state.water,labels:state.labels};Object.assign(state,defaults,p);updateInputs();applyColor();});
  ["brightness","contrast","saturation","gamma","r","g","b"].forEach(k=>{
@@ -85,6 +113,7 @@ function updateInputs(){
  $("studio-mode").value=state.mode;$("studio-preset").value=state.preset;
  ["boundary","water","labels"].forEach(k=>{$("studio-"+k).checked=!!state[k]});
  ["brightness","contrast","saturation","gamma","r","g","b"].forEach(k=>{$("studio-"+k).value=state[k];$("studio-value-"+k).textContent=state[k]+"%"});
+ if(typeof syncSatelliteControls==="function")syncSatelliteControls();
 }
 function syncModes(p){
  if(!p)return;
@@ -104,14 +133,12 @@ function render(p){
  if(!p)return;const callId=++renderSerial;syncModes(p);current=null;removeMapSatelliteLayers();
  if(!mapSatelliteVisible){status("ภาพดาวเทียมถูกซ่อน");applyVisibility();return}
  let d=date(),layer=pick(p,d,state.mode);
- if(!layer){
-   const choices=[...new Set(entries.filter(v=>v.plot===p.plot&&v.mode===dataMode(state.mode)).map(v=>v.date)
-     .concat(state.mode==="true"?mapSatelliteCandidates(p.plot).map(v=>v.date):[]))].sort().reverse();
-   if(choices.length){
-     d=choices[0];mapSatelliteDate=d;
-     const sel=$("map-sat-date");if(sel&&[...sel.options].some(o=>o.value===d))sel.value=d;
-     layer=pick(p,d,state.mode);
-   }
+ // Do not jump to a different date just because an index layer is absent.
+ // Imagery dates are selected independently of scientific QA.
+ if(!layer&&state.mode!=="true"){
+   const raw=pick(p,d,"true");
+   if(raw){state.mode="true";state.preset="custom";updateInputs();layer={...raw,mode:"true",
+     displayNote:"โหมดที่เลือกไม่มีภาพสำหรับวันนี้ — แสดงสีจริงของวันเดิมแทน"};}
  }
  if(!layer?.bounds||!layer.url){status(p.plot+" • "+nice(d)+" • ยังไม่มีภาพ "+MODES[state.mode].name+" ที่พร้อมแสดง");applyVisibility();return}
  const b=L.latLngBounds(layer.bounds[0],layer.bounds[1]);current=layer;
@@ -134,9 +161,9 @@ function render(p){
   const partLabel=parts>1?" • PDD MultiPolygon "+parts+" ส่วน":" • PDD Polygon";
     const size=(layer.previewResolution||"").split("×").map(Number);
   const small=size.length===2&&Math.min(...size)<80;
-  status(p.plot+" • "+nice(d)+" • "+MODES[state.mode].name+(layer.previewResolution?" • "+layer.previewResolution:"")+
+  status(p.plot+" • "+nice(d)+" • "+(layer.nativePreview?"ภาพจาก TIFF ต้นฉบับ":MODES[state.mode].name)+(layer.previewResolution?" • "+layer.previewResolution:"")+
     (layer.resolution_m?" • "+layer.resolution_m+" m":"")+
-    (small?" • ⚠ มีพิกเซลน้อย ภาพ Sentinel-2 จึงหยาบกว่าภาพฐาน":"")+qualityWarning+partLabel+" • ภาพเต็มสี่เหลี่ยม Raster • PDD เป็นชั้นเส้นขอบแยก");
+    (small?" • ⚠ มีพิกเซลน้อย ภาพ Sentinel-2 จึงหยาบกว่าภาพฐาน":"")+qualityWarning+(layer.displayNote?" • "+layer.displayNote:"")+partLabel+" • ภาพเต็มสี่เหลี่ยม Raster • PDD เป็นชั้นเส้นขอบแยก");
  }).catch(e=>status("แสดงภาพไม่สำเร็จ: "+e.message));
 }
 function status(s){if($("map-sat-status"))$("map-sat-status").textContent=s;if($("studio-data-status"))$("studio-data-status").textContent=s}
@@ -206,6 +233,9 @@ async function exportPNG(){
  try{const im=new Image();im.src=src;await im.decode();const c=document.createElement("canvas");c.width=1200;c.height=Math.round(c.width*im.height/im.width);c.getContext("2d").drawImage(im,0,0,c.width,c.height);c.toBlob(b=>{if(!b)return notify("Export PNG ไม่สำเร็จ");const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=safe(current.plot)+"_"+current.date+"_"+state.mode+".png";a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}, "image/png");}
  catch(e){console.warn(e);notify("Export PNG ไม่สำเร็จ ใช้ SVG หรือ PDF แทน");}finally{URL.revokeObjectURL(src)}
 }
-window.MapStudio={state,init,render,refresh:()=>selected&&render(selected),applyVisibility,reportMarkup,saveReport,entries:()=>entries};
+function setMode(mode){if(!["true","false","mndwi","ndmi","ndvi","ndre","bsi"].includes(mode))return;
+ state.mode=mode;state.preset="custom";updateInputs();if(typeof selected!=="undefined"&&selected)render(selected);
+}
+window.MapStudio={state,init,render,refresh:()=>selected&&render(selected),applyVisibility,reportMarkup,saveReport,entries:()=>entries,setMode};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
