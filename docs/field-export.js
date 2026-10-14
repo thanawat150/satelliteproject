@@ -135,22 +135,26 @@ function distanceToBoundaryM(pt,feature){
   }
   return best;
 }
-function candidatePool(feature,count,mode,areaRai){
-  const [minX,minY,maxX,maxY]=bbox(feature);
-  const target=Math.max(900,count*100),all=[],edge=[];
-  const areaM2=Math.max(1600,Number(areaRai||1)*1600);
-  const typical=Math.sqrt(areaM2/Math.max(1,count));
-  const edgeDepth=clamp(typical*.55,18,55);
-  let tries=0,maxTries=Math.max(25000,target*40);
-  while(all.length<target&&tries++<maxTries){
-    const p=[minX+Math.random()*(maxX-minX),minY+Math.random()*(maxY-minY)];
-    if(!pointInFeature(p,feature))continue;
-    all.push(p);
-    if(distanceToBoundaryM(p,feature)<=edgeDepth)edge.push(p);
+function candidatePool(flood,plotBoundary,count,mode,areaRai){
+  const land=mode==="land_edge";
+  const region=land?plotBoundary:flood;
+  if(!region)return {pool:[],edgeDepth:0};
+  const [minX,minY,maxX,maxY]=bbox(region);
+  const target=Math.max(1000,count*110),pool=[];
+  const typical=Math.sqrt(Math.max(1600,Number(areaRai||1)*1600)/Math.max(1,count));
+  const edgeDepth=land?clamp(typical*1.5,35,125):clamp(typical*.55,18,55);
+  let tries=0;const maxTries=120000;
+  while(pool.length<target&&tries++<maxTries){
+    const xy=[minX+Math.random()*(maxX-minX),minY+Math.random()*(maxY-minY)];
+    if(!pointInFeature(xy,region))continue;
+    const inWater=pointInFeature(xy,flood),d=distanceToBoundaryM(xy,flood);
+    if(land){if(inWater||d<4||d>edgeDepth)continue;}
+    else if(mode==="water_edge" && d>edgeDepth)continue;
+    pool.push(xy);
   }
-  if(mode==="edge"&&edge.length>=Math.max(count*5,50))return {pool:edge,edgeDepth};
-  return {pool:all,edgeDepth};
+  return {pool,edgeDepth};
 }
+
 function spreadSelect(pool,count){
   if(!pool.length)return[];
   const chosen=[pool[Math.floor(Math.random()*pool.length)]];
@@ -168,24 +172,24 @@ function spreadSelect(pool,count){
 }
 function generatePoints(){
   const p=activePlot||selected;if(!p)return[];
-  const flood=floodFeature(p.plot),info=plotInfo(p.plot)||p;
-  if(!flood){notify("แปลงนี้ยังไม่มีขอบเขตน้ำท่วมที่ผ่าน QA");return[]}
-  const count=desiredCount(info,flood),mode=$("field-sample-mode")?.value||"edge";
-  const area=Number(flood.properties?.new_water_rai??info.new_water_rai??0);
-  const {pool,edgeDepth}=candidatePool(flood,count,mode,area);
-  if(pool.length<count){notify("พื้นที่เล็กหรือแคบเกินกว่าจะสุ่มได้ครบ กรุณาลดจำนวนจุด");return []}
+  const flood=floodFeature(p.plot),boundary=plotFeature(p.plot),info=plotInfo(p.plot)||p;
+  if(!flood){notify("ไม่มีขอบเขตน้ำสำหรับแปลงนี้ กรุณาวาดขอบเขตด้วยตนเอง หรือเลือกวันที่ที่ผ่าน QA");return[]}
+  const count=desiredCount(info,flood),mode=$("field-sample-mode")?.value||"land_edge";
+  if(mode==="land_edge"&&!boundary){notify("ยังไม่มีขอบเขตแปลงสำหรับเลือกจุดด้านนอกน้ำ");return[]}
+  const {pool,edgeDepth}=candidatePool(flood,boundary,count,mode,activeArea(info,flood));
+  if(pool.length<count){points=[];drawPoints();updatePanel();notify("พื้นที่ที่ตรงเงื่อนไขมีน้อยเกินไป: ลดจำนวนจุดหรือเปลี่ยนวิธีสุ่ม ห้ามใช้จุดที่ไม่ผ่านเงื่อนไข");return[]}
   points=spreadSelect(pool,count).map((c,i)=>({
-    id:`P${String(i+1).padStart(2,"0")}`,
+    id:"P"+String(i+1).padStart(2,"0"),
     lon:+c[0].toFixed(7),lat:+c[1].toFixed(7),
     edge_distance_m:+distanceToBoundaryM(c,flood).toFixed(1),
-    method:mode==="edge"?"near_water_edge":"full_random"
+    method:mode==="land_edge"?"land_near_water":mode==="water_edge"?"water_near_edge":"water_interior",
+    in_water:mode!=="land_edge",
+    flood_source:flood.properties._kmzSource||"manual"
   }));
-  drawPoints();
-  updatePanel(edgeDepth);
-  if(points.length)notify(`สุ่ม ${points.length} จุดแล้ว`);
-  else notify("สุ่มจุดเม่สำเร็จ");
+  drawPoints();updatePanel(edgeDepth);notify("สุ่ม "+points.length+" จุดแล้ว • ยังต้องตรวจทางเข้าหน้างาน");
   return points;
 }
+
 function clearLayer(map,key){
   if(map&&surveyLayers[key]){map.removeLayer(surveyLayers[key]);surveyLayers[key]=null}
 }
@@ -197,7 +201,7 @@ function clearPoints(silent=false){
 }
 function markerFor(pt,plot){
   return L.marker([pt.lat,pt.lon],{
-    icon:L.divIcon({className:"field-point-icon",html:`<span>${pt.id}</span>`,iconSize:[36,24],iconAnchor:[18,12]})
+    icon:L.divIcon({className:"field-point-icon"+(pt.in_water?" is-water":" is-land"),html:`<span>${pt.id}</span>`,iconSize:[36,24],iconAnchor:[18,12]})
   }).bindPopup(`<b>${esc(plot)} • ${pt.id}</b><br>Lat ${pt.lat.toFixed(6)}<br>Lon ${pt.lon.toFixed(6)}<br><small>ระยะจากขอบน้ำ ~${Math.round(pt.edge_distance_m)} ม.</small>`);
 }
 function drawPoints(){
@@ -211,24 +215,25 @@ function drawPoints(){
   }catch(e){console.warn("field points map render",e)}
 }
 function modeLabel(){
-  return ($("field-sample-mode")?.value||"edge")==="edge"?"ใกล้ขอบน้ำ":"สุ่มทั่วพื้นที่น้ำ";
+  const m=$("field-sample-mode")?.value||"land_edge";return m==="land_edge"?"พื้นดินใกล้ขอบน้ำ (ยังไม่ยืนยันทางเข้า)":m==="water_edge"?"ภายในน้ำใกล้ขอบ":"ภายในน้ำทั่วบริเวณ";
 }
 function updatePanel(edgeDepth){
   const p=activePlot||selected,ready=$("field-export-ready"),sum=$("field-export-summary");
   const randomBtn=$("field-random-btn"),exportBtn=$("field-export-kmz-btn");
   if(!p||!ready||!sum)return;
   const flood=floodFeature(p.plot),info=plotInfo(p.plot)||p;
+  const hint=$("field-source-description");if(hint)hint.textContent=sourceDescription(flood);
   if(!flood){
-    ready.textContent="วาดขอบเขตได้";ready.className="field-export-ready is-missing";
-    sum.textContent=`${p.plot} • ไม่มีขอบเขตน้ำผ่าน QA — กด “วาดขอบเขตน้ำ” แล้วคลิกบนแผนที่อย่างน้อย 3 จุด`;
+    ready.textContent="ต้องวาดขอบเขต";ready.className="field-export-ready is-missing";
+    sum.textContent=p.plot+" • ข้อมูลน้ำอัตโนมัติยังไม่ผ่าน QA สำหรับวันที่มีอยู่ กด “วาดขอบเขตน้ำ” แล้วคลิกอย่างน้อย 3 จุดภายในแปลง เพื่อทำ KMZ ชั่วคราว";
     if(randomBtn)randomBtn.disabled=true;if(exportBtn)exportBtn.disabled=true;return;
   }
-  const area=Number(flood.properties?.new_water_rai??info.new_water_rai??0);
-  const auto=recommendedCount(area),wanted=desiredCount(info,flood);
-  ready.textContent=points.length?`${points.length} จุดพร้อม Export`:"พร้อมใช้งาน";ready.className="field-export-ready is-ready";
-  sum.textContent=`${p.plot} • ${manualFlood?"ขอบเขตวาดเอง (ยังไม่ยืนยัน)":"ขอบเขตจากระบบ"} • พื้นที่น้ำ ${fmtLocal(area)} ไร่ • ${$("field-point-count")?.value==="auto"?`Auto แนะนำ ${auto} จุด`:`กำหนด ${wanted} จุด`} • ${modeLabel()}${edgeDepth?` (≤ ~${Math.round(edgeDepth)} ม. จากขอบน้ำ)`:""}`;
+  const area=activeArea(info,flood),auto=recommendedCount(area),wanted=desiredCount(info,flood);
+  ready.textContent=points.length?points.length+" จุดพร้อม Export":"พร้อมสุ่มจุด";ready.className="field-export-ready is-ready";
+  sum.textContent=p.plot+" • "+sourceDescription(flood)+" • "+fmtLocal(area)+" ไร่ • "+($("field-point-count")?.value==="auto"?"แนะนำ "+auto+" จุด":"กำหนด "+wanted+" จุด")+" • "+modeLabel()+(edgeDepth?" (ระยะจากขอบน้ำ ≤ "+Math.round(edgeDepth)+" ม.)":"");
   if(randomBtn)randomBtn.disabled=false;if(exportBtn)exportBtn.disabled=false;
 }
+
 function fmtLocal(n){return Number.isFinite(Number(n))?Number(n).toLocaleString("th-TH",{maximumFractionDigits:2}):"—"}
 function notify(s){try{showToast(s)}catch(_){console.info(s)}}
 
