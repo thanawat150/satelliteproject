@@ -169,7 +169,7 @@ function timeSeriesMultiRows(plot,key){
  return timeSeriesRows(plot,key).filter(row=>{const year=Number(String(row.date||'').slice(0,4));return year>=from&&year<=to&&(year-from)%step===0;});
 }
 function timeSeriesEventNote(plot,key){
- if(plot!=='13-STC')return '';
+ if(!['13-STC','17-STC'].includes(plot))return '';
  const from=Number(state.tsYearFrom),to=Number(state.tsYearTo),step=Math.max(1,Number(state.tsYearInterval)||1);
  if(!Number.isFinite(from)||!Number.isFinite(to)||2026<from||2026>to||(2026-from)%step!==0)return '';
  const scenes=plotScenes(plot);
