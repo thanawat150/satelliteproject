@@ -134,7 +134,7 @@ function refreshSourceOptions(plot){
 }
 async function loadHistoricalFlood(){
   try{const response=await fetch("data/water_history.geojson",{cache:"no-store"});if(!response.ok)return;const j=await response.json();waterHistoryFeatures=Array.isArray(j.features)?j.features:[];
-    const p=activePlot||((typeof selected!=="undefined")?selected:null);if(p){refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();updatePanel();}
+    const p=activePlot||((typeof selected!=="undefined")?selected:null);if(p){refreshSourceOptions(p.plot);redrawFloodBoundary();updatePanel();}
   }catch(e){console.warn("Field water history not available",e)}
 }
 function plotFeature(plot){
@@ -339,6 +339,8 @@ function placeManualPoint(lon,lat){
     flood_source:flood?.properties?._kmzSource||"none"
   };
   points.push(pt);pointsEdited=true;
+  // A manually placed point can be exported without a water polygon.
+  const scope=$("field-kmz-scope");if(scope&&!flood&&scope.value==="both")scope.value="points";
   drawPoints();renderPointList();updatePanel();syncPointModeUI();
   return {ok:true,point:{...pt}};
 }
