@@ -346,6 +346,7 @@ function svgChart(rows,key,opts={}){
  }).join('');
  const count=good.length;
  return '<div class="ts-chart" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
+  '<button class="ts-expand-button" type="button" aria-label="ขยายกราฟให้เต็มหน้าจอ">ขยายกราฟ ⛶</button>'+
   '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1.00 ถึง +1.00 (ไม่ขยายความต่าง)':'')+(opts.includePartial?' • จุดสีอำพัน = PARTIAL':'')+'</div>'+
   '<div class="ts-chart-layout"><div class="ts-y-axis" aria-hidden="true">'+ticks+'</div>'+
   '<div class="ts-plot" role="group" aria-label="จุดข้อมูล '+count+' วัน มีคำอธิบายค่าที่แต่ละจุด">'+
@@ -358,6 +359,23 @@ function svgChart(rows,key,opts={}){
   '<div class="ts-chart-footer">ปีที่แสดง: '+years.join(' · ')+' • ข้อมูลที่ใช้วาดกราฟ '+count+' วัน • เลื่อนเมาส์หรือแตะจุดเพื่ออ่านค่าของวันนั้น</div></div>';
 }
 
+function openTimeSeriesPreview(button){
+ const source=button.closest('.ts-chart');if(!source)return;
+ document.querySelector('.ts-chart-modal')?.remove();
+ const modal=document.createElement('div');modal.className='ts-chart-modal';
+ modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');
+ modal.setAttribute('aria-label',$('time-series-title')?.textContent||'ขยายกราฟ Time Series');
+ modal.innerHTML='<div class="ts-chart-modal-card"><div class="ts-chart-modal-head"><b>'+
+  html($('time-series-title')?.textContent||'กราฟ Time Series')+
+  '</b><button type="button" class="btn ts-modal-close" aria-label="ปิดกราฟขนาดใหญ่">ปิด ✕</button></div><div class="ts-chart-modal-content"></div></div>';
+ modal.querySelector('.ts-chart-modal-content').append(source.cloneNode(true));
+ const close=()=>{modal.remove();document.removeEventListener('keydown',onKey);button.focus();};
+ modal.querySelector('.ts-modal-close').addEventListener('click',close);
+ modal.addEventListener('click',event=>{if(event.target===modal)close();});
+ const onKey=event=>{if(event.key==='Escape'){close();document.removeEventListener('keydown',onKey);}};
+ document.addEventListener('keydown',onKey);document.body.append(modal);
+ modal.querySelector('.ts-modal-close').focus();
+}
 function previewCoverage(){
  if(!cache.imagery)return null;
  return new Set([...(cache.imagery.items||[]),...(cache.imagery.generated_items||[])].map(x=>x.plot+'|'+x.date));
@@ -709,7 +727,7 @@ document.addEventListener('mmc:imagery-date-change',e=>{
  state.waterDate=e.detail.date;state.waterDatePlot=state.plot;
  const panel=$('water-daily-panel');if(panel)panel.outerHTML=waterDatePanel(state.plot);
 });
-document.addEventListener('click',e=>{const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const b=e.target.closest('[data-action]');if(b){doAction(b.dataset.action,b.dataset.value||'');return;}if(e.target.id==='menu-btn')$('sidebar').classList.toggle('open');if(e.target.id==='refresh')load();});
+document.addEventListener('click',e=>{const expand=e.target.closest('.ts-expand-button');if(expand){openTimeSeriesPreview(expand);return;}const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const b=e.target.closest('[data-action]');if(b){doAction(b.dataset.action,b.dataset.value||'');return;}if(e.target.id==='menu-btn')$('sidebar').classList.toggle('open');if(e.target.id==='refresh')load();});
 document.addEventListener('change',e=>{const id=e.target.id;if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
 })();
