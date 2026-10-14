@@ -3,7 +3,7 @@
 "use strict";
 let activePlot=null;
 let points=[];
-let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null;
+let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null, confirmedLayer=null, listeningMap=null;
 const surveyLayers={overview:null,full:null};
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -275,12 +275,14 @@ function finishDrawing(){
   try{areaRai=turf.area(feature)/1600}catch(_){areaRai=0}
   if(!Number.isFinite(areaRai)||areaRai<=0){notify("รูปหลายเหลี่ยมไม่ถูกต้อง");return}
   feature.properties.new_water_rai=areaRai;
-  manualFlood=feature;
-  removeDrawing();clearPoints(true);updatePanel();
+  removeDrawing();manualFlood=feature;
+  if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
+  confirmedLayer=L.geoJSON(feature,{style:{color:"#f59e0b",weight:3,fillColor:"#f59e0b",fillOpacity:0.22}}).addTo(overviewMap);
+  clearPoints(true);updatePanel();
   notify("สร้างขอบเขตน้ำจากการวาดแล้ว (ยังไม่ยืนยัน) — สุ่มจุดและ Export KMZ ได้");
 }
 function clearDrawing(){
-  manualFlood=null;removeDrawing();clearPoints(true);updatePanel();
+  manualFlood=null;removeDrawing();if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}clearPoints(true);updatePanel();
   notify("ล้างขอบเขตที่วาดแล้ว");
 }
 function onMapClick(e){
@@ -291,7 +293,10 @@ function onMapClick(e){
   drawVertices.push(xy);renderDraft();
 }
 function onPlotChange(p){
-  removeDrawing();manualFlood=null;activePlot=p;clearPoints(true);updatePanel();
+  removeDrawing();manualFlood=null;if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
+  activePlot=p;
+  if(typeof overviewMap!=="undefined"&&overviewMap!==listeningMap){listeningMap?.off("click",onMapClick);overviewMap.on("click",onMapClick);listeningMap=overviewMap}
+  clearPoints(true);updatePanel();
 }
 function bind(){
   $("field-random-btn")?.addEventListener("click",generatePoints);
