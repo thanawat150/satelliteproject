@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261014-draggable10" />
+  <link rel="stylesheet" href="styles.css?v=20261014-survey-studio11" />
 </head>
 <body>
   <header class="topbar">
@@ -100,65 +100,86 @@
               <div class="metric-row"><div><span>NDMI</span><small>ความชื้นพืช/พื้นที่ • stable land</small></div><div class="metric-value"><b id="ndmi-values">—</b><em id="ndmi-delta">—</em></div></div>
             </div>
             <button class="wide-btn" onclick="showSelectedReport()">เปิด Report Preview</button><button class="wide-btn verified-action" onclick="openVerifiedReport()">เปิด Verified PDF</button>
-            <section class="field-export-panel" id="field-export-panel">
+            <section class="field-export-panel field-workspace" id="field-export-panel">
               <div class="field-export-head">
-                <div><span class="field-export-eyebrow">FIELD SURVEY / KMZ</span><strong>ขอบเขตน้ำท่วม + จุดตรวจภาคสนาม</strong></div>
+                <div><span class="field-export-eyebrow">FIELD SURVEY STUDIO</span><strong>ขอบเขตน้ำ · จุดสำรวจ · KMZ</strong></div>
                 <span class="field-export-ready" id="field-export-ready">—</span>
               </div>
-              <p id="field-export-summary">เลือกแปลงที่มีขอบเขตน้ำท่วมเพื่อสร้างจุดตรวจ</p>
-              <div class="field-source-picker"><label>ขอบเขตน้ำที่จะส่งออก
-                  <select id="field-flood-source" aria-label="เลือกแหล่งขอบเขตน้ำ"><option value="auto">Auto — เลือกชั้นที่ผ่าน QA ล่าสุด</option></select>
-                </label><small id="field-source-description">กำลังตรวจสอบชั้นน้ำที่ใช้ได้...</small><label class="field-show-boundary"><input id="field-preview-boundary" type="checkbox"> แสดงขอบเขตน้ำที่เลือกบนแผนที่ (เปิดเมื่อต้องการ)</label></div>
-              <div class="field-export-controls">
-                <label>จำนวนจุด
-                  <select id="field-point-count">
-                    <option value="auto">Auto — ตามขนาดพื้นที่</option>
-                    <option value="5">5 จุด</option>
-                    <option value="10">10 จุด</option>
-                    <option value="15">15 จุด</option>
-                    <option value="20">20 จุด</option>
-                    <option value="25">25 จุด</option>
-                  </select>
-                </label>
-                <label>รูปแบบสุ่ม
-                  <select id="field-sample-mode">
-                    <option value="water_full" selected>สุ่มภายในขอบเขตน้ำทั้งหมด (แนะนำ)</option>
-                    <option value="water_edge">สุ่มภายในขอบเขตน้ำ ใกล้แนวขอบ</option>
-                  </select>
-                </label>
+              <p id="field-export-summary">เลือกแปลงแล้วจัดการขอบเขตและจุดสำรวจในพื้นที่จริง</p>
+              <div class="field-workflow">
+                <section class="field-stage">
+                  <div class="field-stage-heading"><span>01</span><strong>ขอบเขตน้ำ</strong></div>
+                  <label class="field-control-label">ชุดขอบเขตที่จะใช้งาน
+                    <select id="field-flood-source" aria-label="เลือกขอบเขตน้ำ"><option value="auto">Auto — ขอบเขตน้ำล่าสุดที่ผ่าน QA</option></select>
+                  </label>
+                  <small class="field-meta" id="field-source-description">กำลังตรวจสอบข้อมูล...</small>
+                  <div class="field-stage-inline">
+                    <label class="field-show-boundary"><input id="field-preview-boundary" type="checkbox"> แสดงขอบเขตบนแผนที่</label>
+                    <button class="field-inline-action" id="field-draw-btn" type="button">วาดขอบเขตใหม่</button>
+                  </div>
+                  <div id="field-draw-tools" class="field-context-tools" hidden>
+                    <button class="field-action primary" id="field-finish-btn" type="button" disabled>ยืนยัน Polygon</button>
+                    <button class="field-action subtle" id="field-undo-vertex-btn" type="button" disabled>ย้อนกลับจุด</button>
+                  </div>
+                  <div class="field-draw-status" id="field-draw-status" role="status" aria-live="polite" hidden></div>
+                  <section class="field-manual-polygons" id="field-manual-polygons" hidden>
+                    <div class="field-manual-title"><strong>พื้นที่ที่วาดเอง</strong><span id="field-manual-polygon-count">0 ขอบเขต</span></div>
+                    <div id="field-manual-polygon-list" class="field-manual-polygon-list"></div>
+                  </section>
+                  <details class="field-advanced"><summary>จัดการขอบเขตเพิ่มเติม</summary>
+                    <button class="field-action subtle" id="field-reset-boundary-btn" type="button">ล้างขอบเขตที่วาดทั้งหมด</button>
+                    <small>สามารถวาดหลาย Polygon และลบแยกพื้นที่ได้ ขอบเขตที่วาดเองเป็นข้อมูล Unverified</small>
+                  </details>
+                </section>
+                <section class="field-stage">
+                  <div class="field-stage-heading"><span>02</span><strong>จัดการจุดสำรวจ</strong><span class="field-stage-count" id="field-points-count">0 จุด</span></div>
+                  <label class="field-control-label">วิธีเพิ่มจุด
+                    <select id="field-point-entry-mode">
+                      <option value="manual" selected>คลิกวางจุดเองบนแผนที่</option>
+                      <option value="random">สุ่มจุดในขอบเขตน้ำ</option>
+                    </select>
+                  </label>
+                  <p id="field-point-help" class="field-stage-help">กดเริ่มวางจุด แล้วคลิกบนแผนที่ภายในขอบเขตแปลงเพื่อเพิ่ม P01, P02… ได้ทันที ไม่ต้องสุ่ม</p>
+                  <div class="field-export-controls" id="field-random-settings" hidden>
+                    <label>จำนวนจุด
+                      <select id="field-point-count">
+                        <option value="auto">อัตโนมัติตามพื้นที่น้ำ</option>
+                        <option value="5">5 จุด</option>
+                        <option value="10">10 จุด</option>
+                        <option value="15">15 จุด</option>
+                        <option value="20">20 จุด</option>
+                        <option value="25">25 จุด</option>
+                      </select>
+                    </label>
+                    <label>รูปแบบสุ่ม
+                      <select id="field-sample-mode">
+                        <option value="water_full" selected>ทั่วพื้นที่น้ำ</option>
+                        <option value="water_edge">ใกล้ขอบน้ำ</option>
+                      </select>
+                    </label>
+                  </div>
+                  <button class="field-action primary field-stage-primary" id="field-random-btn" type="button">เริ่มวางจุดบนแผนที่</button>
+                  <div id="field-placement-status" class="field-placement-status" role="status" aria-live="polite" hidden></div>
+                  <section class="field-points-panel" id="field-points-panel" aria-live="polite" hidden>
+                    <div class="field-points-title"><strong>รายการจุด</strong><button class="field-quiet-action" id="field-clear-btn" type="button">ล้างจุดทั้งหมด</button></div>
+                    <div id="field-points-list" class="field-points-list"></div>
+                    <small>ลากจุดเพื่อย้าย • ลบเฉพาะจุดที่ไม่ต้องการได้ • หมายเลขจะเรียงใหม่อัตโนมัติ</small>
+                  </section>
+                </section>
+                <section class="field-stage field-stage-export">
+                  <div class="field-stage-heading"><span>03</span><strong>ส่งออกข้อมูล</strong></div>
+                  <label class="field-control-label">ชนิดไฟล์ KMZ
+                    <select id="field-kmz-scope">
+                      <option value="both">ขอบเขตแปลง + น้ำ + จุด (รวม)</option>
+                      <option value="boundary">เฉพาะขอบเขตแปลงและน้ำ</option>
+                      <option value="points">เฉพาะจุดสำรวจ</option>
+                    </select>
+                  </label>
+                  <button class="field-action field-stage-primary field-download" id="field-export-kmz-btn" type="button">ดาวน์โหลด KMZ</button>
+                </section>
               </div>
-              <div class="field-export-actions">
-                <button class="field-action" id="field-draw-btn" type="button">วาดขอบเขตน้ำ</button>
-                <button class="field-action" id="field-finish-btn" type="button" disabled>ยืนยันขอบเขตที่วาด</button>
-                <button class="field-action subtle" id="field-undo-vertex-btn" type="button" disabled>ย้อนกลับ 1 จุด</button>
-                <button class="field-action subtle" id="field-reset-boundary-btn" type="button">ล้างขอบเขตที่วาดทั้งหมด</button>
-              </div>
-              <div class="field-draw-status" id="field-draw-status" role="status" aria-live="polite" hidden></div>
-              <section class="field-manual-polygons" id="field-manual-polygons" hidden>
-                <div class="field-manual-title"><strong>ขอบเขตน้ำที่วาดเอง</strong><span id="field-manual-polygon-count">0 ขอบเขต</span></div>
-                <div id="field-manual-polygon-list" class="field-manual-polygon-list"></div>
-                <small>หลังยืนยันพื้นที่แรก กด “วาดขอบเขตเพิ่ม” แล้ววาดพื้นที่อื่นได้อีก • กดลบเฉพาะพื้นที่ที่ไม่ต้องการ • KMZ แยกแต่ละพื้นที่เป็น Polygon ของตัวเอง</small>
-              </section>
-              <label class="field-kmz-scope">สิ่งที่ต้องการ Export
-                <select id="field-kmz-scope">
-                  <option value="both">ขอบเขตแปลง + น้ำ + จุดสุ่ม (รวม)</option>
-                  <option value="boundary">ขอบเขตแปลง + น้ำเท่านั้น</option>
-                  <option value="points">จุดสุ่มเท่านั้น</option>
-                </select>
-              </label>
-              <div class="field-export-actions">
-                <button class="field-action primary" id="field-random-btn" type="button">สุ่มจุดบนแผนที่</button>
-                <button class="field-action" id="field-export-kmz-btn" type="button">Export KMZ</button>
-                <button class="field-action subtle" id="field-clear-btn" type="button">ล้างจุด</button>
-              </div>
-              <section class="field-points-panel" id="field-points-panel" aria-live="polite" hidden>
-                <div class="field-points-title"><strong>จุดสำรวจที่เลือกไว้</strong><span id="field-points-count">0 จุด</span></div>
-                <div id="field-points-list" class="field-points-list"></div>
-                <small>จุดทั้งหมดจะสุ่มอยู่ภายใน Polygon น้ำที่เลือก • ลากหมุด P01, P02… เพื่อย้ายตำแหน่งได้ ถ้าลากออกนอก Polygon จะย้อนกลับจุดเดิม • ลบจุดที่ไม่ต้องการแล้วหมายเลขจะเรียงใหม่ • KMZ ใช้พิกัดหลังย้าย</small>
-              </section>
-              <small class="field-export-note">จุดสุ่มและจุดที่ลากย้ายต้องอยู่ภายในขอบเขตน้ำที่เลือก รวมถึงภายในขอบเขตแปลง • อาจต้องเข้าถึงโดยเรือ ไม่ได้ยืนยันเส้นทาง น้ำขึ้นลง ความปลอดภัยหรือสิทธิ์เข้าแปลง ต้องตรวจภาคสนามก่อนสำรวจ</small>
-              <details class="field-auto-help"><summary>ระบบวงขอบเขตน้ำ Auto อย่างไร?</summary><p>ใช้ Sentinel-2 MNDWI = (B3−B11)/(B3+B11) และจำแนกน้ำเบื้องต้นเมื่อ MNDWI &gt; 0 โดยใช้ SCL ตัดเมฆ เงา และพิกเซลไม่มีข้อมูล ก่อนตัดตามขอบเขตแปลงและแปลง Raster mask เป็น Polygon วันใดไม่มีข้อมูลผ่าน QA จะไม่สร้างขอบเขต Auto ให้เอง</p><p>“น้ำปัจจุบัน” คือบริเวณที่จำแนกเป็นน้ำในวันนั้น ส่วน “น้ำเพิ่ม” คือพื้นที่ที่วันก่อนหน้าไม่ใช่น้ำแต่วันปัจจุบันเป็นน้ำ ไม่เท่ากับพื้นที่น้ำทั้งหมด และไม่ใช่ข้อยืนยันความเสียหายจากน้ำท่วม เพราะอาจมีอิทธิพลของน้ำขึ้นลง</p></details>
-            </section>
+              <p class="field-export-note">จุดที่วางเองต้องอยู่ภายในแปลง จุดสุ่มต้องอยู่ภายในขอบเขตน้ำ • ไม่ได้ยืนยันถนน ความปลอดภัย น้ำขึ้นลง หรือสิทธิ์เข้าแปลง</p>
+              <details class="field-auto-help"><summary>วิธีตรวจจับขอบเขตน้ำ Auto และข้อจำกัด</summary><p>Sentinel-2 MNDWI = (B3−B11)/(B3+B11), เกณฑ์เบื้องต้น MNDWI &gt; 0 และกรองเมฆ/เงาด้วย SCL ก่อนตัดตามขอบเขตแปลงและแปลงเป็น Polygon ภาพที่ QA ไม่ผ่านจะไม่ใช้เป็นขอบเขต Auto</p><p>น้ำทั้งหมดในวันนั้นกับน้ำเพิ่มจากวันฐานเป็นคนละข้อมูล และอาจได้รับผลจากน้ำขึ้นลง</p></details>
           </section>
         </div>
 
@@ -407,7 +428,7 @@
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
   <script src="app.js?v=20261014-drawfix8"></script>
-  <script src="field-export.js?v=20261014-draggable10"></script>
+  <script src="field-export.js?v=20261014-survey-studio11"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
