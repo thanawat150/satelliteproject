@@ -79,6 +79,8 @@ function timeSeriesRows(plot,key){
  const spectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  const rain=new Map((cache.environment?.plots?.[plot]?.scenes||[]).filter(r=>r.data_quality==='COMPLETE').map(r=>[r.date,r]));
  return plotScenes(plot).filter(x=>{
+  // Keep the 2026-10-07 13-STC PARTIAL scene in visual review, but out of analysis until it passes QA.
+  if(plot==='13-STC'&&x.date==='2026-10-07'&&!qaOk(x))return false;
   if(rainKey||!spectral)return qaOk(x);
   const source=x.source_index_stats?.[key];
   return qaOk(x)||(source&&Number(source.sample_pixels)>0&&Number.isFinite(Number(source.plot_mean)));
