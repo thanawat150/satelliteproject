@@ -354,16 +354,20 @@ function svgChart(rows,key,opts={}){
  const grid=[20,50,80].map(y=>'<line x1="0" y1="'+(y*10)+'" x2="1000" y2="'+(y*10)+'" class="ts-gridline" vector-effect="non-scaling-stroke"/>').join('');
  const zero=(low<0&&high>0)?'<line x1="0" y1="'+(ypos(0)*10)+'" x2="1000" y2="'+(ypos(0)*10)+'" class="ts-zero-line" vector-effect="non-scaling-stroke"/>':'';
  const count=good.length;
+ const plotYears=[...new Set(good.map(r=>Number(String(r.date).slice(0,4))))].sort((a,b)=>a-b);
+ const yearColor=year=>'hsl('+((year*47)%360)+' 78% 67%)';
+ const yearLegend='<div class="ts-year-legend" aria-label="สีจุดตามปี">'+plotYears.map(year=>'<span><i style="--ts-point-color:'+yearColor(year)+'"></i>'+year+'</span>').join('')+'</div>';
  const markers=good.map((r,i)=>{
    const tip=r.date+' · '+(opts.label||key)+' '+format(r[key])+' '+(opts.unit||'');
    const partial=!qaOk(r),status=partial?' · PARTIAL ตรวจดูเท่านั้น':'';
-   return '<span class="ts-point'+(partial?' is-partial':'')+'" role="img" tabindex="0" aria-label="'+html(tip+status)+'" title="'+html(tip+status)+'" style="left:'+xpos(i).toFixed(3)+'%;top:'+ypos(r[key]).toFixed(3)+'%"></span>';
+   const year=Number(String(r.date).slice(0,4));
+   return '<span class="ts-point'+(partial?' is-partial':'')+'" role="img" tabindex="0" aria-label="'+html(tip+status)+'" title="'+html(tip+status)+'" style="left:'+xpos(i).toFixed(3)+'%;top:'+ypos(r[key]).toFixed(3)+'%;--ts-point-color:'+yearColor(year)+'"></span>';
  }).join('');
  return '<div class="ts-chart'+(mode==='trendline'?' is-trendline':'')+'" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
   '<div class="ts-chart-modes" role="group" aria-label="เลือกรูปแบบกราฟ">'+
    '<button type="button" class="ts-chart-mode'+(mode==='observations'?' active':'')+'" data-ts-chart-mode="observations" aria-pressed="'+(mode==='observations')+'">จุดข้อมูล</button>'+
    '<button type="button" class="ts-chart-mode'+(mode==='trendline'?' active':'')+'" data-ts-chart-mode="trendline" aria-pressed="'+(mode==='trendline')+'">Trendline · เส้นแนวโน้ม</button></div>'+
-  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1.00 ถึง +1.00 (ไม่ขยายความต่าง)':'')+(opts.includePartial?' • จุดสีอำพัน = PARTIAL':'')+'</div>'+
+  '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1.00 ถึง +1.00 (ไม่ขยายความต่าง)':'')+(opts.includePartial?' • สีจุดแทนปี · ขอบอำพัน = PARTIAL':'')+'</div>'+yearLegend+
   '<div class="ts-chart-layout"><div class="ts-y-axis" aria-hidden="true">'+ticks+'</div>'+
   '<div class="ts-plot" role="group" aria-label="จุดข้อมูล '+count+' วัน มีคำอธิบายค่าที่แต่ละจุด">'+
   '<svg class="ts-chart-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+grid+yearLines+zero+

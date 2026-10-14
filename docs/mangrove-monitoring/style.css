@@ -138,7 +138,10 @@ html{scroll-behavior:smooth}
 #time-series-panel .ts-chart.is-trendline .ts-point:hover,#time-series-panel .ts-chart.is-trendline .ts-point:focus{opacity:1}
 #time-series-panel .ts-trendline-summary{position:absolute;z-index:2;left:8px;right:8px;bottom:8px;border:1px solid #805d39;border-radius:7px;background:rgba(8,24,19,.9);color:#ffd39f;padding:5px 8px;font-size:10px;line-height:1.45;text-align:center;pointer-events:none}
 #time-series-panel .ts-trendline-summary[hidden]{display:none!important}
-#time-series-panel .ts-chart-axis-caption{font-size:11px;letter-spacing:.02em;color:#98b6a6;margin:0 0 13px 72px}
+#time-series-panel .ts-chart-axis-caption{font-size:11px;letter-spacing:.02em;color:#98b6a6;margin:0 0 7px 72px}
+#time-series-panel .ts-year-legend{display:flex;gap:7px 13px;flex-wrap:wrap;margin:0 0 13px 72px;color:#bad7c6;font-size:10px;font-variant-numeric:tabular-nums}
+#time-series-panel .ts-year-legend span{display:inline-flex;align-items:center;gap:5px}
+#time-series-panel .ts-year-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ts-point-color);border:1px solid #0b251d;box-shadow:0 0 0 1px var(--ts-point-color)}
 #time-series-panel .ts-chart-layout{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;min-width:0}
 #time-series-panel .ts-y-axis{height:290px;position:relative;min-width:0}
 #time-series-panel .ts-y-tick{position:absolute;right:0;transform:translateY(-50%);color:#a6c8b5;font-size:12px;line-height:1.3;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -147,8 +150,8 @@ html{scroll-behavior:smooth}
 #time-series-panel .ts-gridline{stroke:#3c6652;stroke-dasharray:5 8;stroke-width:1;opacity:.72}
 #time-series-panel .ts-zero-line{stroke:#91b99e;stroke-dasharray:3 6;stroke-width:1.3;opacity:.8}
 #time-series-panel .ts-chart-line{stroke:#75e2ae;stroke-width:2.8;stroke-linejoin:round;stroke-linecap:round}
-#time-series-panel .ts-point{position:absolute;width:12px;height:12px;border-radius:50%;background:#9ff6c5;border:2px solid #0b251d;box-shadow:0 0 0 1px #9ff6c5;transform:translate(-50%,-50%);box-sizing:border-box;cursor:help;z-index:1}
-#time-series-panel .ts-point.is-partial{background:#ffbd77;box-shadow:0 0 0 1px #ffbd77}
+#time-series-panel .ts-point{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--ts-point-color,#9ff6c5);border:2px solid #0b251d;box-shadow:0 0 0 1px var(--ts-point-color,#9ff6c5);transform:translate(-50%,-50%);box-sizing:border-box;cursor:help;z-index:1}
+#time-series-panel .ts-point.is-partial{border-color:#ffbd77;box-shadow:0 0 0 1px #ffbd77}
 #time-series-panel .ts-point:focus-visible{outline:3px solid #e5f4e9;outline-offset:4px}
 #time-series-panel .ts-point:hover,#time-series-panel .ts-point:focus{background:#fff;box-shadow:0 0 0 4px #468667}
 #time-series-panel .ts-x-axis{display:flex;justify-content:space-between;gap:10px;margin:12px 4px 0 84px;color:#a7c5b3;font-size:12px;font-variant-numeric:tabular-nums}
@@ -168,7 +171,7 @@ html{scroll-behavior:smooth}
  #time-series-panel .time-series-select{flex:auto;width:100%;max-width:none;min-width:0}
  #time-series-panel .ts-chart{padding:14px 11px 13px}
  #time-series-panel .ts-chart-layout{grid-template-columns:53px minmax(0,1fr);gap:6px}
- #time-series-panel .ts-chart-axis-caption{margin-left:59px}
+ #time-series-panel .ts-chart-axis-caption,#time-series-panel .ts-year-legend{margin-left:59px}
  #time-series-panel .ts-plot,#time-series-panel .ts-y-axis{height:220px}
  #time-series-panel .ts-y-tick{font-size:10px}
  #time-series-panel .ts-x-axis{margin-left:59px;font-size:10px}

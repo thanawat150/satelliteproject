@@ -182,10 +182,11 @@ const nav=items.length?
  [['single','ภาพเดียว'],['compare','ก่อน / หลัง'],['grid','ทุกดัชนีวันเดียว'],['history','ทุกวัน']].map(([id,label])=>
  '<button type="button" class="img-layout-tab '+(active.layout===id?'active':'')+'" data-image-layout="'+id+'" aria-pressed="'+(active.layout===id)+'">'+label+'</button>').join('')+
  '</div><div class="img-controls">'+
- (active.layout==='history'?'':'<label>วันที่ภาพ<select id="image-date">'+dateChoices(items,active.date)+'</select></label>')+
+ (active.layout==='compare'?'<label>วันที่ก่อน<select id="image-before">'+(!active.before?'<option value="" selected disabled>ไม่มีภาพก่อนหน้าผ่าน QA</option>':'')+dateChoices(items.filter(x=>x.date<active.date),active.before)+'</select></label>':'')+
+ (active.layout==='history'?'':'<label>'+(active.layout==='compare'?'วันที่หลัง':'วันที่ภาพ')+'<select id="image-date">'+dateChoices(items,active.date)+'</select></label>')+
  (active.layout==='single'||active.layout==='compare'?'<label>ชนิดภาพ<select id="image-mode">'+modeOptions(active.mode)+'</select></label>':'')+
  (active.layout==='history'?'<label class="img-history-filter">แสดงภาพ<select id="image-history-mode" aria-label="เลือกภาพหรือดัชนีในทุกวัน">'+historyOptions(active.historyMode)+'</select></label>':'')+
- (active.layout==='compare'?'<label>เทียบกับวันก่อน<select id="image-before">'+(!active.before?'<option value="" selected disabled>ไม่มีภาพก่อนหน้าผ่าน QA</option>':'')+dateChoices(items.filter(x=>x.date<active.date),active.before)+'</select></label>':'')+
+ 
  '<details class="img-display-options"><summary>ตัวเลือกการแสดงผล</summary><div class="img-extra-controls">'+
  (active.layout==='single'?'<label>ความโปร่งใส<input id="image-opacity" type="range" min="0" max="100" value="'+Math.round(active.alpha*100)+'" aria-label="ความโปร่งใสภาพ"></label>':'')+
  '<label class="img-boundary-control"><input type="checkbox" id="image-boundary-toggle" '+(active.boundaryVisible?'checked':'')+'> แสดงขอบเขตแปลง</label></div></details>'+
