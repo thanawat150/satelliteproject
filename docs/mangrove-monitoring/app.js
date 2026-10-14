@@ -671,10 +671,10 @@ function parseData(geoAll,geoCanon,results,status){cache.data=results;cache.stat
 }
 async function load(){clearMap();root.innerHTML='<div class="loading"><span class="spinner"></span><h2>กำลังเชื่อมข้อมูล...</h2><p>GeoJSON / PDD / Sentinel-2 QA</p></div>';try{
  const paths=['boundaries_pdd_all.geojson','boundaries_pdd_136.geojson','nationwide_results.json','nationwide_run_status.json'];
- const manifest=fetch('./imagery_manifest.json?v=20261012-1stc-indices-v11',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Raster manifest HTTP '+r.status);return r.json();}).catch(e=>{console.warn('No Raster Manifest',e);return null;});
+ const manifest=fetch('./imagery_manifest.json?v=20261014-17stc-full-v1',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Raster manifest HTTP '+r.status);return r.json();}).catch(e=>{console.warn('No Raster Manifest',e);return null;});
  const env=fetch('./environmental_context.json?refresh=rain1',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
  const fetchOptional=path=>fetch('./'+path+'?v=hydro20261010',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
- const archivePlots=['1-STC','10-STC','13-STC'].map(plot=>fetch(DATA+'plots/'+encodeURIComponent(plot)+'.json?v=20261014-qa-preserve',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null));
+ const archivePlots=['1-STC','10-STC','13-STC','17-STC'].map(plot=>fetch(DATA+'plots/'+encodeURIComponent(plot)+'.json?v=20261014-17stc-full-v1',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null));
  const a=await Promise.all([...paths.map(async f=>{const r=await fetch(DATA+f+'?v=mmc2');if(!r.ok)throw new Error('Cannot load '+f+': HTTP '+r.status);return r.json();}),manifest,env,
    fetchOptional('environmental_rain_baselines.json'),fetchOptional('environmental_sea_level_model.json'),...archivePlots]);
  cache.imagery=a[4];cache.environment=a[5];cache.rainBaseline=a[6];cache.seaLevelModel=a[7];
