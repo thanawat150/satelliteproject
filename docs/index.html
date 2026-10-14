@@ -85,6 +85,37 @@
               <div class="metric-row"><div><span>NDMI</span><small>ความชื้นพืช/พื้นที่ • stable land</small></div><div class="metric-value"><b id="ndmi-values">—</b><em id="ndmi-delta">—</em></div></div>
             </div>
             <button class="wide-btn" onclick="showSelectedReport()">เปิด Report Preview</button><button class="wide-btn verified-action" onclick="openVerifiedReport()">เปิด Verified PDF</button>
+            <section class="field-export-panel" id="field-export-panel">
+              <div class="field-export-head">
+                <div><span class="field-export-eyebrow">FIELD SURVEY / KMZ</span><strong>ขอบเขตน้ำท่วม + จุดตรวจภาคสนาม</strong></div>
+                <span class="field-export-ready" id="field-export-ready">—</span>
+              </div>
+              <p id="field-export-summary">เลือกแปลงที่มีขอบเขตน้ำท่วมเพื่อสร้างจุดตรวจ</p>
+              <div class="field-export-controls">
+                <label>จำนวนจุด
+                  <select id="field-point-count">
+                    <option value="auto">Auto — ตามขนาดพื้นที่</option>
+                    <option value="5">5 จุด</option>
+                    <option value="10">10 จุด</option>
+                    <option value="15">15 จุด</option>
+                    <option value="20">20 จุด</option>
+                    <option value="25">25 จุด</option>
+                  </select>
+                </label>
+                <label>รูปแบบสุ่ม
+                  <select id="field-sample-mode">
+                    <option value="edge">ใกล้ขอบน้ำ — แนะนำลงพื้นที่</option>
+                    <option value="full">สุ่มทั่วพื้นที่น้ำ</option>
+                  </select>
+                </label>
+              </div>
+              <div class="field-export-actions">
+                <button class="field-action primary" id="field-random-btn" type="button">สุ่มจุดบนแผนที่</button>
+                <button class="field-action" id="field-export-kmz-btn" type="button">Export KMZ</button>
+                <button class="field-action subtle" id="field-clear-btn" type="button">ล้างจุด</button>
+              </div>
+              <small class="field-export-note">โหมดใกล้ขอบน้ำช่วยเลือกจุดที่อยู่ไม่ลึกจากแนวขอบน้ำ แต่ไม่ได้ยืนยันเส้นทางถนนหรือสิทธิ์การเข้าพื้นที่</small>
+            </section>
           </section>
         </div>
 
@@ -319,11 +350,13 @@
     </main>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="map-studio.js?v=20261009-uncropped1"></script>
   <script src="report-selector.js?v=20261009-reportselect1"></script>
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261009-reportselect1"></script>
+  <script src="app.js?v=20261014-field1"></script>
+  <script src="field-export.js?v=20261014-field1"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
