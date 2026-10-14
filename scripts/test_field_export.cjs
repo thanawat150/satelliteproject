@@ -64,9 +64,12 @@ click(101.7126,12.7104,{});
 assert.equal(elements.get("field-finish-btn").disabled,true,"two vertices are insufficient");
 click(101.7126,12.7126,{});
 assert.equal(elements.get("field-finish-btn").disabled,false,"third vertex enables confirmation");
+// Boundary-only KMZ can be exported even before survey points are selected.
+elements.get("field-kmz-scope").value="boundary";
 field.finishDrawing();
 assert.equal(elements.get("field-flood-source").value,"manual");
 assert.equal(elements.get("field-export-kmz-btn").disabled,false);
+elements.get("field-kmz-scope").value="both";
 pts=field.generatePoints();
 assert(pts.length>0,"manual water polygon must support field sampling");
 console.log("PASS: QA-safe KMZ sampling, polygon containment, NO_DATA and manual fallback");
