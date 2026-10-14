@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261009-uncropped1" />
+  <link rel="stylesheet" href="styles.css?v=20261014-cleanmap3" />
 </head>
 <body>
   <header class="topbar">
@@ -70,7 +70,7 @@
 
         <div class="overview-grid">
           <section class="card map-card">
-            <div class="card-head"><div><div class="eyebrow">SITUATION MAP</div><h3>สถานการณ์ล่าสุด</h3></div><div class="legend"><span><i class="dot high"></i>สูง</span><span><i class="dot watch"></i>เฝ้าระวัง</span><span><i class="dot normal"></i>ปกติ</span><span><i class="dot nodata"></i>ไม่มีข้อมูล</span><span><i class="dot newwater"></i>น้ำใหม่ของแปลงที่เลือก</span></div></div>
+            <div class="card-head"><div><div class="eyebrow">SITUATION MAP</div><h3>สถานการณ์ล่าสุด</h3></div><div class="legend"><span><i class="dot high"></i>สูง</span><span><i class="dot watch"></i>เฝ้าระวัง</span><span><i class="dot normal"></i>ปกติ</span><span><i class="dot nodata"></i>ไม่มีข้อมูล</span><span class="legend-note">ชั้นน้ำใหม่ซ่อนเป็นค่าเริ่มต้น · เปิดได้ที่แผนที่</span></div></div>
             <div id="overview-map" class="map"></div>
           </section>
 
@@ -93,7 +93,7 @@
               <p id="field-export-summary">เลือกแปลงที่มีขอบเขตน้ำท่วมเพื่อสร้างจุดตรวจ</p>
               <div class="field-source-picker"><label>ขอบเขตน้ำที่จะส่งออก
                   <select id="field-flood-source" aria-label="เลือกแหล่งขอบเขตน้ำ"><option value="auto">Auto — เลือกชั้นที่ผ่าน QA ล่าสุด</option></select>
-                </label><small id="field-source-description">กำลังตรวจสอบชั้นน้ำที่ใช้ได้...</small></div>
+                </label><small id="field-source-description">กำลังตรวจสอบชั้นน้ำที่ใช้ได้...</small><label class="field-show-boundary"><input id="field-preview-boundary" type="checkbox"> แสดงขอบเขตน้ำที่เลือกบนแผนที่ (เปิดเมื่อต้องการ)</label></div>
               <div class="field-export-controls">
                 <label>จำนวนจุด
                   <select id="field-point-count">
@@ -161,7 +161,7 @@
               <option value="bsi">BSI (ดินเปิดโล่ง)</option>
             </select></label>
             <label class="studio-check"><input id="studio-boundary" type="checkbox" checked> ขอบเขต</label>
-            <label class="studio-check"><input id="studio-water" type="checkbox" checked> น้ำใหม่</label>
+            <label class="studio-check"><input id="studio-water" type="checkbox"> แสดงชั้นน้ำใหม่</label>
             <label class="studio-check"><input id="studio-labels" type="checkbox"> ชื่อแปลง</label>
             <label>รูปแบบสำหรับรายงาน<select id="studio-preset">
               <option value="custom">กำหนดเอง</option>
@@ -361,12 +361,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="map-studio.js?v=20261009-uncropped1"></script>
+  <script src="map-studio.js?v=20261014-cleanmap3"></script>
   <script src="report-selector.js?v=20261009-reportselect1"></script>
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261014-field1"></script>
-  <script src="field-export.js?v=20261014-field3"></script>
+  <script src="app.js?v=20261014-cleanmap3"></script>
+  <script src="field-export.js?v=20261014-cleanmap3"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
