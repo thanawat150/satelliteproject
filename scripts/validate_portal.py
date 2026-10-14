@@ -34,6 +34,29 @@ features=bounds.get("features",[])
 bnames=[f.get("properties",{}).get("plot") for f in features]
 if set(bnames)!=set(names):
     errors.append(f"boundary/plot mismatch: only_data={sorted(set(names)-set(bnames))}, only_boundary={sorted(set(bnames)-set(names))}")
+# Regression guard: 17-VSD is five separate native PDD polygons. The old
+# overview geometry accidentally joined vertices from different parcels and
+# drew diagonal lines across the site despite retaining a plausible total area.
+canonical=json.loads((ROOT/"docs/data/nationwide/boundaries_pdd_136.geojson").read_text(encoding="utf-8"))
+native=next((f for f in canonical.get("features",[]) if f.get("properties",{}).get("plot")=="17-VSD"),None)
+portal=next((f for f in features if f.get("properties",{}).get("plot")=="17-VSD"),None)
+if native is None or portal is None:
+    errors.append("17-VSD: native PDD reference or portal boundary missing")
+else:
+    src_polys=native.get("geometry",{}).get("coordinates",[])
+    dst_polys=portal.get("geometry",{}).get("coordinates",[])
+    match=len(src_polys)==len(dst_polys)==5 and all(
+        len(src_part)==len(dst_part) and all(
+            len(src_ring)==len(dst_ring) and all(
+                len(src_coord)>=2 and len(dst_coord)==2 and
+                abs(src_coord[0]-dst_coord[0])<1e-8 and abs(src_coord[1]-dst_coord[1])<1e-8
+                for src_coord,dst_coord in zip(src_ring,dst_ring)
+            ) for src_ring,dst_ring in zip(src_part,dst_part)
+        ) for src_part,dst_part in zip(src_polys,dst_polys)
+    )
+    if not match:
+        errors.append("17-VSD: portal MultiPolygon differs from native MOC_1.shp reference (must preserve 5 independent rings)")
+
 for f in features:
     p=f.get("properties",{})
     name=p.get("plot")
