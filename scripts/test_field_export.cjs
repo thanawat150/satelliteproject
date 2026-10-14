@@ -16,7 +16,7 @@ const makeMap=()=>{
 };
 const overviewMap=makeMap(),fullMap=makeMap();
 const elements=new Map();
-for(const id of ["field-point-count","field-sample-mode","field-flood-source","field-export-ready","field-export-summary","field-source-description","field-random-btn","field-export-kmz-btn","field-draw-btn","field-finish-btn","field-reset-boundary-btn","field-clear-btn","field-kmz-scope","field-points-panel","field-points-list","field-points-count"]){
+for(const id of ["field-point-count","field-sample-mode","field-flood-source","field-export-ready","field-export-summary","field-source-description","field-random-btn","field-export-kmz-btn","field-draw-btn","field-finish-btn","field-reset-boundary-btn","field-clear-btn","field-kmz-scope","field-points-panel","field-points-list","field-points-count","field-draw-status","field-undo-vertex-btn"]){
  const val=id==="field-point-count"?"10":id==="field-sample-mode"?"land_edge":id==="field-kmz-scope"?"both":"auto";
  elements.set(id,{value:val,disabled:false,textContent:"",className:"",options:[],listeners:{},addEventListener(event,fn){this.listeners[event]=fn;},replaceChildren(){this.options=[];this.value="";},appendChild(o){this.options.push(o)}});
 }
@@ -50,9 +50,20 @@ assert.equal(elements.get("field-export-kmz-btn").disabled,true,"NO_DATA plot mu
 // Explicitly drawn geometry remains available but unverified.
 ctx.turf={kinks:()=>({features:[]}),intersect:f=>f,area:()=>8000};
 field.startDrawing();
-for(const xy of [[101.7104,12.7104],[101.7126,12.7104],[101.7126,12.7126],[101.7104,12.7126]]){
- overviewMap.handlers.click({latlng:{lng:xy[0],lat:xy[1]}});
-}
+assert.equal(field.isDrawing(),true,"click draw should activate mode");
+const click=(x,y,raw)=>overviewMap.handlers.click({latlng:{lng:x,lat:y},originalEvent:raw});
+const firstEvent={};
+click(101.7104,12.7104,firstEvent);
+assert.equal(field.getDraftVertices().length,1,"first map click adds one vertex");
+field.onPlotChange(plots[1]);
+assert.equal(field.isDrawing(),true,"reselecting active plot must NOT cancel drawing");
+assert.equal(field.getDraftVertices().length,1,"reselecting active plot must preserve vertices");
+click(101.7104,12.7104,firstEvent);
+assert.equal(field.getDraftVertices().length,1,"duplicate bubbling event must not duplicate a vertex");
+click(101.7126,12.7104,{});
+assert.equal(elements.get("field-finish-btn").disabled,true,"two vertices are insufficient");
+click(101.7126,12.7126,{});
+assert.equal(elements.get("field-finish-btn").disabled,false,"third vertex enables confirmation");
 field.finishDrawing();
 assert.equal(elements.get("field-flood-source").value,"manual");
 assert.equal(elements.get("field-export-kmz-btn").disabled,false);
@@ -102,3 +113,5 @@ console.log("PASS: QA-safe KMZ sampling, polygon containment, NO_DATA and manual
   assert.equal(field.getPoints().length,0);
   console.log("PASS: one-point removal preserves other points; KMZ uses only remaining points; delete-all never regenerates points");
 })().catch(e=>{console.error(e);process.exitCode=1});
+
+assert(require('node:fs').readFileSync('docs/app.js','utf8').includes('window.FieldExport.addVertex?.(e)'), 'plot polygon click must forward vertex instead of cancelling the drawing');
