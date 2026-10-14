@@ -606,4 +606,30 @@ async function printReport(){
  await Promise.all(imgs.map(im=>im.decode?im.decode().catch(()=>{}):Promise.resolve()));
  window.print();
 }
+
+/* Keep Situation Map and Selected Plot cards aligned even if their controls,
+   fonts or map dimensions change. Detail content remains independently scrollable. */
+function alignOverviewPanelHeights(){
+  const mapCard=document.querySelector('#tab-overview .overview-grid > .map-card');
+  const detailCard=document.querySelector('#tab-overview .overview-grid > .detail-card');
+  if(!mapCard||!detailCard)return;
+  const desktop=window.matchMedia('(min-width: 1101px)');
+  function sync(){
+    if(!desktop.matches){
+      detailCard.style.removeProperty('--selected-plot-height');
+      return;
+    }
+    const h=Math.ceil(mapCard.getBoundingClientRect().height);
+    if(h>0)detailCard.style.setProperty('--selected-plot-height',h+'px');
+  }
+  if(typeof ResizeObserver!=='undefined'){
+    const watcher=new ResizeObserver(sync);
+    watcher.observe(mapCard);
+  }
+  desktop.addEventListener?.('change',sync);
+  window.addEventListener('resize',sync,{passive:true});
+  requestAnimationFrame(sync);
+}
+alignOverviewPanelHeights();
+
 init().catch(err=>{console.error(err);document.body.insertAdjacentHTML('beforeend',`<div style="position:fixed;bottom:12px;right:12px;background:#7f1d1d;color:white;padding:10px;border-radius:8px;z-index:9999">โหลดข้อมูลไม่สำเร็จ: ${err.message}</div>`)})
