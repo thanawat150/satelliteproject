@@ -54,7 +54,7 @@ function pick(p,d,mode){
     // A selected file is always displayed, even if clouds, shadows or NO_DATA prevent analysis.
     // A 20m/60m TIFF is a native-band preview, NOT a fabricated RGB false-color composite.
     let specific=null;
-    if(true){
+    {
       const nativeResolution=(mode==="mndwi"||mode==="ndmi"||mode==="ndre")?"20m":"10m";
       if(file.resolution===nativeResolution || (file.resolution==="10m" && mode==="bsi")){
         const variants=entries.filter(v=>v.plot===p.plot&&v.date===d&&v.mode===dataMode(mode));
@@ -202,7 +202,7 @@ function render(p){
   const small=size.length===2&&Math.min(...size)<80;
   status(p.plot+" • "+nice(d)+" • "+(layer.nativePreview?"ภาพจาก TIFF ต้นฉบับ":MODES[state.mode].name)+(layer.previewResolution?" • "+layer.previewResolution:"")+
     (layer.resolution_m?" • "+layer.resolution_m+" m":"")+
-    (small?" • ⚠ มีพิกเซลน้อย ภาพ Sentinel-2 จึงหยาบกว่าภาพฐาน":"")+qualityWarning+(layer.displayNote?" • "+layer.displayNote:"")+partLabel+" • ภาพเต็มสี่เหลี่ยม Raster • PDD เป็นชั้นเส้นขอบแยก");
+    (small?" • ⚠ พื้นที่เล็ก จำนวนพิกเซลจาก Sentinel-2 มีจำกัด แม้จะปรับคมก็เพิ่มรายละเอียดจริงไม่ได้":"")+qualityWarning+(layer.displayNote?" • "+layer.displayNote:"")+partLabel+" • ภาพเต็มสี่เหลี่ยม Raster • PDD เป็นชั้นเส้นขอบแยก");
  }).catch(e=>status("แสดงภาพไม่สำเร็จ: "+e.message));
 }
 function status(s){if($("map-sat-status"))$("map-sat-status").textContent=s;if($("studio-data-status"))$("studio-data-status").textContent=s}
@@ -272,7 +272,13 @@ async function exportPNG(){
  try{const im=new Image();im.src=src;await im.decode();const c=document.createElement("canvas");c.width=1200;c.height=Math.round(c.width*im.height/im.width);c.getContext("2d").drawImage(im,0,0,c.width,c.height);c.toBlob(b=>{if(!b)return notify("Export PNG ไม่สำเร็จ");const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=safe(current.plot)+"_"+current.date+"_"+state.mode+".png";a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}, "image/png");}
  catch(e){console.warn(e);notify("Export PNG ไม่สำเร็จ ใช้ SVG หรือ PDF แทน");}finally{URL.revokeObjectURL(src)}
 }
-function setMode(mode){if(!["true","false","mndwi","ndmi","ndvi","ndre","bsi"].includes(mode))return;
+function setMode(mode){
+ if(!["true","false","mndwi","ndwi","ndmi","ndvi","ndre","bsi"].includes(mode))return;
+ if(typeof selected!=="undefined"&&selected){
+   const availableForPlot=entries.some(v=>v.plot===selected.plot&&v.mode===dataMode(mode))||
+     (mode==="true"&&mapSatelliteCandidates(selected.plot).length>0);
+   if(!availableForPlot)return notify("ยังไม่มีภาพ "+(MODES[mode]?.name||mode)+" จาก Raster ต้นฉบับของแปลงนี้");
+ }
  state.mode=mode;state.preset="custom";updateInputs();if(typeof selected!=="undefined"&&selected)render(selected);
 }
 window.MapStudio={state,init,render,refresh:()=>selected&&render(selected),applyVisibility,reportMarkup,saveReport,entries:()=>entries,setMode};
