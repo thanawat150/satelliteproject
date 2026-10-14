@@ -271,6 +271,8 @@ function removePoint(id){
   const index=points.findIndex(p=>p.id===id);
   if(index===-1)return false;
   points.splice(index,1);
+  // Keep the surviving geographic coordinates; only the visible IDs are consecutive.
+  points.forEach((p,i)=>{p.id="P"+String(i+1).padStart(2,"0")});
   pointsEdited=true;
   drawPoints();
   renderPointList();
@@ -321,19 +323,20 @@ function modeLabel(){
 }
 function updatePanel(edgeDepth){
   const p=activePlot||selected,ready=$("field-export-ready"),sum=$("field-export-summary");
-  const randomBtn=$("field-random-btn"),exportBtn=$("field-export-kmz-btn");
+  const randomBtn=$("field-random-btn"),exportBtn=$("field-export-kmz-btn"),scope=$("field-kmz-scope")?.value||"both";
+  const canExport=(flood,pointsCount)=>scope==="points"?pointsCount>0:scope==="boundary"?!!flood:!!flood&&(!pointsEdited||pointsCount>0);
   if(!p||!ready||!sum)return;
   const flood=floodFeature(p.plot),info=plotInfo(p.plot)||p;
   const hint=$("field-source-description");if(hint)hint.textContent=sourceDescription(flood);
   if(!flood){
     ready.textContent="ต้องวาดขอบเขต";ready.className="field-export-ready is-missing";
      sum.textContent=p.plot+" • "+qaFailure(p.plot)+" • ใช้วาดขอบเขตน้ำบนแผนที่อย่างน้อย 3 จุด เพื่อจัดทำ KMZ ชั่วคราว (ยังไม่ยืนยัน)";
-    if(randomBtn)randomBtn.disabled=true;if(exportBtn)exportBtn.disabled=true;renderPointList();return;
+    if(randomBtn)randomBtn.disabled=true;if(exportBtn)exportBtn.disabled=!canExport(flood,points.length);renderPointList();return;
   }
   const area=activeArea(info,flood),auto=recommendedCount(area),wanted=desiredCount(info,flood);
   ready.textContent=points.length?points.length+" จุดพร้อม Export":pointsEdited?"ไม่มีจุดที่เลือก":"พร้อมสุ่มจุด";ready.className="field-export-ready is-ready";
   sum.textContent=p.plot+" • "+sourceDescription(flood)+" • "+fmtLocal(area)+" ไร่ • "+($("field-point-count")?.value==="auto"?"แนะนำ "+auto+" จุด":"กำหนด "+wanted+" จุด")+" • "+modeLabel()+(edgeDepth?" (ระยะจากขอบน้ำ ≤ "+Math.round(edgeDepth)+" ม.)":"");
-  if(randomBtn)randomBtn.disabled=false;if(exportBtn)exportBtn.disabled=pointsEdited&&!points.length;
+  if(randomBtn)randomBtn.disabled=false;if(exportBtn)exportBtn.disabled=!canExport(flood,points.length);
 }
 
 function fmtLocal(n){return Number.isFinite(Number(n))?Number(n).toLocaleString("th-TH",{maximumFractionDigits:2}):"—"}
@@ -357,20 +360,22 @@ function geometryKml(feature){
 function placemarkPolygon(name,feature,styleUrl,description){
   return `<Placemark><name>${esc(name)}</name><styleUrl>${styleUrl}</styleUrl><description><![CDATA[${description}]]></description>${geometryKml(feature)}</Placemark>`;
 }
-function buildKml(p){
+function buildKml(p,scope="both"){
+  const includeBoundary=scope==="both"||scope==="boundary";
+  const includePoints=scope==="both"||scope==="points";
   const boundary=plotFeature(p.plot),flood=floodFeature(p.plot),info=plotInfo(p.plot)||p;
   const current=String(info.current||"").replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
   const baseline=String(info.baseline||"").replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
   const area=activeArea(info,flood);
-  const plotPm=boundary?placemarkPolygon(`${p.plot} — Plot Boundary`,boundary,"#plotBoundary",`Plot: ${esc(p.plot)}<br>Area: ${fmtLocal(info.area_rai)} rai`):"";
+  const plotPm=includeBoundary&&boundary?placemarkPolygon(`${p.plot} — Plot Boundary`,boundary,"#plotBoundary",`Plot: ${esc(p.plot)}<br>Area: ${fmtLocal(info.area_rai)} rai`):"";
   const source=flood?.properties?._kmzSource||"unknown";
   const sourceDate=flood?.properties?._kmzDate||current;
-  const floodPm=flood?placemarkPolygon(`${p.plot} — ${source==="water_extent"?"Water Extent":source==="new_water"?"New Water":"User-drawn Water (unverified)"}`,flood,"#floodArea",`Plot: ${esc(p.plot)}<br>Source: ${esc(source)}<br>Date: ${esc(sourceDate)}<br>Baseline: ${esc(baseline)}<br>QA: ${esc(flood.properties?._kmzQA||"UNVERIFIED")}<br>Mapped area: ${fmtLocal(area)} rai`):"";
-  const pointPm=points.map(pt=>`<Placemark><name>${pt.id}</name><styleUrl>#surveyPoint</styleUrl><description><![CDATA[Plot: ${esc(p.plot)}<br>Date: ${esc(current)}<br>Sampling: ${esc(modeLabel())}<br>Point in mapped water: ${pt.in_water?"YES — access by water may be required":"NO — outside selected polygon; dry land not confirmed"}<br>Lat: ${pt.lat.toFixed(7)}<br>Lon: ${pt.lon.toFixed(7)}<br>Distance to flood edge: ~${Math.round(pt.edge_distance_m)} m]]></description><ExtendedData><Data name="plot"><value>${esc(p.plot)}</value></Data><Data name="sample_id"><value>${pt.id}</value></Data><Data name="sample_method"><value>${esc(pt.method)}</value></Data><Data name="in_water"><value>${pt.in_water?"true":"false"}</value></Data><Data name="flood_source"><value>${esc(source)}</value></Data><Data name="water_date"><value>${esc(sourceDate)}</value></Data><Data name="edge_distance_m"><value>${pt.edge_distance_m}</value></Data></ExtendedData><Point><coordinates>${pt.lon},${pt.lat},0</coordinates></Point></Placemark>`).join("");
+  const floodPm=includeBoundary&&flood?placemarkPolygon(`${p.plot} — ${source==="water_extent"?"Water Extent":source==="new_water"?"New Water":"User-drawn Water (unverified)"}`,flood,"#floodArea",`Plot: ${esc(p.plot)}<br>Source: ${esc(source)}<br>Date: ${esc(sourceDate)}<br>Baseline: ${esc(baseline)}<br>QA: ${esc(flood.properties?._kmzQA||"UNVERIFIED")}<br>Mapped area: ${fmtLocal(area)} rai`):"";
+  const pointPm=(includePoints?points:[]).map(pt=>`<Placemark><name>${pt.id}</name><styleUrl>#surveyPoint</styleUrl><description><![CDATA[Plot: ${esc(p.plot)}<br>Date: ${esc(current)}<br>Sampling: ${esc(modeLabel())}<br>Point in mapped water: ${pt.in_water?"YES — access by water may be required":"NO — outside selected polygon; dry land not confirmed"}<br>Lat: ${pt.lat.toFixed(7)}<br>Lon: ${pt.lon.toFixed(7)}<br>Distance to flood edge: ~${Math.round(pt.edge_distance_m)} m]]></description><ExtendedData><Data name="plot"><value>${esc(p.plot)}</value></Data><Data name="sample_id"><value>${pt.id}</value></Data><Data name="sample_method"><value>${esc(pt.method)}</value></Data><Data name="in_water"><value>${pt.in_water?"true":"false"}</value></Data><Data name="flood_source"><value>${esc(source)}</value></Data><Data name="water_date"><value>${esc(sourceDate)}</value></Data><Data name="edge_distance_m"><value>${pt.edge_distance_m}</value></Data></ExtendedData><Point><coordinates>${pt.lon},${pt.lat},0</coordinates></Point></Placemark>`).join("");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document>
 <name>${esc(p.plot)} Flood Field Survey</name>
-<description><![CDATA[Generated by Rayong Flood & Environmental Monitoring. Flood geometry may be drawn manually and is unverified, or follows a QA-accepted portal layer. Land-near-water sampling is outside the mapped water polygon but never guarantees dryness, road or path access, land rights, tide stage or field safety. Flood polygons may represent current water or ONLY newly detected water; check flood_source.]]></description>
+<description><![CDATA[KMZ selection: ${esc(scope)}. Generated by Rayong Flood & Environmental Monitoring. Flood geometry may be drawn manually and is unverified, or follows a QA-accepted portal layer. Land-near-water sampling is outside the mapped water polygon but never guarantees dryness, road or path access, land rights, tide stage or field safety. Flood polygons may represent current water or ONLY newly detected water; check flood_source.]]></description>
 <Style id="plotBoundary"><LineStyle><color>ff4c4cff</color><width>3</width></LineStyle><PolyStyle><color>00ffffff</color></PolyStyle></Style>
 <Style id="floodArea"><LineStyle><color>fff8bd38</color><width>2</width></LineStyle><PolyStyle><color>66f8bd38</color></PolyStyle></Style>
 <Style id="surveyPoint"><IconStyle><scale>1.05</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/blu-circle.png</href></Icon></IconStyle><LabelStyle><scale>0.8</scale></LabelStyle></Style>
@@ -381,20 +386,32 @@ function buildKml(p){
 }
 async function exportKmz(){
   const p=activePlot||selected;if(!p)return;
+  const scope=$("field-kmz-scope")?.value||"both";
+  const includeBoundary=scope==="both"||scope==="boundary";
+  const includePoints=scope==="both"||scope==="points";
   const flood=floodFeature(p.plot);
-  if(!flood){notify("ไม่มีขอบเขตน้ำท่วมที่พร้อม Export");return}
-  if(!points.length&&!pointsEdited)generatePoints();
-  if(!points.length){notify("ไม่มีจุดเหลือสำหรับส่งออก KMZ กรุณากดสุ่มจุดอีกครั้ง");return}
+  if(includeBoundary&&!flood){notify("ขอบเขตน้ำยังไม่พร้อมส่งออก กรุณาเลือกวันที่ผ่าน QA หรือวาดขอบเขต");return}
+  if(includePoints&&!points.length&&scope==="both"&&!pointsEdited)generatePoints();
+  if(includePoints&&!points.length){notify("ยังไม่มีจุดที่เลือกสำหรับส่งออก — กรุณาสุ่มจุดก่อน");return}
   if(typeof JSZip==="undefined"){notify("โหลดตัวสร้าง KMZ ไม่สำเร็จ กรุณารีเฟรชหน้าเว็บ");return}
-  const kml=buildKml(p),zip=new JSZip();
+  const kml=buildKml(p,scope),zip=new JSZip();
   zip.file("doc.kml",kml);
-  zip.file("README.txt",`Rayong Flood & Environmental Monitoring\nPlot: ${p.plot}\nFlood source: ${flood.properties?._kmzSource||"unknown"}\nWater image date: ${flood.properties?._kmzDate||"not recorded"}\nQA: ${flood.properties?._kmzQA||"UNVERIFIED"}\nRandom points: ${points.length}\nSampling mode: ${modeLabel()}\nCRS: WGS84 (EPSG:4326)\nCAUTION: outside newly mapped water does NOT imply dry ground: pre-existing water, tides, unsafe access, private property, and missing roads may remain.`);
+  zip.file("README.txt",`Rayong Flood & Environmental Monitoring
+Plot: ${p.plot}
+Export scope: ${scope} (both / boundary / points)
+Flood source: ${flood?.properties?._kmzSource||"none"}
+Water image date: ${flood?.properties?._kmzDate||"not recorded"}
+QA: ${flood?.properties?._kmzQA||"UNVERIFIED"}
+Random points included: ${includePoints?points.length:0}
+Sampling mode: ${modeLabel()}
+CRS: WGS84 (EPSG:4326)
+CAUTION: outside newly mapped water does NOT imply dry ground; no route or field accessibility guarantee.`);
   const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}});
-  const info=plotInfo(p.plot)||p,date=String(flood.properties?._kmzDate||info.current||"undated").replaceAll("-","");
+  const info=plotInfo(p.plot)||p,date=String(flood?.properties?._kmzDate||info.current||"undated").replaceAll("-","");
   const a=document.createElement("a"),u=URL.createObjectURL(blob);
-  a.href=u;a.download=`${p.plot}_Flood_Field_Survey_${date}.kmz`;document.body.appendChild(a);a.click();a.remove();
+  a.href=u;a.download=`${p.plot}_Flood_Field_Survey_${scope}_${date}.kmz`;document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(u),1500);
-  notify(`Export KMZ ${p.plot} • ${points.length} จุดแล้ว`);
+  notify(`Export KMZ ${p.plot} • ${scope==="both"?"ขอบเขตและจุด":scope==="boundary"?"เฉพาะขอบเขต":"เฉพาะจุด"}${includePoints?" • "+points.length+" จุด":""}`);
 }
 function removeDrawing(){
   drawing=false;drawVertices=[];
@@ -464,6 +481,7 @@ function bind(){
   if(!attach())window.addEventListener("load",attach,{once:true});
   $("field-export-kmz-btn")?.addEventListener("click",exportKmz);
   $("field-clear-btn")?.addEventListener("click",()=>clearPoints(false));
+  $("field-kmz-scope")?.addEventListener("change",()=>updatePanel());
   $("field-points-list")?.addEventListener("click",e=>{
     const btn=e.target?.closest?.("[data-remove-point]");
     if(btn){e.preventDefault();removePoint(btn.getAttribute("data-remove-point"));}
