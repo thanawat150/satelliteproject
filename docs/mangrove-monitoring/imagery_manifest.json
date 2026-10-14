@@ -126875,7 +126875,10 @@
           "processing_status": "PARTIAL",
           "disposition": "same-date grid variant; kept out of default timeline"
         }
-      ]
+      ],
+      "qa_valid_pct": 98.8214,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -127437,7 +127440,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 100.0,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -127999,7 +128005,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 0.7253,
+      "cloud_coverage_pct": 99.2747,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -128561,7 +128570,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 95.2856,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-VSD",
@@ -241081,7 +241093,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 77.1532,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -241643,7 +241658,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 70.9882,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -242205,7 +242223,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 72.4388,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -242767,7 +242788,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 77.9692,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -243329,7 +243353,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 75.4306,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -243891,7 +243918,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 91.0245,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -244453,7 +244483,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 92.9284,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -245015,7 +245048,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 88.3046,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -245577,7 +245613,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 95.5576,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -246139,7 +246178,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 75.4306,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -246701,7 +246743,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 84.8595,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -247263,7 +247308,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 93.4723,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -247825,7 +247873,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 72.1668,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -248387,7 +248438,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 93.3817,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -248949,7 +249003,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 93.2004,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -249511,7 +249568,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 95.4669,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -250073,7 +250133,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 72.2575,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -250635,7 +250698,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 74.252,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -251197,7 +251263,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 71.6228,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -251759,7 +251828,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 64.1886,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -252321,7 +252393,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 97.7335,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -252883,7 +252958,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 96.0109,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -253445,7 +253523,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 97.1895,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -254007,7 +254088,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 65.8205,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -254569,7 +254653,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 96.0109,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -255131,7 +255218,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 83.4995,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -255693,7 +255783,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 69.7189,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -256255,7 +256348,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 70.4442,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -256817,7 +256913,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 99.0027,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -257379,7 +257478,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 98.4587,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -257941,7 +258043,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 98.9121,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -258503,7 +258608,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 98.2774,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -259065,7 +259173,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 77.0626,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -259627,7 +259738,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 92.5657,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -260189,7 +260303,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 70.7162,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -260751,7 +260868,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 97.9148,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -261313,7 +261433,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 71.1695,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -261875,7 +261998,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 99.5467,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -262437,7 +262563,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 77.0626,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -262999,7 +263128,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 74.252,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -263561,7 +263693,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 77.0626,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -264123,7 +264258,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 83.3182,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -264685,7 +264823,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 100.0,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -265247,7 +265388,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 84.0435,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -265809,7 +265953,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 96.3735,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -266371,7 +266518,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 76.6092,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -266933,7 +267083,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 70.7162,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -267495,7 +267648,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 79.1478,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -268057,7 +268213,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 78.8758,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -268619,7 +268778,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 69.5376,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -269181,7 +269343,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 61.922,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -269743,7 +269908,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 76.5186,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -270305,7 +270473,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 81.5956,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -270867,7 +271038,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 75.7026,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -271429,7 +271603,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 75.884,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -271991,7 +272168,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 80.0544,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -272553,7 +272733,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 76.0653,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -273115,7 +273298,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 79.4198,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -273677,7 +273863,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 67.7244,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -274239,7 +274428,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 82.5023,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -274801,7 +274993,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 66.8178,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -275363,7 +275558,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 100.0,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -275925,7 +276123,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 79.4198,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -276487,7 +276688,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 99.0934,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -277049,7 +277253,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 97.1895,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -277611,7 +277818,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 91.2965,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -278173,7 +278383,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 66.0925,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -278735,7 +278948,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 73.5267,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -279297,7 +279513,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 73.5267,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -279859,7 +280078,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 75.2493,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -280421,7 +280643,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 72.0762,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -280983,7 +281208,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 67.9057,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -281545,7 +281773,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 63.6446,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -282107,7 +282338,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 77.3345,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -282669,7 +282903,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 98.3681,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -283231,7 +283468,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 99.2747,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -283793,7 +284033,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 99.6374,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -284355,7 +284598,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 99.5467,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -284917,7 +285163,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 98.7307,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -285479,7 +285728,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 80.5984,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -286041,7 +286293,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 69.9909,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -286603,7 +286858,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 72.3481,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -287165,7 +287423,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 67.6337,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -287727,7 +287988,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 65.0045,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -288289,7 +288553,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 66.9991,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -288851,7 +289118,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 66.0925,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -289413,7 +289683,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 66.2738,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -289975,7 +290248,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 95.4669,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -290537,7 +290813,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 93.019,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -291099,7 +291378,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 97.9148,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -291661,7 +291943,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 99.2747,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -292223,7 +292508,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 78.6038,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -292785,7 +293073,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 72.0762,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -293347,7 +293638,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 67.4524,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -293909,7 +294203,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 64.7325,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -294471,7 +294768,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 72.0762,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -295033,7 +295333,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 66.1831,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -295595,7 +295898,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 66.1831,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -296157,7 +296463,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 61.1967,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -296719,7 +297028,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 59.9275,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -297281,7 +297593,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 61.1061,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -297843,7 +298158,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 60.1088,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -298405,7 +298723,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 52.4025,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -298967,7 +299288,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 50.8613,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -299529,7 +299853,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 75.884,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -300091,7 +300418,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 71.1695,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -300653,7 +300983,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 57.5703,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -301215,7 +301548,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 95.9202,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -301777,7 +302113,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 72.7108,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     },
     {
       "plot": "17-STC",
@@ -302339,7 +302678,10 @@
       "analysis_warning": "Per-scene indices are retained with cloud QA. Source product processing baseline/BOA offsets are absent; do not infer cross-date change or flood extent from these values.",
       "status": "PARTIAL",
       "analysis_status": "PARTIAL",
-      "alternate_source_variants": []
+      "alternate_source_variants": [],
+      "qa_valid_pct": 82.6836,
+      "cloud_coverage_pct": 0.0,
+      "shadow_coverage_pct": 0.0
     }
   ],
   "render_status": {

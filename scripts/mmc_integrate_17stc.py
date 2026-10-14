@@ -313,6 +313,22 @@ def main() -> None:
                     "unfiltered_index_stats": raw_stats, "qa60": alt60["qa60"],
                     "processing_status": "PARTIAL", "disposition": "same-date grid variant; kept out of default timeline"})
 
+        # Populate cloud QA for every scene, not only the visual-only fallback.
+        # Otherwise valid SCL summaries were omitted from the audit tables and
+        # appeared as zero coverage even when classes 2/4/5/6 covered the plot.
+        scl_counts = source_meta["20"].get("scl_distribution_inside_plot") or {str(k): 0 for k in range(12)}
+        polygon_pixels = source_meta["20"].get("polygon_pixel_count") or 0
+        qa_pixels = sum(scl_counts.get(str(k), 0) for k in SCL_GOOD)
+        cloud_pixels = sum(scl_counts.get(str(k), 0) for k in (8, 9, 10))
+        shadow_pixels = scl_counts.get("3", 0)
+        row["qa_valid_pct"] = pct(qa_pixels, polygon_pixels)
+        row["cloud_coverage_pct"] = pct(cloud_pixels, polygon_pixels)
+        row["shadow_coverage_pct"] = pct(shadow_pixels, polygon_pixels)
+        row["plot_qa"] = {**(row.get("plot_qa") or {}), "pixel_count": polygon_pixels,
+                           "qa_valid_pct": row["qa_valid_pct"], "cloud_pct": row["cloud_coverage_pct"],
+                           "shadow_pct": row["shadow_coverage_pct"],
+                           "unclassified_pct": pct(scl_counts.get("7", 0), polygon_pixels),
+                           "scl_counts": {str(k): scl_counts.get(str(k), 0) for k in range(12)}}
         processed[date] = row
         qa = row.get("plot_qa", {})
         cloud, shadow = qa.get("cloud_pct"), qa.get("shadow_pct")
@@ -381,7 +397,7 @@ def main() -> None:
                  "pdd_geometry_parts": prop.get("geometry_parts"), "pdd_area_rai": prop.get("pdd_area_rai"),
                  "geometry_area_rai": prop.get("geometry_area_rai"), "boundary_source": prop.get("boundary_source"),
                  "boundary_verified": True, "selected_dates": sorted(primary), "completed_dates": len(primary),
-                 "qa_valid_dates": sum((x.get("qa_valid_pct") or 0) > 0 for x in processed.values()),
+                 "qa_valid_dates": sum((x.get("qa_valid_pct") or 0) >= 60 for x in processed.values()),
                  "processing_status": "PARTIAL", "source_tiff_count": len(inventory["files"]),
                  "unique_scene_count": len(primary), "source_variant_count": sum(len(v) for x in grouped.values() for v in x.values()) - len(primary) * 3,
                  "radiometry_status": "PROCESSING_BASELINE_AND_BOA_OFFSETS_UNVERIFIED"}
