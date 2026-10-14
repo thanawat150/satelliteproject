@@ -249,7 +249,7 @@ function redrawFloodBoundary(){
     [[overviewMap,"overview"],[fullMap,"full"]].forEach(([map,key])=>{
       if(!map)return;
       if(floodLayers[key]){map.removeLayer(floodLayers[key]);floodLayers[key]=null;}
-      if(!p)return;const f=floodFeature(p.plot);if(!f||f.properties?._kmzSource==="manual")return;
+      if(!p||!$("field-preview-boundary")?.checked)return;const f=floodFeature(p.plot);if(!f||f.properties?._kmzSource==="manual")return;
       floodLayers[key]=L.geoJSON(f,{style:{color:"#00dbff",weight:2,opacity:0.95,dashArray:"6 5",fillColor:"#32b8f4",fillOpacity:0.08},interactive:false}).addTo(map);
     });
   }catch(e){console.warn("Field flood drawing",e)}
@@ -427,6 +427,7 @@ function bind(){
   $("field-export-kmz-btn")?.addEventListener("click",exportKmz);
   $("field-clear-btn")?.addEventListener("click",()=>clearPoints(false));
   $("field-flood-source")?.addEventListener("change",()=>{clearPoints(true);redrawFloodBoundary();updatePanel()});
+  $("field-preview-boundary")?.addEventListener("change",()=>{redrawFloodBoundary();});
   $("field-point-count")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   $("field-sample-mode")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   loadHistoricalFlood();updatePanel();
