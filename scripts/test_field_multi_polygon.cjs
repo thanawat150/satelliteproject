@@ -48,6 +48,8 @@ const draw=coords=>{field.startDrawing();assert(field.isDrawing());for(const [x,
  field.clearDrawing();
  assert.equal(field.getManualBoundaries().length,0,"clear all removes all parts of the selected plot");
  assert.equal(elems.get("field-manual-polygons").hidden,true);
- assert.equal(elems.get("field-export-kmz-btn").disabled,true);
- console.log("PASS: 2 polygons, combined sampling, KMZ separate boundaries, switching plots, delete-one and clear-all");
+ assert.equal(elems.get("field-export-kmz-btn").disabled,false,"plot boundary remains exportable after clearing manual polygons");
+ await field.exportKmz();
+ assert(kml.at(-1).includes("Plot Boundary")&&!kml.at(-1).includes("Manual Water"),"KMZ retains project boundary without stale manual water");
+ console.log("PASS: 2 polygons, combined sampling, plot switching, boundary export and clear-all");
 })().catch(e=>{console.error(e);process.exitCode=1});
