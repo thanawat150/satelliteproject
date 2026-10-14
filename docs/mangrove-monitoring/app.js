@@ -122,7 +122,7 @@ function timeSeriesInfo(plot,key,rows){
    '</p>';
 }
 function timeSeriesEventAnalysis(plot){
- if(plot!=='13-STC')return '';
+ if(!['13-STC','17-STC'].includes(plot))return '';
  const scenes=plotScenes(plot).filter(row=>typeof row.date==='string'&&row.date.length===10);
  const value=(row,key)=>{const raw=row?.source_index_stats?.[key]?.plot_mean??row?.[key];return raw===null||raw===undefined||raw===''||!Number.isFinite(Number(raw))?null:Number(raw);};
  const years=[...new Set(scenes.map(row=>row.date.slice(0,4)))].sort().reverse();
@@ -207,8 +207,8 @@ function timeSeriesEventNote(plot,key){
   ' ภาพล่าสุด '+html(latestScene.date)+' เป็น '+html(latestScene.analysis_status||'PARTIAL')+' จึงยังใช้ยืนยันการฟื้นตัวไม่ได้.':'';
  const ndviChange=value(event,'ndvi')-value(baseline,'ndvi');
  const mndwiChange=value(event,'mndwi')-value(baseline,'mndwi');
- return '<aside class="ts-event-alert" role="note" aria-label="สรุปสัญญาณและสถานะฟื้นตัวแปลง 13-STC">'+
-  '<div class="ts-event-alert-head"><span class="ts-event-alert-icon" aria-hidden="true">!</span><div><b>สรุปเหตุการณ์และสถานะล่าสุด · 13-STC</b><small>ภาพก่อนเหตุการณ์ 30 เม.ย. เทียบช่วงที่ผู้ใช้ระบุว่าเกิดน้ำท่วม 29 ก.ย. 2569</small></div></div>'+
+ return '<aside class="ts-event-alert" role="note" aria-label="สรุปสัญญาณและสถานะฟื้นตัวแปลง '+html(plot)+'">'+
+  '<div class="ts-event-alert-head"><span class="ts-event-alert-icon" aria-hidden="true">!</span><div><b>สรุปเหตุการณ์และสถานะล่าสุด · '+html(plot)+'</b><small>ภาพก่อนเหตุการณ์ 30 เม.ย. เทียบกับ 29 ก.ย. 2569</small></div></div>'+
   '<p class="ts-event-alert-summary">สัญญาณดัชนี: NDVI '+(ndviChange<0?'ลด':'เพิ่ม')+' '+seriesFmt('ndvi',Math.abs(ndviChange))+' · MNDWI '+(mndwiChange>0?'เพิ่ม':'ลด')+' '+seriesFmt('mndwi',Math.abs(mndwiChange))+'</p>'+
   '<div class="ts-event-current '+currentClass+'"><b>สถานะการฟื้นตัว:</b> '+currentStatus+latestNote+'<small>เกณฑ์เฝ้าระวังเบื้องต้นสำหรับแจ้ง “กลับใกล้ค่าก่อนเหตุการณ์” ต้องมี 2 ภาพหลังเหตุการณ์ที่ผ่าน QA ต่อเนื่อง และค่า NDVI กับ MNDWI แต่ละค่าอยู่ห่าง baseline ไม่เกิน 20% ของช่วงการเปลี่ยนแปลงที่วัดได้</small></div>'+
   '<small class="ts-event-caveat">อ่านผลเป็นสัญญาณคัดกรอง ไม่ใช่การยืนยันน้ำท่วมหรือสาเหตุ; Processing Baseline/BOA Offset ยังไม่ยืนยันและระบบยังไม่อนุมัติการเทียบข้ามวัน ควรตรวจภาพจริง ฝน/ระดับน้ำ และข้อมูลภาคสนามร่วมด้วย</small></aside>';
