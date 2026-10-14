@@ -134,7 +134,7 @@ html{scroll-behavior:smooth}
 #time-series-panel .ts-chart-mode.active,#time-series-panel .ts-chart-mode[aria-pressed="true"]{background:#328957;border-color:#72c99a;color:#fff}
 #time-series-panel .ts-chart-mode:focus-visible{outline:3px solid #a6f2c1;outline-offset:2px}
 #time-series-panel .ts-trendline{stroke:#ffbd77;stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 2px #ffbd77)}
-#time-series-panel .ts-chart.is-trendline .ts-point{opacity:.38}
+#time-series-panel .ts-chart.is-trendline .ts-point{opacity:1}
 #time-series-panel .ts-chart.is-trendline .ts-point:hover,#time-series-panel .ts-chart.is-trendline .ts-point:focus{opacity:1}
 #time-series-panel .ts-trendline-summary{position:absolute;z-index:2;left:8px;right:8px;bottom:8px;border:1px solid #805d39;border-radius:7px;background:rgba(8,24,19,.9);color:#ffd39f;padding:5px 8px;font-size:10px;line-height:1.45;text-align:center;pointer-events:none}
 #time-series-panel .ts-trendline-summary[hidden]{display:none!important}
