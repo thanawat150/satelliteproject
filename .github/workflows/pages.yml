@@ -49,6 +49,7 @@ jobs:
           node scripts/test_field_export_all_plots.cjs
           node scripts/test_field_multi_polygon.cjs
           node scripts/test_field_drag_points.cjs
+          node scripts/test_field_survey_studio.cjs
           node --check docs/calendar.js
           node --check docs/map-studio.js
           node scripts/test_satellite_sharp_water.cjs
