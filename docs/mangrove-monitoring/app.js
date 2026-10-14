@@ -125,29 +125,34 @@ function timeSeriesEventAnalysis(plot){
  if(plot!=='13-STC')return '';
  const scenes=plotScenes(plot).filter(row=>typeof row.date==='string'&&row.date.length===10);
  const value=(row,key)=>{const raw=row?.source_index_stats?.[key]?.plot_mean??row?.[key];return raw===null||raw===undefined||raw===''||!Number.isFinite(Number(raw))?null:Number(raw);};
+ const water=row=>{const raw=row?.water_rai??row?.water_area_rai;return raw===null||raw===undefined||raw===''||!Number.isFinite(Number(raw))?null:Number(raw);};
  const years=[...new Set(scenes.map(row=>row.date.slice(0,4)))].sort().reverse();
  let selected=null;
  for(const year of years){
+  const april=scenes.filter(row=>row.date.startsWith(year+'-04-')&&value(row,'ndvi')!==null&&value(row,'mndwi')!==null).at(-1);
   const september=scenes.filter(row=>row.date.startsWith(year+'-09-')&&value(row,'ndvi')!==null&&value(row,'mndwi')!==null).at(-1);
   const after=scenes.filter(row=>row.date>=(year+'-10-01')&&row.date.startsWith(year+'-')&&value(row,'ndvi')!==null&&value(row,'mndwi')!==null).at(-1);
-  if(september&&after){selected={year,september,after};break;}
+  if(april&&september&&after){selected={year,april,september,after};break;}
  }
  if(!selected)return '';
- const {year,september,after}=selected;
- const deltaNdvi=value(after,'ndvi')-value(september,'ndvi');
- const deltaMndwi=value(after,'mndwi')-value(september,'mndwi');
- const fmtSigned=n=>(n>0?'+':'')+Number(n).toFixed(4);
- const gap=scenes.find(row=>row.date===year+'-10-02');
- const shadow=Number.isFinite(Number(after.shadow_coverage_pct))?Number(after.shadow_coverage_pct):null;
+ const {year,april,september,after}=selected;
+ const delta=(later,earlier,key)=>value(later,key)-value(earlier,key);
+ const deltaText=(later,earlier,key)=>Number.isFinite(delta(later,earlier,key))?
+  Number(delta(later,earlier,key)).toFixed(4).replace(/^-0\.0000$/,'0.0000'):'ไม่มีค่าคำนวณ';
+ const signed=(later,earlier,key)=>{const n=delta(later,earlier,key);return Number.isFinite(n)?(n>0?'+':'')+n.toFixed(4):'ไม่มีค่าคำนวณ';};
+ const areaDelta=(later,earlier)=>water(later)!==null&&water(earlier)!==null?(water(later)-water(earlier)>0?'+':'')+(water(later)-water(earlier)).toFixed(2)+' ไร่':'ไม่มีค่าจำแนกพื้นที่น้ำ';
+ const formula=(label,later,earlier,key)=>'<div><b>'+label+'</b><br>'+Number(value(later,key)).toFixed(4)+' − ('+Number(value(earlier,key)).toFixed(4)+') = <b>'+signed(later,earlier,key)+'</b></div>';
  const status=row=>html(row.analysis_status||row.status||'ไม่ระบุ');
- const opposite=deltaNdvi>0&&deltaMndwi<0;
- return '<section class="panel series-event-analysis" aria-labelledby="series-event-title"><div class="section-title"><div><span class="eyebrow">13-STC · '+html(year)+'</span><h2 id="series-event-title">ตัวเลขหลังช่วง 29 ก.ย.</h2><p class="muted">เทียบค่าดัชนีจากภาพจริงสองวัน</p></div></div>'+
-  '<div class="grid three"><div class="panel"><b>29 ก.ย. · '+status(september)+'</b><div class="kv"><span>NDVI</span><b>'+Number(value(september,'ndvi')).toFixed(4)+'</b><span>MNDWI</span><b>'+Number(value(september,'mndwi')).toFixed(4)+'</b></div></div>'+
-  '<div class="panel"><b>'+html(after.date)+' · '+status(after)+'</b><div class="kv"><span>NDVI</span><b>'+Number(value(after,'ndvi')).toFixed(4)+'</b><span>MNDWI</span><b>'+Number(value(after,'mndwi')).toFixed(4)+'</b></div></div>'+
-  '<div class="panel"><b>ผลต่าง 29 ก.ย. → '+html(after.date)+'</b><div class="kv"><span>NDVI</span><b>'+fmtSigned(deltaNdvi)+'</b><span>MNDWI</span><b>'+fmtSigned(deltaMndwi)+'</b></div></div></div>'+
-  '<div class="notice">'+(opposite?'NDVI สูงขึ้นพร้อมกับ MNDWI ลดลง เป็นทิศทางที่สอดคล้องกับสัญญาณน้ำลดและค่าพืชสูงขึ้นหลัง 29 ก.ย.':'ค่าดัชนีไม่ได้เปลี่ยนในทิศทางเดียวกับสัญญาณน้ำลด/ค่าพืชสูงขึ้น')+' แต่ภาพ '+html(after.date)+' มีสถานะ '+status(after)+(shadow===null?'':', เงาบัง '+shadow.toFixed(1)+'%')+' จึงยังใช้ยืนยันการฟื้นตัวไม่ได้</div>'+
-  (gap&&value(gap,'ndvi')===null&&value(gap,'mndwi')===null?'<div class="series-proof">วันที่ 2 ต.ค. มี Scene แต่ไม่มีค่า NDVI/MNDWI จึงยังบอกไม่ได้ว่าการเปลี่ยนเกิดขึ้นช่วงใด</div>':'')+
-  '<div class="series-proof">ค่าระหว่างวันยังไม่ได้รับอนุมัติให้เทียบเชิงปริมาณ เพราะ radiometric baseline/BOA offset ยังไม่ยืนยัน และไม่มีค่าพื้นที่น้ำที่ใช้ได้ในภาพหลัง 29 ก.ย. • อ่านเป็นแนวโน้มประกอบเท่านั้น</div></section>';
+ const shadow=Number.isFinite(Number(after.shadow_coverage_pct))?Number(after.shadow_coverage_pct):null;
+ const card=(label,row)=>'<div class="panel"><b>'+label+' · '+html(row.date)+'</b><div class="kv"><span>สถานะ QA</span><b>'+status(row)+'</b><span>NDVI</span><b>'+Number(value(row,'ndvi')).toFixed(4)+'</b><span>MNDWI</span><b>'+Number(value(row,'mndwi')).toFixed(4)+'</b><span>พื้นที่น้ำ</span><b>'+(water(row)===null?'ไม่มีค่า':water(row).toFixed(2)+' ไร่')+'</b></div></div>';
+ const gap=scenes.find(row=>row.date===year+'-10-02');
+ return '<section class="panel series-event-analysis" aria-labelledby="series-event-title"><div class="section-title"><div><span class="eyebrow">13-STC · '+html(year)+'</span><h2 id="series-event-title">สรุปเชิงตัวเลขและสมการเปรียบเทียบ</h2><p class="muted">30 เม.ย. ใช้เป็นภาพก่อนเหตุการณ์ ไม่ถือเป็นค่าปกติระยะยาว</p></div></div>'+
+  '<div class="grid three">'+card('ก่อนเหตุการณ์',april)+card('29 ก.ย. · ช่วงที่เฝ้าระวัง',september)+card('ภาพล่าสุดที่มีดัชนี',after)+'</div>'+
+  '<h3>ก่อนเหตุการณ์ → 29 ก.ย.</h3><div class="series-proof">'+formula('NDVI',september,april,'ndvi')+formula('MNDWI',september,april,'mndwi')+'<div><b>พื้นที่น้ำ</b><br>'+(water(september)===null||water(april)===null?'ไม่มีค่าครบสองวัน':water(september).toFixed(2)+' − '+water(april).toFixed(2)+' = <b>'+areaDelta(september,april)+'</b>')+'</div></div>'+
+  '<h3>29 ก.ย. → '+html(after.date)+'</h3><div class="series-proof">'+formula('NDVI',after,september,'ndvi')+formula('MNDWI',after,september,'mndwi')+'<div><b>พื้นที่น้ำ</b><br>ไม่มีค่าจำแนกพื้นที่น้ำของ '+html(after.date)+' จึงยังคำนวณการเพิ่ม/ลดเป็นไร่ไม่ได้</div></div>'+
+  '<h3>ก่อนเหตุการณ์ → ภาพล่าสุด</h3><div class="series-proof">'+formula('NDVI',after,april,'ndvi')+formula('MNDWI',after,april,'mndwi')+'<div><b>พื้นที่น้ำ</b><br>ไม่มีค่าจำแนกพื้นที่น้ำของ '+html(after.date)+' จึงยังเทียบกับภาพก่อนเหตุการณ์ไม่ได้</div></div>'+
+  (gap&&value(gap,'ndvi')===null&&value(gap,'mndwi')===null?'<div class="series-proof">วันที่ 2 ต.ค. มี Scene แต่ไม่มีค่า NDVI/MNDWI จึงยังบอกไม่ได้ว่าการเปลี่ยนแปลงเกิดขึ้นช่วงใด</div>':'')+
+  '<div class="notice">ภาพ '+html(after.date)+' เป็น '+status(after)+(shadow===null?'':', มีเงาบัง '+shadow.toFixed(1)+'%')+'. ผลต่างเป็นการลบค่าดัชนีเฉลี่ยรายภาพ ไม่ใช่ร้อยละพื้นที่ และยังไม่ได้รับอนุมัติให้เทียบข้ามวันเพราะ radiometric baseline/BOA offset ไม่ยืนยัน จึงอ่านเป็นแนวโน้มเบื้องต้น ไม่ใช่การยืนยันน้ำท่วมหรือการฟื้นตัว</div></section>';
 }
 function timeSeriesKpis(plot,key){
  const good=timeSeriesRowsInRange(plot,key),first=good[0],last=good.at(-1),unit=seriesUnit(key),label=seriesMeta(key)[0];
