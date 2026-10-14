@@ -176,23 +176,17 @@ function timeSeriesEventNote(plot,key){
  const baseline=scenes.find(row=>row.date==='2026-04-30'&&qaOk(row));
  const event=scenes.find(row=>row.date==='2026-09-29'&&qaOk(row));
  if(!baseline||!event)return '';
- const keys=['ndvi','ndre','evi','savi','gli','ndmi','ndwi','mndwi','bsi','water_rai','water_pct','vegetation_rai','bare_soil_rai','other_rai','wetness_rai'];
  const value=(scene,k)=>{
   const stat=scene.source_index_stats?.[k];
   const raw=stat&&Number(stat.sample_pixels)>0?stat.plot_mean:scene[k];
   return raw!==null&&raw!==undefined&&raw!==''&&Number.isFinite(Number(raw))?Number(raw):null;
  };
- const rows=keys.map(k=>({key:k,label:seriesMeta(k)[0],unit:seriesUnit(k),before:value(baseline,k),during:value(event,k)}))
-  .filter(x=>x.before!==null&&x.during!==null);
- const fmtDelta=x=>(x>0?'+':'')+seriesFmt(x.key,x.during-x.before);
- const table=rows.map(x=>'<tr><td>'+html(x.label)+'</td><td>'+seriesFmt(x.key,x.before)+' '+html(x.unit)+'</td><td>'+seriesFmt(x.key,x.during)+' '+html(x.unit)+'</td><td>'+fmtDelta(x)+' '+html(x.unit)+'</td></tr>').join('');
- const recoveryKeys=['ndvi','mndwi','water_rai'];
- const nearBaseline=scene=>recoveryKeys.every(k=>{
+ const nearBaseline=scene=>['ndvi','mndwi'].every(k=>{
   const b=value(baseline,k),e=value(event,k),v=value(scene,k);
   return b!==null&&e!==null&&v!==null&&Math.abs(e-b)>0&&Math.abs(v-b)<=Math.max(Math.abs(e-b)*0.2,0.01);
  });
  const postScenes=scenes.filter(row=>String(row.date||'')>'2026-09-29'&&qaOk(row)).sort((a,b)=>a.date.localeCompare(b.date));
- const completePost=postScenes.filter(row=>recoveryKeys.every(k=>value(row,k)!==null));
+ const completePost=postScenes.filter(row=>['ndvi','mndwi'].every(k=>value(row,k)!==null));
  const lastTwo=completePost.slice(-2);
  const latestScene=scenes.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).at(-1);
  let currentStatus,currentClass;
@@ -206,19 +200,17 @@ function timeSeriesEventNote(plot,key){
   currentStatus='ภาพ QA ล่าสุดหลังเหตุการณ์ยังไม่เข้าเกณฑ์กลับใกล้ค่าก่อนเหตุการณ์';
   currentClass='watch';
  }else{
-  currentStatus='ยังสรุปการกลับสู่ปกติไม่ได้ — ไม่มีภาพหลัง 29 ก.ย. ที่ผ่าน QA ครบ NDVI, MNDWI และพื้นที่น้ำ';
+  currentStatus='ยังสรุปการกลับสู่ปกติไม่ได้ — ไม่มีภาพหลัง 29 ก.ย. ที่ผ่าน QA ครบ NDVI และ MNDWI';
   currentClass='unknown';
  }
  const latestNote=latestScene&&latestScene.date>'2026-09-29'&&!qaOk(latestScene)?
   ' ภาพล่าสุด '+html(latestScene.date)+' เป็น '+html(latestScene.analysis_status||'PARTIAL')+' จึงยังใช้ยืนยันการฟื้นตัวไม่ได้.':'';
  const ndviChange=value(event,'ndvi')-value(baseline,'ndvi');
  const mndwiChange=value(event,'mndwi')-value(baseline,'mndwi');
- const waterChange=value(event,'water_rai')-value(baseline,'water_rai');
  return '<aside class="ts-event-alert" role="note" aria-label="สรุปสัญญาณและสถานะฟื้นตัวแปลง 13-STC">'+
   '<div class="ts-event-alert-head"><span class="ts-event-alert-icon" aria-hidden="true">!</span><div><b>สรุปเหตุการณ์และสถานะล่าสุด · 13-STC</b><small>ภาพก่อนเหตุการณ์ 30 เม.ย. เทียบช่วงที่ผู้ใช้ระบุว่าเกิดน้ำท่วม 29 ก.ย. 2569</small></div></div>'+
-  '<p class="ts-event-alert-summary">สัญญาณสวนทางกัน: NDVI '+(ndviChange<0?'ลด':'เพิ่ม')+' '+seriesFmt('ndvi',Math.abs(ndviChange))+' · MNDWI '+(mndwiChange>0?'เพิ่ม':'ลด')+' '+seriesFmt('mndwi',Math.abs(mndwiChange))+' · พื้นที่น้ำ '+(waterChange>0?'เพิ่ม':'ลด')+' '+seriesFmt('water_rai',Math.abs(waterChange))+' ไร่</p>'+
-  '<div class="ts-event-current '+currentClass+'"><b>สถานะการฟื้นตัว:</b> '+currentStatus+latestNote+'<small>เกณฑ์เฝ้าระวังเบื้องต้นสำหรับแจ้ง “กลับใกล้ค่าก่อนเหตุการณ์” ต้องมี 2 ภาพหลังเหตุการณ์ที่ผ่าน QA ต่อเนื่อง และ NDVI, MNDWI, พื้นที่น้ำแต่ละค่าอยู่ห่าง baseline ไม่เกิน 20% ของช่วงการเปลี่ยนแปลงที่วัดได้</small></div>'+
-  '<details class="ts-event-table"><summary>ตรวจค่าก่อน–ช่วงเหตุการณ์ทุกตัวชี้วัด ('+rows.length+' รายการ · QA ผ่านทั้งสองภาพ)</summary><div class="table-wrap"><table class="tbl"><thead><tr><th>ตัวชี้วัด</th><th>30 เม.ย. ก่อน</th><th>29 ก.ย. ช่วงเหตุการณ์</th><th>ส่วนต่าง</th></tr></thead><tbody>'+table+'</tbody></table></div></details>'+
+  '<p class="ts-event-alert-summary">สัญญาณดัชนี: NDVI '+(ndviChange<0?'ลด':'เพิ่ม')+' '+seriesFmt('ndvi',Math.abs(ndviChange))+' · MNDWI '+(mndwiChange>0?'เพิ่ม':'ลด')+' '+seriesFmt('mndwi',Math.abs(mndwiChange))+'</p>'+
+  '<div class="ts-event-current '+currentClass+'"><b>สถานะการฟื้นตัว:</b> '+currentStatus+latestNote+'<small>เกณฑ์เฝ้าระวังเบื้องต้นสำหรับแจ้ง “กลับใกล้ค่าก่อนเหตุการณ์” ต้องมี 2 ภาพหลังเหตุการณ์ที่ผ่าน QA ต่อเนื่อง และค่า NDVI กับ MNDWI แต่ละค่าอยู่ห่าง baseline ไม่เกิน 20% ของช่วงการเปลี่ยนแปลงที่วัดได้</small></div>'+
   '<small class="ts-event-caveat">อ่านผลเป็นสัญญาณคัดกรอง ไม่ใช่การยืนยันน้ำท่วมหรือสาเหตุ; Processing Baseline/BOA Offset ยังไม่ยืนยันและระบบยังไม่อนุมัติการเทียบข้ามวัน ควรตรวจภาพจริง ฝน/ระดับน้ำ และข้อมูลภาคสนามร่วมด้วย</small></aside>';
 }
 function timeSeriesChartSet(plot,key){
