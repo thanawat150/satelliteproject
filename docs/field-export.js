@@ -3,6 +3,7 @@
 "use strict";
 let activePlot=null;
 let points=[];
+let pointsEdited=false; // Prevent KMZ export from regenerating points intentionally deleted.
 let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null, confirmedLayer=null, listeningMap=null;
 const surveyLayers={overview:null,full:null};
 const floodLayers={overview:null,full:null};
@@ -231,6 +232,7 @@ function generatePoints(){
   if(mode==="land_edge"&&!boundary){notify("ยังไม่มีขอบเขตแปลงสำหรับเลือกจุดด้านนอกน้ำ");return[]}
   const {pool,edgeDepth}=candidatePool(flood,boundary,count,mode,activeArea(info,flood));
   if(pool.length<count){points=[];drawPoints();updatePanel();notify("พื้นที่ที่ตรงเงื่อนไขมีน้อยเกินไป: ลดจำนวนจุดหรือเปลี่ยนวิธีสุ่ม ห้ามใช้จุดที่ไม่ผ่านเงื่อนไข");return[]}
+  pointsEdited=false;
   points=spreadSelect(pool,count).map((c,i)=>({
     id:"P"+String(i+1).padStart(2,"0"),
     lon:+c[0].toFixed(7),lat:+c[1].toFixed(7),
@@ -239,7 +241,7 @@ function generatePoints(){
     in_water:mode!=="land_edge",
     flood_source:flood.properties._kmzSource||"manual"
   }));
-  drawPoints();updatePanel(edgeDepth);notify("สุ่ม "+points.length+" จุดแล้ว • ยังต้องตรวจทางเข้าหน้างาน");
+  drawPoints();renderPointList();updatePanel(edgeDepth);notify("สุ่ม "+points.length+" จุดแล้ว • ยังต้องตรวจทางเข้าหน้างาน");
   return points;
 }
 
@@ -259,14 +261,50 @@ function clearLayer(map,key){
 }
 function clearPoints(silent=false){
   points=[];
+  pointsEdited=!silent;
   try{clearLayer(overviewMap,"overview");clearLayer(fullMap,"full")}catch(_){}
+  renderPointList();
   updatePanel();
   if(!silent)notify("ล้างจุดตรวจแล้ว");
 }
+function removePoint(id){
+  const index=points.findIndex(p=>p.id===id);
+  if(index===-1)return false;
+  points.splice(index,1);
+  pointsEdited=true;
+  drawPoints();
+  renderPointList();
+  updatePanel();
+  notify("ลบจุด "+id+" แล้ว • เหลือ "+points.length+" จุด");
+  return true;
+}
+function renderPointList(){
+  const panel=$("field-points-panel"),list=$("field-points-list"),count=$("field-points-count");
+  if(!panel||!list)return;
+  panel.hidden=!points.length&&!pointsEdited;
+  if(count)count.textContent=points.length+" จุด";
+  if(!points.length){
+    list.innerHTML='<div class="field-points-empty">ไม่มีจุดที่เลือกอยู่ กด “สุ่มจุดบนแผนที่” เพื่อสร้างชุดใหม่</div>';
+    return;
+  }
+  list.innerHTML=points.map(p=>
+    '<div class="field-point-row"><span class="field-point-number">'+esc(p.id)+'</span>'+
+    '<span class="field-point-position">'+Number(p.lat).toFixed(6)+', '+Number(p.lon).toFixed(6)+
+    '<small>ห่างจากขอบน้ำประมาณ '+Math.round(p.edge_distance_m)+' ม.</small></span>'+
+    '<button type="button" class="field-point-delete" data-remove-point="'+esc(p.id)+'" aria-label="ลบจุด '+esc(p.id)+'">ลบ ×</button></div>'
+  ).join("");
+}
 function markerFor(pt,plot){
-  return L.marker([pt.lat,pt.lon],{
-    icon:L.divIcon({className:"field-point-icon"+(pt.in_water?" is-water":" is-land"),html:`<span>${pt.id}</span>`,iconSize:[36,24],iconAnchor:[18,12]})
-  }).bindPopup(`<b>${esc(plot)} • ${pt.id}</b><br>Lat ${pt.lat.toFixed(6)}<br>Lon ${pt.lon.toFixed(6)}<br><small>ระยะจากขอบน้ำ ~${Math.round(pt.edge_distance_m)} ม.</small>`);
+  const marker=L.marker([pt.lat,pt.lon],{
+    icon:L.divIcon({className:"field-point-icon"+(pt.in_water?" is-water":" is-land"),html:`<span>${esc(pt.id)}</span>`,iconSize:[36,24],iconAnchor:[18,12]})
+  }).bindPopup(`<b>${esc(plot)} • ${esc(pt.id)}</b><br>Lat ${pt.lat.toFixed(6)}<br>Lon ${pt.lon.toFixed(6)}<br><small>ระยะจากขอบน้ำ ~${Math.round(pt.edge_distance_m)} ม.</small><br><button type="button" class="field-popup-delete">ลบจุดนี้ ×</button>`);
+  marker.on?.("popupopen",e=>{
+    const btn=e.popup?.getElement?.()?.querySelector(".field-popup-delete");
+    btn?.addEventListener("click",event=>{
+      event.preventDefault();event.stopPropagation();removePoint(pt.id);
+    },{once:true});
+  });
+  return marker;
 }
 function drawPoints(){
   const p=activePlot||selected;if(!p)return;
@@ -290,12 +328,12 @@ function updatePanel(edgeDepth){
   if(!flood){
     ready.textContent="ต้องวาดขอบเขต";ready.className="field-export-ready is-missing";
      sum.textContent=p.plot+" • "+qaFailure(p.plot)+" • ใช้วาดขอบเขตน้ำบนแผนที่อย่างน้อย 3 จุด เพื่อจัดทำ KMZ ชั่วคราว (ยังไม่ยืนยัน)";
-    if(randomBtn)randomBtn.disabled=true;if(exportBtn)exportBtn.disabled=true;return;
+    if(randomBtn)randomBtn.disabled=true;if(exportBtn)exportBtn.disabled=true;renderPointList();return;
   }
   const area=activeArea(info,flood),auto=recommendedCount(area),wanted=desiredCount(info,flood);
-  ready.textContent=points.length?points.length+" จุดพร้อม Export":"พร้อมสุ่มจุด";ready.className="field-export-ready is-ready";
+  ready.textContent=points.length?points.length+" จุดพร้อม Export":pointsEdited?"ไม่มีจุดที่เลือก":"พร้อมสุ่มจุด";ready.className="field-export-ready is-ready";
   sum.textContent=p.plot+" • "+sourceDescription(flood)+" • "+fmtLocal(area)+" ไร่ • "+($("field-point-count")?.value==="auto"?"แนะนำ "+auto+" จุด":"กำหนด "+wanted+" จุด")+" • "+modeLabel()+(edgeDepth?" (ระยะจากขอบน้ำ ≤ "+Math.round(edgeDepth)+" ม.)":"");
-  if(randomBtn)randomBtn.disabled=false;if(exportBtn)exportBtn.disabled=false;
+  if(randomBtn)randomBtn.disabled=false;if(exportBtn)exportBtn.disabled=pointsEdited&&!points.length;
 }
 
 function fmtLocal(n){return Number.isFinite(Number(n))?Number(n).toLocaleString("th-TH",{maximumFractionDigits:2}):"—"}
@@ -345,8 +383,8 @@ async function exportKmz(){
   const p=activePlot||selected;if(!p)return;
   const flood=floodFeature(p.plot);
   if(!flood){notify("ไม่มีขอบเขตน้ำท่วมที่พร้อม Export");return}
-  if(!points.length)generatePoints();
-  if(!points.length)return;
+  if(!points.length&&!pointsEdited)generatePoints();
+  if(!points.length){notify("ไม่มีจุดเหลือสำหรับส่งออก KMZ กรุณากดสุ่มจุดอีกครั้ง");return}
   if(typeof JSZip==="undefined"){notify("โหลดตัวสร้าง KMZ ไม่สำเร็จ กรุณารีเฟรชหน้าเว็บ");return}
   const kml=buildKml(p),zip=new JSZip();
   zip.file("doc.kml",kml);
@@ -426,12 +464,16 @@ function bind(){
   if(!attach())window.addEventListener("load",attach,{once:true});
   $("field-export-kmz-btn")?.addEventListener("click",exportKmz);
   $("field-clear-btn")?.addEventListener("click",()=>clearPoints(false));
+  $("field-points-list")?.addEventListener("click",e=>{
+    const btn=e.target?.closest?.("[data-remove-point]");
+    if(btn){e.preventDefault();removePoint(btn.getAttribute("data-remove-point"));}
+  });
   $("field-flood-source")?.addEventListener("change",()=>{clearPoints(true);redrawFloodBoundary();updatePanel()});
   $("field-preview-boundary")?.addEventListener("change",()=>{redrawFloodBoundary();});
   $("field-point-count")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   $("field-sample-mode")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
-  loadHistoricalFlood();updatePanel();
+  loadHistoricalFlood();renderPointList();updatePanel();
 }
-window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice()};
+window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
 })();
