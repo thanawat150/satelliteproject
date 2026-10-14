@@ -35,6 +35,18 @@ function floodFeature(plot){
   }
   return null;
 }
+function qaFailure(plot){
+  try{
+    const info=plotInfo(plot),candidate=newWaterFC?.features?.find(f=>f.properties?.plot===plot);
+    if(!candidate||!info)return "ยังไม่มี Polygon น้ำอัตโนมัติของแปลงนี้";
+    const a=String(info.baseline||"").replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
+    const b=String(info.current||"").replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
+    const history=window.TrendReport?.rows?.(plot)||[];
+    const result=window.MonitoringQA?.verifyPair?.(info,a,b,history,candidate);
+    if(result?.ok)return "Polygon ผ่าน QA (รอรายการแผนที่อัปเดต)";
+    return result?.reason||"พบ Polygon แต่ยังยืนยันคุณภาพไม่ได้";
+  }catch(e){return "ยังตรวจสอบ QA ของ Polygon ไม่ครบ"}
+}
 function sourceDescription(feature){
   if(!feature)return "ไม่มี Polygon อัตโนมัติที่ผ่าน QA สำหรับแปลงนี้ — ใช้ปุ่มวาดขอบเขตน้ำได้";
   const p=feature.properties||{};
@@ -277,7 +289,7 @@ function updatePanel(edgeDepth){
   const hint=$("field-source-description");if(hint)hint.textContent=sourceDescription(flood);
   if(!flood){
     ready.textContent="ต้องวาดขอบเขต";ready.className="field-export-ready is-missing";
-    sum.textContent=p.plot+" • ข้อมูลน้ำอัตโนมัติยังไม่ผ่าน QA สำหรับวันที่มีอยู่ กด “วาดขอบเขตน้ำ” แล้วคลิกอย่างน้อย 3 จุดภายในแปลง เพื่อทำ KMZ ชั่วคราว";
+     sum.textContent=p.plot+" • "+qaFailure(p.plot)+" • ใช้วาดขอบเขตน้ำบนแผนที่อย่างน้อย 3 จุด เพื่อจัดทำ KMZ ชั่วคราว (ยังไม่ยืนยัน)";
     if(randomBtn)randomBtn.disabled=true;if(exportBtn)exportBtn.disabled=true;return;
   }
   const area=activeArea(info,flood),auto=recommendedCount(area),wanted=desiredCount(info,flood);
