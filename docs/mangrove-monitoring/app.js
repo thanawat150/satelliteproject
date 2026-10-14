@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 31497)
-Total output lines: 755
-
 'use strict';
 (function () {
 const $=id=>document.getElementById(id);
@@ -491,7 +488,36 @@ function integrityTable(){
  const gaps=missingQaRecords(),valid=(cache.data.scenes||[]).filter(qaOk),nonQa=(cache.data.scenes||[]).filter(x=>!qaOk(x)),unavailable=missingVisualRecords(),modeGaps=incompleteModeRecords(),visual=(cache.imagery?.generated_items||[]).filter(x=>x.preview_kind==='VISUAL_ONLY_NON_QA');
  return '<div class="panel"><div class="panel-header"><div><h2>QA / Raster Preview Integrity</h2><p class="muted">ตรวจความครบถ้วนรายคู่รหัสแปลง-วันภาพ (ไม่ใช่การตรวจ Scene ID)</p></div>'+btn('Export Gap CSV','exportgaps','','primary')+'</div>'+
  '<div class="grid half">'+kpi('วันภาพผ่าน QA',valid.length,'ในข้อมูล PDD')+kpi('QA ผ่านแต่ไม่มี Preview',gaps.length,'ต้องสร้างภาพจาก GeoTIFF จริง')+kpi('วันภาพไม่ผ่าน QA',nonQa.length,'มี Raster ให้ดู แต่ห้ามใช้สรุปผลกระทบ')+kpi('ภาพเพื่อดูประกอบ',visual.length,'สีจริง สีเท็จ และดัชนีจาก TIFF ไม่ใช่ผลวิเคราะห์')+kpi('ภาพไม่ผ่าน QA ที่ยังไม่มี Preview',unavailable.length,'ดูรายการด้านล่างและไฟล์ TIFF ต้นฉบับ')+kpi('วันภาพยังไม่ครบ 8 ชนิด',modeGaps.length,'ตรวจทั้ง 462 วันภาพ PDD และ Archive เดิม')+'</div>'+
- '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันภาพ</th><th…1497 tokens truncated…>วันภาพ</th><th>ดัชนีที่ต้องตรวจ</th><th>ส่วนต่างสูงสุด</th><th>เปิด</th></tr></thead><tbody>'+
+ '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันภาพ</th><th>QA</th><th>10m TIFF</th></tr></thead><tbody>'+
+ gaps.slice(0,100).map(x=>'<tr><td>'+btn(x.plot,'plot',x.plot,'mini')+'</td><td>'+html(x.date)+'</td><td>'+fmt(x.qa_valid_pct,0)+'%</td><td>'+assetLink(x.original_tif10,x.original_tif10_file_id)+'</td></tr>').join('')+
+ '</tbody></table></div><p class="muted">แสดง '+Math.min(gaps.length,100)+' จาก '+gaps.length+' รายการ ดาวน์โหลด CSV เพื่อดูทั้งหมด</p>'+'<h3>รายการภาพสีจริงวันไม่ผ่าน QA ที่ยังขาด</h3>'+btn('Export Visual Gap CSV','exportnonqagaps','','primary')+'<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันที่</th><th>ผล QA</th><th>10m TIFF ต้นฉบับ</th></tr></thead><tbody>'+unavailable.slice(0,100).map(x=>'<tr><td>'+html(x.plot)+'</td><td>'+html(x.date)+'</td><td>'+html(x.analysis_status)+'</td><td>'+assetLink(x.original_tif10,x.original_tif10_file_id)+'</td></tr>').join('')+'</tbody></table></div><p class="muted">แสดง '+Math.min(unavailable.length,100)+' / '+unavailable.length+' วันที่ไม่มี Preview • ไม่มีการสร้างภาพแทนจากวันอื่น</p>'+'<h3>ตรวจครบ 8 ภาพต่อวัน · สีจริง/สีเท็จ/ดัชนี</h3>'+btn('Export Missing Modes CSV','exportmissingmodes','','primary')+'<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันภาพ</th><th>สถานะ QA</th><th>ชนิดที่ขาด</th><th>ตรวจ</th></tr></thead><tbody>'+modeGaps.slice(0,100).map(x=>'<tr><td>'+html(x.plot)+'</td><td>'+html(x.date)+'</td><td>'+html(x.analysis_status)+'</td><td>'+html(x.missing_modes.join(', '))+'</td><td>'+btn('เปิดภาพ','insight',x.plot,'mini')+'</td></tr>').join('')+'</tbody></table></div><p class="muted">แสดง '+Math.min(modeGaps.length,100)+' / '+modeGaps.length+' คู่แปลง-วันภาพที่ยังไม่ครบ 8 ชนิด</p></div>';
+}
+function displayQualityIssues(){
+ const rows=cache.imagery?.generated_items||[];
+ return rows.filter(x=>x.rgb_display_warning||Number(x.rgb_invalid_pct)>=30||Number(x.rgb_unclassified_scl_pct)>=20||!x.rgb_renderer_version);
+}
+function displayQualityTable(){
+ if(!cache.imagery)return message('ยังไม่พบ Raster Manifest จึงตรวจคุณภาพภาพทั้งหมดไม่ได้');
+ const imgs=cache.imagery.generated_items||[],issues=displayQualityIssues();
+ const fixed=imgs.filter(x=>x.rgb_renderer_version==='mmc-rgb-fixed-reflectance-v2');
+ return '<section class="panel"><div class="panel-header"><div><h2>Raster Visual QA • ทุกภาพทุกแปลง</h2><p class="muted">ตรวจคุณภาพการแสดงภาพแยกจากเกณฑ์ SCL และแยกจากการตรวจสอบภาคสนาม</p></div>'+btn('Export Visual QA CSV','exportvisualqa','','primary')+'</div>'+
+ '<div class="grid half">'+kpi('ภาพจาก renderer ใหม่',fixed.length+' / '+imgs.length,'สีจริงใช้ช่วง reflectance เดียวกัน · NoData โปร่งใส')+
+ kpi('ภาพรอตรวจด้วยสายตา',issues.length,'เกือบขาว ≥30% / NoData ≥30% / SCL 7 ≥20% หรือ renderer เก่า')+'</div>'+
+ '<p class="muted tiny">ค่าเหล่านี้เป็นเกณฑ์คัดกรองคุณภาพการแสดงผล ไม่ใช่หลักฐานยืนยันว่าเมฆปกคลุมหรือป่าเสื่อมโทรม</p>'+
+ '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันภาพ</th><th>เกือบขาว</th><th>NoData/SCL</th><th>SCL 7</th><th>เปิดภาพ</th></tr></thead><tbody>'+
+ issues.slice(0,100).map(x=>'<tr><td>'+html(x.plot)+'</td><td>'+html(x.date)+'</td><td>'+fmt(x.rgb_near_white_pct,1)+'%</td><td>'+fmt(x.rgb_invalid_pct,1)+'%</td><td>'+fmt(x.rgb_unclassified_scl_pct,1)+'%</td><td>'+btn('ตรวจ','insight',x.plot,'mini')+'</td></tr>').join('')+
+ '</tbody></table></div><p class="muted">แสดง '+Math.min(100,issues.length)+' จาก '+issues.length+' วันที่ควรตรวจเพิ่ม • กดเปิดแปลงเพื่อดู Raster และผล QA</p></section>';
+}
+function spectralQualityTable(){
+ if(!cache.imagery)return message('ไม่พบ Raster Manifest สำหรับตรวจดัชนี');
+ const rows=(cache.imagery.generated_items||[]).filter(x=>x.preview_kind!=='VISUAL_ONLY_NON_QA');
+ const audited=rows.filter(x=>x.index_renderer_version==='mmc-index-source-verified-v1');
+ const flagged=rows.filter(x=>(x.index_parity_warnings||[]).length);
+ return '<section class="panel" id="index-audit"><div class="panel-header"><div><h2>Index QA · ตรวจดัชนีจาก GeoTIFF ทุกแปลง</h2><p class="muted">ตรวจสูตร NDVI / NDRE / NDMI (B8A) / NDWI / MNDWI / BSI เทียบกับค่ารายงาน และ NDRE/NDMI/MNDWI ที่ฝังใน TIFF</p></div>'+
+ btn('Export Index QA CSV','exportindexqa','','primary')+'</div>'+
+ '<div class="grid half">'+kpi('มีผลตรวจจาก TIFF',audited.length+' / '+rows.length,'ค่าเฉลี่ยเฉพาะ PDD ไม่ใช่ค่าทั้งกรอบ Raster')+
+ kpi('วันที่มีค่าต่างต้องตรวจ',flagged.length,'ผลต่าง > 0.03 หรือ Index Band ใน TIFF ไม่ตรง')+'</div>'+
+ '<div class="table-wrap"><table class="tbl"><thead><tr><th>แปลง</th><th>วันภาพ</th><th>ดัชนีที่ต้องตรวจ</th><th>ส่วนต่างสูงสุด</th><th>เปิด</th></tr></thead><tbody>'+
  flagged.slice(0,100).map(x=>'<tr><td>'+html(x.plot)+'</td><td>'+html(x.date)+'</td><td>'+html((x.index_parity_warnings||[]).join(', '))+'</td><td class="num">'+fmt(Math.max(0,...Object.values(x.index_parity||{}).map(z=>Math.abs(Number(z.difference)||0))),4)+'</td><td>'+btn('ดูดัชนี','analyse',x.plot,'mini')+'</td></tr>').join('')+
  '</tbody></table></div><p class="muted tiny">การตรวจนี้เปรียบเทียบข้อมูลภาพที่คำนวณจริงกับรายงานเดิม ไม่ใช่การยืนยันสภาพป่า สุขภาพต้นไม้ หรืออุทกภัย • เกณฑ์ต่าง 0.03 เป็นค่าเตือนตรวจความสอดคล้อง ไม่ใช่ความคลาดเคลื่อนเซนเซอร์</p></section>';
 }
@@ -725,5 +751,4 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{const id=e.target.id;if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
 })();
-
 
