@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261014-even-height7" />
+  <link rel="stylesheet" href="styles.css?v=20261014-drawfix8" />
 </head>
 <body>
   <header class="topbar">
@@ -131,8 +131,10 @@
               <div class="field-export-actions">
                 <button class="field-action" id="field-draw-btn" type="button">วาดขอบเขตน้ำ</button>
                 <button class="field-action" id="field-finish-btn" type="button" disabled>ยืนยันขอบเขตที่วาด</button>
+                <button class="field-action subtle" id="field-undo-vertex-btn" type="button" disabled>ย้อนกลับ 1 จุด</button>
                 <button class="field-action subtle" id="field-reset-boundary-btn" type="button">ล้างขอบเขตที่วาด</button>
               </div>
+              <div class="field-draw-status" id="field-draw-status" role="status" aria-live="polite" hidden></div>
               <label class="field-kmz-scope">สิ่งที่ต้องการ Export
                 <select id="field-kmz-scope">
                   <option value="both">ขอบเขตแปลง + น้ำ + จุดสุ่ม (รวม)</option>
@@ -400,8 +402,8 @@
   <script src="report-selector.js?v=20261009-reportselect1"></script>
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261014-even-height7"></script>
-  <script src="field-export.js?v=20261014-image-select4"></script>
+  <script src="app.js?v=20261014-drawfix8"></script>
+  <script src="field-export.js?v=20261014-drawfix8"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
