@@ -392,3 +392,16 @@
 .field-point-icon{background:transparent!important;border:0!important}
 .field-point-icon span{display:grid;place-items:center;width:34px;height:22px;border-radius:999px;background:#0d92c7;color:#fff;border:2px solid #e8f8ff;box-shadow:0 1px 5px rgba(0,0,0,.35);font:800 9px Inter,sans-serif}
 @media(max-width:720px){.field-export-controls{grid-template-columns:1fr}.field-export-actions{grid-template-columns:1fr 1fr}.field-action.subtle{grid-column:1/-1}.field-export-head{align-items:center}}
+
+
+/* Flood KMZ field-survey controls: separate source QA, sampling mode and map feedback. */
+.field-source-picker{display:flex;flex-direction:column;gap:5px;margin:7px 0 11px;padding:10px;border:1px solid #2d5369;border-radius:9px;background:#0a2637}
+.field-source-picker label{display:flex;flex-direction:column;gap:5px;font-size:10px;font-weight:700;color:#c9e7f6}
+.field-source-picker select{width:100%;min-height:34px;min-width:0;padding:7px 8px;border-radius:7px;border:1px solid #466f85;background:#143449;color:#edf7fc;font:600 10px 'IBM Plex Sans Thai',sans-serif}
+.field-source-picker small{color:#91b7c9;font-size:9px;line-height:1.55}
+.field-auto-help{margin-top:10px;padding:9px 10px;border-radius:8px;border:1px solid #2e5164;background:#102d40;font-size:9px;line-height:1.65}
+.field-auto-help summary{color:#94dbfb;font-weight:700;cursor:pointer}
+.field-auto-help p{margin:7px 0 0;color:#c0d5e0}
+.field-point-icon.is-land span{background:#208353;border-color:#d1f7e0}
+.field-point-icon.is-water span{background:#157db3;border-color:#dbf1ff}
+@media(max-width:720px){.field-source-picker select{font-size:11px}.field-auto-help{font-size:10px}}
