@@ -373,7 +373,7 @@ function openTimeSeriesPreview(button){
  modal.querySelector('.ts-modal-close').addEventListener('click',close);
  modal.addEventListener('click',event=>{if(event.target===modal)close();});
  const onKey=event=>{if(event.key==='Escape'){close();document.removeEventListener('keydown',onKey);}};
- document.addEventListener('keydown',onKey);$('time-series-panel')?.append(modal);
+ document.addEventListener('keydown',onKey);document.body.append(modal);
  modal.querySelector('.ts-modal-close').focus();
 }
 function previewCoverage(){
