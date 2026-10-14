@@ -5,6 +5,7 @@ let activePlot=null;
 let points=[];
 let pointsEdited=false; // Prevent KMZ export from regenerating points intentionally deleted.
 let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null, confirmedLayer=null;
+const manualByPlot=new Map(); // Each plot keeps its own independently editable polygons for this page session.
 const listeningMaps=new Set(), processedClickEvents=new WeakSet();
 const surveyLayers={overview:null,full:null};
 const floodLayers={overview:null,full:null};
@@ -20,6 +21,70 @@ function latestHistory(plot){const rows=validHistory(plot);return rows.length?ro
 function makeSource(f,kind,date,area,qa){
   if(!f)return null;
   return {type:"Feature",geometry:f.geometry,properties:{...f.properties,_kmzSource:kind,_kmzDate:date,_kmzArea:Number(area)||0,_kmzQA:qa||"NOT_VERIFIED"}};
+}
+function manualPartsFor(plot){return manualByPlot.get(plot)||[]}
+function syncManualFlood(plot){
+  const parts=manualPartsFor(plot);
+  if(!parts.length){manualFlood=null;return null}
+  const geometries=parts.flatMap(part=>ringsFromGeometry(part.geometry));
+  let merged={type:"Feature",properties:{plot},geometry:geometries.length===1?{type:"Polygon",coordinates:geometries[0]}:{type:"MultiPolygon",coordinates:geometries}};
+  let unionSucceeded=geometries.length===1;
+  if(parts.length>1&&typeof turf!=="undefined"&&typeof turf.union==="function"){
+    try{
+      let candidate={type:"Feature",properties:{},geometry:parts[0].geometry};
+      for(let i=1;i<parts.length;i++){
+        const next={type:"Feature",properties:{},geometry:parts[i].geometry};
+        const union=turf.union(candidate,next);
+        if(!union)throw Error("Union empty");
+        candidate=union;
+      }
+      if(ringsFromGeometry(candidate.geometry).length){merged={...candidate,properties:{plot}};unionSucceeded=true}
+    }catch(e){console.warn("Manual footprint union unavailable; retaining each polygon",e)}
+  }
+  let area=parts.reduce((total,part)=>total+part.areaRai,0);
+  if(unionSucceeded&&typeof turf!=="undefined"&&typeof turf.area==="function"){
+    try{area=turf.area(merged)/1600}catch(_){}
+  }
+  manualFlood={type:"Feature",geometry:merged.geometry,properties:{plot,_kmzSource:"manual",_kmzQA:"UNVERIFIED",_kmzDate:"",_kmzArea:area,_kmzPartCount:parts.length,_kmzAreaSumFallback:!unionSucceeded}};
+  return manualFlood;
+}
+function renderManualList(){
+  const p=activePlot||selected,parts=p?manualPartsFor(p.plot):[];
+  const panel=$("field-manual-polygons"),list=$("field-manual-polygon-list"),count=$("field-manual-polygon-count");
+  if(!panel||!list)return;
+  panel.hidden=!parts.length;
+  if(count)count.textContent=parts.length+" ขอบเขต";
+  list.innerHTML=parts.map((part,i)=>
+    '<div class="field-manual-row"><span class="field-manual-number">#'+(i+1)+'</span>'+
+    '<span class="field-manual-area">ขอบเขตน้ำ '+(i+1)+' <small>'+fmtLocal(part.areaRai)+' ไร่ • ยังไม่ยืนยัน</small></span>'+
+    '<button type="button" class="field-point-delete" data-remove-manual="'+i+'" aria-label="ลบขอบเขตน้ำ '+(i+1)+'">ลบ ×</button></div>'
+  ).join("");
+}
+function redrawManualBoundaries(){
+  if(confirmedLayer){try{overviewMap?.removeLayer(confirmedLayer)}catch(_){}confirmedLayer=null}
+  const p=activePlot||selected,parts=p?manualPartsFor(p.plot):[];
+  if(!overviewMap||!parts.length)return;
+  const colors=["#ffad42","#f17479","#ba8bf5","#51b2df","#83c36b"];
+  const layers=parts.map((part,i)=>{
+    const color=colors[i%colors.length];
+    const layer=L.geoJSON({type:"Feature",geometry:part.geometry,properties:{plot:p.plot}},{style:{color,weight:3,fillColor:color,fillOpacity:.19},interactive:false});
+    layer.bindTooltip?.("ขอบเขตน้ำ "+(i+1)+" • "+fmtLocal(part.areaRai)+" ไร่");
+    return layer;
+  });
+  confirmedLayer=L.layerGroup(layers).addTo(overviewMap);
+}
+function removeManualBoundary(index){
+  const p=activePlot||selected;if(!p)return false;
+  const parts=manualPartsFor(p.plot);
+  if(!Number.isInteger(index)||index<0||index>=parts.length)return false;
+  parts.splice(index,1);
+  if(!parts.length)manualByPlot.delete(p.plot);
+  syncManualFlood(p.plot);
+  refreshSourceOptions(p.plot);
+  if(parts.length&&$("field-flood-source"))$("field-flood-source").value="manual";
+  redrawManualBoundaries();redrawFloodBoundary();renderManualList();clearPoints(true);updatePanel();
+  notify("ลบขอบเขตน้ำ "+(index+1)+" แล้ว • เหลือ "+parts.length+" ขอบเขต");
+  return true;
 }
 function floodFeature(plot){
   const val=$("field-flood-source")?.value||"auto";
@@ -52,7 +117,7 @@ function qaFailure(plot){
 function sourceDescription(feature){
   if(!feature)return "ไม่มี Polygon อัตโนมัติที่ผ่าน QA สำหรับแปลงนี้ — ใช้ปุ่มวาดขอบเขตน้ำได้";
   const p=feature.properties||{};
-  const kind=p._kmzSource==="water_extent"?"ขอบเขตน้ำของวันนั้น (Water Extent)":p._kmzSource==="new_water"?"ขอบเขตน้ำเพิ่มจากวันฐาน (New Water)":"ขอบเขตที่วาดเอง (ยังไม่ยืนยัน)";
+  const kind=p._kmzSource==="water_extent"?"ขอบเขตน้ำของวันนั้น (Water Extent)":p._kmzSource==="new_water"?"ขอบเขตน้ำเพิ่มจากวันฐาน (New Water)":"ขอบเขตที่วาดเอง "+(p._kmzPartCount||1)+" พื้นที่ (ยังไม่ยืนยัน)";
   return kind+(p._kmzDate?" • "+p._kmzDate:"")+" • "+(p._kmzQA||"UNVERIFIED");
 }
 function refreshSourceOptions(plot){
@@ -62,7 +127,7 @@ function refreshSourceOptions(plot){
   add("auto","Auto — ใช้ข้อมูลน้ำที่ผ่าน QA ล่าสุด");
   for(const f of validHistory(plot))add("date:"+f.properties.date,f.properties.date+" • ขอบเขตน้ำวันนั้น ("+f.properties.analysis_status+")");
   try{if(newWaterByPlot?.get(plot))add("new","น้ำเพิ่มจากวันฐาน (New Water)")}catch(_){}
-  if(manualFlood?.properties?.plot===plot)add("manual","ขอบเขตวาดเอง (Unverified)");
+  if(manualPartsFor(plot).length)add("manual","ขอบเขตวาดเอง ("+manualPartsFor(plot).length+" พื้นที่ • Unverified)");
   if([...sel.options].some(o=>o.value===prior))sel.value=prior;else sel.value="auto";
   const hint=$("field-source-description");if(hint)hint.textContent=sourceDescription(floodFeature(plot));
 }
@@ -371,7 +436,10 @@ function buildKml(p,scope="both"){
   const plotPm=includeBoundary&&boundary?placemarkPolygon(`${p.plot} — Plot Boundary`,boundary,"#plotBoundary",`Plot: ${esc(p.plot)}<br>Area: ${fmtLocal(info.area_rai)} rai`):"";
   const source=flood?.properties?._kmzSource||"unknown";
   const sourceDate=flood?.properties?._kmzDate||current;
-  const floodPm=includeBoundary&&flood?placemarkPolygon(`${p.plot} — ${source==="water_extent"?"Water Extent":source==="new_water"?"New Water":"User-drawn Water (unverified)"}`,flood,"#floodArea",`Plot: ${esc(p.plot)}<br>Source: ${esc(source)}<br>Date: ${esc(sourceDate)}<br>Baseline: ${esc(baseline)}<br>QA: ${esc(flood.properties?._kmzQA||"UNVERIFIED")}<br>Mapped area: ${fmtLocal(area)} rai`):"";
+  const floodPm=includeBoundary&&flood?(source==="manual"?manualPartsFor(p.plot).map((part,i)=>
+  placemarkPolygon(p.plot+" — Manual Water "+(i+1)+" (unverified)",{type:"Feature",geometry:part.geometry},"#floodArea",
+    "Plot: "+esc(p.plot)+"<br>Manual boundary: "+(i+1)+" of "+manualPartsFor(p.plot).length+"<br>QA: UNVERIFIED<br>Area: "+fmtLocal(part.areaRai)+" rai")
+  ).join(""):placemarkPolygon(`${p.plot} — ${source==="water_extent"?"Water Extent":"New Water"}`,flood,"#floodArea",`Plot: ${esc(p.plot)}<br>Source: ${esc(source)}<br>Date: ${esc(sourceDate)}<br>Baseline: ${esc(baseline)}<br>QA: ${esc(flood.properties?._kmzQA||"UNVERIFIED")}<br>Mapped area: ${fmtLocal(area)} rai`)):"";
   const pointPm=(includePoints?points:[]).map(pt=>`<Placemark><name>${pt.id}</name><styleUrl>#surveyPoint</styleUrl><description><![CDATA[Plot: ${esc(p.plot)}<br>Date: ${esc(current)}<br>Sampling: ${esc(modeLabel())}<br>Point in mapped water: ${pt.in_water?"YES — access by water may be required":"NO — outside selected polygon; dry land not confirmed"}<br>Lat: ${pt.lat.toFixed(7)}<br>Lon: ${pt.lon.toFixed(7)}<br>Distance to flood edge: ~${Math.round(pt.edge_distance_m)} m]]></description><ExtendedData><Data name="plot"><value>${esc(p.plot)}</value></Data><Data name="sample_id"><value>${pt.id}</value></Data><Data name="sample_method"><value>${esc(pt.method)}</value></Data><Data name="in_water"><value>${pt.in_water?"true":"false"}</value></Data><Data name="flood_source"><value>${esc(source)}</value></Data><Data name="water_date"><value>${esc(sourceDate)}</value></Data><Data name="edge_distance_m"><value>${pt.edge_distance_m}</value></Data></ExtendedData><Point><coordinates>${pt.lon},${pt.lat},0</coordinates></Point></Placemark>`).join("");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document>
@@ -400,6 +468,7 @@ async function exportKmz(){
 Plot: ${p.plot}
 Export scope: ${scope} (both / boundary / points)
 Flood source: ${flood?.properties?._kmzSource||"none"}
+Manual polygon count: ${flood?.properties?._kmzSource==="manual"?manualPartsFor(p.plot).length:0}
 Water image date: ${flood?.properties?._kmzDate||"not recorded"}
 QA: ${flood?.properties?._kmzQA||"UNVERIFIED"}
 Random points included: ${includePoints?points.length:0}
@@ -423,7 +492,7 @@ function removeDraftLayer(){
 }
 function removeDrawing(){
   drawing=false;drawVertices=[];removeDraftLayer();
-  const btn=$("field-draw-btn");if(btn){btn.textContent="วาดขอบเขตน้ำ";btn.setAttribute?.("aria-pressed","false")}
+  const btn=$("field-draw-btn");if(btn){btn.textContent=activePlot&&manualPartsFor(activePlot.plot).length?"วาดขอบเขตเพิ่ม":"วาดขอบเขตน้ำ";btn.setAttribute?.("aria-pressed","false")}
   const finish=$("field-finish-btn");if(finish)finish.disabled=true;
   const undo=$("field-undo-vertex-btn");if(undo)undo.disabled=true;
   try{overviewMap?.getContainer?.()?.classList.remove("field-map-drawing")}catch(_){}
@@ -453,7 +522,7 @@ function startDrawing(){
   try{map.closePopup?.();map.getContainer?.()?.classList.add("field-map-drawing")}catch(_){}
   const mapCard=document.querySelector?.("#tab-overview .map-card");
   mapCard?.scrollIntoView?.({behavior:"smooth",block:"nearest"});
-  drawStatus("โหมดวาดเปิดอยู่ • คลิกบนแผนที่ภายในแปลงเพื่อเพิ่มจุดที่ 1 • อย่างน้อย 3 จุด");
+  drawStatus("กำลังวาดขอบเขตที่ "+(manualPartsFor((activePlot||selected).plot).length+1)+" • คลิกในแปลงอย่างน้อย 3 จุด แล้วกดยืนยัน");
   notify("เปิดโหมดวาดขอบเขตแล้ว — คลิกในแปลงบนแผนที่ซ้ายเพื่อปักจุด");
 }
 function finishDrawing(){
@@ -468,16 +537,20 @@ function finishDrawing(){
   if(!Number.isFinite(areaRai)||areaRai<=0){notify("รูปหลายเหลี่ยมไม่ถูกต้อง");return}
   feature.properties._kmzArea=areaRai;
   feature.properties._kmzSource="manual";feature.properties._kmzQA="UNVERIFIED";feature.properties._kmzDate="";
-  removeDrawing();manualFlood=feature;
-  refreshSourceOptions(p.plot);$("field-flood-source").value="manual";redrawFloodBoundary();
-  if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
-  confirmedLayer=L.geoJSON(feature,{style:{color:"#f59e0b",weight:3,fillColor:"#f59e0b",fillOpacity:0.22}}).addTo(overviewMap);
+  const parts=manualPartsFor(p.plot);
+  parts.push({geometry:feature.geometry,areaRai});
+  manualByPlot.set(p.plot,parts);
+  removeDrawing();syncManualFlood(p.plot);
+  refreshSourceOptions(p.plot);$("field-flood-source").value="manual";
+  redrawManualBoundaries();redrawFloodBoundary();renderManualList();
   clearPoints(true);updatePanel();
-  notify("สร้างขอบเขตน้ำจากการวาดแล้ว (ยังไม่ยืนยัน) — สุ่มจุดและ Export KMZ ได้");
+  notify("บันทึกขอบเขตน้ำที่ "+parts.length+" แล้ว • รวม "+parts.length+" ขอบเขต • วาดเพิ่มหรือ Export KMZ ได้");
 }
 function clearDrawing(){
-  manualFlood=null;removeDrawing();if(activePlot)refreshSourceOptions(activePlot.plot);redrawFloodBoundary();if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}clearPoints(true);updatePanel();
-  notify("ล้างขอบเขตที่วาดแล้ว");
+  const p=activePlot||selected;if(!p)return;
+  manualByPlot.delete(p.plot);removeDrawing();syncManualFlood(p.plot);
+  refreshSourceOptions(p.plot);redrawManualBoundaries();redrawFloodBoundary();renderManualList();clearPoints(true);updatePanel();
+  notify("ล้างขอบเขตที่วาดทั้งหมดของ "+p.plot+" แล้ว");
 }
 function onMapClick(e){
   if(!drawing||!e?.latlng)return false;
@@ -518,9 +591,10 @@ function onPlotChange(p){
   if(!p)return;
   // Clicks on the currently selected plot should NEVER discard a draft.
   if(drawing&&activePlot?.plot===p.plot)return;
-  removeDrawing();manualFlood=null;
-  if(confirmedLayer){overviewMap?.removeLayer(confirmedLayer);confirmedLayer=null}
+  removeDrawing();
   activePlot=p;
+  syncManualFlood(p.plot);
+  redrawManualBoundaries();renderManualList();
   const sourceSelect=$("field-flood-source");if(sourceSelect)sourceSelect.value="auto";
   ensureDrawingListeners();
   refreshSourceOptions(p.plot);clearPoints(true);redrawFloodBoundary();updatePanel();
@@ -531,6 +605,7 @@ function bind(){
   $("field-finish-btn")?.addEventListener("click",finishDrawing);
   $("field-undo-vertex-btn")?.addEventListener("click",undoDrawingVertex);
   $("field-reset-boundary-btn")?.addEventListener("click",clearDrawing);
+  $("field-manual-polygon-list")?.addEventListener("click",e=>{const btn=e.target?.closest?.("[data-remove-manual]");if(btn){e.preventDefault();removeManualBoundary(Number(btn.getAttribute("data-remove-manual")))}});
   ensureDrawingListeners();
   $("field-export-kmz-btn")?.addEventListener("click",exportKmz);
   $("field-clear-btn")?.addEventListener("click",()=>clearPoints(false));
@@ -543,8 +618,8 @@ function bind(){
   $("field-preview-boundary")?.addEventListener("change",()=>{redrawFloodBoundary();});
   $("field-point-count")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   $("field-sample-mode")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
-  loadHistoricalFlood();renderPointList();updatePanel();
+  loadHistoricalFlood();renderPointList();renderManualList();updatePanel();
 }
-window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,addVertex:onMapClick,getDraftVertices:()=>drawVertices.slice()};
+window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,addVertex:onMapClick,getDraftVertices:()=>drawVertices.slice(),getManualBoundaries:plot=>manualPartsFor(plot||(activePlot||selected)?.plot).slice(),removeManualBoundary};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
 })();
