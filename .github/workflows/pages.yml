@@ -44,6 +44,7 @@ jobs:
       - name: Check JavaScript syntax for the portal
         run: |
           node --check docs/app.js
+          node --check docs/field-export.js
           node --check docs/calendar.js
           node --check docs/map-studio.js
           node --check docs/trend-report.js
