@@ -335,6 +335,7 @@ function svgChart(rows,key,opts={}){
  // and keeps axis text/point circles legible at any screen width.
  const xpos=i=>4+92*(earliest===latest ? 0.5 : (timestamps[i]-earliest)/(latest-earliest));
  const ypos=v=>8+84*(high-Number(v))/(high-low);
+ const format=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
  const mode=opts.mode==='trendline'?'trendline':'observations';
  const xYears=timestamps.map(t=>(t-earliest)/31556952000);
  const meanX=xYears.reduce((sum,x)=>sum+x,0)/xYears.length;
@@ -346,7 +347,6 @@ function svgChart(rows,key,opts={}){
  const slopeLabel=slope===null?'ต้องมีอย่างน้อย 2 วันที่ต่างกันเพื่อคำนวณแนวโน้ม':
   'แนวโน้ม '+(slope>0?'เพิ่มขึ้น':slope<0?'ลดลง':'คงที่')+' '+format(Math.abs(slope))+' '+(opts.unit||'ค่าดัชนี')+'/ปี • คำนวณเส้นถดถอยเชิงเส้นจาก '+countFmt(good.length)+' วัน';
  const points=good.map((x,i)=>(xpos(i)*10).toFixed(2)+','+(ypos(x[key])*10).toFixed(2)).join(' ');
- const format=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
  const ticks=[20,50,80].map(y=>{
   const value=high-(high-low)*((y-8)/84);
   return '<span class="ts-y-tick" style="top:'+y+'%">'+html(format(value))+'</span>';
@@ -359,7 +359,7 @@ function svgChart(rows,key,opts={}){
    const partial=!qaOk(r),status=partial?' · PARTIAL ตรวจดูเท่านั้น':'';
    return '<span class="ts-point'+(partial?' is-partial':'')+'" role="img" tabindex="0" aria-label="'+html(tip+status)+'" title="'+html(tip+status)+'" style="left:'+xpos(i).toFixed(3)+'%;top:'+ypos(r[key]).toFixed(3)+'%"></span>';
  }).join('');
- return '<div class="ts-chart" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
+ return '<div class="ts-chart'+(mode==='trendline'?' is-trendline':'')+'" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
   '<div class="ts-chart-modes" role="group" aria-label="เลือกรูปแบบกราฟ">'+
    '<button type="button" class="ts-chart-mode'+(mode==='observations'?' active':'')+'" data-ts-chart-mode="observations" aria-pressed="'+(mode==='observations')+'">จุดข้อมูล</button>'+
    '<button type="button" class="ts-chart-mode'+(mode==='trendline'?' active':'')+'" data-ts-chart-mode="trendline" aria-pressed="'+(mode==='trendline')+'">Trendline · เส้นแนวโน้ม</button></div>'+
