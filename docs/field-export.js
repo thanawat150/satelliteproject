@@ -3,12 +3,14 @@
 "use strict";
 let activePlot=null;
 let points=[];
+let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null;
 const surveyLayers={overview:null,full:null};
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]));
 
 function floodFeature(plot){
+  if(manualFlood?.properties?.plot===plot)return manualFlood;
   try{return newWaterByPlot?.get(plot)||null}catch(_){return null}
 }
 function plotFeature(plot){
@@ -17,6 +19,7 @@ function plotFeature(plot){
 function plotInfo(plot){
   try{return plots?.find(x=>x.plot===plot)||null}catch(_){return null}
 }
+function activeArea(info,flood){return Number(flood?.properties?.new_water_rai??info?.new_water_rai??0)}
 function recommendedCount(areaRai){
   const a=Number(areaRai||0);
   if(a<=0)return 5;
@@ -27,9 +30,9 @@ function recommendedCount(areaRai){
   if(a<200)return 15;
   return 18;
 }
-function desiredCount(info){
+function desiredCount(info, flood){
   const v=$("field-point-count")?.value||"auto";
-  return v==="auto"?recommendedCount(info?.new_water_rai):clamp(Number(v)||5,1,50);
+  return v==="auto"?recommendedCount(activeArea(info,flood)):clamp(Number(v)||5,1,50);
 }
 function ringsFromGeometry(geom){
   if(!geom)return[];
@@ -124,9 +127,10 @@ function generatePoints(){
   const p=activePlot||selected;if(!p)return[];
   const flood=floodFeature(p.plot),info=plotInfo(p.plot)||p;
   if(!flood){notify("แปลงนี้ยังไม่มีขอบเขตน้ำท่วมที่ผ่าน QA");return[]}
-  const count=desiredCount(info),mode=$("field-sample-mode")?.value||"edge";
+  const count=desiredCount(info,flood),mode=$("field-sample-mode")?.value||"edge";
   const area=Number(flood.properties?.new_water_rai??info.new_water_rai??0);
   const {pool,edgeDepth}=candidatePool(flood,count,mode,area);
+  if(pool.length<count){notify("พื้นที่เล็กหรือแคบเกินกว่าจะสุ่มได้ครบ กรุณาลดจำนวนจุด");return []}
   points=spreadSelect(pool,count).map((c,i)=>({
     id:`P${String(i+1).padStart(2,"0")}`,
     lon:+c[0].toFixed(7),lat:+c[1].toFixed(7),
@@ -172,14 +176,14 @@ function updatePanel(edgeDepth){
   if(!p||!ready||!sum)return;
   const flood=floodFeature(p.plot),info=plotInfo(p.plot)||p;
   if(!flood){
-    ready.textContent="ไม้มีขอบเขตน้ำ";ready.className="field-export-ready is-missing";
-    sum.textContent=`${p.plot} • ยังไม่มี Flood Polygon ที่ผ่าน QA สำหรับ Export`;
+    ready.textContent="วาดขอบเขตได้";ready.className="field-export-ready is-missing";
+    sum.textContent=`${p.plot} • ไม่มีขอบเขตน้ำผ่าน QA — กด “วาดขอบเขตน้ำ” แล้วคลิกบนแผนที่อย่างน้อย 3 จุด`;
     if(randomBtn)randomBtn.disabled=true;if(exportBtn)exportBtn.disabled=true;return;
   }
   const area=Number(flood.properties?.new_water_rai??info.new_water_rai??0);
-  const auto=recommendedCount(area),wanted=desiredCount(info);
+  const auto=recommendedCount(area),wanted=desiredCount(info,flood);
   ready.textContent=points.length?`${points.length} จุดพร้อม Export`:"พร้อมใช้งาน";ready.className="field-export-ready is-ready";
-  sum.textContent=`${p.plot} • พื้นที่น้ำ ${fmtLocal(area)} ไร่ • ${$("field-point-count")?.value==="auto"?`Auto แนะนำ ${auto} จุด`:`กำหนด ${wanted} จุด`} • ${modeLabel()}${edgeDepth?` (≤ ~${Math.round(edgeDepth)} ม. จากขอบน้ำ)`:""}`;
+  sum.textContent=`${p.plot} • ${manualFlood?"ขอบเขตวาดเอง (ยังไม่ยืนยัน)":"ขอบเขตจากระบบ"} • พื้นที่น้ำ ${fmtLocal(area)} ไร่ • ${$("field-point-count")?.value==="auto"?`Auto แนะนำ ${auto} จุด`:`กำหนด ${wanted} จุด`} • ${modeLabel()}${edgeDepth?` (≤ ~${Math.round(edgeDepth)} ม. จากขอบน้ำ)`:""}`;
   if(randomBtn)randomBtn.disabled=false;if(exportBtn)exportBtn.disabled=false;
 }
 function fmtLocal(n){return Number.isFinite(Number(n))?Number(n).toLocaleString("th-TH",{maximumFractionDigits:2}):"—"}
@@ -209,12 +213,12 @@ function buildKml(p){
   const baseline=String(info.baseline||"").replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
   const area=Number(flood?.properties?.new_water_rai??info.new_water_rai??0);
   const plotPm=boundary?placemarkPolygon(`${p.plot} — Plot Boundary`,boundary,"#plotBoundary",`Plot: ${esc(p.plot)}<br>Area: ${fmtLocal(info.area_rai)} rai`):"";
-  const floodPm=flood?placemarkPolygon(`${p.plot} — Flood / New Water`,flood,"#floodArea",`Plot: ${esc(p.plot)}<br>Comparison: ${esc(baseline)} → ${esc(current)}<br>Flood/New water: ${fmtLocal(area)} rai`):"";
+  const floodPm=flood?placemarkPolygon(`${p.plot} — ${manualFlood?"User-drawn flood (unverified)":"Flood / New Water"}`,flood,"#floodArea",`Plot: ${esc(p.plot)}<br>Comparison: ${esc(baseline)} → ${esc(current)}<br>Flood/New water: ${fmtLocal(area)} rai`):"";
   const pointPm=points.map(pt=>`<Placemark><name>${pt.id}</name><styleUrl>#surveyPoint</styleUrl><description><![CDATA[Plot: ${esc(p.plot)}<br>Date: ${esc(current)}<br>Sampling: ${esc(modeLabel())}<br>Lat: ${pt.lat.toFixed(7)}<br>Lon: ${pt.lon.toFixed(7)}<br>Distance to flood edge: ~${Math.round(pt.edge_distance_m)} m]]></description><ExtendedData><Data name="plot"><value>${esc(p.plot)}</value></Data><Data name="sample_id"><value>${pt.id}</value></Data><Data name="sample_method"><value>${esc(pt.method)}</value></Data><Data name="edge_distance_m"><value>${pt.edge_distance_m}</value></Data></ExtendedData><Point><coordinates>${pt.lon},${pt.lat},0</coordinates></Point></Placemark>`).join("");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document>
 <name>${esc(p.plot)} Flood Field Survey</name>
-<description><![CDATA[Generated by Rayong Flood & Environmental Monitoring. Flood geometry follows the portal layer that passed QA. Near-edge sampling estimates accessibility only from distance to the flood edge; it does not verify roads, land access or field safety.]]></description>
+<description><![CDATA[Generated by Rayong Flood & Environmental Monitoring. Flood geometry may be drawn manually and is unverified, or follows a QA-accepted portal layer. Near-edge sampling estimates accessibility only from distance to the flood edge; it does not verify roads, land access or field safety.]]></description>
 <Style id="plotBoundary"><LineStyle><color>ff4c4cff</color><width>3</width></LineStyle><PolyStyle><color>00ffffff</color></PolyStyle></Style>
 <Style id="floodArea"><LineStyle><color>fff8bd38</color><width>2</width></LineStyle><PolyStyle><color>66f8bd38</color></PolyStyle></Style>
 <Style id="surveyPoint"><IconStyle><scale>1.05</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/blu-circle.png</href></Icon></IconStyle><LabelStyle><scale>0.8</scale></LabelStyle></Style>
@@ -240,17 +244,68 @@ async function exportKmz(){
   setTimeout(()=>URL.revokeObjectURL(u),1500);
   notify(`Export KMZ ${p.plot} • ${points.length} จุดแล้ว`);
 }
+function removeDrawing(){
+  drawing=false;drawVertices=[];
+  if(drawLayer){try{overviewMap?.removeLayer(drawLayer)}catch(_){}drawLayer=null}
+  const btn=$("field-draw-btn");if(btn)btn.textContent="วาดขอบเขตน้ำ";
+  const finish=$("field-finish-btn");if(finish)finish.disabled=true;
+}
+function renderDraft(){
+  if(drawLayer){try{overviewMap.removeLayer(drawLayer)}catch(_){}}
+  if(!drawVertices.length){drawLayer=null;return}
+  drawLayer=L.polyline(drawVertices.map(c=>[c[1],c[0]]),{color:"#f59e0b",weight:3,dashArray:"6 6"}).addTo(overviewMap);
+}
+function startDrawing(){
+  if(!activePlot&&!selected)return;
+  if(drawing){removeDrawing();notify("ยกเลิกการวาด");return}
+  const map=overviewMap;
+  if(!map){notify("ยังไม่พร้อมแสดงแผนที่");return}
+  removeDrawing();drawing=true;
+  $("field-draw-btn").textContent="ยกเลิกวาด";
+  $("field-finish-btn").disabled=false;
+  document.getElementById("tab-overview")?.scrollIntoView({behavior:"smooth",block:"center"});
+  notify("คลิกบนแผนที่ภาพรวมเพื่อกำหนดแนวขอบน้ำ อย่างน้อย 3 จุด แล้วกดยืนยัน");
+}
+function finishDrawing(){
+  const p=activePlot||selected;
+  if(!drawing||!p||drawVertices.length<3){notify("ต้องคลิกอย่างน้อย 3 จุด");return}
+  const ring=[...drawVertices,drawVertices[0]];
+  const feature={type:"Feature",properties:{plot:p.plot,source:"manual_unverified"},geometry:{type:"Polygon",coordinates:[ring]}};
+  let areaRai=0;
+  try{areaRai=turf.area(feature)/1600}catch(_){areaRai=0}
+  if(!Number.isFinite(areaRai)||areaRai<=0){notify("รูปหลายเหลี่ยมไม่ถูกต้อง");return}
+  feature.properties.new_water_rai=areaRai;
+  manualFlood=feature;
+  removeDrawing();clearPoints(true);updatePanel();
+  notify("สร้างขอบเขตน้ำจากการวาดแล้ว (ยังไม่ยืนยัน) — สุ่มจุดและ Export KMZ ได้");
+}
+function clearDrawing(){
+  manualFlood=null;removeDrawing();clearPoints(true);updatePanel();
+  notify("ล้างขอบเขตที่วาดแล้ว");
+}
+function onMapClick(e){
+  if(!drawing)return;
+  const p=activePlot||selected, boundary=plotFeature(p?.plot);
+  const xy=[e.latlng.lng,e.latlng.lat];
+  if(boundary&&!pointInFeature(xy,boundary)){notify("จุดอยู่นอกขอบเขตแปลง กรุณาคลิกภายในแปลง");return}
+  drawVertices.push(xy);renderDraft();
+}
 function onPlotChange(p){
-  activePlot=p;clearPoints(true);updatePanel();
+  removeDrawing();manualFlood=null;activePlot=p;clearPoints(true);updatePanel();
 }
 function bind(){
   $("field-random-btn")?.addEventListener("click",generatePoints);
+  $("field-draw-btn")?.addEventListener("click",startDrawing);
+  $("field-finish-btn")?.addEventListener("click",finishDrawing);
+  $("field-reset-boundary-btn")?.addEventListener("click",clearDrawing);
+  const attach=()=>{if(typeof overviewMap!=="undefined"&&overviewMap){overviewMap.on("click",onMapClick);return true}return false};
+  if(!attach())window.addEventListener("load",attach,{once:true});
   $("field-export-kmz-btn")?.addEventListener("click",exportKmz);
   $("field-clear-btn")?.addEventListener("click",()=>clearPoints(false));
   $("field-point-count")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   $("field-sample-mode")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   updatePanel();
 }
-window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,getPoints:()=>points.slice()};
+window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice()};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
 })();
