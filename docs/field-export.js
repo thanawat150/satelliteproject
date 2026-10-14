@@ -3,7 +3,8 @@
 "use strict";
 let activePlot=null;
 let points=[];
-let pointsEdited=false; // Prevent KMZ export from regenerating points intentionally deleted.
+let pointsEdited=false; // Never regenerate deliberately deleted points.
+let pointPlacement=false; // Manual map-click point placement, independent of flood digitizing.
 let manualFlood=null, drawing=false, drawVertices=[], drawLayer=null, confirmedLayer=null;
 const manualByPlot=new Map(); // Each plot keeps its own independently editable polygons for this page session.
 const listeningMaps=new Set(), processedClickEvents=new WeakSet();
@@ -290,11 +291,63 @@ function spreadSelect(pool,count){
   }
   return chosen;
 }
+function pointEntryMode(){return $("field-point-entry-mode")?.value||"random"}
+function syncPointModeUI(){
+  const mode=pointEntryMode(),manual=mode==="manual";
+  const randomSettings=$("field-random-settings");
+  if(randomSettings)randomSettings.hidden=manual;
+  const help=$("field-point-help");
+  if(help)help.textContent=manual?
+    "คลิกวางจุดภายในขอบเขตแปลงได้เอง ไม่ต้องมี Polygon น้ำ • ลากจุดย้ายหรือลบรายจุดได้":
+    "สุ่มโดยอัตโนมัติภายในขอบเขตน้ำที่เลือกเท่านั้น • ลากจุดเพื่อปรับภายในน้ำ";
+  const action=$("field-random-btn");
+  if(action)action.textContent=manual?(pointPlacement?"เสร็จสิ้นการวางจุด":"เริ่มวางจุดบนแผนที่"):"สุ่มจุดในขอบเขตน้ำ";
+  const hint=$("field-placement-status");
+  if(hint){
+    hint.hidden=!pointPlacement;
+    hint.textContent=pointPlacement?"กำลังวางจุด • คลิกบนแผนที่เพื่อเพิ่ม P"+String(points.length+1).padStart(2,"0")+" • กด 'เสร็จสิ้น' เมื่อเรียบร้อย":"";
+  }
+}
+function stopPointPlacement(){
+  pointPlacement=false;
+  try{overviewMap?.getContainer?.()?.classList.remove("field-map-placing")}catch(_){}
+  syncPointModeUI();
+}
+function togglePointPlacement(){
+  const p=activePlot||selected;if(!p)return;
+  if(pointEntryMode()!=="manual"){generatePoints();return}
+  if(pointPlacement){stopPointPlacement();notify("จบการวางจุด • ลากแก้ไขหรือลบจุดได้");return}
+  if(!plotFeature(p.plot)){notify("แปลงนี้ยังไม่มีขอบเขตสำหรับวางจุด");return}
+  if(drawing)removeDrawing();
+  pointPlacement=true;ensureDrawingListeners();
+  try{overviewMap?.closePopup?.();overviewMap?.getContainer?.()?.classList.add("field-map-placing")}catch(_){}
+  document.querySelector?.("#tab-overview .map-card")?.scrollIntoView?.({behavior:"smooth",block:"nearest"});
+  syncPointModeUI();notify("เริ่มวางจุดแล้ว • คลิกในขอบเขตแปลงบนแผนที่ด้านซ้าย");
+}
+function placeManualPoint(lon,lat){
+  const p=activePlot||selected;if(!p)return {ok:false,reason:"missing_plot"};
+  const boundary=plotFeature(p.plot),xy=[Number(lon),Number(lat)];
+  if(!boundary||!xy.every(Number.isFinite))return {ok:false,reason:"invalid_coordinates"};
+  if(!pointInFeature(xy,boundary))return {ok:false,reason:"outside_plot"};
+  if(points.length>=99)return {ok:false,reason:"point_limit"};
+  const flood=floodFeature(p.plot),inWater=!!flood&&pointInFeature(xy,flood);
+  const pt={
+    id:"P"+String(points.length+1).padStart(2,"0"),
+    lon:+xy[0].toFixed(7),lat:+xy[1].toFixed(7),
+    edge_distance_m:flood?+distanceToBoundaryM(xy,flood).toFixed(1):null,
+    method:"manual_point",in_water:inWater,
+    flood_source:flood?.properties?._kmzSource||"none"
+  };
+  points.push(pt);pointsEdited=true;
+  drawPoints();renderPointList();updatePanel();syncPointModeUI();
+  return {ok:true,point:{...pt}};
+}
 function generatePoints(){
   const p=activePlot||selected;if(!p)return[];
   const flood=floodFeature(p.plot),boundary=plotFeature(p.plot),info=plotInfo(p.plot)||p;
   if(!flood){notify("ไม่มีขอบเขตน้ำสำหรับแปลงนี้ กรุณาวาดขอบเขตด้วยตนเอง หรือเลือกวันที่ที่ผ่าน QA");return[]}
   const count=desiredCount(info,flood),mode=$("field-sample-mode")?.value||"water_full";
+  if(pointPlacement)stopPointPlacement();
   if(mode==="land_edge"&&!boundary){notify("ยังไม่มีขอบเขตแปลงสำหรับเลือกจุดด้านนอกน้ำ");return[]}
   const {pool,edgeDepth}=candidatePool(flood,boundary,count,mode,activeArea(info,flood));
   if(pool.length<count){points=[];drawPoints();updatePanel();notify("พื้นที่ที่ตรงเงื่อนไขมีน้อยเกินไป: ลดจำนวนจุดหรือเปลี่ยนวิธีสุ่ม ห้ามใช้จุดที่ไม่ผ่านเงื่อนไข");return[]}
@@ -307,7 +360,7 @@ function generatePoints(){
     in_water:mode!=="land_edge",
     flood_source:flood.properties._kmzSource||"manual"
   }));
-  drawPoints();renderPointList();updatePanel(edgeDepth);notify("สุ่ม "+points.length+" จุดแล้ว • ยังต้องตรวจทางเข้าหน้างาน");
+  drawPoints();renderPointList();updatePanel(edgeDepth);syncPointModeUI();notify("สุ่ม "+points.length+" จุดในพื้นที่น้ำแล้ว • ลากเพื่อปรับตำแหน่งได้");
   return points;
 }
 
