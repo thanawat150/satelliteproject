@@ -445,3 +445,9 @@
 .studio-toolbar #studio-resampling{min-width:165px}
 #sat-modal-image.satellite-modal-image{image-rendering:pixelated}
 @media(max-width:720px){.sat-visual-notice{font-size:10px}}
+
+.overview-index-legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#0d2f41;color:#afdbef;font-size:9px;padding:7px 13px;border-bottom:1px solid #215169}
+.overview-index-legend[hidden]{display:none}
+.overview-index-legend strong{font-size:10px}
+.overview-index-ramp{min-width:140px;width:30%;height:10px;border-radius:3px;border:1px solid #547080}
+.overview-index-legend span{white-space:nowrap;color:#8eb2c6}
