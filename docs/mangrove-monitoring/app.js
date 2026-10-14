@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const root=$('view-root');
 const DATA='../data/nationwide/';
-const state={view:(new URLSearchParams(location.search).get('view')||'overview'),plot:(new URLSearchParams(location.search).get('plot')||'13-STC'),company:'ALL',province:'ALL',metric:'ndvi',tsChartMode:'observations',riskKind:'water',riskThreshold:10,riskUnit:'percent',waterDate:'',waterDatePlot:'',waterPlot:'',map:null,mapLayers:null,filter:'',showValidOnly:true};
+const state={view:(new URLSearchParams(location.search).get('view')||'overview'),plot:(new URLSearchParams(location.search).get('plot')||'13-STC'),company:'ALL',province:'ALL',metric:'ndvi',tsChartMode:'observations',tsYearFrom:'',tsYearTo:'',tsYearInterval:1,riskKind:'water',riskThreshold:10,riskUnit:'percent',waterDate:'',waterDatePlot:'',waterPlot:'',map:null,mapLayers:null,filter:'',showValidOnly:true};
 const cache={data:null,plots:[],byCode:new Map(),byScene:new Map(),changes:new Map(),canonical:new Set(),status:null,when:null,imagery:null,environment:null,rainBaseline:null,seaLevelModel:null};
 const TITLES={overview:'Nationwide Overview',map:'GIS Map Center',plots:'Plot Registry & Details',insights:'Plot Intelligence & Decisions',analysis:'Environmental Analytics',change:'Change Detection',satellite:'Satellite Catalog',alerts:'Early Warning',field:'Field Operations & Growth',carbon:'Carbon & MRV',qa:'Data Quality & Boundaries',reports:'Report Center',modules:'All 26 Modules'};
 const METRICS={ndvi:['NDVI','ดัชนีพืช'],ndre:['NDRE','คลอโรฟิลล์ / Red Edge'],evi:['EVI','สัญญาณเรือนยอด'],savi:['SAVI','พืชปรับผลดิน'],ndmi:['NDMI','ความชื้นพืช'],ndwi:['NDWI','สัญญาณน้ำ'],mndwi:['MNDWI','ผิวน้ำ'],bsi:['BSI','ดินเปิดโล่ง'],gli:['GLI','ดัชนีสีเขียว'],water_rai:['Water (rai)','พื้นที่น้ำ ไร่'],vegetation_rai:['Vegetation (rai)','พื้นที่พืช ไร่'],bare_soil_rai:['Bare soil (rai)','พื้นที่ดิน ไร่'],wetness_rai:['Wetness (rai)','พื้นที่ชื้น ไร่']};
@@ -26,6 +26,38 @@ function seriesAvailability(plot,key){
  const rows=timeSeriesRows(plot,key);
  const years=[...new Set(rows.map(row=>String(row.date||'').slice(0,4)).filter(year=>/^\d{4}$/.test(year)))].sort();
  return {rows,years};
+}
+function syncTimeSeriesRange(plot,key){
+ const years=seriesAvailability(plot,key).years;
+ if(!years.length){state.tsYearFrom='';state.tsYearTo='';return years;}
+ if(!years.includes(String(state.tsYearFrom)))state.tsYearFrom=years[0];
+ if(!years.includes(String(state.tsYearTo)))state.tsYearTo=years.at(-1);
+ if(Number(state.tsYearFrom)>Number(state.tsYearTo)){state.tsYearFrom=years[0];state.tsYearTo=years.at(-1);}
+ return years;
+}
+function timeSeriesRowsInRange(plot,key){
+ const years=syncTimeSeriesRange(plot,key),step=Math.max(1,Number(state.tsYearInterval)||1);
+ if(!years.length)return [];
+ return timeSeriesRows(plot,key).filter(row=>{
+  const year=Number(String(row.date||'').slice(0,4));
+  return year>=Number(state.tsYearFrom)&&year<=Number(state.tsYearTo)&&
+   (year-Number(state.tsYearFrom))%step===0;
+ });
+}
+function timeSeriesDateSelected(plot,date,key=state.metric){
+ syncTimeSeriesRange(plot,key);
+ const year=Number(String(date||'').slice(0,4)),step=Math.max(1,Number(state.tsYearInterval)||1);
+ return year>=Number(state.tsYearFrom)&&year<=Number(state.tsYearTo)&&
+  (year-Number(state.tsYearFrom))%step===0;
+}
+function timeSeriesYearControls(plot,key){
+ const years=syncTimeSeriesRange(plot,key),options=years.map(year=>'<option value="'+year+'" '+(year===state.tsYearFrom?'selected':'')+'>'+year+'</option>').join('');
+ const endOptions=years.map(year=>'<option value="'+year+'" '+(year===state.tsYearTo?'selected':'')+'>'+year+'</option>').join('');
+ const intervals=[[1,'ทุกปี'],[2,'เว้น 1 ปี'],[3,'เว้น 2 ปี']];
+ return '<div class="time-series-range" aria-label="ตัวกรองช่วงปี">'+
+  '<label>ปีเริ่มต้น<select id="ts-year-from" aria-label="ปีเริ่มต้น" '+(!years.length?'disabled':'')+'>'+options+'</select></label>'+
+  '<label>ปีสิ้นสุด<select id="ts-year-to" aria-label="ปีสิ้นสุด" '+(!years.length?'disabled':'')+'>'+endOptions+'</select></label>'+
+  '<label>แสดงข้อมูล<select id="ts-year-interval" aria-label="ระยะห่างของปี">'+intervals.map(([value,label])=>'<option value="'+value+'" '+(Number(state.tsYearInterval)===value?'selected':'')+'>'+label+'</option>').join('')+'</select></label></div>';
 }
 function firstAvailableSeries(plot,preferred='ndvi'){
  if(Object.prototype.hasOwnProperty.call(SERIES,preferred)&&seriesAvailability(plot,preferred).rows.length)return preferred;
@@ -94,28 +126,29 @@ function timeSeriesInfo(plot,key,rows){
    '</p>';
 }
 function timeSeriesKpis(plot,key){
- const good=timeSeriesRows(plot,key),first=good[0],last=good.at(-1),unit=seriesUnit(key),label=seriesMeta(key)[0];
+ const good=timeSeriesRowsInRange(plot,key),first=good[0],last=good.at(-1),unit=seriesUnit(key),label=seriesMeta(key)[0];
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ const denominator=plotScenes(plot).filter(row=>timeSeriesDateSelected(plot,row.date,key)&&(!isSpectral?qaOk(row):true)).length;
  const qaCount=good.filter(qaOk).length;
- return kpi(isSpectral?'วันที่มีค่าดัชนี':'วันภาพที่มีค่า',good.length+' / '+(isSpectral?plotScenes(plot).length:validScenes(plot).length),isSpectral?'QA ผ่าน '+qaCount+' · จุด PARTIAL แสดงเพื่อทบทวนเท่านั้น':'เฉพาะวันผ่าน QA'+(unit==='มม.'?' และฝนครบ':''))+
+ return kpi(isSpectral?'วันที่มีค่าดัชนี':'วันภาพที่มีค่า',good.length+' / '+denominator,isSpectral?'QA ผ่าน '+qaCount+' · จุด PARTIAL แสดงเพื่อทบทวนเท่านั้น':'เฉพาะวันผ่าน QA'+(unit==='มม.'?' และฝนครบ':''))+
    kpi(label+' ล่าสุด',last?seriesFmt(key,last.series_value)+' '+unit:'—',last?.date||'ไม่มีข้อมูล')+
    kpi('ค่าแรกที่มีข้อมูล',first?seriesFmt(key,first.series_value)+' '+unit:'—',first?.date||'ไม่มีข้อมูล')+
    kpi('ต่างจากค่าแรก',good.length>=2?seriesFmt(key,last.series_value-first.series_value)+' '+unit:'—','เปรียบเทียบวันจริง ไม่ใช่ข้อสรุปผลกระทบ');
 }
 function timeSeriesChartMarkup(plot,key,mode=state.tsChartMode){
  const meta=seriesMeta(key),unit=seriesUnit(key),isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
- return svgChart(timeSeriesRows(plot,key),'series_value',{key,unit,decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral,mode});
+ return svgChart(timeSeriesRowsInRange(plot,key),'series_value',{key,unit,decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral,mode,yearInterval:Number(state.tsYearInterval)||1});
 }
 function timeSeriesPanel(plot,key){
  key=firstAvailableSeries(plot,key);
  state.metric=key;
- const meta=seriesMeta(key),good=timeSeriesRows(plot,key);
+ const meta=seriesMeta(key),good=timeSeriesRowsInRange(plot,key);
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  return '<div class="panel" id="time-series-panel"><div class="section-title time-series-toolbar">'+
   '<div><h2 id="time-series-title">Time Series · '+html(meta[0])+'</h2>'+
   '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID')+'</p></div>'+
   '<label class="time-series-select">เลือกค่าที่แสดงบนกราฟ<select id="timeseries-metric-select" aria-label="เลือกค่ากราฟ Time Series">'+seriesOptions(key)+'</select></label>'+
-  '</div><div id="time-series-visual">'+timeSeriesChartMarkup(plot,key)+'</div>'+
+  '</div>'+timeSeriesYearControls(plot,key)+'<div id="time-series-visual">'+timeSeriesChartMarkup(plot,key)+'</div>'+
   '<div id="time-series-details">'+timeSeriesInfo(plot,key,good)+'</div></div>';
 }
 function changeTimeSeriesMetric(key){
@@ -123,14 +156,22 @@ function changeTimeSeriesMetric(key){
  state.metric=key;
  const q=$('metric-select'),selector=$('timeseries-metric-select');
  if(q)q.value=key;if(selector)selector.value=key;
- const plot=state.plot,meta=seriesMeta(key),good=timeSeriesRows(plot,key);
+ syncTimeSeriesRange(state.plot,key);
+ const plot=state.plot,meta=seriesMeta(key),good=timeSeriesRowsInRange(plot,key);
  const title=$('time-series-title'),subtitle=$('time-series-subtitle'),graphic=$('time-series-visual'),info=$('time-series-details'),kpis=$('analysis-metric-kpis');
  if(title)title.textContent='Time Series · '+meta[0];
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID');
  if(graphic)graphic.innerHTML=timeSeriesChartMarkup(plot,key);
+ const range=$('time-series-panel')?.querySelector('.time-series-range');if(range)range.outerHTML=timeSeriesYearControls(plot,key);
  if(info)info.innerHTML=timeSeriesInfo(plot,key,good);
  if(kpis)kpis.innerHTML=timeSeriesKpis(plot,key);
+}
+function refreshTimeSeriesRange(){
+ const rows=timeSeriesRowsInRange(state.plot,state.metric),visual=$('time-series-visual'),details=$('time-series-details'),kpis=$('analysis-metric-kpis');
+ if(visual)visual.innerHTML=timeSeriesChartMarkup(state.plot,state.metric);
+ if(details)details.innerHTML=timeSeriesInfo(state.plot,state.metric,rows);
+ if(kpis)kpis.innerHTML=timeSeriesKpis(state.plot,state.metric);
 }
 const qaOk=r=>r&&r.analysis_status==='AUTO_VALID';
 // Presentation precision only: keep source data and all calculations at full precision.
@@ -334,10 +375,10 @@ function svgChart(rows,key,opts={}){
  const timestamps=good.map(x=>Date.parse(x.date+'T00:00:00Z'));
  const earliest=Math.min(...timestamps),latest=Math.max(...timestamps);
  const firstYear=new Date(earliest).getUTCFullYear(),lastYear=new Date(latest).getUTCFullYear();
- const yearStep=Math.max(1,Math.ceil((lastYear-firstYear+1)/12));
+ const yearStep=opts.yearInterval?Math.max(1,Number(opts.yearInterval)||1):Math.max(1,Math.ceil((lastYear-firstYear+1)/12));
  const years=[];
  for(let year=firstYear;year<=lastYear;year+=yearStep)years.push(year);
- if(years.at(-1)!==lastYear)years.push(lastYear);
+ if(!opts.yearInterval&&years.at(-1)!==lastYear)years.push(lastYear);
  const yearX=year=>earliest===latest?50:year===firstYear?4:
   4+92*(Date.UTC(year,0,1)-earliest)/(latest-earliest);
  const yearLines=years.slice(1).map(year=>{
@@ -390,7 +431,7 @@ function svgChart(rows,key,opts={}){
   '<div class="ts-x-axis"><span>'+html(good[0].date)+'</span><span>'+html(good.at(-1).date)+'</span></div>'+
   '<div class="ts-year-axis" role="group" aria-label="ปีที่มีข้อมูล">'+years.map(year=>
    '<span class="ts-year-tick" style="left:'+yearX(year).toFixed(3)+'%">'+year+'</span>').join('')+'</div>'+
-  '<div class="ts-chart-footer">ข้อมูลที่ใช้วาดกราฟ '+count+' วัน • เลื่อนเมาส์หรือแตะจุดเพื่ออ่านค่าของวันนั้น</div></div>';
+  '<div class="ts-chart-footer">ข้อมูลที่ใช้วาดกราฟ '+count+' วัน • ช่วง '+html(good[0].date.slice(0,4))+'–'+html(good.at(-1).date.slice(0,4))+' • '+(opts.yearInterval===2?'แสดงทุก 2 ปี':opts.yearInterval===3?'แสดงทุก 3 ปี':'แสดงทุกปี')+' • เลื่อนเมาส์หรือแตะจุดเพื่ออ่านค่าของวันนั้น</div></div>';
 }
 
 function previewCoverage(){
@@ -748,7 +789,7 @@ document.addEventListener('click',e=>{
  const chartMode=e.target.closest('[data-ts-chart-mode]');
  if(chartMode){state.tsChartMode=chartMode.dataset.tsChartMode==='trendline'?'trendline':'observations';const visual=$('time-series-visual');if(visual)visual.innerHTML=timeSeriesChartMarkup(state.plot,state.metric);return;}
  const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const b=e.target.closest('[data-action]');if(b){doAction(b.dataset.action,b.dataset.value||'');return;}if(e.target.id==='menu-btn')$('sidebar').classList.toggle('open');if(e.target.id==='refresh')load();});
-document.addEventListener('change',e=>{const id=e.target.id;if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
+document.addEventListener('change',e=>{const id=e.target.id;if(id==='ts-year-from'){state.tsYearFrom=e.target.value;if(Number(state.tsYearFrom)>Number(state.tsYearTo))state.tsYearTo=state.tsYearFrom;const end=$('ts-year-to');if(end)end.value=state.tsYearTo;refreshTimeSeriesRange();return;}if(id==='ts-year-to'){state.tsYearTo=e.target.value;if(Number(state.tsYearTo)<Number(state.tsYearFrom))state.tsYearFrom=state.tsYearTo;const start=$('ts-year-from');if(start)start.value=state.tsYearFrom;refreshTimeSeriesRange();return;}if(id==='ts-year-interval'){state.tsYearInterval=Math.max(1,Number(e.target.value)||1);refreshTimeSeriesRange();return;}if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;state.tsYearFrom='';state.tsYearTo='';draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
 })();
 
