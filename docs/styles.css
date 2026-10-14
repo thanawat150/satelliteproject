@@ -410,3 +410,21 @@
 .field-source-picker .field-show-boundary{display:flex;flex-direction:row;align-items:center;gap:7px;color:#abd8ed;font-size:10px;font-weight:600;line-height:1.5}
 .field-show-boundary input{accent-color:#1fb8e8;flex:0 0 auto}
 .legend .legend-note{color:#85a4b7;font-size:9px}
+
+/* Manually review and remove individual KMZ survey points. */
+.field-points-panel{margin-top:11px;padding:10px;background:#092333;border:1px solid #2a5268;border-radius:10px}
+.field-points-panel[hidden]{display:none}
+.field-points-title{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:8px;color:#d9f1fc;font-size:11px}
+.field-points-title span{padding:3px 7px;border-radius:7px;background:#154158;color:#9be0f8;font-weight:700}
+.field-points-list{display:flex;flex-direction:column;gap:5px;max-height:225px;overflow:auto}
+.field-point-row{display:flex;align-items:center;gap:9px;background:#123347;border:1px solid #28536b;padding:8px;border-radius:7px}
+.field-point-number{color:#e6fbff;font:800 11px Inter,sans-serif;min-width:30px}
+.field-point-position{min-width:0;flex:1;font:500 10px Inter,sans-serif;color:#d0e9f4;overflow-wrap:anywhere}
+.field-point-position small{display:block;color:#8daec0;font:400 9px 'IBM Plex Sans Thai',sans-serif;margin-top:2px}
+.field-point-delete{flex-shrink:0;min-height:32px;padding:5px 10px;background:#552633;color:#ffe1e1;border:1px solid #9b4b58;border-radius:7px;cursor:pointer;font:700 10px 'IBM Plex Sans Thai',sans-serif}
+.field-point-delete:hover,.field-point-delete:focus-visible{background:#8c3448;border-color:#f5a6ac;outline-offset:2px}
+.field-points-panel>small{display:block;font-size:9px;line-height:1.55;color:#8daec0;margin-top:8px}
+.field-points-empty{padding:8px;color:#b0cad9;font-size:10px;line-height:1.45}
+.field-popup-delete{padding:7px 10px;margin-top:8px;border-radius:6px;border:1px solid #bd6572;background:#832f43;color:#fff;cursor:pointer;font:700 11px 'IBM Plex Sans Thai',sans-serif}
+.field-popup-delete:hover{background:#a33d54}
+@media(max-width:650px){.field-point-position{font-size:9px}.field-point-row{gap:5px}}
