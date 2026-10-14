@@ -294,7 +294,7 @@ function generatePoints(){
   const p=activePlot||selected;if(!p)return[];
   const flood=floodFeature(p.plot),boundary=plotFeature(p.plot),info=plotInfo(p.plot)||p;
   if(!flood){notify("ไม่มีขอบเขตน้ำสำหรับแปลงนี้ กรุณาวาดขอบเขตด้วยตนเอง หรือเลือกวันที่ที่ผ่าน QA");return[]}
-  const count=desiredCount(info,flood),mode=$("field-sample-mode")?.value||"land_edge";
+  const count=desiredCount(info,flood),mode=$("field-sample-mode")?.value||"water_full";
   if(mode==="land_edge"&&!boundary){notify("ยังไม่มีขอบเขตแปลงสำหรับเลือกจุดด้านนอกน้ำ");return[]}
   const {pool,edgeDepth}=candidatePool(flood,boundary,count,mode,activeArea(info,flood));
   if(pool.length<count){points=[];drawPoints();updatePanel();notify("พื้นที่ที่ตรงเงื่อนไขมีน้อยเกินไป: ลดจำนวนจุดหรือเปลี่ยนวิธีสุ่ม ห้ามใช้จุดที่ไม่ผ่านเงื่อนไข");return[]}
@@ -358,19 +358,65 @@ function renderPointList(){
   list.innerHTML=points.map(p=>
     '<div class="field-point-row"><span class="field-point-number">'+esc(p.id)+'</span>'+
     '<span class="field-point-position">'+Number(p.lat).toFixed(6)+', '+Number(p.lon).toFixed(6)+
-    '<small>ห่างจากขอบน้ำประมาณ '+Math.round(p.edge_distance_m)+' ม.</small></span>'+
+    '<small>อยู่ในขอบเขตน้ำ • ห่างจากขอบน้ำ ~'+Math.round(p.edge_distance_m)+' ม. • ลากหมุดบนแผนที่เพื่อย้าย</small></span>'+
     '<button type="button" class="field-point-delete" data-remove-point="'+esc(p.id)+'" aria-label="ลบจุด '+esc(p.id)+'">ลบ ×</button></div>'
   ).join("");
 }
+// A marker remains a true editable survey point, not a static random preview.
+function repositionPoint(id,longitude,latitude){
+  const p=activePlot||selected,pt=points.find(x=>x.id===id);
+  if(!p||!pt)return {ok:false,reason:"missing_point"};
+  const x=Number(longitude),y=Number(latitude);
+  if(!Number.isFinite(x)||!Number.isFinite(y))return {ok:false,reason:"invalid_coordinates"};
+  const boundary=plotFeature(p.plot),flood=floodFeature(p.plot),xy=[x,y];
+  if(!flood)return {ok:false,reason:"missing_flood"};
+  if(boundary&&!pointInFeature(xy,boundary))return {ok:false,reason:"outside_plot"};
+  // Every draggable survey marker is confined to the selected mapped-water
+  // footprint, including its interior holes and disjoint manual polygons.
+  if(!pointInFeature(xy,flood))return {ok:false,reason:"outside_water"};
+  pt.lon=+x.toFixed(7);pt.lat=+y.toFixed(7);
+  pt.edge_distance_m=+distanceToBoundaryM(xy,flood).toFixed(1);
+  pt.method="water_adjusted";pt.in_water=true;pt.flood_source=flood.properties?._kmzSource||"manual";
+  pointsEdited=true;
+  renderPointList();updatePanel();
+  return {ok:true,point:{...pt}};
+}
 function markerFor(pt,plot){
   const marker=L.marker([pt.lat,pt.lon],{
-    icon:L.divIcon({className:"field-point-icon"+(pt.in_water?" is-water":" is-land"),html:`<span>${esc(pt.id)}</span>`,iconSize:[36,24],iconAnchor:[18,12]})
-  }).bindPopup(`<b>${esc(plot)} • ${esc(pt.id)}</b><br>Lat ${pt.lat.toFixed(6)}<br>Lon ${pt.lon.toFixed(6)}<br><small>ระยะจากขอบน้ำ ~${Math.round(pt.edge_distance_m)} ม.</small><br><button type="button" class="field-popup-delete">ลบจุดนี้ ×</button>`);
+    draggable:true,
+    autoPan:true,
+    riseOnHover:true,
+    icon:L.divIcon({className:"field-point-icon is-water is-draggable",html:`<span>${esc(pt.id)}</span>`,iconSize:[36,24],iconAnchor:[18,12]})
+  }).bindPopup(`<b>${esc(plot)} • ${esc(pt.id)}</b><br>Lat ${pt.lat.toFixed(6)}<br>Lon ${pt.lon.toFixed(6)}<br><small>ลากหมุดเพื่อย้ายจุดภายในขอบเขตน้ำได้ • ระยะจากขอบน้ำ ~${Math.round(pt.edge_distance_m)} ม.</small><br><button type="button" class="field-popup-delete">ลบจุดนี้ ×</button>`);
   marker.on?.("popupopen",e=>{
     const btn=e.popup?.getElement?.()?.querySelector(".field-popup-delete");
     btn?.addEventListener("click",event=>{
       event.preventDefault();event.stopPropagation();removePoint(pt.id);
     },{once:true});
+  });
+  marker.on?.("dragstart",()=>{
+    marker.closePopup?.();
+    marker._fieldLastLocation=[pt.lat,pt.lon];
+  });
+  marker.on?.("dragend",()=>{
+    const location=marker.getLatLng?.();
+    if(!location)return;
+    const old=marker._fieldLastLocation||[pt.lat,pt.lon];
+    // Switching plots or changing the flood-source invalidates a pending drag.
+    if((activePlot||selected)?.plot!==plot||!points.includes(pt)){
+      marker.setLatLng?.(old);
+      return;
+    }
+    const result=repositionPoint(pt.id,location.lng,location.lat);
+    if(!result.ok){
+      marker.setLatLng?.(old);
+      notify(result.reason==="outside_water"?"ต้องวางจุดภายในขอบเขตน้ำที่เลือกเท่านั้น":"ตำแหน่งอยู่นอกขอบเขตแปลงหรือไม่ถูกต้อง — คืนจุดเดิมแล้ว");
+      return;
+    }
+    // Keep both the Overview and full-map markers in sync with the saved
+    // coordinate. The KMZ reads the updated point model directly.
+    drawPoints();
+    notify("ย้าย "+pt.id+" แล้ว • KMZ จะใช้พิกัดใหม่");
   });
   return marker;
 }
@@ -385,7 +431,7 @@ function drawPoints(){
   }catch(e){console.warn("field points map render",e)}
 }
 function modeLabel(){
-  const m=$("field-sample-mode")?.value||"land_edge";return m==="land_edge"?"นอก Polygon น้ำที่เลือก ใกล้ขอบน้ำ (ยังไม่ยืนยันทางเข้า)":m==="water_edge"?"ภายในน้ำใกล้ขอบ":"ภายในน้ำทั่วบริเวณ";
+  const m=$("field-sample-mode")?.value||"water_full";return m==="land_edge"?"นอก Polygon น้ำที่เลือก ใกล้ขอบน้ำ (ยังไม่ยืนยันทางเข้า)":m==="water_edge"?"ภายในน้ำใกล้ขอบ":"ภายในน้ำทั่วบริเวณ";
 }
 function updatePanel(edgeDepth){
   const p=activePlot||selected,ready=$("field-export-ready"),sum=$("field-export-summary");
@@ -620,6 +666,6 @@ function bind(){
   $("field-sample-mode")?.addEventListener("change",()=>{clearPoints(true);updatePanel()});
   loadHistoricalFlood();renderPointList();renderManualList();updatePanel();
 }
-window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,addVertex:onMapClick,getDraftVertices:()=>drawVertices.slice(),getManualBoundaries:plot=>manualPartsFor(plot||(activePlot||selected)?.plot).slice(),removeManualBoundary};
+window.FieldExport={onPlotChange,generatePoints,exportKmz,clearPoints,startDrawing,finishDrawing,clearDrawing,getPoints:()=>points.slice(),removePoint,isDrawing:()=>drawing,addVertex:onMapClick,getDraftVertices:()=>drawVertices.slice(),repositionPoint,getManualBoundaries:plot=>manualPartsFor(plot||(activePlot||selected)?.plot).slice(),removeManualBoundary};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
 })();
