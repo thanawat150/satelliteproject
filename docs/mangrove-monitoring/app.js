@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const root=$('view-root');
 const DATA='../data/nationwide/';
-const state={view:(new URLSearchParams(location.search).get('view')||'overview'),plot:(new URLSearchParams(location.search).get('plot')||'13-STC'),company:'ALL',province:'ALL',metric:'ndvi',riskKind:'water',riskThreshold:10,riskUnit:'percent',waterDate:'',waterDatePlot:'',waterPlot:'',map:null,mapLayers:null,filter:'',showValidOnly:true};
+const state={view:(new URLSearchParams(location.search).get('view')||'overview'),plot:(new URLSearchParams(location.search).get('plot')||'13-STC'),company:'ALL',province:'ALL',metric:'ndvi',tsChartMode:'observations',riskKind:'water',riskThreshold:10,riskUnit:'percent',waterDate:'',waterDatePlot:'',waterPlot:'',map:null,mapLayers:null,filter:'',showValidOnly:true};
 const cache={data:null,plots:[],byCode:new Map(),byScene:new Map(),changes:new Map(),canonical:new Set(),status:null,when:null,imagery:null,environment:null,rainBaseline:null,seaLevelModel:null};
 const TITLES={overview:'Nationwide Overview',map:'GIS Map Center',plots:'Plot Registry & Details',insights:'Plot Intelligence & Decisions',analysis:'Environmental Analytics',change:'Change Detection',satellite:'Satellite Catalog',alerts:'Early Warning',field:'Field Operations & Growth',carbon:'Carbon & MRV',qa:'Data Quality & Boundaries',reports:'Report Center',modules:'All 26 Modules'};
 const METRICS={ndvi:['NDVI','ดัชนีพืช'],ndre:['NDRE','คลอโรฟิลล์ / Red Edge'],evi:['EVI','สัญญาณเรือนยอด'],savi:['SAVI','พืชปรับผลดิน'],ndmi:['NDMI','ความชื้นพืช'],ndwi:['NDWI','สัญญาณน้ำ'],mndwi:['MNDWI','ผิวน้ำ'],bsi:['BSI','ดินเปิดโล่ง'],gli:['GLI','ดัชนีสีเขียว'],water_rai:['Water (rai)','พื้นที่น้ำ ไร่'],vegetation_rai:['Vegetation (rai)','พื้นที่พืช ไร่'],bare_soil_rai:['Bare soil (rai)','พื้นที่ดิน ไร่'],wetness_rai:['Wetness (rai)','พื้นที่ชื้น ไร่']};
@@ -78,7 +78,7 @@ function timeSeriesInfo(plot,key,rows){
    '</div>'+sparse+proof+'<details class="series-source-table"><summary>ตรวจตัวเลขที่ใช้วาดกราฟ ('+n+' วัน)</summary><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่ Sentinel-2</th><th>ค่าที่ใช้วาดกราฟ</th><th>QA</th></tr></thead><tbody>'+table+'</tbody></table></div></details><p class="muted tiny">'+(isRain?
    'NASA POWER PRECTOTCORR: ฝนสะสมในวัน UTC ก่อนวันถ่ายภาพ ไม่ใช่ 24/72 ชั่วโมงย้อนหลังจากเวลาผ่านดาวเทียม • แสดงเฉพาะวัน Sentinel-2 ผ่าน QA และมีฝนครบ':
    (isSpectral?'ที่มา: ค่าเฉลี่ยดัชนีจาก TIFF ภายใน Polygon • กราฟแสดงจุดวันที่มีข้อมูลจริงและเชื่อมเพื่อช่วยตรวจดูเท่านั้น • สถานะ PARTIAL, cloud QA และ Processing Baseline/BOA Offset ยังจำกัดการเทียบข้ามวัน; ห้ามใช้สรุปน้ำท่วมหรือ Change Detection':
-   'ที่มา: docs/data/nationwide/nationwide_results.json • ค่าจาก Sentinel-2 รายแปลงที่ผ่าน AUTO_VALID เท่านั้น • ไม่ปรับน้ำขึ้นน้ำลง • รูปแบบเส้นเป็นการเชื่อมจุดวันที่มีข้อมูลจริง ไม่ใช่ค่ารายวันต่อเนื่อง'))+
+   'ที่มา: docs/data/nationwide/nationwide_results.json • ค่าจาก Sentinel-2 รายแปลงที่ผ่าน AUTO_VALID เท่านั้น • ไม่ปรับน้ำขึ้นน้ำลง • กราฟจุดเชื่อมเฉพาะวันภาพจริง ส่วน Trendline เป็นเส้นถดถอยเชิงเส้นเพื่อดูทิศทางรวม ไม่ใช่ค่ารายวันต่อเนื่อง'))+
    '</p>';
 }
 function timeSeriesKpis(plot,key){
@@ -90,6 +90,10 @@ function timeSeriesKpis(plot,key){
    kpi('ค่าแรกที่มีข้อมูล',first?seriesFmt(key,first.series_value)+' '+unit:'—',first?.date||'ไม่มีข้อมูล')+
    kpi('ต่างจากค่าแรก',good.length>=2?seriesFmt(key,last.series_value-first.series_value)+' '+unit:'—','เปรียบเทียบวันจริง ไม่ใช่ข้อสรุปผลกระทบ');
 }
+function timeSeriesChartMarkup(plot,key,mode=state.tsChartMode){
+ const meta=seriesMeta(key),unit=seriesUnit(key),isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
+ return svgChart(timeSeriesRows(plot,key),'series_value',{key,unit,decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral,mode});
+}
 function timeSeriesPanel(plot,key){
  const meta=seriesMeta(key),good=timeSeriesRows(plot,key);
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
@@ -97,7 +101,7 @@ function timeSeriesPanel(plot,key){
   '<div><h2 id="time-series-title">Time Series · '+html(meta[0])+'</h2>'+
   '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID')+'</p></div>'+
   '<label class="time-series-select">เลือกค่าที่แสดงบนกราฟ<select id="timeseries-metric-select" aria-label="เลือกค่ากราฟ Time Series">'+seriesOptions(key)+'</select></label>'+
-  '</div><div id="time-series-visual">'+svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral})+'</div>'+
+  '</div><div id="time-series-visual">'+timeSeriesChartMarkup(plot,key)+'</div>'+
   '<div id="time-series-details">'+timeSeriesInfo(plot,key,good)+'</div></div>';
 }
 function changeTimeSeriesMetric(key){
@@ -110,7 +114,7 @@ function changeTimeSeriesMetric(key){
  if(title)title.textContent='Time Series · '+meta[0];
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID');
- if(graphic)graphic.innerHTML=svgChart(good,'series_value',{key,unit:seriesUnit(key),decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral});
+ if(graphic)graphic.innerHTML=timeSeriesChartMarkup(plot,key);
  if(info)info.innerHTML=timeSeriesInfo(plot,key,good);
  if(kpis)kpis.innerHTML=timeSeriesKpis(plot,key);
 }
@@ -309,7 +313,7 @@ function svgChart(rows,key,opts={}){
  const vals=good.map(x=>Number(x[key])),minimum=Math.min(...vals),maximum=Math.max(...vals);
  const smallest=opts.unit==='ค่าดัชนี'?0.05:opts.unit==='%'?1:opts.unit==='ไร่'?0.5:2;
  const span=Math.max(maximum-minimum,smallest);
- const isStandardIndex=['ndvi','ndre','ndmi','ndwi','mndwi','bsi','gli'].includes(opts.key)
+ const isStandardIndex=['ndvi','evi','savi','ndre','ndmi','ndwi','mndwi','bsi','gli'].includes(opts.key)
    &&minimum>=-1&&maximum<=1;
  const low=isStandardIndex?-1:(opts.nonnegative?Math.max(0,minimum-span*.18):minimum-span*.18);
  const high=isStandardIndex?1:Math.max(maximum+span*.18,low+smallest);
@@ -331,27 +335,40 @@ function svgChart(rows,key,opts={}){
  // and keeps axis text/point circles legible at any screen width.
  const xpos=i=>4+92*(earliest===latest ? 0.5 : (timestamps[i]-earliest)/(latest-earliest));
  const ypos=v=>8+84*(high-Number(v))/(high-low);
- const points=good.map((x,i)=>(xpos(i)*10).toFixed(2)+','+(ypos(x[key])*10).toFixed(2)).join(' ');
  const format=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+ const mode=opts.mode==='trendline'?'trendline':'observations';
+ const xYears=timestamps.map(t=>(t-earliest)/31556952000);
+ const meanX=xYears.reduce((sum,x)=>sum+x,0)/xYears.length;
+ const meanY=vals.reduce((sum,y)=>sum+y,0)/vals.length;
+ const varianceX=xYears.reduce((sum,x)=>sum+(x-meanX)**2,0);
+ const slope=varianceX>0?xYears.reduce((sum,x,i)=>sum+(x-meanX)*(vals[i]-meanY),0)/varianceX:null;
+ const intercept=slope===null?null:meanY-slope*meanX;
+ const trendline=slope===null?'':'<line class="ts-trendline" x1="40" y1="'+(ypos(intercept)*10).toFixed(2)+'" x2="960" y2="'+(ypos(intercept+slope*xYears.at(-1))*10).toFixed(2)+'" vector-effect="non-scaling-stroke"/>';
+ const slopeLabel=slope===null?'ต้องมีอย่างน้อย 2 วันที่ต่างกันเพื่อคำนวณแนวโน้ม':
+  'แนวโน้ม '+(slope>0?'เพิ่มขึ้น':slope<0?'ลดลง':'คงที่')+' '+format(Math.abs(slope))+' '+(opts.unit||'ค่าดัชนี')+'/ปี • คำนวณเส้นถดถอยเชิงเส้นจาก '+countFmt(good.length)+' วัน';
+ const points=good.map((x,i)=>(xpos(i)*10).toFixed(2)+','+(ypos(x[key])*10).toFixed(2)).join(' ');
  const ticks=[20,50,80].map(y=>{
   const value=high-(high-low)*((y-8)/84);
   return '<span class="ts-y-tick" style="top:'+y+'%">'+html(format(value))+'</span>';
  }).join('');
  const grid=[20,50,80].map(y=>'<line x1="0" y1="'+(y*10)+'" x2="1000" y2="'+(y*10)+'" class="ts-gridline" vector-effect="non-scaling-stroke"/>').join('');
  const zero=(low<0&&high>0)?'<line x1="0" y1="'+(ypos(0)*10)+'" x2="1000" y2="'+(ypos(0)*10)+'" class="ts-zero-line" vector-effect="non-scaling-stroke"/>':'';
+ const count=good.length;
  const markers=good.map((r,i)=>{
    const tip=r.date+' · '+(opts.label||key)+' '+format(r[key])+' '+(opts.unit||'');
    const partial=!qaOk(r),status=partial?' · PARTIAL ตรวจดูเท่านั้น':'';
    return '<span class="ts-point'+(partial?' is-partial':'')+'" role="img" tabindex="0" aria-label="'+html(tip+status)+'" title="'+html(tip+status)+'" style="left:'+xpos(i).toFixed(3)+'%;top:'+ypos(r[key]).toFixed(3)+'%"></span>';
  }).join('');
- const count=good.length;
- return '<div class="ts-chart" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
+ return '<div class="ts-chart'+(mode==='trendline'?' is-trendline':'')+'" aria-label="กราฟ '+html(opts.label||key)+' มีข้อมูล '+count+' วัน">'+
+  '<div class="ts-chart-modes" role="group" aria-label="เลือกรูปแบบกราฟ">'+
+   '<button type="button" class="ts-chart-mode'+(mode==='observations'?' active':'')+'" data-ts-chart-mode="observations" aria-pressed="'+(mode==='observations')+'">จุดข้อมูล</button>'+
+   '<button type="button" class="ts-chart-mode'+(mode==='trendline'?' active':'')+'" data-ts-chart-mode="trendline" aria-pressed="'+(mode==='trendline')+'">Trendline · เส้นแนวโน้ม</button></div>'+
   '<div class="ts-chart-axis-caption">หน่วย: '+html(opts.unit||'ค่าดัชนี')+(isStandardIndex?' • แกนมาตรฐาน -1.00 ถึง +1.00 (ไม่ขยายความต่าง)':'')+(opts.includePartial?' • จุดสีอำพัน = PARTIAL':'')+'</div>'+
   '<div class="ts-chart-layout"><div class="ts-y-axis" aria-hidden="true">'+ticks+'</div>'+
   '<div class="ts-plot" role="group" aria-label="จุดข้อมูล '+count+' วัน มีคำอธิบายค่าที่แต่ละจุด">'+
   '<svg class="ts-chart-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">'+grid+yearLines+zero+
-  '<polyline class="ts-chart-line" points="'+points+'" fill="none" vector-effect="non-scaling-stroke"/></svg>'+
-  markers+'</div></div>'+
+  (mode==='observations'?'<polyline class="ts-chart-line" points="'+points+'" fill="none" vector-effect="non-scaling-stroke"/>':trendline)+'</svg>'+
+  '<div class="ts-trendline-summary"'+(mode==='trendline'?'':' hidden')+'>'+html(slopeLabel)+'</div>'+markers+'</div></div>'+
   '<div class="ts-x-axis"><span>'+html(good[0].date)+'</span><span>'+html(good.at(-1).date)+'</span></div>'+
   '<div class="ts-year-axis" role="group" aria-label="ปีที่มีข้อมูล">'+years.map(year=>
    '<span class="ts-year-tick" style="left:'+yearX(year).toFixed(3)+'%">'+year+'</span>').join('')+'</div>'+
@@ -709,7 +726,10 @@ document.addEventListener('mmc:imagery-date-change',e=>{
  state.waterDate=e.detail.date;state.waterDatePlot=state.plot;
  const panel=$('water-daily-panel');if(panel)panel.outerHTML=waterDatePanel(state.plot);
 });
-document.addEventListener('click',e=>{const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const b=e.target.closest('[data-action]');if(b){doAction(b.dataset.action,b.dataset.value||'');return;}if(e.target.id==='menu-btn')$('sidebar').classList.toggle('open');if(e.target.id==='refresh')load();});
+document.addEventListener('click',e=>{
+ const chartMode=e.target.closest('[data-ts-chart-mode]');
+ if(chartMode){state.tsChartMode=chartMode.dataset.tsChartMode==='trendline'?'trendline':'observations';const visual=$('time-series-visual');if(visual)visual.innerHTML=timeSeriesChartMarkup(state.plot,state.metric);return;}
+ const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const b=e.target.closest('[data-action]');if(b){doAction(b.dataset.action,b.dataset.value||'');return;}if(e.target.id==='menu-btn')$('sidebar').classList.toggle('open');if(e.target.id==='refresh')load();});
 document.addEventListener('change',e=>{const id=e.target.id;if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
 })();
