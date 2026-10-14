@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261014-multipolygon9" />
+  <link rel="stylesheet" href="styles.css?v=20261014-draggable10" />
 </head>
 <body>
   <header class="topbar">
@@ -122,9 +122,8 @@
                 </label>
                 <label>รูปแบบสุ่ม
                   <select id="field-sample-mode">
-                    <option value="land_edge">บนพื้นที่ไม่ถูกจัดเป็นน้ำ ใกล้ขอบน้ำ (แนะนำ)</option>
-                    <option value="water_edge">ในพื้นที่น้ำ ใกล้ขอบน้ำ (ตรวจสอบโดยเรือ)</option>
-                    <option value="water_full">ในพื้นที่น้ำทั่วแปลง</option>
+                    <option value="water_full" selected>สุ่มภายในขอบเขตน้ำทั้งหมด (แนะนำ)</option>
+                    <option value="water_edge">สุ่มภายในขอบเขตน้ำ ใกล้แนวขอบ</option>
                   </select>
                 </label>
               </div>
@@ -155,9 +154,9 @@
               <section class="field-points-panel" id="field-points-panel" aria-live="polite" hidden>
                 <div class="field-points-title"><strong>จุดสำรวจที่เลือกไว้</strong><span id="field-points-count">0 จุด</span></div>
                 <div id="field-points-list" class="field-points-list"></div>
-                <small>แตะ “ลบ” เฉพาะจุดที่ไม่ต้องการได้ หรือกดบนหมุดในแผนที่เพื่อเอาจุดนั้นออก จุดที่เหลือจะอยู่ตำแหน่งเดิมและส่งออกเข้า KMZ เท่านั้น โดยหมายเลขจุดจะเรียงใหม่ P01, P02, P03…</small>
+                <small>จุดทั้งหมดจะสุ่มอยู่ภายใน Polygon น้ำที่เลือก • ลากหมุด P01, P02… เพื่อย้ายตำแหน่งได้ ถ้าลากออกนอก Polygon จะย้อนกลับจุดเดิม • ลบจุดที่ไม่ต้องการแล้วหมายเลขจะเรียงใหม่ • KMZ ใช้พิกัดหลังย้าย</small>
               </section>
-              <small class="field-export-note">จุดสุ่มจากเรขาคณิตภายในแปลงเท่านั้น ยังไม่ได้ตรวจสอบถนน ทางเดิน น้ำขึ้นลง ความปลอดภัย หรือสิทธิ์เข้าแปลง โปรดทวนสอบหน้างานก่อนออกสำรวจ</small>
+              <small class="field-export-note">จุดสุ่มและจุดที่ลากย้ายต้องอยู่ภายในขอบเขตน้ำที่เลือก รวมถึงภายในขอบเขตแปลง • อาจต้องเข้าถึงโดยเรือ ไม่ได้ยืนยันเส้นทาง น้ำขึ้นลง ความปลอดภัยหรือสิทธิ์เข้าแปลง ต้องตรวจภาคสนามก่อนสำรวจ</small>
               <details class="field-auto-help"><summary>ระบบวงขอบเขตน้ำ Auto อย่างไร?</summary><p>ใช้ Sentinel-2 MNDWI = (B3−B11)/(B3+B11) และจำแนกน้ำเบื้องต้นเมื่อ MNDWI &gt; 0 โดยใช้ SCL ตัดเมฆ เงา และพิกเซลไม่มีข้อมูล ก่อนตัดตามขอบเขตแปลงและแปลง Raster mask เป็น Polygon วันใดไม่มีข้อมูลผ่าน QA จะไม่สร้างขอบเขต Auto ให้เอง</p><p>“น้ำปัจจุบัน” คือบริเวณที่จำแนกเป็นน้ำในวันนั้น ส่วน “น้ำเพิ่ม” คือพื้นที่ที่วันก่อนหน้าไม่ใช่น้ำแต่วันปัจจุบันเป็นน้ำ ไม่เท่ากับพื้นที่น้ำทั้งหมด และไม่ใช่ข้อยืนยันความเสียหายจากน้ำท่วม เพราะอาจมีอิทธิพลของน้ำขึ้นลง</p></details>
             </section>
           </section>
@@ -408,7 +407,7 @@
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
   <script src="app.js?v=20261014-drawfix8"></script>
-  <script src="field-export.js?v=20261014-multipolygon9"></script>
+  <script src="field-export.js?v=20261014-draggable10"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
