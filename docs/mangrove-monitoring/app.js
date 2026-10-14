@@ -135,9 +135,20 @@ function timeSeriesKpis(plot,key){
    kpi('ค่าแรกที่มีข้อมูล',first?seriesFmt(key,first.series_value)+' '+unit:'—',first?.date||'ไม่มีข้อมูล')+
    kpi('ต่างจากค่าแรก',good.length>=2?seriesFmt(key,last.series_value-first.series_value)+' '+unit:'—','เปรียบเทียบวันจริง ไม่ใช่ข้อสรุปผลกระทบ');
 }
-function timeSeriesChartMarkup(plot,key,mode=state.tsChartMode){
+function timeSeriesChartMarkup(plot,key,mode=state.tsChartMode,rows=timeSeriesRowsInRange(plot,key)){
  const meta=seriesMeta(key),unit=seriesUnit(key),isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
- return svgChart(timeSeriesRowsInRange(plot,key),'series_value',{key,unit,decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral,mode,yearInterval:Number(state.tsYearInterval)||1});
+ return svgChart(rows,'series_value',{key,unit,decimals:2,label:meta[0],nonnegative:meta[1]!=='index',includePartial:isSpectral,mode,yearInterval:Number(state.tsYearInterval)||1});
+}
+function timeSeriesMultiRows(plot,key){
+ const from=Number(state.tsYearFrom),to=Number(state.tsYearTo),step=Math.max(1,Number(state.tsYearInterval)||1);
+ return timeSeriesRows(plot,key).filter(row=>{const year=Number(String(row.date||'').slice(0,4));return year>=from&&year<=to&&(year-from)%step===0;});
+}
+function timeSeriesChartSet(plot,key){
+ if(!Array.isArray(state.tsMetrics))state.tsMetrics=[];
+ const selected=[key,...state.tsMetrics.filter(k=>k!==key&&Object.prototype.hasOwnProperty.call(SERIES,k)&&timeSeriesRows(plot,k).length)];
+ const cards=selected.map(metric=>'<article class="ts-metric-card"><h3>'+html(seriesMeta(metric)[0])+' <small>· '+html(seriesUnit(metric))+'</small></h3><div class="ts-metric-chart">'+timeSeriesChartMarkup(plot,metric,state.tsChartMode,metric===key?timeSeriesRowsInRange(plot,metric):timeSeriesMultiRows(plot,metric))+'</div></article>').join('');
+ const options=Object.entries(SERIES).filter(([metric])=>metric!==key&&timeSeriesRows(plot,metric).length).map(([metric,[label]])=>'<label class="ts-metric-option"><input type="checkbox" data-ts-metric="'+html(metric)+'" '+(state.tsMetrics.includes(metric)?'checked':'')+'> <span>'+html(label)+'</span></label>').join('');
+ return '<details class="ts-metric-picker"><summary>เพิ่มกราฟเปรียบเทียบ <span>แสดง '+selected.length+' กราฟ</span></summary><div class="ts-metric-options">'+(options||'<span class="muted">ไม่มีตัวชี้วัดอื่นที่มีข้อมูลในแปลงนี้</span>')+'</div></details><div class="ts-multi-grid">'+cards+'</div>';
 }
 function timeSeriesPanel(plot,key){
  key=firstAvailableSeries(plot,key);
@@ -148,7 +159,7 @@ function timeSeriesPanel(plot,key){
   '<div><h2 id="time-series-title">Time Series · '+html(meta[0])+'</h2>'+
   '<p id="time-series-subtitle">หน่วย: '+html(seriesUnit(key))+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID')+'</p></div>'+
   '<label class="time-series-select">เลือกค่าที่แสดงบนกราฟ<select id="timeseries-metric-select" aria-label="เลือกค่ากราฟ Time Series">'+seriesOptions(key)+'</select></label>'+
-  '</div>'+timeSeriesYearControls(plot,key)+'<div id="time-series-visual">'+timeSeriesChartMarkup(plot,key)+'</div>'+
+  '</div>'+timeSeriesYearControls(plot,key)+'<div id="time-series-visual">'+timeSeriesChartSet(plot,key)+'</div>'+
   '<div id="time-series-details">'+timeSeriesInfo(plot,key,good)+'</div></div>';
 }
 function changeTimeSeriesMetric(key){
@@ -162,14 +173,15 @@ function changeTimeSeriesMetric(key){
  if(title)title.textContent='Time Series · '+meta[0];
  const isSpectral=['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].includes(key);
  if(subtitle)subtitle.textContent='หน่วย: '+seriesUnit(key)+(isSpectral?' · แสดงค่าจาก TIFF พร้อมสถานะ QA':' · เฉพาะ AUTO_VALID');
- if(graphic)graphic.innerHTML=timeSeriesChartMarkup(plot,key);
+ if(graphic)graphic.innerHTML=timeSeriesChartSet(plot,key);
  const range=$('time-series-panel')?.querySelector('.time-series-range');if(range)range.outerHTML=timeSeriesYearControls(plot,key);
  if(info)info.innerHTML=timeSeriesInfo(plot,key,good);
  if(kpis)kpis.innerHTML=timeSeriesKpis(plot,key);
 }
 function refreshTimeSeriesRange(){
- const rows=timeSeriesRowsInRange(state.plot,state.metric),visual=$('time-series-visual'),details=$('time-series-details'),kpis=$('analysis-metric-kpis');
- if(visual)visual.innerHTML=timeSeriesChartMarkup(state.plot,state.metric);
+ const rows=timeSeriesRowsInRange(state.plot,state.metric),visual=$('time-series-visual'),details=$('time-series-details'),kpis=$('analysis-metric-kpis'),picker=visual?.querySelector('.ts-metric-picker'),pickerOpen=picker?.open;
+ if(visual)visual.innerHTML=timeSeriesChartSet(state.plot,state.metric);
+ if(pickerOpen){const next=visual?.querySelector('.ts-metric-picker');if(next)next.open=true;}
  if(details)details.innerHTML=timeSeriesInfo(state.plot,state.metric,rows);
  if(kpis)kpis.innerHTML=timeSeriesKpis(state.plot,state.metric);
 }
@@ -787,9 +799,9 @@ document.addEventListener('mmc:imagery-date-change',e=>{
 });
 document.addEventListener('click',e=>{
  const chartMode=e.target.closest('[data-ts-chart-mode]');
- if(chartMode){state.tsChartMode=chartMode.dataset.tsChartMode==='trendline'?'trendline':'observations';const visual=$('time-series-visual');if(visual)visual.innerHTML=timeSeriesChartMarkup(state.plot,state.metric);return;}
+ if(chartMode){state.tsChartMode=chartMode.dataset.tsChartMode==='trendline'?'trendline':'observations';const visual=$('time-series-visual');if(visual)visual.innerHTML=timeSeriesChartSet(state.plot,state.metric);return;}
  const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const b=e.target.closest('[data-action]');if(b){doAction(b.dataset.action,b.dataset.value||'');return;}if(e.target.id==='menu-btn')$('sidebar').classList.toggle('open');if(e.target.id==='refresh')load();});
-document.addEventListener('change',e=>{const id=e.target.id;if(id==='ts-year-from'){state.tsYearFrom=e.target.value;if(Number(state.tsYearFrom)>Number(state.tsYearTo))state.tsYearTo=state.tsYearFrom;const end=$('ts-year-to');if(end)end.value=state.tsYearTo;refreshTimeSeriesRange();return;}if(id==='ts-year-to'){state.tsYearTo=e.target.value;if(Number(state.tsYearTo)<Number(state.tsYearFrom))state.tsYearFrom=state.tsYearTo;const start=$('ts-year-from');if(start)start.value=state.tsYearFrom;refreshTimeSeriesRange();return;}if(id==='ts-year-interval'){state.tsYearInterval=Math.max(1,Number(e.target.value)||1);refreshTimeSeriesRange();return;}if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;state.tsYearFrom='';state.tsYearTo='';draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
+document.addEventListener('change',e=>{const id=e.target.id;if(e.target.matches('[data-ts-metric]')){const metric=e.target.dataset.tsMetric;state.tsMetrics=e.target.checked?[...new Set([...(state.tsMetrics||[]),metric])]:state.tsMetrics.filter(k=>k!==metric);refreshTimeSeriesRange();return;}if(id==='ts-year-from'){state.tsYearFrom=e.target.value;if(Number(state.tsYearFrom)>Number(state.tsYearTo))state.tsYearTo=state.tsYearFrom;const end=$('ts-year-to');if(end)end.value=state.tsYearTo;refreshTimeSeriesRange();return;}if(id==='ts-year-to'){state.tsYearTo=e.target.value;if(Number(state.tsYearTo)<Number(state.tsYearFrom))state.tsYearFrom=state.tsYearTo;const start=$('ts-year-from');if(start)start.value=state.tsYearFrom;refreshTimeSeriesRange();return;}if(id==='ts-year-interval'){state.tsYearInterval=Math.max(1,Number(e.target.value)||1);refreshTimeSeriesRange();return;}if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;state.tsYearFrom='';state.tsYearTo='';draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
 })();
 
