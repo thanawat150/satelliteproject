@@ -135,6 +135,15 @@ function syncModes(p){
  const isIndex=MODES[state.mode].type==="index", legend=$("studio-legend");
  legend.hidden=!isIndex;
  if(isIndex){$("studio-legend-label").textContent=MODES[state.mode].name+" • ค่าประมาณ −1 ถึง +1";$("studio-ramp").style.background="linear-gradient(to right,"+MODES[state.mode].colors.join(",")+")";}
+ const overviewLegend=$("overview-index-legend");
+ if(overviewLegend){
+   overviewLegend.hidden=!isIndex;
+   if(isIndex){
+     const label=$("overview-index-label"),ramp=$("overview-index-ramp");
+     if(label)label.textContent=MODES[state.mode].name;
+     if(ramp)ramp.style.background="linear-gradient(to right,"+MODES[state.mode].colors.join(",")+")";
+   }
+ }
 }
 /* Satellite imagery is displayed at its full rectangular raster extent; PDD is a separate vector overlay. */
 let renderSerial=0;
