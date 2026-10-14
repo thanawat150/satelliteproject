@@ -362,7 +362,7 @@ function updateNewWaterOverlay(p){
       map.removeLayer(newWaterLayers[key]);
       newWaterLayers[key]=null;
     }
-    if(!feature||window.MapStudio?.state?.water===false)return;
+    if(!feature||window.MapStudio?.state?.water!==true)return;
     const layer=L.geoJSON(feature,{
       style:{
         color:'#38bdf8',
@@ -373,7 +373,7 @@ function updateNewWaterOverlay(p){
         dashArray:'5 3'
       }
     }).addTo(map);
-    layer.bindPopup(`<b>${p.plot}</b><br><span style="color:#38bdf8">พื้นที่น้ำใหม่</span><br>ประมาณ ${fmt(feature.properties.new_water_rai)} ไร่<br><small>เทียบ ${dateTH(p.baseline)} → ${dateTH(p.current)}</small>`);
+    // New-water overlays are visual only. Details remain in the sidebar and report, not a blocking map popup.
     newWaterLayers[key]=layer;
     if(layer.bringToFront)layer.bringToFront();
   });
