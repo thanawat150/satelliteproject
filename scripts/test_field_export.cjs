@@ -82,12 +82,12 @@ console.log("PASS: QA-safe KMZ sampling, polygon containment, NO_DATA and manual
   let original=field.generatePoints();
   assert.equal(original.length,10);
   const originalById=new Map(original.map(x=>[x.id,[x.lon,x.lat]]));
-  const originalCoordinates=original.map(x=>[x.lon,x.lat]);
+  const originalCoordinates=Array.from(original,x=>[x.lon,x.lat]);
   const removedId=original[1].id;
   assert.equal(field.removePoint(removedId),true);
   let remaining=field.getPoints();
   assert.equal(remaining.length,9);
-  assert.deepEqual(remaining.map(x=>x.id),Array.from({length:9},(_,i)=>"P"+String(i+1).padStart(2,"0")),"point names must run consecutively");
+  assert.deepEqual(Array.from(remaining,x=>x.id),Array.from({length:9},(_,i)=>"P"+String(i+1).padStart(2,"0")),"point names must run consecutively");
   const expected=originalCoordinates.filter((_,i)=>i!==1);
   for(let i=0;i<remaining.length;i++)assert.deepEqual([remaining[i].lon,remaining[i].lat],expected[i],"surviving point moved");
   const saved={};
@@ -96,7 +96,7 @@ console.log("PASS: QA-safe KMZ sampling, polygon containment, NO_DATA and manual
   await field.exportKmz();
   assert(saved["doc.kml"].includes("P01"),"remaining points must be present in KMZ");
   assert(!saved["doc.kml"].includes(originalById.get(removedId)[0]+","+originalById.get(removedId)[1]+",0"),"removed coordinates must not be in KMZ");
-  assert(saved["doc.kml"].includes('<Folder><name>03 Random Field Check Points</name>'));
+  assert(saved["doc.kml"].includes('<Folder><name>03 Survey Points (Manual and Sampled)</name>'));
   elements.get("field-kmz-scope").value="boundary";
   await field.exportKmz();
   assert(saved["doc.kml"].includes('<Folder><name>02 Flood Boundary</name>'));
@@ -108,7 +108,7 @@ console.log("PASS: QA-safe KMZ sampling, polygon containment, NO_DATA and manual
   assert(!saved["doc.kml"].includes('<Folder><name>02 Flood Boundary</name><Placemark>'),"points-only must not include water geometry");
   elements.get("field-kmz-scope").value="both";
   const lastKml=saved["doc.kml"];
-  for(const x of field.getPoints())assert.equal(field.removePoint(x.id),true);
+  while(field.getPoints().length)assert.equal(field.removePoint(field.getPoints()[0].id),true);
   assert.equal(field.getPoints().length,0);
   assert.equal(elements.get("field-export-kmz-btn").disabled,true);
   await field.exportKmz();
