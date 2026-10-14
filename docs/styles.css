@@ -456,11 +456,16 @@
 /* Independent scroll for the long Selected Plot panel on desktop.
    Keep the Situation Map visible while reviewing metrics, Report and KMZ. */
 @media (min-width:1101px) {
+  /* The map card determines the grid row height. The right pane is measured
+     against that card rather than an unrelated viewport-height cap. */
+  #tab-overview .overview-grid > .map-card {
+    align-self: start;
+  }
   #tab-overview .overview-grid > .detail-card {
     align-self: start;
-    min-height: 420px;
-    height: min(760px, calc(100dvh - 205px));
-    max-height: min(760px, calc(100dvh - 205px));
+    min-height: 0;
+    height: var(--selected-plot-height, min(760px, calc(100dvh - 205px)));
+    max-height: var(--selected-plot-height, min(760px, calc(100dvh - 205px)));
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior-y: contain;
