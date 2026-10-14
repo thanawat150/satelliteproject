@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261014-survey-studio11" />
+  <link rel="stylesheet" href="styles.css?v=20261014-survey-studio12" />
 </head>
 <body>
   <header class="topbar">
@@ -106,9 +106,14 @@
                 <span class="field-export-ready" id="field-export-ready">—</span>
               </div>
               <p id="field-export-summary">เลือกแปลงแล้วจัดการขอบเขตและจุดสำรวจในพื้นที่จริง</p>
+              <div class="field-studio-tabs" role="tablist" aria-label="เครื่องมือสำรวจภาคสนาม">
+                <button type="button" id="field-tab-boundary" role="tab" data-field-tab="boundary" aria-controls="field-stage-boundary" aria-selected="false"><span>ขอบเขตน้ำ</span><small id="field-tab-boundary-count">0 พื้นที่</small></button>
+                <button type="button" id="field-tab-points" role="tab" data-field-tab="points" aria-controls="field-stage-points" aria-selected="true"><span>จุดสำรวจ</span><small id="field-tab-points-count">0 จุด</small></button>
+                <button type="button" id="field-tab-export" role="tab" data-field-tab="export" aria-controls="field-stage-export" aria-selected="false"><span>ส่งออก KMZ</span><small id="field-tab-export-count">เลือกรูปแบบ</small></button>
+              </div>
               <div class="field-workflow">
-                <section class="field-stage">
-                  <div class="field-stage-heading"><span>01</span><strong>ขอบเขตน้ำ</strong></div>
+                <section class="field-stage" id="field-stage-boundary" role="tabpanel" aria-labelledby="field-tab-boundary" data-field-stage="boundary" hidden>
+                  <div class="field-stage-heading"><strong>เลือกหรือวาดขอบเขตน้ำ</strong></div>
                   <label class="field-control-label">ชุดขอบเขตที่จะใช้งาน
                     <select id="field-flood-source" aria-label="เลือกขอบเขตน้ำ"><option value="auto">Auto — ขอบเขตน้ำล่าสุดที่ผ่าน QA</option></select>
                   </label>
@@ -131,15 +136,15 @@
                     <small>สามารถวาดหลาย Polygon และลบแยกพื้นที่ได้ ขอบเขตที่วาดเองเป็นข้อมูล Unverified</small>
                   </details>
                 </section>
-                <section class="field-stage">
-                  <div class="field-stage-heading"><span>02</span><strong>จัดการจุดสำรวจ</strong><span class="field-stage-count" id="field-points-count">0 จุด</span></div>
+                <section class="field-stage" id="field-stage-points" role="tabpanel" aria-labelledby="field-tab-points" data-field-stage="points">
+                  <div class="field-stage-heading"><strong>กำหนดจุดสำรวจบนแผนที่</strong><span class="field-stage-count" id="field-points-count">0 จุด</span></div>
                   <label class="field-control-label">วิธีเพิ่มจุด
                     <select id="field-point-entry-mode">
                       <option value="manual" selected>คลิกวางจุดเองบนแผนที่</option>
-                      <option value="random">สุ่มจุดในขอบเขตน้ำ</option>
+                      <option value="random">สุ่มเพิ่มเติม (ไม่ลบจุดที่ปักเอง)</option>
                     </select>
                   </label>
-                  <p id="field-point-help" class="field-stage-help">กดเริ่มวางจุด แล้วคลิกบนแผนที่ภายในขอบเขตแปลงเพื่อเพิ่ม P01, P02… ได้ทันที ไม่ต้องสุ่ม</p>
+                  <p id="field-point-help" class="field-stage-help">ปักจุดเองโดยไม่ต้องสุ่มหรือมีขอบเขตน้ำ • ลากย้ายหรือลบจุดได้</p>
                   <div class="field-export-controls" id="field-random-settings" hidden>
                     <label>จำนวนจุด
                       <select id="field-point-count">
@@ -166,19 +171,19 @@
                     <small>ลากจุดเพื่อย้าย • ลบเฉพาะจุดที่ไม่ต้องการได้ • หมายเลขจะเรียงใหม่อัตโนมัติ</small>
                   </section>
                 </section>
-                <section class="field-stage field-stage-export">
-                  <div class="field-stage-heading"><span>03</span><strong>ส่งออกข้อมูล</strong></div>
+                <section class="field-stage field-stage-export" id="field-stage-export" role="tabpanel" aria-labelledby="field-tab-export" data-field-stage="export" hidden>
+                  <div class="field-stage-heading"><strong>ตรวจสอบและดาวน์โหลดข้อมูล</strong></div>
                   <label class="field-control-label">ชนิดไฟล์ KMZ
                     <select id="field-kmz-scope">
-                      <option value="both">ขอบเขตแปลง + น้ำ + จุด (รวม)</option>
-                      <option value="boundary">เฉพาะขอบเขตแปลงและน้ำ</option>
+                      <option value="both">ขอบเขตแปลง + น้ำ (ถ้ามี) + จุด</option>
+                      <option value="boundary">ขอบเขตแปลง + น้ำ (ถ้ามี)</option>
                       <option value="points">เฉพาะจุดสำรวจ</option>
                     </select>
                   </label>
                   <button class="field-action field-stage-primary field-download" id="field-export-kmz-btn" type="button">ดาวน์โหลด KMZ</button>
                 </section>
               </div>
-              <p class="field-export-note">จุดที่วางเองต้องอยู่ภายในแปลง จุดสุ่มต้องอยู่ภายในขอบเขตน้ำ • ไม่ได้ยืนยันถนน ความปลอดภัย น้ำขึ้นลง หรือสิทธิ์เข้าแปลง</p>
+              <p class="field-export-note">ปักจุดเองได้โดยไม่ต้องมีขอบเขตน้ำ • สุ่มได้เมื่อมี Polygon น้ำ • ไฟล์ KMZ ใช้เฉพาะขอบเขตและจุดที่เลือกไว้ ไม่สุ่มให้ใหม่เอง • ต้องตรวจเส้นทาง ความปลอดภัย และสิทธิ์เข้าพื้นที่ก่อนลงสำรวจ</p>
               <details class="field-auto-help"><summary>วิธีตรวจจับขอบเขตน้ำ Auto และข้อจำกัด</summary><p>Sentinel-2 MNDWI = (B3−B11)/(B3+B11), เกณฑ์เบื้องต้น MNDWI &gt; 0 และกรองเมฆ/เงาด้วย SCL ก่อนตัดตามขอบเขตแปลงและแปลงเป็น Polygon ภาพที่ QA ไม่ผ่านจะไม่ใช้เป็นขอบเขต Auto</p><p>น้ำทั้งหมดในวันนั้นกับน้ำเพิ่มจากวันฐานเป็นคนละข้อมูล และอาจได้รับผลจากน้ำขึ้นลง</p></details>
             </section>
           </section>
@@ -428,8 +433,8 @@
   <script src="report-selector.js?v=20261009-reportselect1"></script>
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261014-survey-studio11"></script>
-  <script src="field-export.js?v=20261014-survey-studio11"></script>
+  <script src="app.js?v=20261014-survey-studio12"></script>
+  <script src="field-export.js?v=20261014-survey-studio12"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
