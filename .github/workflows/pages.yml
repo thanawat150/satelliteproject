@@ -45,6 +45,7 @@ jobs:
         run: |
           node --check docs/app.js
           node --check docs/field-export.js
+          node scripts/test_field_export.cjs
           node --check docs/calendar.js
           node --check docs/map-studio.js
           node --check docs/trend-report.js
