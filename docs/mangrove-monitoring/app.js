@@ -112,7 +112,7 @@ function timeSeriesInfo(plot,key,rows){
    (isRain?' ของฝนตามวันภาพ':' และห้ามสรุปการสูญเสียต้นไม้หรือเหตุการณ์น้ำท่วมจากทิศทางเส้น')+'</div>':''));
 
  return '<div class="time-series-summary">'+
-   '<span>'+('ค่าที่มีจริง '+n+' วัน · ผ่าน QA '+qaCount+' · ไม่ผ่าน/บางส่วน '+partialCount')+'</span>'+
+   '<span>'+'ค่าที่มีจริง '+n+' วัน · ผ่าน QA '+qaCount+' · ไม่ผ่าน/บางส่วน '+partialCount+'</span>'+
    '<span>ล่าสุด '+(last?html(last.date)+' : <b>'+seriesFmt(key,last.series_value)+' '+unit+'</b>':'ไม่มีค่าที่ใช้ได้')+'</span>'+
    (n>1?'<span>'+((isSpectral&&partialCount)?'ส่วนต่างค่าจุดแรก–ล่าสุด ':'เปลี่ยนจากวันแรก ')+seriesFmt(key,last.series_value-first.series_value)+' '+unit+'</span>':'')+
    '</div>'+sparse+proof+'<details class="series-source-table"><summary>ตรวจตัวเลขที่ใช้วาดกราฟ ('+n+' วัน)</summary><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่ Sentinel-2</th><th>ค่าที่ใช้วาดกราฟ</th><th>QA</th></tr></thead><tbody>'+table+'</tbody></table></div></details><p class="muted tiny">'+(isRain?
