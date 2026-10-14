@@ -144,11 +144,9 @@ function timeSeriesMultiRows(plot,key){
  return timeSeriesRows(plot,key).filter(row=>{const year=Number(String(row.date||'').slice(0,4));return year>=from&&year<=to&&(year-from)%step===0;});
 }
 function timeSeriesEventNote(plot,key){
- if(plot!=='13-STC'||!['ndvi','mndwi'].includes(key))return '';
- const rows=timeSeriesRows(plot,key);
- const before=rows.find(row=>row.date==='2026-04-30'&&qaOk(row));
- const during=rows.find(row=>row.date==='2026-09-29'&&qaOk(row));
- if(!before||!during||!timeSeriesDateSelected(plot,before.date,key)||!timeSeriesDateSelected(plot,during.date,key))return '';
+ if(plot!=='13-STC')return '';
+ const from=Number(state.tsYearFrom),to=Number(state.tsYearTo),step=Math.max(1,Number(state.tsYearInterval)||1);
+ if(!Number.isFinite(from)||!Number.isFinite(to)||2026<from||2026>to||(2026-from)%step!==0)return '';
  const ndviRows=timeSeriesRows(plot,'ndvi'),waterRows=timeSeriesRows(plot,'mndwi');
  const ndviBefore=ndviRows.find(row=>row.date==='2026-04-30'&&qaOk(row));
  const ndviDuring=ndviRows.find(row=>row.date==='2026-09-29'&&qaOk(row));
