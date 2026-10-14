@@ -9,9 +9,52 @@ const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]));
 
+let waterHistoryFeatures=[];
+function validHistory(plot){
+  return waterHistoryFeatures.filter(f=>f.properties?.plot===plot && ["VERIFIED","AUTO_VALID"].includes(f.properties?.analysis_status) && Number(f.properties?.valid_pct)>=70 && ringsFromGeometry(f.geometry).length).sort((a,b)=>String(a.properties.date).localeCompare(String(b.properties.date)));
+}
+function latestHistory(plot){const rows=validHistory(plot);return rows.length?rows[rows.length-1]:null;}
+function makeSource(f,kind,date,area,qa){
+  if(!f)return null;
+  return {type:"Feature",geometry:f.geometry,properties:{...f.properties,_kmzSource:kind,_kmzDate:date,_kmzArea:Number(area)||0,_kmzQA:qa||"NOT_VERIFIED"}};
+}
 function floodFeature(plot){
-  if(manualFlood?.properties?.plot===plot)return manualFlood;
-  try{return newWaterByPlot?.get(plot)||null}catch(_){return null}
+  const val=$("field-flood-source")?.value||"auto";
+  if(val==="manual")return manualFlood?.properties?.plot===plot?manualFlood:null;
+  const info=plotInfo(plot),h=latestHistory(plot);
+  const nw=(()=>{try{return newWaterByPlot?.get(plot)||null}catch(_){return null}})();
+  const historyAsSource=f=>f?makeSource(f,"water_extent",f.properties.date,f.properties.report_water_rai??f.properties.derived_water_rai,f.properties.analysis_status):null;
+  const newAsSource=()=>nw?makeSource(nw,"new_water",String(info?.current||"").replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3"),nw.properties?.new_water_rai, "QA_SCREENED_PAIR"):null;
+  if(val.startsWith("date:")){const d=val.slice(5);return historyAsSource(validHistory(plot).find(f=>f.properties.date===d))}
+  if(val==="new")return newAsSource();
+  if(val==="auto"){
+    if(h)return historyAsSource(h);
+    if(nw)return newAsSource();
+    return manualFlood?.properties?.plot===plot?manualFlood:null;
+  }
+  return null;
+}
+function sourceDescription(feature){
+  if(!feature)return "ไม่มี Polygon อัตโนมัติที่ผ่าน QA สำหรับแปลงนี้ — ใช้ปุ่มวาดขอบเขตน้ำได้";
+  const p=feature.properties||{};
+  const kind=p._kmzSource==="water_extent"?"ขอบเขตน้ำของวันนั้น (Water Extent)":p._kmzSource==="new_water"?"ขอบเขตน้ำเพิ่มจากวันฐาน (New Water)":"ขอบเขตที่วาดเอง (ยังไม่ยืนยัน)";
+  return kind+(p._kmzDate?" • "+p._kmzDate:"")+" • "+(p._kmzQA||"UNVERIFIED");
+}
+function refreshSourceOptions(plot){
+  const sel=$("field-flood-source");if(!sel)return;
+  const prior=sel.value||"auto";sel.replaceChildren();
+  const add=(value,label)=>{const o=document.createElement("option");o.value=value;o.textContent=label;sel.appendChild(o)};
+  add("auto","Auto — ใช้ข้อมูลน้ำที่ผ่าน QA ล่าสุด");
+  for(const f of validHistory(plot))add("date:"+f.properties.date,f.properties.date+" • ขอบเขตน้ำวันนั้น ("+f.properties.analysis_status+")");
+  try{if(newWaterByPlot?.get(plot))add("new","น้ำเพิ่มจากวันฐาน (New Water)")}catch(_){}
+  if(manualFlood?.properties?.plot===plot)add("manual","ขอบเขตวาดเอง (Unverified)");
+  if([...sel.options].some(o=>o.value===prior))sel.value=prior;else sel.value="auto";
+  const hint=$("field-source-description");if(hint)hint.textContent=sourceDescription(floodFeature(plot));
+}
+async function loadHistoricalFlood(){
+  try{const response=await fetch("data/water_history.geojson",{cache:"no-store"});if(!response.ok)return;const j=await response.json();waterHistoryFeatures=Array.isArray(j.features)?j.features:[];
+    const p=activePlot||((typeof selected!=="undefined")?selected:null);if(p){refreshSourceOptions(p.plot);clearPoints(true);updatePanel();}
+  }catch(e){console.warn("Field water history not available",e)}
 }
 function plotFeature(plot){
   try{return boundaryByPlot?.get(plot)||null}catch(_){return null}
@@ -19,7 +62,7 @@ function plotFeature(plot){
 function plotInfo(plot){
   try{return plots?.find(x=>x.plot===plot)||null}catch(_){return null}
 }
-function activeArea(info,flood){return Number(flood?.properties?.new_water_rai??info?.new_water_rai??0)}
+function activeArea(info,flood){return Number(flood?.properties?._kmzArea??0)}
 function recommendedCount(areaRai){
   const a=Number(areaRai||0);
   if(a<=0)return 5;
