@@ -227,7 +227,7 @@ function drawPoints(){
   }catch(e){console.warn("field points map render",e)}
 }
 function modeLabel(){
-  const m=$("field-sample-mode")?.value||"land_edge";return m==="land_edge"?"พื้นดินใกล้ขอบน้ำ (ยังไม่ยืนยันทางเข้า)":m==="water_edge"?"ภายในน้ำใกล้ขอบ":"ภายในน้ำทั่วบริเวณ";
+  const m=$("field-sample-mode")?.value||"land_edge";return m==="land_edge"?"นอก Polygon น้ำที่เลือก ใกล้ขอบน้ำ (ยังไม่ยืนยันทางเข้า)":m==="water_edge"?"ภายในน้ำใกล้ขอบ":"ภายในน้ำทั่วบริเวณ";
 }
 function updatePanel(edgeDepth){
   const p=activePlot||selected,ready=$("field-export-ready"),sum=$("field-export-summary");
@@ -276,7 +276,7 @@ function buildKml(p){
   const source=flood?.properties?._kmzSource||"unknown";
   const sourceDate=flood?.properties?._kmzDate||current;
   const floodPm=flood?placemarkPolygon(`${p.plot} — ${source==="water_extent"?"Water Extent":source==="new_water"?"New Water":"User-drawn Water (unverified)"}`,flood,"#floodArea",`Plot: ${esc(p.plot)}<br>Source: ${esc(source)}<br>Date: ${esc(sourceDate)}<br>Baseline: ${esc(baseline)}<br>QA: ${esc(flood.properties?._kmzQA||"UNVERIFIED")}<br>Mapped area: ${fmtLocal(area)} rai`):"";
-  const pointPm=points.map(pt=>`<Placemark><name>${pt.id}</name><styleUrl>#surveyPoint</styleUrl><description><![CDATA[Plot: ${esc(p.plot)}<br>Date: ${esc(current)}<br>Sampling: ${esc(modeLabel())}<br>Point in mapped water: ${pt.in_water?"YES — access by water may be required":"NO — dry-land candidate only"}<br>Lat: ${pt.lat.toFixed(7)}<br>Lon: ${pt.lon.toFixed(7)}<br>Distance to flood edge: ~${Math.round(pt.edge_distance_m)} m]]></description><ExtendedData><Data name="plot"><value>${esc(p.plot)}</value></Data><Data name="sample_id"><value>${pt.id}</value></Data><Data name="sample_method"><value>${esc(pt.method)}</value></Data><Data name="in_water"><value>${pt.in_water?"true":"false"}</value></Data><Data name="flood_source"><value>${esc(source)}</value></Data><Data name="water_date"><value>${esc(sourceDate)}</value></Data><Data name="edge_distance_m"><value>${pt.edge_distance_m}</value></Data></ExtendedData><Point><coordinates>${pt.lon},${pt.lat},0</coordinates></Point></Placemark>`).join("");
+  const pointPm=points.map(pt=>`<Placemark><name>${pt.id}</name><styleUrl>#surveyPoint</styleUrl><description><![CDATA[Plot: ${esc(p.plot)}<br>Date: ${esc(current)}<br>Sampling: ${esc(modeLabel())}<br>Point in mapped water: ${pt.in_water?"YES — access by water may be required":"NO — outside selected polygon; dry land not confirmed"}<br>Lat: ${pt.lat.toFixed(7)}<br>Lon: ${pt.lon.toFixed(7)}<br>Distance to flood edge: ~${Math.round(pt.edge_distance_m)} m]]></description><ExtendedData><Data name="plot"><value>${esc(p.plot)}</value></Data><Data name="sample_id"><value>${pt.id}</value></Data><Data name="sample_method"><value>${esc(pt.method)}</value></Data><Data name="in_water"><value>${pt.in_water?"true":"false"}</value></Data><Data name="flood_source"><value>${esc(source)}</value></Data><Data name="water_date"><value>${esc(sourceDate)}</value></Data><Data name="edge_distance_m"><value>${pt.edge_distance_m}</value></Data></ExtendedData><Point><coordinates>${pt.lon},${pt.lat},0</coordinates></Point></Placemark>`).join("");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document>
 <name>${esc(p.plot)} Flood Field Survey</name>
@@ -298,7 +298,7 @@ async function exportKmz(){
   if(typeof JSZip==="undefined"){notify("โหลดตัวสร้าง KMZ ไม่สำเร็จ กรุณารีเฟรชหน้าเว็บ");return}
   const kml=buildKml(p),zip=new JSZip();
   zip.file("doc.kml",kml);
-  zip.file("README.txt",`Rayong Flood & Environmental Monitoring\nPlot: ${p.plot}\nRandom points: ${points.length}\nSampling mode: ${modeLabel()}\nCRS: WGS84 (EPSG:4326)\nNote: near-edge mode is not a road/accessibility guarantee.`);
+  zip.file("README.txt",`Rayong Flood & Environmental Monitoring\nPlot: ${p.plot}\nFlood source: ${flood.properties?._kmzSource||"unknown"}\nWater image date: ${flood.properties?._kmzDate||"not recorded"}\nQA: ${flood.properties?._kmzQA||"UNVERIFIED"}\nRandom points: ${points.length}\nSampling mode: ${modeLabel()}\nCRS: WGS84 (EPSG:4326)\nCAUTION: outside newly mapped water does NOT imply dry ground: pre-existing water, tides, unsafe access, private property, and missing roads may remain.`);
   const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}});
   const info=plotInfo(p.plot)||p,date=String(flood.properties?._kmzDate||info.current||"undated").replaceAll("-","");
   const a=document.createElement("a"),u=URL.createObjectURL(blob);
