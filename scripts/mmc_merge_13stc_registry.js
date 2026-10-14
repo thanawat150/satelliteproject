@@ -17,6 +17,31 @@ const plot = read(plotPath);
 if (plot.plot !== '13-STC' || plot.scenes?.length !== 106) {
   throw new Error('Expected 106 processed 13-STC scene records.');
 }
+const results = read(resultsPath);
+const previousScenes = (results.scenes || []).filter(x => x.plot === '13-STC');
+const priorValidated = new Map(previousScenes
+  .filter(x => x.analysis_status === 'AUTO_VALID')
+  .map(x => [x.date, x]));
+plot.scenes = plot.scenes.map(scene => {
+  const prior = priorValidated.get(scene.date);
+  if (!prior || scene.analysis_status === 'AUTO_VALID') return scene;
+  // A later archive pass can have weaker radiometric QA. Keep an already
+  // validated record and its measured areas while retaining new 60 m provenance.
+  return {
+    ...prior,
+    source_tif60_file_id: scene.source_tif60_file_id,
+    source_tif60_filename: scene.source_tif60_filename,
+    source_tiff_metadata: scene.source_tiff_metadata,
+    qa60_60m: scene.qa60_60m,
+  };
+});
+const nextQa = plot.scenes.filter(x => x.analysis_status === 'AUTO_VALID').length;
+const nextPartial = plot.scenes.filter(x => x.analysis_status === 'PARTIAL').length;
+const nextNoData = plot.scenes.filter(x => x.analysis_status === 'NO_DATA').length;
+plot.scene_count = plot.scenes.length;
+plot.plot_registry.qa_valid_dates = nextQa;
+plot.plot_registry.partial_dates = nextPartial;
+plot.plot_registry.processed_dates = plot.scenes.length;
 const sourceManifest = read(sourceManifestPath);
 const sourceItems = (sourceManifest.generated_items || []).filter(x => x.plot === '13-STC');
 const dates = new Set(plot.scenes.map(x => x.date));
@@ -38,7 +63,6 @@ for (const item of sourceItems) {
 }
 
 const manifest = read(manifestPath);
-const previousImages = (manifest.generated_items || []).filter(x => x.plot === '13-STC');
 manifest.generated_items = [
   ...(manifest.generated_items || []).filter(x => x.plot !== '13-STC'),
   ...sourceItems,
@@ -55,8 +79,6 @@ manifest.image_dates = new Set([
   ...manifest.generated_items.map(x => `${x.plot}|${x.date}`),
 ]).size;
 
-const results = read(resultsPath);
-const previousScenes = (results.scenes || []).filter(x => x.plot === '13-STC');
 results.scenes = [
   ...(results.scenes || []).filter(x => x.plot !== '13-STC'),
   ...plot.scenes,
@@ -64,9 +86,6 @@ results.scenes = [
 const previousQa = previousScenes.filter(x => x.analysis_status === 'AUTO_VALID').length;
 const previousPartial = previousScenes.filter(x => x.analysis_status === 'PARTIAL').length;
 const previousNoData = previousScenes.filter(x => x.analysis_status === 'NO_DATA').length;
-const nextQa = plot.scenes.filter(x => x.analysis_status === 'AUTO_VALID').length;
-const nextPartial = plot.scenes.filter(x => x.analysis_status === 'PARTIAL').length;
-const nextNoData = plot.scenes.filter(x => x.analysis_status === 'NO_DATA').length;
 if (results.totals) {
   results.totals.qa_valid_dates += nextQa - previousQa;
   results.totals.partial_dates += nextPartial - previousPartial;
@@ -84,6 +103,7 @@ results.plots['13-STC'] = {
   processing_status: 'DONE',
 };
 
+write(plotPath, plot);
 write(manifestPath, manifest);
 write(resultsPath, results);
 console.log(JSON.stringify({
