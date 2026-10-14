@@ -405,3 +405,8 @@
 .field-point-icon.is-land span{background:#208353;border-color:#d1f7e0}
 .field-point-icon.is-water span{background:#157db3;border-color:#dbf1ff}
 @media(max-width:720px){.field-source-picker select{font-size:11px}.field-auto-help{font-size:10px}}
+
+/* Clean map default: keep polygon overlays opt-in, not automatically rendered over imagery. */
+.field-source-picker .field-show-boundary{display:flex;flex-direction:row;align-items:center;gap:7px;color:#abd8ed;font-size:10px;font-weight:600;line-height:1.5}
+.field-show-boundary input{accent-color:#1fb8e8;flex:0 0 auto}
+.legend .legend-note{color:#85a4b7;font-size:9px}
