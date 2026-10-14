@@ -83,7 +83,7 @@ function removeManualBoundary(index){
   syncManualFlood(p.plot);
   refreshSourceOptions(p.plot);
   if(parts.length&&$("field-flood-source"))$("field-flood-source").value="manual";
-  redrawManualBoundaries();redrawFloodBoundary();renderManualList();clearPoints(true);updatePanel();
+  redrawManualBoundaries();redrawFloodBoundary();renderManualList();preserveOperatorPoints();updatePanel();
   notify("ลบขอบเขตน้ำ "+(index+1)+" แล้ว • เหลือ "+parts.length+" ขอบเขต");
   return true;
 }
@@ -388,6 +388,24 @@ function clearPoints(silent=false){
   updatePanel();
   if(!silent)notify("ล้างจุดตรวจแล้ว");
 }
+function preserveOperatorPoints(){
+  // A changed water geometry invalidates random samples but never discards
+  // manually placed operator points within the selected project boundary.
+  const p=activePlot||selected;
+  const kept=points.filter(x=>x.method==="manual_point");
+  const removed=points.length-kept.length;
+  points=kept;pointsEdited=kept.length>0;
+  const flood=p?floodFeature(p.plot):null;
+  points.forEach((pt,i)=>{
+    pt.id="P"+String(i+1).padStart(2,"0");
+    const xy=[pt.lon,pt.lat];
+    pt.in_water=!!flood&&pointInFeature(xy,flood);
+    pt.edge_distance_m=flood?+distanceToBoundaryM(xy,flood).toFixed(1):null;
+    pt.flood_source=flood?.properties?._kmzSource||"none";
+  });
+  drawPoints();renderPointList();syncPointModeUI();updatePanel();
+  if(removed)notify("ขอบเขตน้ำเปลี่ยน • ยกเลิกจุดสุ่ม "+removed+" จุด แต่คงจุดที่วางเองไว้");
+}
 function removePoint(id){
   const index=points.findIndex(p=>p.id===id);
   if(index===-1)return false;
@@ -649,13 +667,13 @@ function finishDrawing(){
   removeDrawing();syncManualFlood(p.plot);
   refreshSourceOptions(p.plot);$("field-flood-source").value="manual";
   redrawManualBoundaries();redrawFloodBoundary();renderManualList();
-  clearPoints(true);updatePanel();
+  preserveOperatorPoints();updatePanel();
   notify("บันทึกขอบเขตน้ำที่ "+parts.length+" แล้ว • รวม "+parts.length+" ขอบเขต • วาดเพิ่มหรือ Export KMZ ได้");
 }
 function clearDrawing(){
   const p=activePlot||selected;if(!p)return;
   manualByPlot.delete(p.plot);removeDrawing();syncManualFlood(p.plot);
-  refreshSourceOptions(p.plot);redrawManualBoundaries();redrawFloodBoundary();renderManualList();clearPoints(true);updatePanel();
+  refreshSourceOptions(p.plot);redrawManualBoundaries();redrawFloodBoundary();renderManualList();preserveOperatorPoints();updatePanel();
   notify("ล้างขอบเขตที่วาดทั้งหมดของ "+p.plot+" แล้ว");
 }
 function onMapClick(e){
@@ -727,7 +745,7 @@ function bind(){
     const btn=e.target?.closest?.("[data-remove-point]");
     if(btn){e.preventDefault();removePoint(btn.getAttribute("data-remove-point"));}
   });
-  $("field-flood-source")?.addEventListener("change",()=>{stopPointPlacement();clearPoints(true);redrawFloodBoundary();updatePanel()});
+  $("field-flood-source")?.addEventListener("change",()=>{stopPointPlacement();redrawFloodBoundary();preserveOperatorPoints();updatePanel()});
   $("field-preview-boundary")?.addEventListener("change",()=>{redrawFloodBoundary();});
   $("field-point-count")?.addEventListener("change",()=>updatePanel());
   $("field-sample-mode")?.addEventListener("change",()=>updatePanel());
