@@ -10,7 +10,7 @@ const MODES={
  ndre:{name:"NDRE (สภาพใบพืช)",type:"index",colors:["#8e4738","#d1b671","#e6e8bd","#85b895","#2c7155"]},
  bsi:{name:"BSI (ดินเปิดโล่ง)",type:"index",colors:["#2b7152","#86a86f","#e9dfac","#d9a36e","#975534"]}
 };
-const defaults={mode:"true",boundary:true,water:true,labels:false,brightness:100,contrast:100,saturation:100,gamma:100,r:100,g:100,b:100,preset:"custom"};
+const defaults={mode:"true",boundary:true,water:false,labels:false,brightness:100,contrast:100,saturation:100,gamma:100,r:100,g:100,b:100,preset:"custom"};
 const state={...defaults};let entries=[],current=null,saved=null,initialized=false;
 const $=id=>document.getElementById(id);
 const notify=s=>{if(typeof showToast==="function")showToast(s);else console.info(s)};
