@@ -331,3 +331,8 @@ html{scroll-behavior:smooth}
 #time-series-panel .ts-year-legend{display:none!important}
 #time-series-panel .ts-point,#time-series-panel .ts-point.is-partial{background:#ff9878!important;border-color:#0b251d!important;box-shadow:0 0 0 1px #ff9878!important;opacity:1!important}
 #time-series-panel .ts-point:hover,#time-series-panel .ts-point:focus{background:#ff9878!important;border-color:#0b251d!important;box-shadow:0 0 0 3px #ff9878!important;opacity:1!important}
+
+/* Time-series controls are compact; keep trendline visually above the observation markers. */
+#time-series-panel .ts-chart-mode{min-height:32px;padding:5px 9px;font-size:11px}
+#time-series-panel .ts-chart.is-trendline .ts-chart-svg{z-index:2;pointer-events:none}
+#time-series-panel .ts-chart.is-trendline .ts-point{z-index:1}
