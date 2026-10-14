@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261014-water-sharp5" />
+  <link rel="stylesheet" href="styles.css?v=20261014-detail-scroll6" />
 </head>
 <body>
   <header class="topbar">
@@ -89,7 +89,7 @@
             <div id="overview-map" class="map"></div>
           </section>
 
-          <section class="card detail-card">
+          <section class="card detail-card" tabindex="0" role="region" aria-label="รายละเอียดแปลงที่เลือก เลื่อนดูข้อมูล Report และ KMZ ได้">
             <div class="card-head"><div><div class="eyebrow">SELECTED PLOT</div><h3 id="detail-title">—</h3></div><span id="detail-status" class="status-pill">—</span></div>
             <div class="plot-meta"><span id="detail-area">—</span><span id="detail-dates">—</span></div>
             <div class="headline" id="plain-summary">เลือกแปลงเพื่อดูสรุป</div>
@@ -400,7 +400,7 @@
   <script src="report-selector.js?v=20261009-reportselect1"></script>
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261014-water-sharp5"></script>
+  <script src="app.js?v=20261014-detail-scroll6"></script>
   <script src="field-export.js?v=20261014-image-select4"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
