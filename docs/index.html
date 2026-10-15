@@ -13,6 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
   <link rel="stylesheet" href="styles.css?v=20261014-survey-studio15" />
+  <link rel="stylesheet" href="three-period-report.css?v=20261015-r1" />
 </head>
 <body>
   <header class="topbar">
@@ -397,7 +398,8 @@
           <section class="card report-controls">
             <div class="eyebrow">REPORT BUILDER</div><h3>สร้างรายงานจากข้อมูลที่กำลังดู</h3><p class="pdd-report-note">ขอบเขตแปลงหลักใช้ PDD ตามฐานข้อมูลเดิมของรายงาน • ขอบเขตยืนยันกรมเก็บไว้สำหรับเทียบข้อมูล ไม่ใช้แทน PDD อัตโนมัติ</p>
             <label>เลือกแปลง<select id="report-plot"></select></label>
-            <label>รูปแบบรายงาน<select id="report-type"><option value="quick">Live Report — เลือกหลายวันและหลายปี</option><option value="compare">Compare Report — เปรียบเทียบวันที่ติ๊กเลือก</option><option value="verified">Verified Report — PDF ต้นฉบับ (ไม่เปลี่ยนแปลง)</option></select></label>
+            <label>รูปแบบรายงาน<select id="report-type"><option value="three">รายงาน 3 ช่วงเวลา — รูปแบบ A4 4 หน้า</option><option value="quick">Live Report — เลือกหลายวันและหลายปี</option><option value="compare">Compare Report — เปรียบเทียบวันที่ติ๊กเลือก</option><option value="verified">Verified Report — PDF ต้นฉบับ (ไม่เปลี่ยนแปลง)</option></select></label>
+            <div class="three-report-controls" id="three-report-controls" hidden><div class="report-selector-title">เลือก 3 วันที่จะเปรียบเทียบ</div><label>01 ก่อนเหตุ / วันฐาน<select id="three-date-a"></select></label><label>02 รอบตรวจพบการเปลี่ยนแปลง<select id="three-date-b"></select></label><label>03 ติดตามล่าสุด<select id="three-date-c"></select></label><p class="three-report-help" id="three-report-note">แสดงภาพวันที่มีจริง พร้อมระบุ QA</p></div>
             <div class="report-selection-panel" id="report-selection-panel">
               <div class="report-selector-title">ช่วงเวลาที่ต้องการแสดง</div>
               <fieldset class="report-mode-options" aria-label="รูปแบบการแสดงวันที่">
@@ -433,7 +435,8 @@
   <script src="report-selector.js?v=20261009-reportselect1"></script>
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
-  <script src="app.js?v=20261014-survey-studio15"></script>
+  <script src="three-period-report.js?v=20261015-r1"></script>
+  <script src="app.js?v=20261015-threeperiod1"></script>
   <script src="field-export.js?v=20261014-survey-studio15"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
