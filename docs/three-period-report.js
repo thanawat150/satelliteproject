@@ -153,14 +153,19 @@ function fourthPage(p,dates){
  '<h3 class="three-section-title">ข้อควรระวังในการตรวจสอบ</h3><ul class="three-checks"><li>แสดงภาพได้แม้ไม่ผ่าน QA แต่ไม่เอาข้อมูลใช้ไม่ได้ไปคำนวณแทนพื้นที่ไม่มีข้อมูล</li><li>ใช้ขอบเขตแปลง PDD เดียวกันและตรวจวันที่ทุกภาพให้ตรงกับค่าดัชนี</li><li>ตรวจเมฆ เงา ความครอบคลุม และการเปลี่ยนแปลงระดับน้ำขึ้นลง</li><li>ไม่สรุปการรอดตายของต้นไม้จากค่า NDVI / MNDWI / BSI เพียงค่าเดียว</li><li>แหล่งตัวเลข: analysis_history.json; แหล่งภาพ: full_preview_part_N.json จาก Sentinel-2</li></ul>'+
  '<div class="three-provenance"><b>ข้อมูลอ้างอิง</b><div>แปลง: '+escape(p.plot)+' · พื้นที่ PDD: '+escape(n(p.area_rai,2))+' ไร่</div><div>วันภาพ: '+dates.map(dateLabel).map(escape).join(' | ')+'</div><div>แหล่งภาพ: Sentinel-2 L2A; Full Preview จาก GeoTIFF จริง; native raster pixels เท่ากับขนาดในแต่ละภาพ</div><div>NDVI = (B8−B4)/(B8+B4) · MNDWI = (B3−B11)/(B3+B11) · BSI = (B11+B4−B8−B2)/(B11+B4+B8+B2)</div><div>ภาพสำหรับประกอบรายงานไม่ใช่หลักฐานยืนยันความเสียหายและอาจมีบริเวณไม่มีข้อมูล</div></div>'+foot("04")+'</section>';
 }
-async function render(paper,p,files){
+async function render(paper,p,files,isCurrent=()=>true){
  if(!paper||!p)throw Error("Missing report plot");
+ if(!isCurrent())return null;
  paper.innerHTML='<div class="three-loading">กำลังจัดภาพและค่าดัชนีจาก GeoTIFF...</div>';
- const history=await fetchJson("data/analysis_history.json"),rows=history.plots?.[p.plot]||[];
+ const history=await fetchJson("data/analysis_history.json");
+ if(!isCurrent())return null;
+ const rows=history.plots?.[p.plot]||[];
  await loadCommon();
+ if(!isCurrent())return null;
  const part=(catalog.parts||[]).findIndex(x=>(x.plots||[]).includes(p.plot));
  if(part<0)throw Error("ไม่พบกลุ่มข้อมูลภาพสำหรับ "+p.plot);
  const layerData=await fetchJson("data/full_preview_part_"+(part+1)+".json");
+ if(!isCurrent())return null;
  const layers=Array.isArray(layerData.layers)?layerData.layers:[];
  const dates=showControls(p.plot,files,rows,p);
  const byDate=new Map(rows.map(r=>[r.date,r]));
