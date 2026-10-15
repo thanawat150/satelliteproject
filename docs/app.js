@@ -520,7 +520,9 @@ async function renderReportPreview(){
   const p=plots.find(x=>x.plot===name)||plots[0];
   if(!p)return;
   const type=document.getElementById('report-type').value;
-  const selectorPanel=document.getElementById('report-selection-panel');if(selectorPanel)selectorPanel.hidden=type==='verified';
+  const selectorPanel=document.getElementById('report-selection-panel');if(selectorPanel)selectorPanel.hidden=type==='verified'||type==='three';
+   const threeControls=document.getElementById('three-report-controls');if(threeControls)threeControls.hidden=type!=='three';
+   if(type!=='three')window.ThreePeriodReport?.clear?.();
   const verifiedLink=document.getElementById('verified-folder-2');
   const paper=document.getElementById('report-paper');
   const frame=document.getElementById('verified-pdf-frame');
@@ -534,7 +536,16 @@ async function renderReportPreview(){
   }
   frame.style.display='none';frame.src='about:blank';
   paper.style.display='block';
-  if(printBtn)printBtn.style.display='block';
+  if(printBtn){printBtn.style.display='block';printBtn.textContent=type==='three'?'Export รายงาน 4 หน้า เป็น PDF':'Export Quick Report เป็น PDF';}
+  if(type==='three'){
+    paper.innerHTML='<div class="three-loading">กำลังจัดภาพ 3 ช่วงเวลาและข้อมูล QA...</div>';
+    try{
+      if(!window.ThreePeriodReport?.render)throw Error('ไม่พบโมดูลรายงาน 3 ช่วงเวลา');
+      await window.ThreePeriodReport.render(paper,p,satelliteFiles);
+      if(request!==liveReportRequest)return;
+    }catch(err){console.error('Three-period report error',err);if(request===liveReportRequest)paper.innerHTML='<div class="live-report-alert"><strong>สร้างรายงาน 3 ช่วงเวลาไม่สำเร็จ</strong><p>'+String(err.message||err).replace(/</g,'&lt;')+'</p></div>';}
+    return;
+  }
   // Live and Compare reports now share the date/year checkbox model.
   paper.innerHTML='<div class="live-report-loading">กำลังตรวจผลการวิเคราะห์ล่าสุดและสถานะ QA...</div>';
   try{
@@ -615,7 +626,7 @@ async function printReport(){
   if(p?.report_url)window.open(p.report_url,'_blank','noopener');return;
  }
  await renderReportPreview();
- const imgs=[...document.querySelectorAll('#report-paper .report-imagery-item img')];
+ const imgs=[...document.querySelectorAll('#report-paper img')];
  await Promise.all(imgs.map(im=>im.decode?im.decode().catch(()=>{}):Promise.resolve()));
  window.print();
 }
