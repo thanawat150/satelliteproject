@@ -73,6 +73,18 @@ assert(provinceReport.includes('รายงานสถานการณ์จ
 const provinceRows=(provinceReport.match(/<tr>/g)||[]).length;
 assert(provinceRows>=19,'All 19 plots must have rows in the province report');
 assert(!provinceReport.includes('NaN'));
+assert.equal((plotReport.match(/class="mcr-number"/g)||[]).length,6,'Plot infographic must have all six research sections');
+assert.equal((provinceReport.match(/class="mcr-number"/g)||[]).length,6,'Province infographic must have all six research sections');
+for(const text of ['ที่มาและความสำคัญ','วัตถุประสงค์','ขั้นตอนวิเคราะห์','ผลการศึกษา','สรุปผล','การนำผลรายงาน']) {
+ assert(plotReport.includes(text),'Plot poster is missing section: '+text);
+ assert(provinceReport.includes(text),'Province poster is missing section: '+text);
+}
+assert(plotReport.includes('class="mcr-images"'),'Plot uses actual three-date satellite preview slots');
+assert(plotReport.includes('194.92'),'Reported water-area change must be from real QA-approved observations');
+assert(plotReport.includes('44.7')===false,'Partial QA must not be silently promoted into a confirmed comparison');
+assert(provinceReport.includes('conic-gradient'),'Province QA overview graphic should use the real coverage');
+assert(!plotReport.includes('EVI'),'Do not invent EVI measurements');
+assert(!plotReport.includes('โมเดล GeoAI'),'Do not claim an unverified GeoAI inference pipeline');
 const reportCss=read('docs/monitoring-report.css');
 assert(reportCss.includes('@page{size:A4 portrait'));
 assert(reportCss.includes('mc-print-report'));
