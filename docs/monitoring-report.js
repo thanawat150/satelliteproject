@@ -123,10 +123,11 @@ async function print(){
   setTimeout(()=>document.body.classList.remove("mc-print-report"),1200);
  }
 }
+function ready(){const el=$("mc-report-paper");return !!el?.innerHTML.trim()&&!el.querySelector(".mcr-images-loading")}
 function bind(){
  // The analysis controller validates current dates and QA before enabling print.
  root.addEventListener("afterprint",()=>document.body.classList.remove("mc-print-report"));
 }
-root.MonitoringReport={render,setPreview,print,bind,model:{plotReport,provinceReport,good,trusted}};
+root.MonitoringReport={render,setPreview,ready,print,bind,model:{plotReport,provinceReport,good,trusted}};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind);else bind();
 })(window);
