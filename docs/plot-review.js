@@ -50,7 +50,12 @@ function onView(view){
  }else showMessage("เกรดประเมินใช้กับรายแปลงเท่านั้น");
  updatePaper();
 }
-function markDirty(){state.pending=true;showMessage("มีการแก้ไขที่ยังไม่บันทึก • กดบันทึกก่อน Export รายงาน",true)}
+function markDirty(){
+ state.pending=true;
+ root.AnalysisCenter?.invalidateFinal?.("มีการแก้เกรดหรือหมายเหตุ • บันทึกก่อนสร้าง Final ใหม่");
+ const generate=$("mc-create-final");if(generate)generate.disabled=true;
+ showMessage("มีการแก้ไขที่ยังไม่บันทึก • กดบันทึกก่อนสร้าง Final",true);
+}
 function save(){
  if(!state.plot){showMessage("กรุณาเลือกแปลงและวันที่ก่อน",true);return false}
  const grade=$("mc-review-grade")?.value,condition=$("mc-review-condition")?.value;
@@ -62,6 +67,7 @@ function save(){
  catch(e){state.supported=false;showMessage("เบราว์เซอร์ไม่อนุญาตบันทึกข้อมูล โปรดดาวน์โหลดไฟล์ JSON เพื่อเก็บข้อมูล",true);return false}
  state.record=record;state.pending=false;state.supported=true;
  updatePaper();
+ root.AnalysisCenter?.onReviewSaved?.();
  showMessage("บันทึกเกรดในเบราว์เซอร์เครื่องนี้แล้ว • ไม่ได้อัปโหลดไปเซิร์ฟเวอร์");
  return true;
 }
