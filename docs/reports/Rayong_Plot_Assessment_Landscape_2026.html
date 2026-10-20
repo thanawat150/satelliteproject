@@ -210,6 +210,39 @@ body.paper-a4 .toolbar:after{content:"A4 — Reduced preview";font-size:9px;colo
  .landscape-header,.draft-stamp,.landscape-columns h2,.grade-summary,.water-qa,.exception-list,.evidence-block{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
 }
 
+
+/* Independent water coverage screen, separate from randomized B/C plot-review grade. */
+.landscape-table th:nth-child(1){width:15%}
+.landscape-table th:nth-child(2){width:11%}
+.landscape-table th:nth-child(3){width:13%}
+.landscape-table th:nth-child(4){width:9%}
+.landscape-table th:nth-child(5){width:9%}
+.landscape-table th:nth-child(6){width:10%}
+.landscape-table th:nth-child(7){width:14%}
+.landscape-table th:nth-child(8){width:13%}
+.landscape-table th:nth-child(9){width:6%}
+.landscape-table th:nth-child(8){font-size:7.4px}
+.landscape-table td{padding:1.75mm .7mm;font-size:8.2px}
+.water-level{display:inline-flex;align-items:center;justify-content:center;border-radius:2mm;padding:1.1mm 1.6mm;min-width:13mm;font-size:8px;font-weight:800;line-height:1.1;white-space:nowrap}
+.water-level.high{background:#ffdfd4;color:#a33d24}
+.water-level.medium{background:#fff0cd;color:#9c6b23}
+.water-level.low{background:#e0f3e5;color:#0a7b4d}
+.water-level.unknown{background:#e8edf0;color:#5c6573;font-size:7px}
+.priority-summary{border:1px solid #efd5bb;background:#fff8ee;border-radius:1.6mm;padding:2mm 2.6mm;margin-top:1mm;color:#714f31;display:flex;flex-direction:column;gap:1.1mm}
+.priority-title{display:flex;justify-content:space-between;align-items:center;gap:2mm}
+.priority-title strong{font-size:10px;color:#a74e26}
+.priority-title span{font-size:8px;font-weight:800;color:#ad683a}
+.priority-top{display:flex;flex-wrap:wrap;gap:2mm}
+.priority-top span{background:white;border:1px solid #e9d2b7;border-radius:1mm;padding:1mm 2mm;font-size:8px;font-weight:700}
+.priority-top b{color:#ae4825}
+.priority-summary p{font-size:8px;line-height:1.2;margin:0}
+.method-note{font-size:8.15px}
+.exception-heading{margin-top:1.6mm!important}
+.landscape-columns .table-column{gap:1.6mm}
+@media print{
+ .priority-summary,.water-level{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+}
+
 </style>
 </head>
 <body>
@@ -278,14 +311,24 @@ const records=plotsData.plots.map(p=>{
  const delta=valid?Number(now)-Number(base):null;
  const gradeDraft=grade(p.plot);
  const noMeasurement=!valid;
+ // Water-level screening uses only QA-qualified date-B water, independent of randomized B/C grade.
+ const waterMeasured=ok(current)&&current?.water_rai!=null&&Number.isFinite(Number(current.water_rai))&&Number(p.area_rai)>0;
+ const waterShare=waterMeasured?100*Number(current.water_rai)/Number(p.area_rai):null;
+ const waterLevel=waterShare==null?"ประเมินไม่ได้":waterShare>=70?"มาก":waterShare>=30?"กลาง":"น้อย";
  const note=noMeasurement?(quality(current)==="NO_DATA"?"รอบติดตาม 29/09 ไม่มีข้อมูลที่ใช้วิเคราะห์ได้ • ไม่คำนวณผลต่าง":"ข้อมูล A/B ไม่ผ่าน QA ครบ • รอภาพที่ใช้วิเคราะห์ได้"):
  (delta>0?"พบพื้นที่น้ำเพิ่มจากวันที่ฐาน; เกรด B/C เป็นการสุ่ม ไม่ใช่ข้อสรุปความเสียหาย":delta<0?"พื้นที่น้ำลดจากวันที่ฐาน; เกรด B/C เป็นการสุ่ม ไม่ใช่ข้อสรุปความเสียหาย":"พื้นที่น้ำไม่เปลี่ยนตามค่าที่มี; เกรด B/C เป็นการสุ่ม");
- return {p,original,current,valid,base,now,delta,gradeDraft,noMeasurement,note};
+ return {p,original,current,valid,base,now,delta,gradeDraft,noMeasurement,note,waterShare,waterLevel};
 });
 if(records.length!==19)throw Error("Expected 19 plots; got "+records.length);
 const valid=records.filter(x=>x.valid);
 const missing=records.filter(x=>!x.valid);
 const counts={B:records.filter(x=>x.gradeDraft==="B").length,C:records.filter(x=>x.gradeDraft==="C").length};
+const waterGroups={high:records.filter(x=>x.waterLevel==="มาก").sort((a,b)=>b.waterShare-a.waterShare),
+ medium:records.filter(x=>x.waterLevel==="กลาง"),
+ low:records.filter(x=>x.waterLevel==="น้อย"),
+ unknown:records.filter(x=>x.waterLevel==="ประเมินไม่ได้")};
+const waterLabel=x=>'<span class="water-level '+(x.waterLevel==="มาก"?"high":x.waterLevel==="กลาง"?"medium":x.waterLevel==="น้อย"?"low":"unknown")+
+ '" title="'+(x.waterShare==null?"ไม่พบค่าพื้นที่น้ำที่ผ่าน QA":n(x.waterShare,1)+"% ของพื้นที่แปลง")+'">'+esc(x.waterLevel)+'</span>';
 const sumDelta=valid.reduce((t,x)=>t+x.delta,0);
 const sumWater=records.filter(x=>ok(x.current)).reduce((t,x)=>t+x.now,0);
 const area=records.reduce((t,x)=>t+Number(x.p.area_rai||0),0);
@@ -316,11 +359,19 @@ const rowTable=records.map(x=>'<tr class="'+(x.noMeasurement?"missing-row":"")+'
  '<td>'+esc(x.now==null?"—":n(x.now))+'</td>'+
  '<td>'+esc(x.delta==null?"—":signed(x.delta))+'</td>'+
  '<td class="'+(x.noMeasurement?"qa-no":"")+'">'+esc(quality(x.current))+'</td>'+
+ '<td>'+waterLabel(x)+'</td>'+
  '<td>'+fg(x.gradeDraft)+'</td></tr>').join("");
 const table='<table class="landscape-table"><thead><tr>'+
  '<th>แปลง</th><th>พื้นที่ (ไร่)</th><th>วันฐาน</th><th>น้ำ A</th>'+
- '<th>น้ำ B</th><th>Δ น้ำ</th><th>QA</th><th>เกรด*</th>'+
+ '<th>น้ำ B</th><th>Δ น้ำ</th><th>QA</th><th>ระดับน้ำ/พื้นที่</th><th>เกรด*</th>'+
  '</tr></thead><tbody>'+rowTable+'</tbody></table>';
+const highTop=waterGroups.high.slice(0,5);
+const highMore=waterGroups.high.slice(5);
+const prioritySummary='<div class="priority-summary">'+
+ '<div class="priority-title"><strong>ติดตามพิเศษ: น้ำระดับมาก</strong><span>'+waterGroups.high.length+' แปลง · ≥70% ของเนื้อที่</span></div>'+
+ '<div class="priority-top">'+highTop.map(x=>'<span>'+esc(x.p.plot)+' <b>'+n(x.waterShare,1)+'%</b></span>').join("")+'</div>'+
+ (highMore.length?'<p>เพิ่มเติม: '+highMore.map(x=>esc(x.p.plot)).join(" · ")+'</p>':"")+
+ '</div>';
 const missingDetail=missing.map(x=>
  '<div class="exception"><strong>'+esc(x.p.plot)+'</strong><span>'+esc(x.note)+'</span></div>').join("");
 const bg=main?'<img class="hero-sat" src="'+main.src+'" alt="">':"";
@@ -342,18 +393,19 @@ const body='<section class="sheet landscape-sheet">'+
  '<p class="evidence-warning">07/10 มีภาพ MNDWI แต่ยังไม่มีผลวิเคราะห์รายวันที่ผ่าน QA ของ 14-VSD จึงไม่ระบุค่าตัวเลขวัน C และไม่สรุปว่าน้ำท่วมจากภาพเพียงอย่างเดียว</p></section>'+
  '<section class="table-column"><h2><span>03</span> ผลวิเคราะห์พื้นที่น้ำและเกรด 19 แปลง</h2>'+
  '<div class="grade-summary"><span>เกรด B <b>'+counts.B+'</b></span><span>เกรด C <b>'+counts.C+'</b></span>'+
- '<span>ผ่าน QA A/B <b>'+valid.length+'</b></span><span>ไม่ครบ <b>'+missing.length+'</b></span></div>'+
+ '<span>น้ำมาก <b>'+waterGroups.high.length+'</b></span><span>ประเมินไม่ได้ <b>'+waterGroups.unknown.length+'</b></span></div>'+
  table+
+ prioritySummary+
  '<h2 class="exception-heading"><span>04</span> หมายเหตุเฉพาะแปลงที่ข้อมูลไม่ครบ</h2>'+
  '<div class="exception-list">'+missingDetail+'</div>'+
- '<p class="method-note">* เกรด B/C เป็นร่างที่สุ่ม ไม่ใช่การจัดระดับความเสียหายจริง · น้ำ A ใช้วันฐานต่างกันตามแต่ละแปลง น้ำ B = 29/09/2569 · Δ คำนวณเฉพาะแปลงที่ผ่าน QA ทั้ง A/B</p>'+
+ '<p class="method-note">ระดับน้ำ/พื้นที่คำนวณจากน้ำ B (29/09) ÷ พื้นที่ PDD: มาก ≥70%, กลาง 30–<70%, น้อย <30%; หาก QA ไม่ผ่าน = ประเมินไม่ได้ · เป็นเกณฑ์คัดกรอง ไม่ใช่ความเสียหายจริงหรือเกรดสุ่ม B/C · Δ ใช้เฉพาะคู่วันที่ QA ผ่าน</p>'+
  '</section></div>'+
  '<footer class="landscape-footer"><span>แหล่งข้อมูล: Sentinel-2 L2A / PDD / ผลวิเคราะห์ QA จังหวัดระยอง · สร้างเพื่อทบทวนรูปแบบ</span>'+
  '<strong>ONE-PAGE DRAFT · '+(new URLSearchParams(location.search).get("paper")==="A4"?"A4":"A3")+' LANDSCAPE</strong></footer></section>';
 qs("#pages").innerHTML=body;
 qs("#status").textContent="พร้อมดูรายงานแนวนอนหน้าเดียว • 5 ภาพจริง (RGB 2 + MNDWI 3) • ตารางครบ 19 แปลง • หมายเหตุเฉพาะ 2 แปลง";
 window.__REPORT_READY__={plot:"14-VSD",dates:dateSeries,plots:records.length,valid:valid.length,missing:missing.length,grades:counts,pages:1,
- imagery:{rgb:2,mndwi:3},format:new URLSearchParams(location.search).get("paper")==="A4"?"A4":"A3"};
+ imagery:{rgb:2,mndwi:3},levels:{high:waterGroups.high.length,medium:waterGroups.medium.length,low:waterGroups.low.length,unknown:waterGroups.unknown.length},format:new URLSearchParams(location.search).get("paper")==="A4"?"A4":"A3"};
 const imgs=[...document.querySelectorAll(".sheet img")];
 await Promise.all(imgs.map(im=>im.complete?Promise.resolve():new Promise(resolve=>{im.addEventListener("load",resolve,{once:true});im.addEventListener("error",resolve,{once:true});setTimeout(resolve,5000)})));
 document.body.dataset.reportReady="true";
