@@ -187,7 +187,7 @@ const row=x=>'<tr class="'+(x.p.plot==="14-VSD"?"selected ":"")+(x.ratio==null?"
  '<td>'+esc(quality(x.current))+'</td><td>'+x.gradeDraft+'</td></tr>';
 const table=arr=>'<table><thead><tr><th>ลำดับ</th><th>แปลง</th><th>ระดับน้ำ/พื้นที่</th><th>QA</th><th>เกรด*</th></tr></thead>'+
  '<tbody>'+arr.map(row).join("")+'</tbody></table>';
-const body=headline+numbers+'<div class="upper">'+sat+insights+'</div>'+
+const body=headline+numbers+'<div class="upper">'+satellite+insights+'</div>'+
  '<section class="data"><div class="heading"><b>สรุประดับน้ำเทียบพื้นที่แปลง • 29/09/2026</b>'+
  '<span>19 แปลง · มาก 11 · กลาง 4 · น้อย 2 · ประเมินไม่ได้ 2</span></div>'+
  '<div class="tables">'+table(all.slice(0,10))+table(all.slice(10))+'</div></section>'+
