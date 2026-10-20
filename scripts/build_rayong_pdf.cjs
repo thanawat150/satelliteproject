@@ -34,4 +34,9 @@ const cp=require("node:child_process");
   if(pages!==4)throw Error("A4 pagination overflow: expected 4 got "+pages);
   console.log("PASS: four-page full Rayong report has all 19 plots, 17 verified pairs, two exceptions and 14-VSD real 3-date imagery");
  }finally{await browser.close()}
-})().catch(e=>{console.error(e.stack||e);process.exit(1)});
+})().catch(e=>{
+ const failure=String(e.stack||e);
+ console.error(failure);
+ fs.writeFileSync("docs/reports/pdf_build_debug.txt",failure+"\n");
+ process.exit(1);
+});
