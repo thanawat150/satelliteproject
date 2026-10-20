@@ -66,7 +66,7 @@ function updateChips(){
  }
  const plotBox=$("mc-plot-select");if(plotBox){plotBox.hidden=state.scope!=="plot";plotBox.value=state.plot}
  $("mc-date-c-wrap").hidden=state.scope!=="plot";
- $("mc-run").hidden=state.mode!=="manual";
+ $("mc-run").hidden=true;
  $("mc-refresh").hidden=state.mode!=="auto";
  $("mc-layer-control").hidden=state.scope!=="plot";
  setText("mc-context",state.scope==="province"?"19 แปลงในจังหวัดระยอง • ข้อมูลระดับจังหวัดจากผล QA จริง":"แปลง "+state.plot+" • วิเคราะห์เฉพาะขอบเขต PDD");
@@ -93,8 +93,51 @@ function drawControls(){
  setText("mc-source","ผลวิเคราะห์เผยแพร่ "+(state.history?.generated_at?new Date(state.history.generated_at).toLocaleString("th-TH",{timeZone:"Asia/Bangkok"}):"ไม่ระบุ")+
  " • แหล่งข้อมูล analysis_history.json");
 }
+let finalKey=null;
+function invalidateFinal(message){
+ finalKey=null;
+ const final=$("mc-final-stage");
+ if(final)final.hidden=true;
+ for(const id of ["mc-print-onepage","mc-print-onepage-top"]){
+  const b=$(id);if(b)b.disabled=true;
+ }
+ const hint=$("mc-final-hint");
+ if(hint)hint.textContent=message||"เมื่อแก้วันที่ แปลง หรือเกรด ต้องสร้าง Final อีกครั้ง";
+}
+function canCreateFinal(){
+ if(!state.view||state.dirty)return false;
+ return state.view.kind==="province"||!!root.PlotReview?.currentRecord?.();
+}
+function updateCreateFinal(){
+ const btn=$("mc-create-final");
+ if(btn)btn.disabled=!canCreateFinal();
+ const hint=$("mc-final-hint");
+ if(hint&&!finalKey){
+  hint.textContent=canCreateFinal()?"ตรวจภาพและ QA ให้เรียบร้อย แล้วกดสร้าง Final Report":"บันทึกการประเมินรายแปลงก่อนสร้าง Final Report";
+ }
+}
+function createFinal(){
+ if(!canCreateFinal()){setStatus("ต้องมีผล Preview และบันทึกการประเมินก่อนสร้าง Final Report","warn");return}
+ if(!root.PlotReview?.canPrint?.()&&state.scope==="plot"){setStatus("กรุณาบันทึกเกรดล่าสุดก่อนสร้าง Final","warn");return}
+ const snapshot=JSON.parse(JSON.stringify(state.view));
+ const review=snapshot.kind==="plot"?root.PlotReview?.currentRecord?.():null;
+ const done=root.MonitoringReport?.renderFinal?.({view:snapshot,mode:state.mode,generated:state.history?.generated_at,review});
+ if(!done){setStatus("ไม่สามารถสร้าง Final Report ได้","error");return}
+ finalKey=JSON.stringify({kind:snapshot.kind,plot:snapshot.plot||null,dates:snapshot.dates,reviewSavedAt:review?.savedAt||null});
+ const el=$("mc-final-stage");if(el)el.hidden=false;
+ $("mc-print-onepage").disabled=false;$("mc-print-onepage-top").disabled=false;
+ if(snapshot.kind==="plot")renderPreview();
+ const hint=$("mc-final-hint");if(hint)hint.textContent="สร้าง Final แล้ว • PDF จะแสดงเฉพาะ 1 หน้า A4";
+ setStatus("สร้าง Final Report ในหน้าเดิมแล้ว • ตรวจภาพตัวอย่างด้านล่างก่อนบันทึก PDF","ok");
+ el?.scrollIntoView?.({behavior:"smooth",block:"start"});
+}
+function onReviewSaved(){
+ invalidateFinal("บันทึกเกรดแล้ว • กดสร้าง Final อีกครั้งเพื่อรวมผลประเมินล่าสุด");
+ updateCreateFinal();
+}
 function useSelection(){
  if(!state.history)return;
+ invalidateFinal("ข้อมูล Preview เปลี่ยนแล้ว • กรุณาตรวจและสร้าง Final ใหม่");
  state.effective=state.dates.slice();
  state.view=state.scope==="province"?makeProvince(state.history,state.plots,state.effective):
  makePlot(state.history,state.plots.find(p=>p.plot===state.plot),state.effective);
@@ -104,7 +147,7 @@ function useSelection(){
 }
 function resetForChange(){
  if(state.mode==="auto"){setDefaults();state.dirty=false;drawControls();useSelection()}
- else{state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);drawControls();$("mc-results").hidden=true;setStatus("เลือกวันที่แล้วกด «เปรียบเทียบข้อมูล» เพื่อแสดงผลตามวันที่ที่เลือก","warn");paintMap();}
+ else{invalidateFinal();state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);drawControls();$("mc-results").hidden=true;setStatus("เลือกวันที่แล้วกด «เปรียบเทียบข้อมูล» เพื่อแสดงผลตามวันที่ที่เลือก","warn");paintMap();}
 }
 function metric(label,value,detail=""){return '<article class="mc-metric"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>'}
 function addSign(v){return v==null?"—":(v>0?"+":"")+num(v)+" ไร่"}
@@ -159,9 +202,10 @@ function displayPlot(view){
 function displayResults(){
  if(!state.view||state.dirty)return;
  paintKpis(state.view);
- root.MonitoringReport?.render?.({view:state.view,mode:state.mode,generated:state.history?.generated_at});
  if(state.view.kind==="province")displayProvince(state.view);else displayPlot(state.view);
  root.PlotReview?.onView?.(state.view);
+ updateCreateFinal();
+ if($("mc-stage-help"))$("mc-stage-help").hidden=true;
  setStatus(state.mode==="auto"?"แสดงผลล่าสุดที่ผ่านเกณฑ์ QA จากฐานข้อมูล • ไม่ใช่การรันภาพใหม่":"เปรียบเทียบจากค่าที่มีจริงเรียบร้อย • ไม่มีการประมวลผล GeoTIFF ใหม่","ok");
  paintMap();
  drawChart();
@@ -289,9 +333,9 @@ function wire(){
  on("mc-scope-province",()=>{state.scope="province";setDefaults();resetForChange();saveQuery()});
  on("mc-scope-plot",()=>{state.scope="plot";setDefaults();resetForChange();saveQuery()});
  on("mc-mode-auto",()=>{state.mode="auto";setDefaults();resetForChange();saveQuery()});
- on("mc-mode-manual",()=>{state.mode="manual";state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);drawControls();$("mc-results").hidden=true;paintMap();setStatus("เลือกวันและกดเปรียบเทียบเพื่ออ่านผลที่คำนวณไว้แล้ว","warn");saveQuery()});
+ on("mc-mode-manual",()=>{invalidateFinal();state.mode="manual";state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);drawControls();$("mc-results").hidden=true;paintMap();setStatus("เลือกวันและกดเปรียบเทียบเพื่ออ่านผลที่คำนวณไว้แล้ว","warn");saveQuery()});
  on("mc-plot",e=>selectPlot(e.target.value),"change");
- ["a","b","c"].forEach((k,i)=>on("mc-date-"+k,e=>{state.dates[i]=e.target.value;state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);$("mc-results").hidden=true;paintMap();setStatus("เปลี่ยนวันแล้ว • กดเปรียบเทียบข้อมูลเพื่อแสดงผลใหม่","warn")},"change"));
+ ["a","b","c"].forEach((k,i)=>on("mc-date-"+k,e=>{invalidateFinal();state.dates[i]=e.target.value;state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);$("mc-results").hidden=true;paintMap();setStatus("เปลี่ยนวันแล้ว • กดเปรียบเทียบข้อมูลเพื่อแสดงผลใหม่","warn")},"change"));
  on("mc-run",chooseManual);
  on("mc-refresh",async()=>{
   setStatus("กำลังตรวจฐานข้อมูลผลวิเคราะห์ล่าสุด...");try{const r=await fetch("data/analysis_history.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);state.history=await r.json();setDefaults();drawControls();useSelection()}catch(e){setStatus("โหลดผลวิเคราะห์ไม่ได้: "+e.message,"error")}
@@ -299,11 +343,16 @@ function wire(){
  on("mc-layer",()=>{if(!state.dirty&&state.view?.kind==="plot")renderPreview()},"change");
  on("mc-analysis-detail",e=>{if(e.target.open){paintMap();drawChart();setTimeout(()=>{state.map?.invalidateSize();state.chart?.resize()},120)}},"toggle");
  const printOne=()=>{
-  if(!state.view||state.dirty){setStatus("กรุณากดวิเคราะห์ตามวันที่ก่อนบันทึกรายงาน PDF","warn");return}
+  if(!state.view||state.dirty||$("mc-final-stage")?.hidden||!finalKey){setStatus("กรุณากด «สร้าง Report Final» ก่อนบันทึก PDF","warn");return}
   if(!root.PlotReview?.canPrint?.() && state.scope==="plot")return;
   if(!root.MonitoringReport?.ready?.()){setStatus("รอการโหลดภาพประกอบรายงานให้เสร็จก่อนพิมพ์ หรือเลือกใช้รายงานที่แจ้งว่าไม่มีภาพ","warn");return}
   root.MonitoringReport?.print?.();
  };
+ on("mc-preview-analysis",()=>{
+  if(state.mode==="manual")chooseManual();else useSelection();
+  if(state.view&&!state.dirty){const details=$("mc-analysis-detail");if(details)details.open=true}
+ });
+ on("mc-create-final",createFinal);
  on("mc-print-onepage",printOne);
  on("mc-print-onepage-top",printOne);
  on("mc-open-report",openReport);
@@ -338,5 +387,5 @@ function onPlotChange(p){
  state.plot=p.plot;
  if(state.scope==="plot"){setDefaults();resetForChange()}
 }
-root.AnalysisCenter={init,showTab,onPlotChange,setScope:s=>{if(s!=="plot"&&s!=="province")return;state.scope=s;setDefaults();resetForChange();saveQuery()},model:{trusted,qa,plotDefaults,provinceDefaults,makePlot,makeProvince,rowAt}};
+root.AnalysisCenter={init,showTab,onPlotChange,onReviewSaved,invalidateFinal,setScope:s=>{if(s!=="plot"&&s!=="province")return;state.scope=s;setDefaults();resetForChange();saveQuery()},model:{trusted,qa,plotDefaults,provinceDefaults,makePlot,makeProvince,rowAt}};
 })(window);
