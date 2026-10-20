@@ -44,6 +44,17 @@ jobs:
       - name: Render and validate A4 PDF
         run: node scripts/build_rayong_pdf.cjs
 
+      - name: Publish failed renderer diagnostics
+        if: failure()
+        run: |
+          if [ -f docs/reports/pdf_build_debug.txt ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add docs/reports/pdf_build_debug.txt
+            git commit -m "Record Rayong report PDF build diagnostic" || true
+            git push origin HEAD:main
+          fi
+
       - name: Upload final PDF artifact
         uses: actions/upload-artifact@v4
         with:
