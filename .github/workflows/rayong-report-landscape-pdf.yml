@@ -1,0 +1,70 @@
+name: Build Rayong Landscape One-Page PDF
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/reports/Rayong_Plot_Assessment_Landscape_2026.html'
+      - 'scripts/build_rayong_landscape_pdf.cjs'
+      - '.github/workflows/rayong-report-landscape-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-landscape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chrome reporter, fonts and Poppler
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-thai-tlwg poppler-utils
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.58.2
+          google-chrome --version
+      - name: Start local satellite data server
+        run: |
+          nohup python3 -m http.server 8765 --directory docs > /tmp/rayong-landscape.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8765/reports/Rayong_Plot_Assessment_Landscape_2026.html -o /dev/null && break
+            sleep 1
+          done
+      - name: Generate and validate one-page A3 and A4 PDF
+        run: node scripts/build_rayong_landscape_pdf.cjs
+      - name: Save failure diagnostic
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rayong-landscape-build-error
+          path: docs/reports/landscape_build_debug.txt
+          if-no-files-found: ignore
+      - name: Upload PDF and screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rayong-Landscape-OnePage-A3-A4
+          path: |
+            docs/reports/Rayong_Plot_Assessment_Landscape_A3_2026.pdf
+            docs/reports/Rayong_Plot_Assessment_Landscape_A4_2026.pdf
+            docs/reports/Rayong_Plot_Assessment_Landscape_A3_2026.png
+            docs/reports/Rayong_Plot_Assessment_Landscape_A4_2026.png
+          if-no-files-found: error
+      - name: Commit generated PDF and preview images
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/reports/Rayong_Plot_Assessment_Landscape_A3_2026.pdf
+          git add docs/reports/Rayong_Plot_Assessment_Landscape_A4_2026.pdf
+          git add docs/reports/Rayong_Plot_Assessment_Landscape_A3_2026.png
+          git add docs/reports/Rayong_Plot_Assessment_Landscape_A4_2026.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish one-page A3 and A4 Rayong landscape report trials"
+            git push origin HEAD:main
+          fi
