@@ -364,6 +364,8 @@ function setPreview({plot,dates,html,mndwiHtml,falseColorHtml,backgroundSrc}){
  // Real selected plot, date B, true-color preview for cover artwork only.
  for(const head of document.querySelectorAll("#mc-report-paper .mcf-head")){
   head.querySelector(".mcf-sat-backdrop")?.remove();
+  head.querySelector(".mcf-sat-source")?.remove();
+  head.closest(".mcf-sheet")?.querySelector(".mcf-sat-watermark")?.remove();
   if(backgroundSrc&&(backgroundSrc.startsWith("data:image/jpeg;base64,")||backgroundSrc.startsWith("data:image/png;base64,"))){
    const image=document.createElement("img");
    image.className="mcf-sat-backdrop";
@@ -371,6 +373,19 @@ function setPreview({plot,dates,html,mndwiHtml,falseColorHtml,backgroundSrc}){
    image.alt="";
    image.setAttribute("aria-hidden","true");
    head.prepend(image);
+   const label=document.createElement("span");
+   label.className="mcf-sat-source";
+   label.textContent="พื้นหลังจากภาพดาวเทียมจริงของ "+plot+" · วันที่ "+dt(dates[1]);
+   head.append(label);
+   const page=head.closest(".mcf-sheet");
+   page?.querySelector(".mcf-sat-watermark")?.remove();
+   if(page){
+    const faint=document.createElement("img");
+    faint.className="mcf-sat-watermark";
+    faint.src=backgroundSrc;faint.alt="";
+    faint.setAttribute("aria-hidden","true");
+    page.prepend(faint);
+   }
   }
  }
 }
