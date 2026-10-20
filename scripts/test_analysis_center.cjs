@@ -107,4 +107,30 @@ assert(reportCss.includes('mc-print-report'));
 assert(html.includes('id="mc-report-paper"'));
 assert(html.includes('id="mc-print-onepage"'));
 assert(html.includes('id="mc-print-onepage-top"'));
+// Single-page Final report must be generated explicitly after reviewer approval.
+const reviewer={grade:"B",condition:"WATCH",note:"ตรวจสอบน้ำขึ้นลงเพิ่มเติม",savedAt:"2026-10-20T10:00:00Z"};
+const finalPlot=reportModel.finalPlot(compare,"manual",history.generated_at,reviewer);
+const finalProvince=reportModel.finalProvince(province,"auto",history.generated_at);
+assert(finalPlot.includes('ONE-PAGE FINAL REPORT'));
+assert(finalPlot.includes('id="mcr-true-scenes"'));
+assert(finalPlot.includes('id="mcr-mndwi-scenes"'));
+assert(finalPlot.includes('GRADE โดยผู้ตรวจ'));
+assert(finalPlot.includes('ตรวจสอบน้ำขึ้นลงเพิ่มเติม'));
+assert(finalPlot.includes('13-STC'));
+assert(!finalPlot.includes('รายงานสถานการณ์จังหวัดระยอง'));
+assert(finalProvince.includes('ONE-PAGE FINAL REPORT'));
+assert(finalProvince.includes('ข้อมูลรายแปลง ณ วัน B'));
+assert.equal((finalProvince.match(/<tr>/g)||[]).length-2,19);
+const centerJs=read('docs/analysis-center.js');
+assert(centerJs.includes('function createFinal()'));
+assert(centerJs.includes('root.MonitoringReport?.renderFinal?.('));
+assert(!centerJs.includes('root.MonitoringReport?.render?.({view:state.view'),'The final report must not be regenerated while browsing');
+assert(centerJs.includes('on("mc-create-final",createFinal)'),"Final report creation must be explicit");
+assert(centerJs.includes('on("mc-preview-analysis"'),"Preview must stay on the same page");
+for(const id of ['mc-preview-analysis','mc-create-final','mc-final-stage','mc-stage-help']) {
+ assert(html.includes('id="'+id+'"'),id+" missing from final workflow");
+}
+assert(read('docs/monitoring-report.css').includes('body.mc-print-report .mc-report-paper.mcf-one-page'));
+assert(read('docs/plot-review.js').includes('root.AnalysisCenter?.onReviewSaved?.()'));
+
 console.log('Monitoring Center QA tests PASS: 19 PDD polygons, verified-only comparisons, manual PARTIAL guard, province same-date aggregation, report date linking and DOM wiring');
