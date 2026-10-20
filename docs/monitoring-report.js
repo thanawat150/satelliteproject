@@ -92,9 +92,13 @@ function plotResults(view){
  kpi("พื้นที่น้ำเปลี่ยนสุทธิ",view.change==null?"—":signed(view.change)+" ไร่",pairs?"น้ำวัน B − น้ำวัน A":"ยังไม่ผ่าน QA ครบ","delta")+
  kpi("คุณภาพวัน B",b?.valid_pct==null?"—":fmt(b.valid_pct,1)+"%","valid pixels")+
  '</div>'+
- '<div class="mcr-subheading">ภาพสีจริง 3 ช่วงเวลา (10 ม. เมื่อมีภาพชนิดนี้จริง)</div>'+
- '<div id="mcr-images" class="mcr-images"><div class="mcr-images-loading">กำลังโหลดภาพดาวเทียมตามวันที่ที่เลือก...</div></div>'+
- '<div class="mcr-subheading">ดัชนีสิ่งแวดล้อมรายช่วงเวลา</div>'+
+ '<div id="mcr-images" class="mcr-comparison">'+
+ '<div class="mcr-comparison-head"><b>ภาพสีจริง · TRUE COLOR</b><small>Sentinel-2 B4–B3–B2 • PDD สีแดง</small></div>'+
+ '<div id="mcr-true-scenes" class="mcr-images"><div class="mcr-images-loading">กำลังโหลดภาพสีจริงของวันที่เลือก...</div></div>'+
+ '<div class="mcr-comparison-head"><b>ภาพดัชนีน้ำ · MNDWI</b><small>ใช้ภาพดัชนีจาก Raster ที่มีจริง • ไม่สร้างจาก JPG</small></div>'+
+ '<div id="mcr-mndwi-scenes" class="mcr-images"><div class="mcr-images-loading">กำลังโหลดภาพ MNDWI ของวันที่เลือก...</div></div>'+
+ '</div>'+
+ '<div class="mcr-subheading">ค่าดัชนีจากข้อมูลที่ผ่าน QA (วัน B)</div>'+
  '<div class="mcr-index-strip">'+values.map(x=>indicator(x[0],x[1],measured(b,x[3]),"วัน B")).join("")+'</div>'+
  '<div class="mcr-result-bottom"><div class="mcr-result-chart"><strong>กราฟเปรียบเทียบพื้นที่น้ำ (ไร่)</strong>'+waterChart(a,b,view.area)+'</div>'+
  '<div class="mcr-result-qa"><strong>ความน่าเชื่อถือของข้อมูล</strong>'+
@@ -149,7 +153,8 @@ function summary(view){
  "ค่าความเขียวพืชระหว่าง A และ B ยังเปรียบเทียบไม่ได้จากข้อมูลที่ผ่าน QA";
  const sum=view.paired?"น้ำเปิดเปลี่ยนสุทธิ "+signed(view.change)+" ไร่ ระหว่างวันที่ผ่าน QA ทั้งสองช่วง":"ข้อมูลวันที่ A และ B ยังไม่ผ่าน QA ครบ จึงสรุปน้ำเพิ่ม/ลดไม่ได้";
  return section("5","สรุปผลการติดตาม",
- '<div class="mcr-summary-note">'+check(sum)+check(ndvi)+check("ดัชนีไม่ยืนยันการรอดตายของต้นไม้โดยลำพัง และต้องคำนึงถึงเมฆ/น้ำขึ้นลง")+'</div>',
+ '<div class="mcr-summary-note">'+check(sum)+check(ndvi)+check("ข้อสังเกตจากดาวเทียมไม่ใช่การตัดสินเกรด ควรตรวจภาพ น้ำขึ้นลง และสำรวจภาคสนามประกอบ")+'</div>'+
+ '<div id="mcr-review-outcome" class="mcr-review-outcome"><div class="mcr-review-unset">ผลประเมินโดยผู้ตรวจ: ยังไม่บันทึกเกรด</div></div>',
  'mcr-summary-section');
 }
 function benefits(view){
@@ -189,28 +194,29 @@ function render({view,mode,generated}){
  activeKey=key;el.dataset.reportKind=view.kind;
  el.innerHTML=view.kind==="province"?provinceReport(view,mode,generated):plotReport(view,mode,generated);
 }
-function setPreview({plot,dates,html}){
- const el=$("mcr-images");
- if(!el||$("mc-report-paper")?.dataset.reportKind!=="plot")return;
+function setPreview({plot,dates,html,mndwiHtml}){
+ const parent=$("mcr-images");
+ if(!parent||$("mc-report-paper")?.dataset.reportKind!=="plot")return;
  const key="plot|"+plot+"|"+(dates||[]).join("|");
  if(key!==activeKey)return;
- const container=document.createElement("div");container.innerHTML=html||"";
- const cards=[...container.querySelectorAll(".mc-scene")];
- if(!cards.length){
-  el.innerHTML='<div class="mcr-no-scenes">ไม่พบภาพสีจริงสำหรับช่วงเวลาที่เลือก • ไม่ใช้ภาพอื่นแทนโดยอัตโนมัติ</div>';
-  return;
- }
- el.innerHTML=cards.map((card,i)=>{
-  const frame=card.querySelector(".mc-image");
-  const image=frame?.querySelector("img");
-  const aspect=frame?.style.aspectRatio||"1 / 1";
-  // Keep both the pixel frame and the SVG polygon in exactly the same geometry.
-  const content=image?frame.innerHTML:'<div class="mcr-img-missing">ไม่มีภาพสีจริงของวันนี้</div>';
-  const label=card.querySelector("header")?.textContent||["A","B","C"][i];
-  const qa=card.querySelector(".mc-qa")?.textContent||"INDEX_PENDING";
-  return '<div class="mcr-image-card"><div class="mcr-img" style="aspect-ratio:'+esc(aspect)+'">'+content+'</div>'+
-   '<div class="mcr-img-caption"><b>'+esc(label)+'</b><span>'+esc(qa)+'</span></div></div>';
- }).join("");
+ const toCards=(raw,mode)=>{
+  const target=document.createElement("div");target.innerHTML=raw||"";
+  const cards=[...target.querySelectorAll(".mc-scene")];
+  if(!cards.length){
+   return '<div class="mcr-no-scenes">ไม่มีภาพ '+(mode==="mndwi"?"MNDWI":"สีจริง")+' ที่รองรับช่วงวันที่เลือก</div>';
+  }
+  return cards.map((card,i)=>{
+   const frame=card.querySelector(".mc-image"),image=frame?.querySelector("img");
+   const aspect=frame?.style.aspectRatio||"1 / 1";
+   const content=image?frame.innerHTML:'<div class="mcr-img-missing">ไม่มีภาพจริงของวันนี้</div>';
+   const label=card.querySelector("header")?.textContent||["A","B","C"][i];
+   const q=card.querySelector(".mc-qa")?.textContent||"INDEX_PENDING";
+   return '<div class="mcr-image-card"><div class="mcr-img" style="aspect-ratio:'+esc(aspect)+'">'+content+'</div>'+
+    '<div class="mcr-img-caption"><b>'+esc(label)+'</b><span>'+esc(q)+'</span></div></div>';
+  }).join("");
+ };
+ $("mcr-true-scenes").innerHTML=toCards(html,"true_color");
+ $("mcr-mndwi-scenes").innerHTML=toCards(mndwiHtml,"mndwi");
 }
 function ready(){const el=$("mc-report-paper");return !!el?.innerHTML.trim()&&!el.querySelector(".mcr-images-loading")}
 async function print(){
