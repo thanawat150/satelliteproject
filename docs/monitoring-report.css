@@ -153,3 +153,38 @@
  body.mc-print-report .mcr-poster-foot{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
  body.mc-print-report .mcr-poster-head,body.mc-print-report .mcr-section{break-inside:avoid}
 }
+
+/* Two evidence rows: three true-color scenes and three MNDWI scenes, same days and PDD frame. */
+.mcr-comparison{margin-top:2mm}
+.mcr-comparison-head{display:flex;justify-content:space-between;align-items:baseline;gap:3mm;padding:.7mm 1.5mm;margin:1.7mm 0 1mm;background:#e2f4ea;border-left:2.5px solid #118061;color:#0b624b}
+.mcr-comparison-head b{font-size:8.7px;line-height:1.2;letter-spacing:.01em}
+.mcr-comparison-head small{color:#507465;font-size:7px}
+.mcr-comparison .mcr-images{gap:1.5mm}
+.mcr-comparison .mcr-image-card{padding:1mm}
+.mcr-comparison .mcr-img{min-height:25mm;max-height:29mm;height:28mm}
+.mcr-comparison .mcr-img-caption{margin-top:.7mm;font-size:6.7px}
+.mcr-review-outcome{margin-top:2mm}
+.mcr-review-unset{font-weight:700;color:#426c5a;font-size:8.5px;background:#f0f7ed;border:1px dashed #b5d8bd;border-radius:2mm;padding:1.9mm 2.5mm}
+.mcr-review-saved{display:grid;grid-template-columns:13mm 1fr;align-items:stretch;gap:2mm;padding:1.5mm;background:#e5f4e6;border:1px solid #b8dcbf;border-radius:2mm;color:#145c44}
+.mcr-review-grade{background:#07634d;color:white;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5mm;border-radius:2mm;min-height:12mm}
+.mcr-review-grade span{font:700 6px Inter,Arial,sans-serif;letter-spacing:.02em}
+.mcr-review-grade strong{font:900 17px Inter,Arial,sans-serif}
+.mcr-review-content{display:flex;flex-direction:column;gap:.5mm;min-width:0}
+.mcr-review-content strong{font-size:8.5px}
+.mcr-review-content span{font-size:8.1px}
+.mcr-review-content p{font-size:7.9px;color:#3d7056;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.3}
+.mcr-review-content small{font-size:6.7px;color:#6e8d7b}
+.mc-review-human{font:800 8px Inter,Arial,sans-serif;letter-spacing:.03em;color:#8de8c3;background:#144f3b;padding:4px 6px;border-radius:4px;margin-left:4px}
+.mc-review-box textarea{width:100%;background:#0a1b2b;border:1px solid #33576b;border-radius:9px;color:#e5f1f8;font:500 11px 'IBM Plex Sans Thai',sans-serif;line-height:1.5;padding:10px;resize:vertical;min-height:80px}
+.mc-review-box textarea:focus-visible{outline:2px solid #72d6fc;outline-offset:2px}
+.mc-review-box[hidden]{display:none!important}
+.mc-review-feedback{font-size:10px;color:#87bea8;margin-top:10px;line-height:1.5}
+.mc-review-feedback[data-warn="true"]{color:#ffcb82}
+@media print{
+ body.mc-print-report .mc-report-paper{height:auto!important;min-height:297mm;max-width:210mm;width:210mm;overflow:visible!important;break-inside:auto!important;page-break-inside:auto!important}
+ body.mc-print-report .mcr-results-section{break-inside:avoid-page;page-break-inside:avoid}
+ body.mc-print-report .mcr-review-saved{break-inside:avoid}
+ body.mc-print-report .mcr-comparison .mcr-img{max-height:29mm}
+ body.mc-print-report .mcr-comparison-head,
+ body.mc-print-report .mcr-review-saved{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+}
