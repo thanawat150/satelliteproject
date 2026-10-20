@@ -549,7 +549,9 @@ async function renderReportPreview(){
   const frame=document.getElementById('verified-pdf-frame');
   const printBtn=document.getElementById('print-report-btn');
   if(verifiedLink)verifiedLink.href=p.report_url||dataset.report_folder;
-  updateQuery({plot:p.plot,tab:'report',report:type==='verified'?'verified':null});
+  // Preparing a report while another tab is visible must not rewrite its URL.
+  if(document.getElementById('tab-report')?.classList.contains('active'))
+    updateQuery({plot:p.plot,tab:'report',report:type==='verified'?'verified':null});
   if(type==='verified'){
     paper.style.display='none';frame.style.display='block';frame.src=drivePreviewUrl(p.report_url||dataset.report_folder);
     if(printBtn)printBtn.style.display='none';
