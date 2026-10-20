@@ -62,7 +62,8 @@ vm.runInNewContext(read('docs/monitoring-report.js'),reportContext,{filename:'mo
 const reportModel=reportContext.window.MonitoringReport.model;
 const plotReport=reportModel.plotReport(compare,'auto',history.generated_at);
 assert(plotReport.includes('รายงานติดตามแปลง 13-STC'));
-assert(plotReport.includes('2026'));
+assert(plotReport.includes('30/04/2569'));
+assert(plotReport.includes('29/09/2569'));
 assert(plotReport.includes('mcr-images'));
 assert(plotReport.includes('NDVI'));
 assert(plotReport.includes('PARTIAL'));
