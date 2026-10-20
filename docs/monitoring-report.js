@@ -375,23 +375,28 @@ function setPreview({plot,dates,html,mndwiHtml,falseColorHtml,backgroundSrc}){
  }
 }
 function ready(){const el=$("mc-report-paper");return !!el?.innerHTML.trim()&&!el.querySelector(".mcr-images-loading")}
-async function print(){
- if(!ready())return;
- const el=$("mc-report-paper");
+async function print(options={}){
+ if(!ready())return false;
+ const all=options.all===true;
+ const pages=[...$("mc-report-paper").querySelectorAll(".mcf-page")];
+ const selected=all?pages:pages.filter((page,i)=>i===pageIndex);
  document.body.classList.add("mc-print-report");
+ document.body.classList.toggle("mc-print-all",all);
+ document.body.classList.toggle("mc-print-current",!all);
  try{
-  const images=[...el.querySelectorAll("img")];
+  const images=selected.flatMap(page=>[...page.querySelectorAll("img")]);
   await Promise.all(images.map(im=>im.complete?Promise.resolve():new Promise(resolve=>{
    im.addEventListener("load",resolve,{once:true});im.addEventListener("error",resolve,{once:true});
-   setTimeout(resolve,4000);
+   setTimeout(resolve,4500);
   })));
   if(document.fonts?.ready)await document.fonts.ready.catch(()=>{});
   root.print();
+  return true;
  }finally{
-  setTimeout(()=>document.body.classList.remove("mc-print-report"),1200);
+  setTimeout(()=>document.body.classList.remove("mc-print-report","mc-print-all","mc-print-current"),1800);
  }
 }
-function bind(){root.addEventListener("afterprint",()=>document.body.classList.remove("mc-print-report"))}
+function bind(){root.addEventListener("afterprint",()=>document.body.classList.remove("mc-print-report","mc-print-all","mc-print-current"))}
 root.MonitoringReport={render,renderFinal,changePage,setPreview,ready,print,bind,model:{plotReport,provinceReport,finalPlot,finalProvince,evidencePlot,evidenceProvince,good,trusted}};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind);else bind();
 })(window);
