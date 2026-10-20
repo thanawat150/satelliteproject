@@ -260,6 +260,46 @@ function finalFooter(generated){
  return '<footer class="mcf-foot"><span>หลักฐาน: Sentinel-2 L2A · analysis_history.json · PDD GIS · วิเคราะห์เผยแพร่ '+esc(asOf)+'</span>'+
   '<b>ONE-PAGE FINAL REPORT · 01/01</b></footer>';
 }
+
+function evidencePlot(view,mode,generated,review){
+ const rs=view.records||[];
+ const rows=[["พื้นที่น้ำเปิด","water_rai",2],["NDVI","ndvi",3],["NDRE","ndre",3],["NDMI","ndmi",3],["MNDWI","mndwi",3],["BSI","bsi",3]];
+ const table='<table><thead><tr><th>ดัชนี / พื้นที่</th>'+view.dates.map((d,i)=>'<th>'+["A","B","C"][i]+' '+esc(dt(d))+'</th>').join("")+'</tr></thead><tbody>'+
+ rows.map(([name,key,prec])=>'<tr><th>'+esc(name)+'</th>'+rs.map(r=>'<td>'+esc(measured(r,key,prec))+'</td>').join("")+'</tr>').join("")+
+ '<tr><th>Valid pixels (%)</th>'+rs.map(r=>'<td>'+esc(r?.valid_pct==null?"—":fmt(r.valid_pct,1))+'</td>').join("")+'</tr>'+
+ '<tr><th>QA</th>'+rs.map(r=>'<td>'+esc(status(r))+'</td>').join("")+'</tr>'+
+ '<tr><th>Source</th>'+rs.map(r=>'<td class="mcf-source-cell">'+esc(r?.source||"—")+'</td>').join("")+'</tr></tbody></table>';
+ return '<div class="mcf-sheet mcf-appendix">'+finalHeader(view,mode)+
+ '<div class="mcf-appendix-label">ภาคผนวกภาพดาวเทียมและหลักฐานรายแปลง '+esc(view.plot)+'</div>'+
+ '<section class="mcf-image-section"><div class="mcf-image-title"><strong>05 · สีเท็จ 8-4-3</strong><span>NIR–Red–Green พร้อม PDD</span></div>'+
+ '<div class="mcf-grid" id="mcr-false-scenes"><div class="mcr-images-loading">กำลังแสดง False Color...</div></div></section>'+
+ '<section class="mcf-image-section"><div class="mcf-image-title"><strong>06 · สีเท็จ 11-8-4</strong><span>SWIR–NIR–Red</span></div>'+
+ '<div class="mcf-missing-layer">ไม่มีภาพ Composite 11-8-4 ในคลัง Preview ปัจจุบัน ต้องสร้างจาก B11, B8, B4 ของ Raster จริงก่อนใช้อ้างอิง</div></section>'+
+ '<section class="mcf-values mcf-appendix-values"><div class="mcf-section-head">07 · ผลวิเคราะห์และสถานะ QA ทุกช่วงเวลา</div>'+table+
+ '<p>Partial ไม่ใช่ผลทั้งแปลง • — คือไม่มีค่าที่คำนวณได้จากข้อมูลที่มี</p></section>'+
+ '<section class="mcf-assessment mcf-appendix-review"><div class="mcf-section-head">08 · บันทึกผู้ประเมินฉบับเต็ม</div>'+
+ '<p class="mcf-summary">เกรด '+esc(review?.grade||"—")+' · สถานะ '+esc(review?.condition||"ยังไม่ระบุ")+'</p>'+
+ '<p class="mcf-review-note">'+esc(review?.note||"ยังไม่มีหมายเหตุ")+'</p>'+
+ '<p class="mcf-limitation">ข้อจำกัด: ตรวจน้ำขึ้นลง เมฆ เงา ตะกอน และสำรวจภาคสนามก่อนยืนยันน้ำท่วม</p></section>'+
+ finalFooter(generated)+'</div>';
+}
+function evidenceProvince(view,mode,generated){
+ const rows=view.items||[];
+ const body=rows.map(x=>{
+  const d=x.goodA&&x.goodB?Number(x.rb.water_rai)-Number(x.ra.water_rai):null;
+  return '<tr><td>'+esc(x.p.plot)+'</td><td>'+esc(x.goodA?fmt(x.ra.water_rai):"—")+'</td><td>'+esc(status(x.ra))+'</td>'+
+   '<td>'+esc(x.goodB?fmt(x.rb.water_rai):"—")+'</td><td>'+esc(status(x.rb))+'</td>'+
+   '<td>'+esc(x.rb?.valid_pct==null?"—":fmt(x.rb.valid_pct,1)+"%")+'</td><td>'+esc(d==null?"—":signed(d))+'</td></tr>';
+ }).join("");
+ return '<div class="mcf-sheet mcf-appendix">'+finalHeader(view,mode)+
+ '<div class="mcf-appendix-label">ภาคผนวกข้อมูลคุณภาพดาวเทียมทุกแปลง</div>'+
+ '<section class="mcf-values mcf-appendix-values"><div class="mcf-section-head">ผลติดตามวันที่ '+esc(dt(view.dates[0]))+' → '+esc(dt(view.dates[1]))+'</div>'+
+ '<table class="mcf-prov-audit"><thead><tr><th>แปลง</th><th>น้ำ A</th><th>QA A</th><th>น้ำ B</th><th>QA B</th><th>Valid B</th><th>Δ น้ำ</th></tr></thead><tbody>'+body+'</tbody></table></section>'+
+ '<section class="mcf-assessment mcf-appendix-review"><div class="mcf-section-head">วิธีสรุประดับจังหวัดและข้อจำกัด</div>'+
+ '<p>พื้นที่น้ำวัน B รวมเฉพาะ '+view.covered+' แปลงที่ผ่าน QA ส่วนพื้นที่น้ำเปลี่ยนสุทธิใช้ '+view.paired+' แปลงที่มีผลผ่าน QA ทั้งวัน A และ B</p>'+
+ '<p>แปลงไม่มีข้อมูลจะไม่ถือเป็นน้ำ 0 ไร่ และต้องตรวจน้ำขึ้นลงกับข้อมูลภาคสนามก่อนตีความเป็นอุทกภัย</p></section>'+
+ finalFooter(generated)+'</div>';
+}
 function renderFinal({view,mode,generated,review}){
  const el=$("mc-report-paper");if(!el||!view)return false;
  activeKey=view.kind+"|"+(view.plot||"province")+"|"+view.dates.join("|");
