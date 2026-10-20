@@ -232,7 +232,8 @@ async function renderPreview(){
  const mode=$("mc-layer")?.value||"true_color";
  container.innerHTML='<div class="mc-empty" id="mc-preview-message">กำลังโหลดภาพจาก GeoTIFF Preview จริง...</div>';
  const layers=await previewPart(plot);
- if(!layers||state.scope!=="plot"||state.plot!==plot||!dates.every((d,i)=>d===state.view?.dates?.[i]))return;
+ if(state.scope!=="plot"||state.plot!==plot||!dates.every((d,i)=>d===state.view?.dates?.[i]))return;
+ if(!layers){container.innerHTML='<div class="mc-empty">ยังไม่มีภาพ Preview ที่รองรับวันที่และแปลงที่เลือก</div>';return}
  const priority={DIRECT:0,LATEST_RECT:1,HIST_CLEAR_RECT_SCL0:2,NO_CLOUD_FILTER:3};
  const cards=dates.map((d,i)=>{
   const l=layers.filter(x=>x.plot===plot&&x.date===d&&x.mode===mode&&x.src).sort((a,b)=>(priority[a.source_suffix]??5)-(priority[b.source_suffix]??5))[0];
@@ -271,6 +272,7 @@ function chooseManual(){
  useSelection();
 }
 function openReport(){
+ if(state.mode==="manual"&&state.dirty){setStatus("กรุณากด «วิเคราะห์เปรียบเทียบข้อมูล» ก่อนเปิดรายงานตามวันที่เลือก","warn");return}
  if(state.scope!=="plot"){setStatus("เลือกแปลงก่อนเปิดรายงาน PDF รายแปลง • รายงานจังหวัดยังไม่เปิดให้สร้างอัตโนมัติ","warn");return}
  const p=state.plots.find(x=>x.plot===state.plot);
  if(typeof root.selectPlot==="function")root.selectPlot(p);
