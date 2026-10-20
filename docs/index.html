@@ -14,6 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
   <link rel="stylesheet" href="styles.css?v=20261014-survey-studio15" />
   <link rel="stylesheet" href="three-period-report.css?v=20261015-r1" />
+  <link rel="stylesheet" href="analysis-center.css?v=20261020-v1" />
 </head>
 <body>
   <header class="topbar">
@@ -50,7 +51,8 @@
 
     <main class="main">
       <nav class="tabs">
-        <button class="tab active" data-tab="overview">ภาพรวม</button>
+        <button class="tab active" data-tab="center">ศูนย์วิเคราะห์</button>
+        <button class="tab" data-tab="overview">ภาพรวมเดิม</button>
         <button class="tab" data-tab="map">แผนที่</button>
         <button class="tab" data-tab="impact">Impact Matrix</button>
         <button class="tab" data-tab="satellite">ภาพดาวเทียม</button>
@@ -60,7 +62,113 @@
         <button class="tab" data-tab="report">Report Center</button>
       </nav>
 
-      <section class="tab-panel active" id="tab-overview">
+      <section class="tab-panel active" id="tab-center">
+        <div class="mc-shell">
+          <header class="mc-hero">
+            <div>
+              <div class="eyebrow">ONE-PAGE ENVIRONMENTAL INTELLIGENCE</div>
+              <h2 id="mc-title">ภาพรวมจังหวัดระยอง</h2>
+              <p>ดูสถานการณ์ตามขอบเขต PDD เลือกจังหวัดหรือเจาะรายแปลง เปรียบเทียบผลจาก Sentinel-2 ที่มีข้อมูลจริง พร้อมตรวจสอบคุณภาพภาพก่อนตีความ</p>
+            </div>
+            <div class="mc-hero-meta">● RAYONG · VERIFIED DATA</div>
+          </header>
+          <div class="mc-toolbar">
+            <div class="mc-switches">
+              <div class="mc-switch-group" role="group" aria-label="ระดับพื้นที่">
+                <span>พื้นที่</span>
+                <button type="button" class="is-active" id="mc-scope-province" aria-pressed="true">ภาพรวมจังหวัด</button>
+                <button type="button" id="mc-scope-plot" aria-pressed="false">รายแปลง</button>
+              </div>
+              <div class="mc-switch-group" role="group" aria-label="รูปแบบการวิเคราะห์">
+                <span>การวิเคราะห์</span>
+                <button type="button" class="is-active" id="mc-mode-auto" aria-pressed="true">ระบบเลือกอัตโนมัติ</button>
+                <button type="button" id="mc-mode-manual" aria-pressed="false">เลือกวิเคราะห์เอง</button>
+              </div>
+            </div>
+            <span class="mc-tag">Sentinel-2 L2A · PDD · QA</span>
+          </div>
+          <div class="mc-layout">
+            <aside class="mc-side">
+              <section class="mc-box">
+                <h3>ตั้งค่าการวิเคราะห์</h3>
+                <p class="mc-context" id="mc-context">กำลังตรวจข้อมูล...</p>
+                <label>จังหวัด
+                  <select aria-label="จังหวัด" id="mc-province"><option value="ระยอง">ระยอง · มีผลวิเคราะห์ 19 แปลง</option></select>
+                </label>
+                <label id="mc-plot-select" hidden>เลือกแปลง PDD
+                  <select id="mc-plot" aria-label="เลือกแปลง"></select>
+                </label>
+                <p id="mc-mode-note" class="mc-mini-note">การวิเคราะห์จากผลที่มีอยู่จริง</p>
+                <div class="mc-date-label">เลือกช่วงเวลาจากข้อมูลที่มีจริง</div>
+                <label>วัน A · วันฐาน
+                  <select id="mc-date-a" aria-label="วันฐาน"></select>
+                </label>
+                <label>วัน B · วันติดตาม
+                  <select id="mc-date-b" aria-label="วันติดตาม"></select>
+                </label>
+                <label id="mc-date-c-wrap" hidden>วัน C · ภาพติดตามอีกช่วง
+                  <select id="mc-date-c" aria-label="วันที่สาม"></select>
+                </label>
+                <button class="mc-btn mc-btn-primary" type="button" id="mc-run" hidden>วิเคราะห์เปรียบเทียบข้อมูล</button>
+                <button class="mc-btn mc-btn-primary" type="button" id="mc-refresh">ตรวจข้อมูลระบบล่าสุด</button>
+              </section>
+              <section class="mc-box">
+                <h3>รายงานและข้อมูล</h3>
+                <div class="mc-side-actions">
+                  <button class="mc-btn" type="button" id="mc-open-report">เปิด Report PDF 4 หน้า ↗</button>
+                  <button class="mc-btn" type="button" id="mc-export-csv">ดาวน์โหลดค่าที่เลือก (CSV)</button>
+                </div>
+                <p class="mc-mini-note" style="margin-top:12px">การสร้าง PDF ทั้งจังหวัดและการสั่งประมวลผล GeoTIFF ใหม่ ต้องเชื่อม Backend เพิ่ม ยังไม่เปิดเป็นผลลัพธ์สำเร็จรูป</p>
+              </section>
+            </aside>
+            <div class="mc-workspace">
+              <div class="mc-feedback" id="mc-feedback" role="status" aria-live="polite">กำลังอ่านข้อมูลผลวิเคราะห์จริง...</div>
+              <section class="mc-box">
+                <div class="mc-map-title">
+                  <h3>แผนที่ขอบเขต PDD และสถานะข้อมูล</h3>
+                  <small>คลิก Polygon เพื่อเปิดรายแปลง</small>
+                </div>
+                <div id="mc-map" role="region" aria-label="แผนที่ขอบเขตแปลงของจังหวัดระยอง"></div>
+                <div class="mc-map-key"><span><i style="background:#35caa5"></i>ผ่าน QA</span><span><i style="background:#f6b34b"></i>ข้อมูลบางส่วน</span><span><i style="background:#7b91a5"></i>ไม่มีผลผ่าน QA</span><span><i style="background:#ff7067"></i>แปลงที่เลือก</span></div>
+              </section>
+              <div id="mc-results" hidden>
+                <div class="mc-metrics" id="mc-kpis"></div>
+                <div class="mc-map-grid">
+                  <section class="mc-box">
+                    <h3>แนวโน้มจากผลวิเคราะห์ที่ผ่าน QA</h3>
+                    <div class="mc-chart-wrap"><canvas id="mc-chart" aria-label="กราฟผลการวิเคราะห์"></canvas></div>
+                    <p class="mc-table-note" id="mc-chart-note"></p>
+                  </section>
+                  <section class="mc-box">
+                    <div class="mc-results-title"><h3 id="mc-result-title">สรุปสถานการณ์</h3><span class="mc-tag">QA Review</span></div>
+                    <div class="mc-summary" id="mc-analysis-note"></div>
+                    <p class="mc-coverage" id="mc-coverage"></p>
+                  </section>
+                </div>
+                <section class="mc-box">
+                  <div class="mc-results-title">
+                    <h3>หลักฐานภาพและตารางข้อมูล</h3>
+                    <label id="mc-layer-control" style="margin:0" hidden>ภาพ/ดัชนี
+                      <select id="mc-layer" aria-label="ประเภทภาพดาวเทียม">
+                        <option value="true_color">True Color (B4–B3–B2)</option>
+                        <option value="false_color">False Color (B8–B4–B3)</option>
+                        <option value="ndvi">NDVI</option>
+                        <option value="mndwi">MNDWI</option>
+                        <option value="bsi">BSI</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div id="mc-preview" class="mc-preview"></div>
+                  <div id="mc-data"></div>
+                  <p class="mc-table-note" id="mc-source"></p>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-overview">
         <div id="overview-alert-strip" class="overview-alert-strip"><span>กำลังโหลดสัญญาณเฝ้าระวัง...</span></div>
         <div class="kpi-grid">
           <div class="kpi"><span>แปลงทั้งหมด</span><strong id="kpi-total">—</strong><small>จังหวัดระยอง</small></div>
@@ -436,7 +544,8 @@
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
   <script src="three-period-report.js?v=20261015-sidebar-report-sync1"></script>
-  <script src="app.js?v=20261015-sidebar-report-sync1"></script>
+  <script src="analysis-center.js?v=20261020-v1"></script>
+  <script src="app.js?v=20261020-onepage-center1"></script>
   <script src="field-export.js?v=20261014-survey-studio15"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>
