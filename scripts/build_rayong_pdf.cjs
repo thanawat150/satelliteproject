@@ -21,16 +21,21 @@ const cp=require("node:child_process");
   const error=await page.evaluate(()=>document.body.dataset.reportError);
   if(error)throw Error("Report render error: "+error);
   const stats=await page.evaluate(()=>window.__REPORT_READY__);
-  if(stats?.plots!==19||stats.valid!==17||stats.missing!==2||stats.pages!==4)throw Error("Report consistency check failed: "+JSON.stringify(stats));
+  if(stats?.plots!==19||stats.valid!==17||stats.missing!==2||stats.pages!==2)throw Error("Report consistency check failed: "+JSON.stringify(stats));
   if(stats.grades.B+stats.grades.C!==19)throw Error("Random draft grade counts do not sum to 19");
-  const count=await page.locator(".sheet").count();if(count!==4)throw Error("Wrong report sheet count: "+count);
+  const count=await page.locator(".sheet").count();if(count!==2)throw Error("Wrong report sheet count: "+count);
   const imageCounts=await page.evaluate(()=>{
-   const layerBlocks=[...document.querySelectorAll(".image-matrix .image-cell")];
-   return{cards:layerBlocks.length,real:layerBlocks.filter(x=>x.querySelector(".image-view img")).length,failed:layerBlocks.filter(x=>x.querySelector(".image-view img")&&!x.querySelector(".image-view img").naturalWidth).length};
+   const layerBlocks=[...document.querySelectorAll(".evidence-card")];
+   return{cards:layerBlocks.length,real:layerBlocks.filter(x=>x.querySelector(".image-view img")).length,
+    failed:layerBlocks.filter(x=>x.querySelector(".image-view img")&&!x.querySelector(".image-view img").naturalWidth).length,
+    trueFalse:[...document.querySelectorAll(".evidence-top .evidence-card .image-view img")].length,
+    water:[...document.querySelectorAll(".mndwi-cards .evidence-card .image-view img")].length};
   });
-  if(imageCounts.cards!==9||imageCounts.real!==9||imageCounts.failed)throw Error("Main plot imagery is missing: "+JSON.stringify(imageCounts));
-  const flag=await page.locator(".image-cell").last().locator(".flag").innerText();
-  if(!flag.includes("INDEX_PENDING"))throw Error("07/10 is not flagged INDEX_PENDING");
+  if(imageCounts.cards!==5||imageCounts.real!==5||imageCounts.trueFalse!==2||imageCounts.water!==3||imageCounts.failed)throw Error("Main plot imagery is missing: "+JSON.stringify(imageCounts));
+  const unsupported=await page.locator(".plot-note").innerText();
+  if(!unsupported.includes("07/10")||!unsupported.includes("ยังไม่มีผลวิเคราะห์รายวัน"))throw Error("07/10 missing analytics disclaimer");
+  if(await page.locator(".plot-table tbody tr").count()!==19)throw Error("Report is missing plotted analysis rows");
+  if(await page.locator(".exception-card").count()!==2)throw Error("Missing two QA exception notes");
   await page.evaluate(()=>document.fonts.ready);
   await page.emulateMedia({media:"print"});
   await page.pdf({path:out,format:"A4",printBackground:true,preferCSSPageSize:true,margin:{top:"0",bottom:"0",left:"0",right:"0"},displayHeaderFooter:false});
@@ -39,8 +44,8 @@ const cp=require("node:child_process");
   console.log("Report data checks:",stats);
   console.log("Main 14-VSD image checks:",imageCounts);
   console.log("Generated:",out,"bytes:",fs.statSync(out).size,"PDF pages:",pages);
-  if(pages!==4)throw Error("A4 pagination overflow: expected 4 got "+pages);
-  console.log("PASS: four-page full Rayong report has all 19 plots, 17 verified pairs, two exceptions and 14-VSD real 3-date imagery");
+  if(pages!==2)throw Error("A4 pagination overflow: expected 2 got "+pages);
+  console.log("PASS: two-page Rayong report contains 19 plots, two exceptions, true/false first date and 3-date MNDWI");
  }finally{await browser.close()}
 })().catch(e=>{
  const failure=String(e.stack||e);
