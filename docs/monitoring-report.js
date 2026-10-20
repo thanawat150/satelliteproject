@@ -102,7 +102,8 @@ function setPreview({plot,dates,html}){
   const picture=c.querySelector(".mc-image");
   const image=picture?picture.innerHTML:'<div class="mcr-missing">ไม่มีภาพจริงสำหรับวันนี้</div>';
   const label=c.querySelector("header")?.textContent||["A","B","C"][i];
-  return '<div class="mcr-image-card"><div class="mcr-img">'+image+'</div><div class="mcr-img-caption">'+esc(label)+'</div></div>';
+  const aspect=picture?.style?.aspectRatio||"1 / 1";
+  return '<div class="mcr-image-card"><div class="mcr-img" style="aspect-ratio:'+esc(aspect)+'">'+image+'</div><div class="mcr-img-caption">'+esc(label)+'</div></div>';
  }).join("");
 }
 async function print(){
