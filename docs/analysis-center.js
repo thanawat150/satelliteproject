@@ -127,8 +127,8 @@ function createFinal(){
  const el=$("mc-final-stage");if(el)el.hidden=false;
  $("mc-print-onepage").disabled=false;$("mc-print-onepage-top").disabled=false;
  if(snapshot.kind==="plot")renderPreview();
- const hint=$("mc-final-hint");if(hint)hint.textContent="สร้าง Final แล้ว • PDF จะแสดงเฉพาะ 1 หน้า A4";
- setStatus("สร้าง Final Report ในหน้าเดิมแล้ว • ตรวจภาพตัวอย่างด้านล่างก่อนบันทึก PDF","ok");
+ const hint=$("mc-final-hint");if(hint)hint.textContent="Final มี 2 หน้า A4: หน้าสรุปและหน้าหลักฐาน • เลือกบันทึกหน้านี้หรือทั้งรายงานได้";
+ setStatus("สร้าง Final Report พร้อม 2 หน้า A4 • ใช้ปุ่มก่อนหน้า/หน้าถัดไป และเลือกบันทึก PDF ได้","ok");
  el?.scrollIntoView?.({behavior:"smooth",block:"start"});
 }
 function onReviewSaved(){
@@ -289,7 +289,12 @@ async function renderPreview(){
  });
  container.innerHTML='<div class="mc-scenes">'+makeCards(mode).join("")+'</div><p class="mc-table-note">'+esc(layerNames[mode])+' • แสดงภาพจาก Raster จริง • ขอบแดงคือ PDD</p>';
  // The report always uses real True Color GeoTIFF-derived previews.
- root.MonitoringReport?.setPreview?.({plot,dates,html:makeCards("true_color").join(""),mndwiHtml:makeCards("mndwi").join("")});
+ const heroScene=layers.filter(x=>x.plot===plot&&x.date===dates[1]&&x.mode==="true_color"&&x.src)
+  .sort((a,b)=>(priority[a.source_suffix]??5)-(priority[b.source_suffix]??5))[0];
+ root.MonitoringReport?.setPreview?.({plot,dates,html:makeCards("true_color").join(""),
+  mndwiHtml:makeCards("mndwi").join(""),
+  falseColorHtml:makeCards("false_color").join(""),
+  backgroundSrc:heroScene?.src||""});
 }
 function selectPlot(id){
  const p=state.plots.find(p=>p.plot===id);if(!p)return;
@@ -342,19 +347,21 @@ function wire(){
  });
  on("mc-layer",()=>{if(!state.dirty&&state.view?.kind==="plot")renderPreview()},"change");
  on("mc-analysis-detail",e=>{if(e.target.open){paintMap();drawChart();setTimeout(()=>{state.map?.invalidateSize();state.chart?.resize()},120)}},"toggle");
- const printOne=()=>{
+ const printFinal=(all=false)=>{
   if(!state.view||state.dirty||$("mc-final-stage")?.hidden||!finalKey){setStatus("กรุณากด «สร้าง Report Final» ก่อนบันทึก PDF","warn");return}
-  if(!root.PlotReview?.canPrint?.() && state.scope==="plot")return;
-  if(!root.MonitoringReport?.ready?.()){setStatus("รอการโหลดภาพประกอบรายงานให้เสร็จก่อนพิมพ์ หรือเลือกใช้รายงานที่แจ้งว่าไม่มีภาพ","warn");return}
-  root.MonitoringReport?.print?.();
+  if(state.scope==="plot"&&!root.PlotReview?.canPrint?.())return;
+  if(!root.MonitoringReport?.ready?.()){setStatus("รอภาพดาวเทียมในรายงานโหลดให้เสร็จก่อนพิมพ์","warn");return}
+  root.MonitoringReport?.print?.({all});
  };
  on("mc-preview-analysis",()=>{
   if(state.mode==="manual")chooseManual();else useSelection();
   if(state.view&&!state.dirty){const details=$("mc-analysis-detail");if(details)details.open=true}
  });
  on("mc-create-final",createFinal);
- on("mc-print-onepage",printOne);
- on("mc-print-onepage-top",printOne);
+ on("mc-page-prev",()=>root.MonitoringReport?.changePage?.(0));
+ on("mc-page-next",()=>root.MonitoringReport?.changePage?.(1));
+ on("mc-print-onepage",()=>printFinal(false));
+ on("mc-print-onepage-top",()=>printFinal(true));
  on("mc-open-report",openReport);
  on("mc-export-csv",exportCsv);
  on("mc-table-report",openReport);
