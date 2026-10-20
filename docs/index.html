@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="styles.css?v=20261014-survey-studio15" />
   <link rel="stylesheet" href="three-period-report.css?v=20261015-r1" />
   <link rel="stylesheet" href="analysis-center.css?v=20261020-v3" />
-  <link rel="stylesheet" href="monitoring-report.css?v=20261020-infographic1" />
+  <link rel="stylesheet" href="monitoring-report.css?v=20261020-evidence-grade1" />
 </head>
 <body>
   <header class="topbar">
@@ -113,10 +113,37 @@
                 <button class="mc-btn mc-btn-primary" type="button" id="mc-run" hidden>วิเคราะห์เปรียบเทียบข้อมูล</button>
                 <button class="mc-btn mc-btn-primary" type="button" id="mc-refresh">ตรวจข้อมูลระบบล่าสุด</button>
               </section>
+              <section class="mc-box mc-review-box" id="mc-review-panel" hidden>
+                <h3>แบบประเมินโดยผู้ตรวจ <span class="mc-review-human">MANUAL REVIEW</span></h3>
+                <p class="mc-mini-note">โปรดพิจารณาภาพสีจริง ดัชนี MNDWI และค่า QA ก่อนเลือกเกรด • เกรดนี้เป็นความคิดเห็นของผู้ตรวจ ไม่ใช่คะแนนจาก AI</p>
+                <label>เกรดจากผู้ประเมิน
+                  <select id="mc-review-grade" aria-label="เกรดจากผู้ประเมิน">
+                    <option value="NA">N/A · ยังประเมินไม่ได้</option>
+                    <option value="A">A · ยอมรับได้ตามเกณฑ์ผู้ตรวจ</option>
+                    <option value="B">B · ควรติดตาม</option>
+                    <option value="C">C · น่ากังวล</option>
+                    <option value="D">D · ควรตรวจภาคสนาม</option>
+                  </select>
+                </label>
+                <label>ข้อเสนอแนะ / สถานะ
+                  <select id="mc-review-condition" aria-label="ข้อเสนอแนะจากผู้ตรวจ">
+                    <option value="MORE_DATA">รอข้อมูลเพิ่มเติม</option>
+                    <option value="OK">ยอมรับผลการตรวจ</option>
+                    <option value="WATCH">เฝ้าติดตาม</option>
+                    <option value="FIELD">ควรลงพื้นที่</option>
+                  </select>
+                </label>
+                <label>หมายเหตุการประเมิน (ไม่เกิน 800 อักษร)
+                  <textarea id="mc-review-note" rows="4" maxlength="800" placeholder="เช่น ภาพมีเมฆบางส่วน พื้นที่น้ำตามแนวคลอง ควรตรวจช่วงน้ำลง..."></textarea>
+                </label>
+                <button class="mc-btn mc-btn-primary" id="mc-review-save" type="button">บันทึกเกรดและข้อสังเกต</button>
+                <button class="mc-btn" id="mc-review-export" type="button">สำรองการประเมินเป็น JSON</button>
+                <p id="mc-review-feedback" class="mc-review-feedback" aria-live="polite">ผลประเมินจะบันทึกไว้ในเบราว์เซอร์นี้</p>
+              </section>
               <section class="mc-box">
                 <h3>ส่งออกโปสเตอร์รายงาน</h3>
                 <div class="mc-side-actions">
-                  <button class="mc-btn mc-btn-primary" type="button" id="mc-print-onepage">บันทึกรายงาน 1 หน้า (PDF)</button>
+                  <button class="mc-btn mc-btn-primary" type="button" id="mc-print-onepage">บันทึกรายงานภาพสีจริง + ดัชนีน้ำ (PDF)</button>
                   <button class="mc-btn" type="button" id="mc-open-report">เปิดรายงานเทคนิค 4 หน้า ↗</button>
                   <button class="mc-btn" type="button" id="mc-export-csv">ดาวน์โหลดค่าที่เลือก (CSV)</button>
                 </div>
@@ -127,8 +154,8 @@
               <div class="mc-feedback" id="mc-feedback" role="status" aria-live="polite">กำลังอ่านข้อมูลผลวิเคราะห์จริง...</div>
               <div id="mc-results" hidden>
                 <div class="mc-print-toolbar">
-                  <p><b>Research Infographic Report</b> · โปสเตอร์ A4 แนวตั้ง 6 ส่วน · ภาพและค่าจริงจาก Sentinel-2 / PDD / QA</p>
-                  <button class="mc-btn mc-btn-primary" id="mc-print-onepage-top" type="button">พิมพ์ / บันทึก PDF 1 หน้า</button>
+                  <p><b>Plot Evidence Review</b> · ภาพสีจริง + ดัชนีน้ำ MNDWI + สรุป QA + เกรดจากผู้ตรวจ</p>
+                  <button class="mc-btn mc-btn-primary" id="mc-print-onepage-top" type="button">พิมพ์ / บันทึก PDF</button>
                 </div>
                 <div class="mc-report-page">
                   <article class="mc-report-paper" id="mc-report-paper" aria-label="รายงานสรุปน้ำและสิ่งแวดล้อมฉบับหนึ่งหน้า"></article>
@@ -556,8 +583,9 @@
   <script src="trend-report.js?v=20261009-reportselect1"></script>
   <script src="live-report-model.js?v=20261008-livereport3"></script>
   <script src="three-period-report.js?v=20261020-center-dates1"></script>
-  <script src="monitoring-report.js?v=20261020-infographic1"></script>
-  <script src="analysis-center.js?v=20261020-r3"></script>
+  <script src="monitoring-report.js?v=20261020-evidence-grade1"></script>
+  <script src="plot-review.js?v=20261020-evidence-grade1"></script>
+  <script src="analysis-center.js?v=20261020-evidence-grade1"></script>
   <script src="app.js?v=20261020-onepage-center2"></script>
   <script src="field-export.js?v=20261014-survey-studio15"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
