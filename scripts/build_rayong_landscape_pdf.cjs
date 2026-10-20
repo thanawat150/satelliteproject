@@ -30,6 +30,10 @@ const root="docs/reports";
      broken:[...l,...w].filter(x=>!x.complete||!x.naturalWidth).length,
      plotRows:document.querySelectorAll(".landscape-table tbody tr").length,
      exceptionRows:document.querySelectorAll(".exception").length,
+     colCount:document.querySelectorAll(".landscape-table thead th").length,
+     waterLevels:[...document.querySelectorAll(".landscape-table tbody .water-level")].map(x=>x.textContent.trim()),
+     countLevels:window.__REPORT_READY__?.levels,
+     followUp:document.querySelector(".priority-summary")?.innerText||"",
      rawDates:[...document.querySelectorAll(".water-triple .ev-meta span:first-child")].map(x=>x.innerText),
      missingDisclaimer:document.querySelector(".evidence-warning")?.innerText||""};
    });
@@ -39,6 +43,14 @@ const root="docs/reports";
     throw Error(paper+" imagery QA: "+JSON.stringify(facts));
    if(facts.plotRows!==19||facts.exceptionRows!==2||facts.stats.grades.B+facts.stats.grades.C!==19)
     throw Error(paper+" completeness QA: "+JSON.stringify(facts));
+   if(facts.colCount!==9||facts.waterLevels.length!==19)throw Error(paper+" text-only water-level column missing: "+JSON.stringify(facts));
+   const observed=facts.waterLevels.reduce((map,level)=>(map[level]=(map[level]||0)+1,map),{});
+   if(observed["มาก"]!==11||observed["กลาง"]!==4||observed["น้อย"]!==2||observed["ประเมินไม่ได้"]!==2)
+    throw Error(paper+" water classes don't match QA-approved water share: "+JSON.stringify(observed));
+   if(facts.countLevels?.high!==11||facts.countLevels?.medium!==4||facts.countLevels?.low!==2||facts.countLevels?.unknown!==2)
+    throw Error(paper+" summary counts disagree: "+JSON.stringify(facts.countLevels));
+   if(!facts.followUp.includes("17-VSD")||!facts.followUp.includes("20-STC")||!facts.followUp.includes("≥70%"))
+    throw Error(paper+" special follow-up summary missing verified high-water plots: "+facts.followUp);
    if(!facts.missingDisclaimer.includes("07/10"))
     throw Error(paper+" incomplete 07/10 disclosure missing");
    if(facts.rawDates.join("|")!=="03/08/2569|29/09/2569|07/10/2569")
@@ -55,7 +67,7 @@ const root="docs/reports";
    const pageSize=info.match(/^Page size:\s*(.+)$/m)?.[1];
    if(pdfPages!==1)throw Error(paper+" must be exactly 1 page; got "+pdfPages+" ("+pageSize+")");
    console.log("PASS "+paper+": pages="+pdfPages+", paper="+pageSize+", RGB="+facts.rgb+", MNDWI="+facts.water+
-    ", plotted="+facts.plotRows+", incomplete="+facts.exceptionRows+", bytes="+fs.statSync(result).size);
+    ", plotted="+facts.plotRows+", high-water="+facts.countLevels.high+", incomplete="+facts.exceptionRows+", bytes="+fs.statSync(result).size);
    await page.close();
   }
  }finally{await browser.close()}
