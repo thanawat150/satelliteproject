@@ -300,12 +300,32 @@ function evidenceProvince(view,mode,generated){
  '<p>แปลงไม่มีข้อมูลจะไม่ถือเป็นน้ำ 0 ไร่ และต้องตรวจน้ำขึ้นลงกับข้อมูลภาคสนามก่อนตีความเป็นอุทกภัย</p></section>'+
  finalFooter(generated)+'</div>';
 }
+let pageIndex=0;
+function changePage(index){
+ const el=$("mc-report-paper");if(!el)return false;
+ const pages=[...el.querySelectorAll(".mcf-page")];
+ if(!pages.length)return false;
+ pageIndex=Math.max(0,Math.min(index,pages.length-1));
+ pages.forEach((page,i)=>{
+  page.hidden=i!==pageIndex;
+  page.classList.toggle("is-active",i===pageIndex);
+ });
+ const previous=$("mc-page-prev"),next=$("mc-page-next"),count=$("mc-page-count");
+ if(previous)previous.disabled=pageIndex===0;
+ if(next)next.disabled=pageIndex===pages.length-1;
+ if(count)count.textContent="หน้า "+(pageIndex+1)+" / "+pages.length;
+ return true;
+}
 function renderFinal({view,mode,generated,review}){
  const el=$("mc-report-paper");if(!el||!view)return false;
  activeKey=view.kind+"|"+(view.plot||"province")+"|"+view.dates.join("|");
  el.dataset.reportKind=view.kind;
- el.classList.add("mcf-one-page");
- el.innerHTML=view.kind==="plot"?finalPlot(view,mode,generated,review):finalProvince(view,mode,generated);
+ el.classList.add("mcf-one-page","mcf-paginated");
+ const first=view.kind==="plot"?finalPlot(view,mode,generated,review):finalProvince(view,mode,generated);
+ const second=view.kind==="plot"?evidencePlot(view,mode,generated,review):evidenceProvince(view,mode,generated);
+ el.innerHTML='<section class="mcf-page" data-report-page="1">'+first+'</section>'+
+ '<section class="mcf-page" data-report-page="2">'+second+'</section>';
+ changePage(0);
  return true;
 }
 let activeKey="";
@@ -358,6 +378,6 @@ async function print(){
  }
 }
 function bind(){root.addEventListener("afterprint",()=>document.body.classList.remove("mc-print-report"))}
-root.MonitoringReport={render,renderFinal,setPreview,ready,print,bind,model:{plotReport,provinceReport,finalPlot,finalProvince,good,trusted}};
+root.MonitoringReport={render,renderFinal,changePage,setPreview,ready,print,bind,model:{plotReport,provinceReport,finalPlot,finalProvince,evidencePlot,evidenceProvince,good,trusted}};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind);else bind();
 })(window);
