@@ -234,7 +234,7 @@ async function renderPreview(){
  container.innerHTML='<div class="mc-empty" id="mc-preview-message">กำลังโหลดภาพจาก GeoTIFF Preview จริง...</div>';
  const layers=await previewPart(plot);
  if(state.scope!=="plot"||state.plot!==plot||!dates.every((d,i)=>d===state.view?.dates?.[i]))return;
- if(!layers){container.innerHTML='<div class="mc-empty">ยังไม่มีภาพ Preview ที่รองรับวันที่และแปลงที่เลือก</div>';return}
+ if(!layers){container.innerHTML='<div class="mc-empty">ยังไม่มีภาพ Preview ที่รองรับวันที่และแปลงที่เลือก</div>';root.MonitoringReport?.setPreview?.({plot,dates,html:""});return}
  const priority={DIRECT:0,LATEST_RECT:1,HIST_CLEAR_RECT_SCL0:2,NO_CLOUD_FILTER:3};
  const makeCards=displayMode=>dates.map((d,i)=>{
   const l=layers.filter(x=>x.plot===plot&&x.date===d&&x.mode===displayMode&&x.src).sort((a,b)=>(priority[a.source_suffix]??5)-(priority[b.source_suffix]??5))[0];
@@ -299,6 +299,7 @@ function wire(){
  on("mc-analysis-detail",e=>{if(e.target.open){paintMap();drawChart();setTimeout(()=>{state.map?.invalidateSize();state.chart?.resize()},120)}},"toggle");
  const printOne=()=>{
   if(!state.view||state.dirty){setStatus("กรุณากดวิเคราะห์ตามวันที่ก่อนบันทึกรายงาน PDF","warn");return}
+  if(!root.MonitoringReport?.ready?.()){setStatus("รอการโหลดภาพประกอบรายงานให้เสร็จก่อนพิมพ์ หรือเลือกใช้รายงานที่แจ้งว่าไม่มีภาพ","warn");return}
   root.MonitoringReport?.print?.();
  };
  on("mc-print-onepage",printOne);
