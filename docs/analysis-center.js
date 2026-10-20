@@ -296,7 +296,7 @@ function wire(){
   setStatus("กำลังตรวจฐานข้อมูลผลวิเคราะห์ล่าสุด...");try{const r=await fetch("data/analysis_history.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);state.history=await r.json();setDefaults();drawControls();useSelection()}catch(e){setStatus("โหลดผลวิเคราะห์ไม่ได้: "+e.message,"error")}
  });
  on("mc-layer",()=>{if(!state.dirty&&state.view?.kind==="plot")renderPreview()},"change");
- on("mc-analysis-detail",e=>{if(e.target.open){paintMap();setTimeout(()=>state.map?.invalidateSize(),120)}},"toggle");
+ on("mc-analysis-detail",e=>{if(e.target.open){paintMap();drawChart();setTimeout(()=>{state.map?.invalidateSize();state.chart?.resize()},120)}},"toggle");
  const printOne=()=>{
   if(!state.view||state.dirty){setStatus("กรุณากดวิเคราะห์ตามวันที่ก่อนบันทึกรายงาน PDF","warn");return}
   root.MonitoringReport?.print?.();
