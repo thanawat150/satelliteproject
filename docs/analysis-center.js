@@ -104,7 +104,7 @@ function useSelection(){
 }
 function resetForChange(){
  if(state.mode==="auto"){setDefaults();state.dirty=false;drawControls();useSelection()}
- else{state.dirty=true;drawControls();$("mc-results").hidden=true;setStatus("เลือกวันที่แล้วกด «เปรียบเทียบข้อมูล» เพื่อแสดงผลตามวันที่ที่เลือก","warn");paintMap();}
+ else{state.dirty=true;state.view=null;drawControls();$("mc-results").hidden=true;setStatus("เลือกวันที่แล้วกด «เปรียบเทียบข้อมูล» เพื่อแสดงผลตามวันที่ที่เลือก","warn");paintMap();}
 }
 function metric(label,value,detail=""){return '<article class="mc-metric"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>'}
 function addSign(v){return v==null?"—":(v>0?"+":"")+num(v)+" ไร่"}
@@ -248,7 +248,7 @@ function selectPlot(id){
  if(typeof root.selectPlot==="function")root.selectPlot(p);
 }
 function exportCsv(){
- if(!state.view||state.dirty)return;
+ if(!state.view||state.dirty){setStatus("กรุณากดวิเคราะห์ข้อมูลตามวันที่ก่อนดาวน์โหลด CSV","warn");return}
  const v=state.view,head=["scope","plot","date","analysis_status","valid_pct","water_rai","ndvi","ndre","ndmi","mndwi","bsi","source"];
  const plots=v.kind==="province"?state.plots:[state.plots.find(p=>p.plot===v.plot)];
  const rows=[];
@@ -283,9 +283,9 @@ function wire(){
  on("mc-scope-province",()=>{state.scope="province";setDefaults();resetForChange();saveQuery()});
  on("mc-scope-plot",()=>{state.scope="plot";setDefaults();resetForChange();saveQuery()});
  on("mc-mode-auto",()=>{state.mode="auto";setDefaults();resetForChange();saveQuery()});
- on("mc-mode-manual",()=>{state.mode="manual";state.dirty=true;drawControls();$("mc-results").hidden=true;setStatus("เลือกวันและกดเปรียบเทียบเพื่ออ่านผลที่คำนวณไว้แล้ว","warn");saveQuery()});
+ on("mc-mode-manual",()=>{state.mode="manual";state.dirty=true;state.view=null;drawControls();$("mc-results").hidden=true;paintMap();setStatus("เลือกวันและกดเปรียบเทียบเพื่ออ่านผลที่คำนวณไว้แล้ว","warn");saveQuery()});
  on("mc-plot",e=>selectPlot(e.target.value),"change");
- ["a","b","c"].forEach((k,i)=>on("mc-date-"+k,e=>{state.dates[i]=e.target.value;state.dirty=true;$("mc-results").hidden=true;setStatus("เปลี่ยนวันแล้ว • กดเปรียบเทียบข้อมูลเพื่อแสดงผลใหม่","warn")},"change"));
+ ["a","b","c"].forEach((k,i)=>on("mc-date-"+k,e=>{state.dates[i]=e.target.value;state.dirty=true;state.view=null;$("mc-results").hidden=true;paintMap();setStatus("เปลี่ยนวันแล้ว • กดเปรียบเทียบข้อมูลเพื่อแสดงผลใหม่","warn")},"change"));
  on("mc-run",chooseManual);
  on("mc-refresh",async()=>{
   setStatus("กำลังตรวจฐานข้อมูลผลวิเคราะห์ล่าสุด...");try{const r=await fetch("data/analysis_history.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);state.history=await r.json();setDefaults();drawControls();useSelection()}catch(e){setStatus("โหลดผลวิเคราะห์ไม่ได้: "+e.message,"error")}
