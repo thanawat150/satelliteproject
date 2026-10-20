@@ -123,7 +123,7 @@ async function print(){
  }
 }
 function bind(){
- $("mc-print-onepage")?.addEventListener("click",print);
+ // The analysis controller validates current dates and QA before enabling print.
  root.addEventListener("afterprint",()=>document.body.classList.remove("mc-print-report"));
 }
 root.MonitoringReport={render,setPreview,print,bind,model:{plotReport,provinceReport,good,trusted}};
