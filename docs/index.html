@@ -146,7 +146,7 @@
               <section class="mc-box">
                 <h3>ส่งออกโปสเตอร์รายงาน</h3>
                 <div class="mc-side-actions">
-                  <button class="mc-btn mc-btn-primary" type="button" id="mc-print-onepage" disabled>บันทึก Final Report (PDF)</button>
+                  <button class="mc-btn mc-btn-primary" type="button" id="mc-print-onepage" disabled>บันทึกเฉพาะหน้าที่ดู (PDF)</button>
                   <button class="mc-btn" type="button" id="mc-open-report">เปิดรายงานเทคนิค 4 หน้า ↗</button>
                   <button class="mc-btn" type="button" id="mc-export-csv">ดาวน์โหลดค่าที่เลือก (CSV)</button>
                 </div>
@@ -206,12 +206,17 @@
                 <section class="mc-final-stage" id="mc-final-stage" hidden>
                   <div class="mc-print-toolbar">
                     <p><b>Final Report Preview</b> · สร้างจากภาพและผล QA ที่คุณตรวจแล้ว พร้อมผลประเมินที่บันทึกไว้</p>
-                    <button class="mc-btn mc-btn-primary" id="mc-print-onepage-top" type="button">บันทึก Final PDF</button>
+                    <button class="mc-btn mc-btn-primary" id="mc-print-onepage-top" type="button">บันทึกทั้งรายงาน (PDF)</button>
+                  </div>
+                  <div class="mc-report-navigation" role="group" aria-label="เปลี่ยนหน้ารายงาน Final">
+                    <button type="button" class="mc-page-btn" id="mc-page-prev" disabled>← หน้าก่อนหน้า</button>
+                    <span id="mc-page-count" aria-live="polite">หน้า 1 / 2</span>
+                    <button type="button" class="mc-page-btn" id="mc-page-next">หน้าถัดไป →</button>
                   </div>
                   <div class="mc-report-page">
                     <article class="mc-report-paper" id="mc-report-paper" aria-label="รายงาน Final จากผลการประเมิน"></article>
                   </div>
-                  <p class="mc-final-note">ต้องการเปลี่ยนภาพ วันที่ หรือเกรด? แก้ด้านบนแล้วกดสร้าง Report Final อีกครั้ง ข้อมูลเก่าจะไม่ถูกนำมาใช้แทนโดยอัตโนมัติ</p>
+                  <p class="mc-final-note">หน้า 1 = สรุปสำหรับผู้บริหาร · หน้า 2 = หลักฐานและผลวิเคราะห์ครบถ้วน · เปลี่ยนข้อมูลแล้วต้องสร้าง Final อีกครั้ง</p>
                 </section>
               </div>
             </div>
