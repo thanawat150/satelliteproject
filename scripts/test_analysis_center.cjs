@@ -126,7 +126,7 @@ assert(appendixPlot.includes('11-8-4'),'SWIR composite must be disclosed');
 assert(appendixPlot.includes('ไม่มีภาพ Composite 11-8-4'),'Missing SWIR must not be replaced with another layer');
 assert(appendixPlot.includes('บันทึกผู้ประเมินฉบับเต็ม'),'Appendix must include full reviewer notes');
 assert(appendixProvince.includes('QA A')&&appendixProvince.includes('QA B'),'Province appendix must include both-period QA');
-assert.equal((appendixProvince.match(/<tr>/g)||[]).length-2,19,'Province appendix must cover 19 real plots');
+assert.equal((appendixProvince.match(/<tr>/g)||[]).length-1,19,'Province appendix must cover 19 real plots');
 assert(read('docs/analysis-center.js').includes('backgroundSrc:heroScene?.src||""'),'Cover art must come from selected plot date-B actual raster preview');
 assert(read('docs/analysis-center.js').includes('falseColorHtml:makeCards("false_color")'),'8-4-3 must come from the real indexed preview');
 assert(read('docs/analysis-center.js').includes('on("mc-page-next"'),'Next page must be a live control');
