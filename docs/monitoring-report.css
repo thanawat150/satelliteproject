@@ -72,3 +72,7 @@
  body.mc-print-report .mcr-section{break-inside:avoid}
  body.mc-print-report .mcr-kpis{break-inside:avoid}
 }
+
+/* Preserve the same raster footprint-to-PDD alignment in exported reports. */
+.mcr-img{height:auto;aspect-ratio:1/1;max-height:50mm;min-height:28mm}
+.mcr-img img{height:100%;width:100%;object-fit:fill}
