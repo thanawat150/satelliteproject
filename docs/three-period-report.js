@@ -178,5 +178,14 @@ async function render(paper,p,files,isCurrent=()=>true){
  thirdPage(p,dates,byDate)+fourthPage(p,dates)+'</div>';
  return dates;
 }
-global.ThreePeriodReport={render,clear:()=>{const p=$("report-paper");p?.classList.remove("three-report-paper")}};
+global.ThreePeriodReport={render,
+ setDates:(plot,dates)=>{
+  if(!plot||!Array.isArray(dates)||dates.length!==3)return false;
+  const chosen=dates.map(d=>/^\d{4}-\d{2}-\d{2}$/.test(String(d||""))?String(d):"");
+  if(new Set(chosen.filter(Boolean)).size!==chosen.filter(Boolean).length)return false;
+  perPlot.set(plot,chosen);
+  return true;
+ },
+ clear:()=>{const p=$("report-paper");p?.classList.remove("three-report-paper")}
+};
 })(window);
