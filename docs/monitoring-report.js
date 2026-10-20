@@ -336,7 +336,7 @@ function render({view,mode,generated}){
  activeKey=key;el.dataset.reportKind=view.kind;
  el.innerHTML=view.kind==="province"?provinceReport(view,mode,generated):plotReport(view,mode,generated);
 }
-function setPreview({plot,dates,html,mndwiHtml}){
+function setPreview({plot,dates,html,mndwiHtml,falseColorHtml,backgroundSrc}){
  const parent=$("mcr-images");
  if(!parent||$("mc-report-paper")?.dataset.reportKind!=="plot")return;
  const key="plot|"+plot+"|"+(dates||[]).join("|");
@@ -359,6 +359,20 @@ function setPreview({plot,dates,html,mndwiHtml}){
  };
  $("mcr-true-scenes").innerHTML=toCards(html,"true_color");
  $("mcr-mndwi-scenes").innerHTML=toCards(mndwiHtml,"mndwi");
+ const falseScenes=$("mcr-false-scenes");
+ if(falseScenes)falseScenes.innerHTML=toCards(falseColorHtml,"false_color");
+ // Real selected plot, date B, true-color preview for cover artwork only.
+ for(const head of document.querySelectorAll("#mc-report-paper .mcf-head")){
+  head.querySelector(".mcf-sat-backdrop")?.remove();
+  if(backgroundSrc&&(backgroundSrc.startsWith("data:image/jpeg;base64,")||backgroundSrc.startsWith("data:image/png;base64,"))){
+   const image=document.createElement("img");
+   image.className="mcf-sat-backdrop";
+   image.src=backgroundSrc;
+   image.alt="";
+   image.setAttribute("aria-hidden","true");
+   head.prepend(image);
+  }
+ }
 }
 function ready(){const el=$("mc-report-paper");return !!el?.innerHTML.trim()&&!el.querySelector(".mcr-images-loading")}
 async function print(){
