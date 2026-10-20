@@ -80,6 +80,22 @@ for(const text of ['ที่มาและความสำคัญ','วั
  assert(provinceReport.includes(text),'Province poster is missing section: '+text);
 }
 assert(plotReport.includes('class="mcr-images"'),'Plot uses actual three-date satellite preview slots');
+assert(plotReport.includes('id="mcr-true-scenes"'), 'True-color A/B/C evidence row required');
+assert(plotReport.includes('id="mcr-mndwi-scenes"'), 'MNDWI A/B/C evidence row required');
+assert(plotReport.includes('id="mcr-review-outcome"'), 'Manual reviewer grade must be separate from scientific metrics');
+assert(plotReport.includes('MNDWI'), 'Water index imagery must be labeled');
+assert(!provinceReport.includes('id="mcr-review-outcome"'), 'Province must not invent a manual grade from plot data');
+const gradeSandbox={window:{},document:{readyState:"loading",addEventListener(){}}};
+vm.runInNewContext(read('docs/plot-review.js'),gradeSandbox,{filename:'plot-review.js'});
+const reviewModel=gradeSandbox.window.PlotReview.model;
+assert(reviewModel.normalize({grade:"A",condition:"OK",note:"checked"}));
+assert.equal(reviewModel.normalize({grade:"INVALID",condition:"OK"}),null);
+assert.equal(reviewModel.normalize({grade:"A",condition:"WRONG"}),null);
+assert.notEqual(reviewModel.key('13-STC',defaults),reviewModel.key('13-STC',[defaults[0],defaults[2],defaults[1]]),'Assessment should be bound to actual comparison dates');
+assert(read('docs/index.html').includes('id="mc-review-panel"'));
+assert(read('docs/index.html').includes('id="mc-review-save"'));
+assert(read('docs/index.html').includes('plot-review.js?v='));
+assert(read('docs/monitoring-report.css').includes('.mcr-comparison'));
 assert(plotReport.includes('194.92'),'Reported water-area change must be from real QA-approved observations');
 assert(plotReport.includes('44.7')===false,'Partial QA must not be silently promoted into a confirmed comparison');
 assert(provinceReport.includes('conic-gradient'),'Province QA overview graphic should use the real coverage');
