@@ -37,6 +37,16 @@ jobs:
           done
       - name: Verify data and render exact pixels
         run: node scripts/build_real_satellite_infographic.cjs
+      - name: Publish diagnostic message for investigation
+        if: failure()
+        run: |
+          if [ -f docs/reports/real_satellite_infographic_build_error.txt ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add docs/reports/real_satellite_infographic_build_error.txt
+            git commit -m "Report real satellite infographic preview build diagnostics" || true
+            git push origin HEAD:main
+          fi
       - name: Archive diagnostic
         if: failure()
         uses: actions/upload-artifact@v4
