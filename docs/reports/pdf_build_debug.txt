@@ -1,2 +1,2 @@
-page.waitForFunction: Timeout 30000ms exceeded.
-    at /home/runner/work/satelliteproject/satelliteproject/scripts/build_rayong_pdf.cjs:12:14
+Error: Page readiness timeout: {"status":"กำลังอ่านข้อมูล Sentinel-2 และผลวิเคราะห์จากคลังรายงานจริง...","html":"","sources":["inline"]}; errors: ["PAGE ERROR: ","CONSOLE ERROR: Failed to load resource: the server responded with a status of 404 (File not found)"]; exception: page.waitForFunction: Timeout 20000ms exceeded.
+    at /home/runner/work/satelliteproject/satelliteproject/scripts/build_rayong_pdf.cjs:19:10
