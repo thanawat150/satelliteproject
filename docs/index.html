@@ -110,6 +110,7 @@
                 <label id="mc-date-c-wrap" hidden>วัน C · ภาพติดตามอีกช่วง
                   <select id="mc-date-c" aria-label="วันที่สาม"></select>
                 </label>
+                <button class="mc-btn mc-btn-primary" type="button" id="mc-preview-analysis">ดู Preview การวิเคราะห์</button>
                 <button class="mc-btn mc-btn-primary" type="button" id="mc-run" hidden>วิเคราะห์เปรียบเทียบข้อมูล</button>
                 <button class="mc-btn mc-btn-primary" type="button" id="mc-refresh">ตรวจข้อมูลระบบล่าสุด</button>
               </section>
@@ -139,11 +140,13 @@
                 <button class="mc-btn mc-btn-primary" id="mc-review-save" type="button">บันทึกเกรดและข้อสังเกต</button>
                 <button class="mc-btn" id="mc-review-export" type="button">สำรองการประเมินเป็น JSON</button>
                 <p id="mc-review-feedback" class="mc-review-feedback" aria-live="polite">ผลประเมินจะบันทึกไว้ในเบราว์เซอร์นี้</p>
+                <button class="mc-btn mc-btn-primary" id="mc-create-final" type="button" disabled>สร้าง Report Final จากผลที่ตรวจแล้ว</button>
+                <p class="mc-mini-note" id="mc-final-hint">ต้องบันทึกการประเมินก่อนจึงสร้างรายงาน Final ได้</p>
               </section>
               <section class="mc-box">
                 <h3>ส่งออกโปสเตอร์รายงาน</h3>
                 <div class="mc-side-actions">
-                  <button class="mc-btn mc-btn-primary" type="button" id="mc-print-onepage">บันทึกรายงานภาพสีจริง + ดัชนีน้ำ (PDF)</button>
+                  <button class="mc-btn mc-btn-primary" type="button" id="mc-print-onepage" disabled>บันทึก Final Report (PDF)</button>
                   <button class="mc-btn" type="button" id="mc-open-report">เปิดรายงานเทคนิค 4 หน้า ↗</button>
                   <button class="mc-btn" type="button" id="mc-export-csv">ดาวน์โหลดค่าที่เลือก (CSV)</button>
                 </div>
@@ -152,16 +155,13 @@
             </aside>
             <div class="mc-workspace">
               <div class="mc-feedback" id="mc-feedback" role="status" aria-live="polite">กำลังอ่านข้อมูลผลวิเคราะห์จริง...</div>
+              <div class="mc-stage-help" id="mc-stage-help"><strong>เริ่มที่การเลือกแปลงและวันที่</strong><span>กด “ดู Preview การวิเคราะห์” เพื่อตรวจสอบภาพและผล QA ก่อนตัดสินเกรด</span></div>
               <div id="mc-results" hidden>
-                <div class="mc-print-toolbar">
-                  <p><b>Plot Evidence Review</b> · ภาพสีจริง + ดัชนีน้ำ MNDWI + สรุป QA + เกรดจากผู้ตรวจ</p>
-                  <button class="mc-btn mc-btn-primary" id="mc-print-onepage-top" type="button">พิมพ์ / บันทึก PDF</button>
+                <div class="mc-singleflow-progress" aria-label="ขั้นตอนเดียวกันบนหน้าเดียว">
+                  <span class="is-current">1 เลือกแปลง</span><span>2 ดู Preview</span><span>3 ประเมิน</span><span>4 Report Final</span>
                 </div>
-                <div class="mc-report-page">
-                  <article class="mc-report-paper" id="mc-report-paper" aria-label="รายงานตรวจประเมินน้ำและสิ่งแวดล้อมด้วยภาพจริง"></article>
-                </div>
-                <details class="mc-analysis-detail" id="mc-analysis-detail">
-                  <summary>เปิดข้อมูลประกอบ: แผนที่ GIS • กราฟแนวโน้ม • ภาพดัชนีเพิ่มเติม</summary>
+                <details class="mc-analysis-detail" id="mc-analysis-detail" open>
+                  <summary>Preview การวิเคราะห์: ภาพดาวเทียม • ดัชนีน้ำ • ค่า QA • แผนที่</summary>
               <section class="mc-box">
                 <div class="mc-map-title">
                   <h3>แผนที่ขอบเขต PDD และสถานะข้อมูล</h3>
@@ -190,6 +190,7 @@
                       <select id="mc-layer" aria-label="ประเภทภาพดาวเทียม">
                         <option value="true_color">True Color (B4–B3–B2)</option>
                         <option value="false_color">False Color (B8–B4–B3)</option>
+                        <option value="false_swir" disabled>SWIR False Color (B11–B8–B4) — ยังไม่มี Preview</option>
                         <option value="ndvi">NDVI</option>
                         <option value="mndwi">MNDWI</option>
                         <option value="bsi">BSI</option>
@@ -201,6 +202,17 @@
                   <p class="mc-table-note" id="mc-source"></p>
                 </section>
                 </details>
+
+                <section class="mc-final-stage" id="mc-final-stage" hidden>
+                  <div class="mc-print-toolbar">
+                    <p><b>Final Report Preview</b> · สร้างจากภาพและผล QA ที่คุณตรวจแล้ว พร้อมผลประเมินที่บันทึกไว้</p>
+                    <button class="mc-btn mc-btn-primary" id="mc-print-onepage-top" type="button">บันทึก Final PDF</button>
+                  </div>
+                  <div class="mc-report-page">
+                    <article class="mc-report-paper" id="mc-report-paper" aria-label="รายงาน Final จากผลการประเมิน"></article>
+                  </div>
+                  <p class="mc-final-note">ต้องการเปลี่ยนภาพ วันที่ หรือเกรด? แก้ด้านบนแล้วกดสร้าง Report Final อีกครั้ง ข้อมูลเก่าจะไม่ถูกนำมาใช้แทนโดยอัตโนมัติ</p>
+                </section>
               </div>
             </div>
           </div>
