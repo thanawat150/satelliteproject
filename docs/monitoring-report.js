@@ -186,6 +186,88 @@ function provinceReport(view,mode,generated){
  '<div class="mcr-bottom-two">'+summary(view)+benefits(view)+'</div>'+
  foot(generated);
 }
+/* Compact evidence-only FINAL. The analysis workspace can be as long as needed. */
+function finalHeader(view,mode){
+ const province=view.kind==="province";
+ return '<header class="mcf-head"><div class="mcf-head-top"><b>FLOOD & ENVIRONMENTAL MONITORING</b><span>SENTINEL-2 L2A · PDD</span></div>'+
+  '<h2>'+(province?'รายงานสรุปสถานการณ์จังหวัดระยอง':'รายงานตรวจประเมินแปลง '+esc(view.plot))+'</h2>'+
+  '<p>'+(province?'สรุปข้อมูลที่ผ่าน QA ของ 19 แปลง':'หลักฐานภาพสีจริง ดัชนีน้ำ และผลประเมินโดยผู้ตรวจ')+
+  ' · '+esc(modeLabel(mode))+'</p></header>';
+}
+function finalFacts(view){
+ return '<div class="mcf-facts"><div><span>ช่วงวัน A</span><b>'+esc(dt(view.dates[0]))+'</b></div>'+
+  '<div><span>ช่วงวัน B</span><b>'+esc(dt(view.dates[1]))+'</b></div>'+
+  '<div><span>ช่วงวัน C</span><b>'+esc(dt(view.dates[2]))+'</b></div>'+
+  '<div><span>พื้นที่ PDD</span><b>'+esc(fmt(view.area))+' ไร่</b></div></div>';
+}
+function finalRow(type,title,desc){
+ return '<section class="mcf-image-section"><div class="mcf-image-title"><strong>'+esc(title)+'</strong><span>'+esc(desc)+'</span></div>'+
+  '<div class="mcf-grid" id="mcr-'+type+'-scenes"><div class="mcr-images-loading">กำลังเตรียมภาพจริง A / B / C...</div></div></section>';
+}
+function finalPlot(view,mode,generated,review){
+ const rs=view.records||[],b=rs[1],c=rs[2];
+ const indexRows=[["พื้นที่น้ำเปิด","water_rai",2,"ไร่"],["MNDWI","mndwi",3,""],["NDVI","ndvi",3,""],["NDMI","ndmi",3,""],["BSI","bsi",3,""]];
+ const row=(name,key,prec,unit)=>'<tr><th>'+esc(name)+'</th>'+rs.map(r=>'<td>'+esc(measured(r,key,prec))+(trusted(r,key)!=null?esc(unit):"")+'</td>').join("")+'</tr>';
+ const rd=review||null;
+ const grade=rd?esc(rd.grade==="NA"?"N/A":rd.grade):"—";
+ const condition=rd?(rd.condition==="FIELD"?"ควรตรวจภาคสนาม":rd.condition==="WATCH"?"เฝ้าติดตาม":rd.condition==="OK"?"ยอมรับการตรวจ":"รอข้อมูลเพิ่มเติม"):"ยังไม่ได้ประเมิน";
+ const note=rd?String(rd.note||"").slice(0,230):"";
+ const summary=view.paired?"พื้นที่น้ำวัน B − A = "+signed(view.change)+" ไร่ (เฉพาะคู่วันที่ผ่าน QA)":
+  "ยังไม่สามารถสรุปน้ำเปลี่ยนสุทธิได้ เนื่องจากข้อมูล A/B ไม่ผ่าน QA ครบ";
+ return '<div class="mcf-sheet">'+finalHeader(view,mode)+
+  finalFacts(view)+
+  '<div id="mcr-images" class="mcf-comparisons">'+
+  finalRow("true","01 · ภาพสีจริง 4-3-2","True Color · PDD สีแดง")+
+  finalRow("mndwi","02 · ดัชนีน้ำ MNDWI","Raster-derived index · เปรียบเทียบวัน A/B/C")+'</div>'+
+  '<section class="mcf-values"><div class="mcf-section-head">03 · ผลวิเคราะห์และคุณภาพข้อมูล</div>'+
+  '<table><thead><tr><th>ตัวชี้วัด</th>'+view.dates.map((d,i)=>'<th>'+["A","B","C"][i]+' · '+esc(dt(d))+'</th>').join("")+'</tr></thead><tbody>'+
+  indexRows.map(x=>row(...x)).join("")+
+  '<tr class="mcf-qa-row"><th>QA / Valid</th>'+rs.map(r=>'<td>'+esc(status(r))+'<small>'+esc(r?.valid_pct==null?"—":fmt(r.valid_pct,1)+"%")+'</small></td>').join("")+'</tr></tbody></table>'+
+  '<p>* คือผลบางส่วน ไม่ใช่ค่าที่รับรองทั้งแปลง • — คือไม่พบค่าจากข้อมูลวิเคราะห์</p></section>'+
+  '<section class="mcf-assessment"><div class="mcf-section-head">04 · ข้อสรุปและความเห็นผู้ตรวจ</div>'+
+  '<p class="mcf-summary">'+esc(summary)+'</p>'+
+  '<div class="mcf-grade-row"><div><span>GRADE โดยผู้ตรวจ</span><strong>'+grade+'</strong></div>'+
+  '<div><span>สถานะ</span><strong>'+esc(condition)+'</strong></div></div>'+
+  '<p class="mcf-review-note">'+(note?'หมายเหตุผู้ตรวจ: '+esc(note):'ยังไม่มีหมายเหตุของผู้ตรวจ')+'</p>'+
+  '<p class="mcf-limitation">ควรตรวจเวลาเก็บภาพเทียบระดับน้ำขึ้นลง เมฆ และข้อมูลภาคสนามก่อนยืนยันสถานการณ์น้ำท่วม</p></section>'+
+  finalFooter(generated)+'</div>';
+}
+function finalProvince(view,mode,generated){
+ const items=view.items||[];
+ const left=items.slice(0,Math.ceil(items.length/2)),right=items.slice(Math.ceil(items.length/2));
+ const row=item=>{
+  const delta=item.goodA&&item.goodB?Number(item.rb.water_rai)-Number(item.ra.water_rai):null;
+  return '<tr><td>'+esc(item.p.plot)+'</td><td>'+esc(item.goodB?fmt(item.rb.water_rai,2):"—")+'</td><td>'+esc(delta==null?"—":signed(delta))+'</td><td>'+esc(status(item.rb))+'</td></tr>';
+ };
+ const table=xs=>'<table><thead><tr><th>แปลง</th><th>น้ำ B (ไร่)</th><th>Δ (ไร่)</th><th>QA</th></tr></thead><tbody>'+xs.map(row).join("")+'</tbody></table>';
+ return '<div class="mcf-sheet">'+finalHeader(view,mode)+
+  '<div class="mcf-facts"><div><span>พื้นที่ PDD รวม</span><b>'+esc(fmt(view.area))+' ไร่</b></div>'+
+  '<div><span>วันเปรียบเทียบ A</span><b>'+esc(dt(view.dates[0]))+'</b></div>'+
+  '<div><span>วันติดตาม B</span><b>'+esc(dt(view.dates[1]))+'</b></div>'+
+  '<div><span>จำนวนแปลง</span><b>'+items.length+' แปลง</b></div></div>'+
+  '<div class="mcf-province-fig"><div><span>แปลงผ่าน QA วัน B</span><strong>'+view.covered+'/'+items.length+'</strong></div>'+
+  '<div><span>น้ำเปิดรวมวัน B</span><strong>'+esc(view.areaWater==null?"—":fmt(view.areaWater)+" ไร่")+'</strong></div>'+
+  '<div><span>เปรียบเทียบได้ครบ A/B</span><strong>'+view.paired+' แปลง</strong></div>'+
+  '<div><span>น้ำเปลี่ยนสุทธิเฉพาะคู่ผ่าน QA</span><strong>'+esc(view.change==null?"—":signed(view.change)+" ไร่")+'</strong></div></div>'+
+  '<section class="mcf-province-table"><div class="mcf-section-head">ข้อมูลรายแปลง ณ วัน B พร้อม QA</div><div class="mcf-two-tables">'+table(left)+table(right)+'</div></section>'+
+  '<section class="mcf-assessment mcf-province-notes"><div class="mcf-section-head">ข้อสังเกตและข้อจำกัดการตีความ</div>'+
+  '<p>ผลรวมพื้นที่น้ำใช้เฉพาะแปลงที่มีข้อมูลผ่าน QA วัน B และผลต่างน้ำใช้เฉพาะ '+view.paired+' แปลงที่ผ่าน QA ทั้งสองวันเท่านั้น จึงไม่ใช่ภาพรวมน้ำท่วมที่ยืนยันแล้วของทั้งจังหวัด</p>'+
+  '<p>การเปลี่ยนแปลงของน้ำในป่าชายเลนอาจเกี่ยวข้องกับน้ำขึ้นลงตามธรรมชาติ เมฆ และตะกอน ควรใช้ข้อมูลภาคสนามตรวจสอบร่วมด้วย</p></section>'+
+  finalFooter(generated)+'</div>';
+}
+function finalFooter(generated){
+ const asOf=generated?new Date(generated).toLocaleString("th-TH",{timeZone:"Asia/Bangkok"}):"ไม่ระบุ";
+ return '<footer class="mcf-foot"><span>หลักฐาน: Sentinel-2 L2A · analysis_history.json · PDD GIS · วิเคราะห์เผยแพร่ '+esc(asOf)+'</span>'+
+  '<b>ONE-PAGE FINAL REPORT · 01/01</b></footer>';
+}
+function renderFinal({view,mode,generated,review}){
+ const el=$("mc-report-paper");if(!el||!view)return false;
+ activeKey=view.kind+"|"+(view.plot||"province")+"|"+view.dates.join("|");
+ el.dataset.reportKind=view.kind;
+ el.classList.add("mcf-one-page");
+ el.innerHTML=view.kind==="plot"?finalPlot(view,mode,generated,review):finalProvince(view,mode,generated);
+ return true;
+}
 let activeKey="";
 function render({view,mode,generated}){
  const el=$("mc-report-paper");
@@ -236,6 +318,6 @@ async function print(){
  }
 }
 function bind(){root.addEventListener("afterprint",()=>document.body.classList.remove("mc-print-report"))}
-root.MonitoringReport={render,setPreview,ready,print,bind,model:{plotReport,provinceReport,good,trusted}};
+root.MonitoringReport={render,renderFinal,setPreview,ready,print,bind,model:{plotReport,provinceReport,finalPlot,finalProvince,good,trusted}};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind);else bind();
 })(window);
