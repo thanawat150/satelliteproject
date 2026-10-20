@@ -159,6 +159,7 @@ function displayPlot(view){
 function displayResults(){
  if(!state.view||state.dirty)return;
  paintKpis(state.view);
+ root.MonitoringReport?.render?.({view:state.view,mode:state.mode,generated:state.history?.generated_at});
  if(state.view.kind==="province")displayProvince(state.view);else displayPlot(state.view);
  setStatus(state.mode==="auto"?"แสดงผลล่าสุดที่ผ่านเกณฑ์ QA จากฐานข้อมูล • ไม่ใช่การรันภาพใหม่":"เปรียบเทียบจากค่าที่มีจริงเรียบร้อย • ไม่มีการประมวลผล GeoTIFF ใหม่","ok");
  paintMap();
@@ -166,7 +167,7 @@ function displayResults(){
 }
 function allAreaFeatures(){return (state.boundaries?.features||[]).filter(x=>state.plots.some(p=>p.plot===x.properties?.plot))}
 function paintMap(){
- if(!state.visible||typeof L==="undefined")return;
+ if(!state.visible||typeof L==="undefined"||!$("mc-analysis-detail")?.open)return;
  const mapEl=$("mc-map");if(!mapEl)return;
  if(!state.map){
   state.map=L.map(mapEl,{scrollWheelZoom:false,zoomControl:true});
@@ -235,13 +236,15 @@ async function renderPreview(){
  if(state.scope!=="plot"||state.plot!==plot||!dates.every((d,i)=>d===state.view?.dates?.[i]))return;
  if(!layers){container.innerHTML='<div class="mc-empty">ยังไม่มีภาพ Preview ที่รองรับวันที่และแปลงที่เลือก</div>';return}
  const priority={DIRECT:0,LATEST_RECT:1,HIST_CLEAR_RECT_SCL0:2,NO_CLOUD_FILTER:3};
- const cards=dates.map((d,i)=>{
-  const l=layers.filter(x=>x.plot===plot&&x.date===d&&x.mode===mode&&x.src).sort((a,b)=>(priority[a.source_suffix]??5)-(priority[b.source_suffix]??5))[0];
+ const makeCards=displayMode=>dates.map((d,i)=>{
+  const l=layers.filter(x=>x.plot===plot&&x.date===d&&x.mode===displayMode&&x.src).sort((a,b)=>(priority[a.source_suffix]??5)-(priority[b.source_suffix]??5))[0];
   const r=rowAt(state.history,plot,d);
-  const content=l?'<div class="mc-image" style="aspect-ratio:'+Number(l.width||1)+'/'+Number(l.height||1)+'"><img src="'+esc(l.src)+'" alt="'+esc(layerNames[mode])+' '+esc(dateTH(d))+'" loading="lazy">'+boundarySvg(plot,l.bounds)+'</div>':'<div class="mc-image mc-noimage">ไม่มีภาพดัชนีชนิดนี้ในวันที่เลือก</div>';
+  const content=l?'<div class="mc-image" style="aspect-ratio:'+Number(l.width||1)+'/'+Number(l.height||1)+'"><img src="'+esc(l.src)+'" alt="'+esc(layerNames[displayMode])+' '+esc(dateTH(d))+'" loading="lazy">'+boundarySvg(plot,l.bounds)+'</div>':'<div class="mc-image mc-noimage">ไม่มีภาพ '+esc(layerNames[displayMode])+' ในวันที่เลือก</div>';
   return '<article class="mc-scene"><header><b>'+["A · ก่อนเหตุ","B · ตรวจติดตาม","C · ล่าสุด"][i]+'</b><small>'+esc(dateTH(d))+'</small></header>'+content+'<div>'+qualityCell(r)+'</div></article>';
  });
- container.innerHTML='<div class="mc-scenes">'+cards.join("")+'</div><p class="mc-table-note">'+esc(layerNames[mode])+' • แสดงภาพที่ได้มาจาก Raster จริง (ความละเอียดขึ้นอยู่กับต้นฉบับ) • ขอบแดงคือ PDD</p>';
+ container.innerHTML='<div class="mc-scenes">'+makeCards(mode).join("")+'</div><p class="mc-table-note">'+esc(layerNames[mode])+' • แสดงภาพจาก Raster จริง • ขอบแดงคือ PDD</p>';
+ // The report always uses real True Color GeoTIFF-derived previews.
+ root.MonitoringReport?.setPreview?.({plot,dates,html:makeCards("true_color").join("")});
 }
 function selectPlot(id){
  const p=state.plots.find(p=>p.plot===id);if(!p)return;
@@ -293,6 +296,13 @@ function wire(){
   setStatus("กำลังตรวจฐานข้อมูลผลวิเคราะห์ล่าสุด...");try{const r=await fetch("data/analysis_history.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);state.history=await r.json();setDefaults();drawControls();useSelection()}catch(e){setStatus("โหลดผลวิเคราะห์ไม่ได้: "+e.message,"error")}
  });
  on("mc-layer",()=>{if(!state.dirty&&state.view?.kind==="plot")renderPreview()},"change");
+ on("mc-analysis-detail",e=>{if(e.target.open){paintMap();setTimeout(()=>state.map?.invalidateSize(),120)}},"toggle");
+ const printOne=()=>{
+  if(!state.view||state.dirty){setStatus("กรุณากดวิเคราะห์ตามวันที่ก่อนบันทึกรายงาน PDF","warn");return}
+  root.MonitoringReport?.print?.();
+ };
+ on("mc-print-onepage",printOne);
+ on("mc-print-onepage-top",printOne);
  on("mc-open-report",openReport);
  on("mc-export-csv",exportCsv);
  on("mc-table-report",openReport);
