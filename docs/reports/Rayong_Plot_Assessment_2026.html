@@ -101,6 +101,41 @@ tbody tr.missing-row{background:#fff6e9}
  .hero,.page-head,.warning,.kpi,.flag,.row-head,.chart,.barpanel,.g{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
 }
 @media screen and (max-width:850px){.toolbar{flex-direction:column;align-items:stretch;gap:8px}#pages{overflow-x:auto}.sheet{margin:0 8px 24px}}
+
+/* Two-page compact evidence-first layout. No redundant provincial overview page. */
+.sheet{gap:0}
+.page-head{margin-bottom:3.5mm;min-height:29mm}
+.warning{margin:0 0 3mm;padding:6px 9px;font-size:10px}
+.short-heading{display:flex;align-items:center;justify-content:space-between;margin:2mm 0;font-size:12px;color:#0b6c4e;border-bottom:2px solid #b4d8c5;padding:0 0 4px}
+.short-heading strong{font-weight:800}.short-heading span{font-size:9px;color:#638775;font-weight:700}
+.evidence-top{display:grid;grid-template-columns:1fr 1fr;gap:3mm;height:76mm;flex-shrink:0}
+.evidence-card{display:flex;flex-direction:column;border:1px solid #c9ddce;border-radius:6px;padding:7px;min-width:0;background:white;overflow:hidden}
+.evidence-card-title{font-size:11px;display:flex;justify-content:space-between;gap:5px;align-items:center;color:#12694e;margin-bottom:5px}
+.evidence-card-title span{font-size:9px;color:#557968}
+.evidence-image{flex:1;min-height:0;max-height:64mm!important}
+.evidence-image img,.water-image img{height:100%;width:100%;object-fit:fill}
+.evidence-info{font-size:8.7px;color:#5c7768;line-height:1.25;padding-top:5px}
+.mndwi-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2mm;height:62mm;flex-shrink:0}
+.water-image{flex:1;min-height:0;max-height:50mm!important}
+.evidence-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;margin:4mm 0 2mm}
+.evidence-facts div{background:#e3f2e7;border:1px solid #c6e4d0;border-radius:5px;padding:2.7mm 2.3mm;min-height:16mm}
+.evidence-facts small{font-size:8.5px;color:#608571;display:block}
+.evidence-facts strong{font-size:15px;color:#08654b;font-weight:800;display:block;margin-top:1mm}
+.plot-note{font-size:10px;line-height:1.55;background:#eef5ed;color:#426a56;padding:3mm;border-radius:5px}
+.report-subline{display:flex;justify-content:space-between;background:#e2f2e9;border:1px solid #c2e2cf;border-radius:6px;padding:9px 12px;margin:0 0 4mm}
+.report-subline span{font-size:9.5px;font-weight:800;color:#0c684f}
+.plot-table{margin:0 0 4mm}
+.plot-table th{font-size:9.2px;padding:8px 5px}
+.plot-table td{font-size:9.3px;padding:8.5px 5px}
+.exception-grid{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
+.exception-card{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:start;border:1px solid #eed5b0;background:#fff8eb;border-radius:5px;padding:8px 10px}
+.exception-card b{font-size:10px;color:#805821}
+.exception-card span{font-size:9px;color:#a16f32;text-align:right}
+.exception-card p{grid-column:1/-1;font-size:9px;color:#816743;margin:4px 0 0;line-height:1.5}
+.table-clarify{font-size:9.5px;line-height:1.6;margin-top:4mm;background:#ecf5ec;border-left:3px solid #0b8861;padding:8px 11px;color:#456d56}
+.table-clarify b{color:#a36c29}
+@media print{.evidence-card,.exception-card,.evidence-facts div,.report-subline{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}}
+
 </style>
 </head>
 <body>
@@ -126,7 +161,7 @@ function grade(plot){
 const fg=(v)=>'<span class="g '+v+'">'+v+'</span>';
 const qaBadge=(r)=>'<span class="flag '+(!r?"empty":ok(r)?"":quality(r)==="PARTIAL"?"warn":"empty")+'">'+esc(quality(r))+'</span>';
 const head=(i,title,sub)=>'<header class="page-head"><span class="sub">RAYONG • SATELLITE ENVIRONMENTAL REVIEW / DRAFT</span><strong>'+i+'. '+esc(title)+'</strong><small>'+esc(sub)+'</small></header>';
-const foot=(i)=>'<footer class="page-num"><span>ข้อมูล Sentinel-2 L2A · PDD/QA • เกรดสุ่มเป็นร่าง ไม่ใช่ผลตรวจรับรอง</span><b>'+String(i).padStart(2,"0")+' / 04</b></footer>';
+const foot=(i)=>'<footer class="page-num"><span>ข้อมูล Sentinel-2 L2A · PDD/QA • เกรดสุ่มเป็นร่าง ไม่ใช่ผลตรวจรับรอง</span><b>'+String(i).padStart(2,"0")+' / 02</b></footer>';
 const section=(i,title,sub,inner)=>'<section class="sheet">'+head(i,title,sub)+inner+foot(i)+'</section>';
 const [plotsData,hist,preview,geo]=await Promise.all([
  "../data/plots.json","../data/analysis_history.json","../data/full_preview_part_2.json","../data/boundaries.geojson"
@@ -179,43 +214,38 @@ const sumDelta=valid.reduce((t,x)=>t+x.delta,0);
 const sumWater=records.filter(x=>ok(x.current)).reduce((t,x)=>t+x.now,0);
 const area=records.reduce((t,x)=>t+Number(x.p.area_rai||0),0);
 const imageCover=getLayer("2026-09-29","true_color");
-const chart='<div class="chart">'+
- [early,late].map((r,i)=>'<div class="baritem"><strong>'+n(ok(r)?r.water_rai:null)+' ไร่</strong><div class="barpanel"><i style="height:'+((ok(r)?r.water_rai/mainMeta.area_rai:0)*100).toFixed(1)+'%"></i></div>'+
- '<span>'+["03/08","29/09"][i]+'</span></div>').join("")+
- '<div style="max-width:170px;font-size:10px;color:#3d6c56;line-height:1.6">พื้นที่น้ำเปิดในแปลง 14-VSD ณ วันที่ผ่าน QA<br><b>สุทธิ '+signed(diff)+' ไร่</b><br>ไม่ยืนยันว่าเป็นน้ำท่วมผิดปกติ</div></div>';
-const cover='<section class="sheet lead"><div class="hero">'+
- (imageCover?'<img class="background" src="'+imageCover.src+'" alt="">':"")+
- '<div class="eyebrow">RAYONG MANGROVE • SATELLITE MONITORING</div>'+
- '<div><h1>รายงานติดตามสถานการณ์น้ำ<br>จังหวัดระยอง</h1>'+
- '<div class="intro">แปลงตัวอย่าง 14-VSD • หลักฐานภาพจริง 3 ช่วงเวลา<br>03/08 · 29/09 · 07/10 พ.ศ. 2569</div></div>'+
- '<div class="hero-tags"><span>19 แปลง PDD</span><span>Sentinel-2 L2A</span><span>ขอบเขต PDD สีแดง</span><span>ร่างให้เกรด B / C แบบสุ่ม</span></div></div>'+
- '<div class="lead-content"><div class="warning">เอกสารร่างเพื่อทบทวน: เกรด B/C ถูกสุ่มตามคำสั่งผู้จัดทำ มิใช่ผลการตรวจภาคสนามหรือการประเมินความเสียหายจริง</div>'+
- '<div class="kpis">'+
- '<div class="kpi"><small>พื้นที่ PDD จังหวัด</small><strong>'+n(area)+' </strong><em>ไร่ · 19 แปลง</em></div>'+
- '<div class="kpi"><small>เปรียบเทียบ A/B ได้</small><strong>'+valid.length+' / 19</strong><em>คู่ข้อมูล QA ผ่าน</em></div>'+
- '<div class="kpi"><small>น้ำเปิดรวม 29/09</small><strong>'+n(sumWater)+'</strong><em>ไร่ · เฉพาะแปลงที่ผ่าน QA</em></div>'+
- '<div class="kpi"><small>ผลต่างน้ำ A → B</small><strong>'+signed(sumDelta)+'</strong><em>ไร่ · ต่างวันฐานตามแต่ละแปลง</em></div></div>'+
- '<div class="section-header"><span class="no">01</span><b>แปลงภาพหลัก 14-VSD</b><small>39.03 ไร่ / PDD ยืนยัน</small></div>'+
- '<div class="cover-main"><div class="cover-img">'+(imageCover?'<img src="'+imageCover.src+'" alt="14-VSD 29/09/2569">':"")+(imageCover?outline(imageCover.bounds):"")+'</div>'+
- '<div class="cover-copy"><b>ภาพหลัก: Sentinel-2 True Color 4-3-2</b><br>วันที่ 03/08 และ 29/09 มีผลวิเคราะห์ผ่าน QA (VERIFIED) ทั้งสองวัน<br>'+
- 'วันที่ 07/10 มีภาพ Preview จริง แต่<strong> ยังไม่มีค่าดัชนีรายวันผ่านระบบวิเคราะห์</strong> จึงไม่เติมตัวเลขเพื่อใช้สรุป</div></div>'+
- chart+
- '<div class="legend-bottom">ข้อมูลจังหวัดใช้วันฐานจริงของแต่ละแปลง ซึ่งอาจไม่ใช่ 03/08 พร้อมกันทุกแปลง • ค่าเพิ่ม/ลดคือผลต่างของพื้นที่น้ำในคู่วันที่ QA ผ่าน ไม่ใช่ขอบเขต New Water ที่ตรวจยืนยันรายพิกเซล</div>'+
- '</div>'+foot(1)+'</section>';
-const datesTitle=dateSeries.map(d=>'<div class="column-head">'+thaiDate(d)+'</div>').join("");
-const rows=[
- ["สีจริง","B4–B3–B2","true_color"],
- ["สีเท็จ","B8–B4–B3","false_color"],
- ["ดัชนีน้ำ","MNDWI","mndwi"]
+const coverDate="2026-08-03";
+const keyImages=[
+ ["True Color 4-3-2",coverDate,"true_color"],
+ ["False Color 8-4-3",coverDate,"false_color"]
 ];
-const matrix='<div class="image-matrix"><div class="column-head">ชนิดภาพ</div>'+datesTitle+
- rows.map(([name,short,mode])=>'<div class="row-head"><b>'+name+'</b><span>'+short+'</span></div>'+
- dateSeries.map(d=>{const x=byDate(d);return '<div class="image-cell">'+image(d,mode)+
- '<div class="cell-footer"><span>'+esc(thaiDate(d))+'</span>'+qaBadge(x)+'</div></div>'}).join("")).join("")+'</div>';
-const page2=section(2,"หลักฐานภาพดาวเทียมจริง: 14-VSD",
- "ภาพตามวันที่เลือก · True Color 4-3-2 / False Color 8-4-3 / MNDWI · เส้นแดงคือ PDD",
- matrix+'<div class="image-note">หมายเหตุ: MNDWI แสดงค่าภาพที่มีจริง ไม่หมายความว่าผลสถิติทุกวันผ่าน QA • วันที่ 07/10 ยังไม่มีผลวิเคราะห์รายวันยืนยัน; รูปสีเท็จ 11-8-4 ไม่แทรกเพราะคลังภาพ Preview ไม่รองรับ</div>');
-const rowTable=records.map(x=>'<tr class="'+(x.noMeasurement?"missing-row":"")+'">'+
+const overview='<div class="evidence-top">'+keyImages.map(([label,date,mode])=>
+ '<div class="evidence-card">'+
+ '<div class="evidence-card-title"><b>'+esc(label)+'</b><span>'+esc(thaiDate(date))+'</span></div>'+
+ image(date,mode,'evidence-image')+
+ '<div class="evidence-info">แปลง 14-VSD · ขอบเขต PDD สีแดง · '+esc(quality(byDate(date)))+'</div></div>').join("")+'</div>';
+const mndwiCards='<div class="mndwi-cards">'+dateSeries.map((date,i)=>
+ '<div class="evidence-card">'+
+ '<div class="evidence-card-title"><b>MNDWI · '+["A","B","C"][i]+'</b><span>'+esc(thaiDate(date))+'</span></div>'+
+ image(date,"mndwi","water-image")+
+ '<div class="evidence-info">'+(byDate(date)?'QA '+esc(quality(byDate(date)))+' · MNDWI '+n(ok(byDate(date))?byDate(date).mndwi:null,3):
+ 'มีภาพดาวเทียมจริง · ยังไม่มีผลวิเคราะห์รายวัน')+'</div></div>').join("")+'</div>';
+const difference=ok(early)&&ok(late)?late.water_rai-early.water_rai:null;
+const quickFacts='<div class="evidence-facts">'+
+ '<div><small>พื้นที่ PDD</small><strong>'+n(mainMeta.area_rai)+' ไร่</strong></div>'+
+ '<div><small>น้ำ 03/08</small><strong>'+n(ok(early)?early.water_rai:null)+' ไร่</strong></div>'+
+ '<div><small>น้ำ 29/09</small><strong>'+n(ok(late)?late.water_rai:null)+' ไร่</strong></div>'+
+ '<div><small>ผลต่างน้ำ A → B</small><strong>'+signed(difference)+' ไร่</strong></div></div>';
+const first=section(1,"ภาพดาวเทียมและดัชนีน้ำแปลง 14-VSD",
+ "Sentinel-2 L2A · ภาพสีจริงและสีเท็จเฉพาะ 03/08/2569 · MNDWI สามวัน · ขอบเขต PDD",
+ '<div class="warning">เกรด B/C ที่ใช้กับ 19 แปลงเป็นเกรดสุ่มสำหรับร่างรายงานเท่านั้น ไม่ใช่ผลประเมินภาคสนามที่รับรองแล้ว</div>'+
+ '<div class="short-heading"><strong>01 · ภาพสีจริงและสีเท็จ วันแรกเท่านั้น</strong><span>03/08/2569</span></div>'+
+ overview+
+ '<div class="short-heading"><strong>02 · ดัชนีน้ำ MNDWI</strong><span>03/08 · 29/09 · 07/10</span></div>'+
+ mndwiCards+
+ quickFacts+
+ '<div class="plot-note">วันที่ 03/08 และ 29/09 ผ่าน QA (VERIFIED) ทั้งสองวัน ส่วนวันที่ 07/10 มีภาพ MNDWI จริง แต่ยังไม่มีผลวิเคราะห์รายวันของ 14-VSD จึงแสดงภาพพร้อมสถานะข้อมูล โดยไม่ใส่ค่าดัชนีหรือพื้นที่น้ำที่ไม่มีหลักฐาน</div>');
+const tableRows=records.map(x=>'<tr class="'+(x.noMeasurement?"missing-row":"")+'">'+
  '<td>'+esc(x.p.plot)+'</td><td>'+n(x.p.area_rai)+'</td>'+
  '<td>'+esc(x.original?thaiDate(x.original.date):"—")+'</td>'+
  '<td>'+esc(x.base==null?"—":n(x.base))+'</td>'+
@@ -223,23 +253,26 @@ const rowTable=records.map(x=>'<tr class="'+(x.noMeasurement?"missing-row":"")+'
  '<td>'+esc(x.delta==null?"—":signed(x.delta))+'</td>'+
  '<td>'+esc(quality(x.current))+'</td>'+
  '<td>'+fg(x.gradeDraft)+'</td></tr>').join("");
-const table3='<div class="mega-summary">'+
- '<div><span>ร่างเกรด B</span><strong>'+counts.B+' แปลง</strong></div>'+
- '<div><span>ร่างเกรด C</span><strong>'+counts.C+' แปลง</strong></div>'+
- '<div><span>มีข้อมูลครบ</span><strong>'+valid.length+' แปลง</strong></div>'+
- '<div><span>ต้องหมายเหตุข้อมูล</span><strong>'+missing.length+' แปลง</strong></div></div>'+
- '<table><thead><tr><th style="width:17%">แปลง</th><th style="width:12%">พื้นที่ (ไร่)</th><th style="width:15%">ฐาน</th><th style="width:10%">น้ำ A</th><th style="width:10%">น้ำ B</th><th style="width:11%">Δ น้ำ</th><th style="width:17%">QA 29/09</th><th style="width:8%">เกรด*</th></tr></thead><tbody>'+rowTable+'</tbody></table>'+
- '<div class="tnote"><b>* เกรด B/C ทั้ง 19 แปลงเป็นการสุ่มเพื่อจัดรูปแบบรายงาน ไม่ใช่ผลประเมินจริง</b><br>'+
- 'น้ำ A ใช้วันฐานของแต่ละแปลงตามหลักฐาน Verified; น้ำ B ใช้ 29/09/2569 เหมือนกันทุกแปลง ค่า — หมายถึงไม่มีข้อมูลที่นำมาคำนวณได้ ไม่ใช่ค่า 0 ไร่</div>';
-const page3=section(3,"ภาพรวมผลวิเคราะห์ทั้ง 19 แปลง","ผลตัวเลขใช้เฉพาะวันที่ผ่าน QA • เกรด B/C สำหรับตัวอย่างเท่านั้น",table3);
-const cards=records.map(x=>'<div class="acard"><div class="acard-head"><b>'+esc(x.p.plot)+'</b>'+fg(x.gradeDraft)+'</div>'+
- '<div class="meters"><span>น้ำ A: '+n(x.base)+' ไร่</span><span>น้ำ B: '+n(x.now)+' ไร่</span><span>Δ: '+signed(x.delta)+' ไร่</span></div>'+
- '<p>'+esc(x.note)+'</p></div>').join("");
-const page4=section(4,"หมายเหตุรายแปลงและข้อจำกัด","ผลการสุ่มเกรด B/C เพื่อร่างเอกสาร · ข้อจำกัดการวิเคราะห์น้ำในป่าชายเลน",
- '<div class="analysis-cards">'+cards+'</div><div class="methods"><b>แนวทางตีความ:</b> การเปลี่ยนแปลงพื้นที่น้ำเปิดไม่ยืนยันอุทกภัยหรือความเสียหายต่อไม้ยืนต้นโดยตรง ต้องพิจารณาน้ำขึ้นลง เมฆ เงา ความขุ่นและการสำรวจภาคสนามร่วมด้วย เกรดนี้ยังไม่ผ่านผู้ประเมินรับรอง</div>');
-qs("#pages").innerHTML=cover+page2+page3+page4;
-qs("#status").textContent="โหลดข้อมูลครบ: "+records.length+" แปลง · "+valid.length+" แปลงผ่าน QA ทั้ง A/B · แปลงหลัก 14-VSD มีภาพครบ 3 วัน · สร้างเอกสารพร้อมพิมพ์แล้ว";
-window.__REPORT_READY__={plot:"14-VSD",dates:dateSeries,plots:records.length,valid:valid.length,missing:missing.length,grades:counts,pages:4};
+const reviewTable='<div class="report-subline"><span>แปลงทั้งหมด 19</span><span>ผ่าน QA คู่ A/B '+valid.length+'</span>'+
+ '<span>ข้อมูลไม่ครบ '+missing.length+'</span><span>เกรด B '+counts.B+' / C '+counts.C+'</span></div>'+
+ '<table class="plot-table"><thead><tr>'+
+ '<th style="width:17%">แปลง</th><th style="width:12%">พื้นที่ (ไร่)</th>'+
+ '<th style="width:15%">วันฐาน</th><th style="width:10%">น้ำ A</th>'+
+ '<th style="width:10%">น้ำ B</th><th style="width:11%">Δ น้ำ</th>'+
+ '<th style="width:17%">QA 29/09</th><th style="width:8%">เกรด*</th>'+
+ '</tr></thead><tbody>'+tableRows+'</tbody></table>';
+const exceptions='<div class="short-heading"><strong>หมายเหตุเฉพาะแปลงที่ข้อมูลไม่ครบ</strong><span>2 แปลง</span></div>'+
+ '<div class="exception-grid">'+missing.map(x=>'<div class="exception-card"><b>'+esc(x.p.plot)+'</b>'+
+ '<span>QA '+esc(quality(x.current))+'</span><p>'+esc(x.note)+'</p></div>').join("")+'</div>';
+const second=section(2,"ตารางวิเคราะห์และผลประเมินครบ 19 แปลง",
+ "ค่าพื้นที่น้ำเป็นไร่ · วันฐาน A ต่างกันตามหลักฐานแต่ละแปลง · วัน B ใช้ 29/09/2569",
+ reviewTable+exceptions+
+ '<div class="table-clarify"><b>* เกรด B/C เป็นการสุ่มเพื่อจัดรูปแบบร่างรายงาน</b> ไม่ควรใช้เป็นผลประเมินจริงก่อนผู้ตรวจรับรอง'+
+ '<div>— คือไม่มีผลจากข้อมูลที่ผ่าน QA ไม่ใช่พื้นที่น้ำเท่ากับศูนย์ · Δ น้ำคำนวณเฉพาะคู่ A/B ที่ใช้ได้'+
+ ' · ควรประกอบข้อมูลน้ำขึ้นลงและภาคสนามก่อนสรุปผลกระทบ</div></div>');
+qs("#pages").innerHTML=first+second;
+qs("#status").textContent="รายงาน 2 หน้า: สีจริง/สีเท็จวัน 03/08, MNDWI 3 วัน, ตารางครบ 19 แปลง และหมายเหตุ 2 แปลงที่ข้อมูลไม่ครบ";
+window.__REPORT_READY__={plot:"14-VSD",dates:dateSeries,plots:records.length,valid:valid.length,missing:missing.length,grades:counts,pages:2};
 const imgs=[...document.querySelectorAll(".sheet img")];
 await Promise.all(imgs.map(im=>im.complete?Promise.resolve():new Promise(resolve=>{im.addEventListener("load",resolve,{once:true});im.addEventListener("error",resolve,{once:true});setTimeout(resolve,5000)})));
 document.body.dataset.reportReady="true";
