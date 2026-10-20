@@ -211,7 +211,7 @@ function finalPlot(view,mode,generated,review){
  const rd=review||null;
  const grade=rd?esc(rd.grade==="NA"?"N/A":rd.grade):"—";
  const condition=rd?(rd.condition==="FIELD"?"ควรตรวจภาคสนาม":rd.condition==="WATCH"?"เฝ้าติดตาม":rd.condition==="OK"?"ยอมรับการตรวจ":"รอข้อมูลเพิ่มเติม"):"ยังไม่ได้ประเมิน";
- const note=rd?String(rd.note||"").slice(0,230):"";
+ const note=rd?String(rd.note||"").slice(0,230)+(String(rd.note||"").length>230?"… (ข้อความเต็มอยู่ในไฟล์ประเมิน JSON)":""):"";
  const summary=view.paired?"พื้นที่น้ำวัน B − A = "+signed(view.change)+" ไร่ (เฉพาะคู่วันที่ผ่าน QA)":
   "ยังไม่สามารถสรุปน้ำเปลี่ยนสุทธิได้ เนื่องจากข้อมูล A/B ไม่ผ่าน QA ครบ";
  return '<div class="mcf-sheet">'+finalHeader(view,mode)+
