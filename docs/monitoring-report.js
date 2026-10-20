@@ -255,10 +255,10 @@ function finalProvince(view,mode,generated){
   '<p>การเปลี่ยนแปลงของน้ำในป่าชายเลนอาจเกี่ยวข้องกับน้ำขึ้นลงตามธรรมชาติ เมฆ และตะกอน ควรใช้ข้อมูลภาคสนามตรวจสอบร่วมด้วย</p></section>'+
   finalFooter(generated)+'</div>';
 }
-function finalFooter(generated){
+function finalFooter(generated,page=1){
  const asOf=generated?new Date(generated).toLocaleString("th-TH",{timeZone:"Asia/Bangkok"}):"ไม่ระบุ";
  return '<footer class="mcf-foot"><span>หลักฐาน: Sentinel-2 L2A · analysis_history.json · PDD GIS · วิเคราะห์เผยแพร่ '+esc(asOf)+'</span>'+
-  '<b>ONE-PAGE FINAL REPORT · 01/01</b></footer>';
+  '<b>FINAL REPORT · '+(page===2?'02/02':'01/02')+'</b></footer>';
 }
 
 function evidencePlot(view,mode,generated,review){
@@ -281,7 +281,7 @@ function evidencePlot(view,mode,generated,review){
  '<p class="mcf-summary">เกรด '+esc(review?.grade||"—")+' · สถานะ '+esc(review?.condition||"ยังไม่ระบุ")+'</p>'+
  '<p class="mcf-review-note">'+esc(review?.note||"ยังไม่มีหมายเหตุ")+'</p>'+
  '<p class="mcf-limitation">ข้อจำกัด: ตรวจน้ำขึ้นลง เมฆ เงา ตะกอน และสำรวจภาคสนามก่อนยืนยันน้ำท่วม</p></section>'+
- finalFooter(generated)+'</div>';
+ finalFooter(generated,2)+'</div>';
 }
 function evidenceProvince(view,mode,generated){
  const rows=view.items||[];
@@ -298,7 +298,7 @@ function evidenceProvince(view,mode,generated){
  '<section class="mcf-assessment mcf-appendix-review"><div class="mcf-section-head">วิธีสรุประดับจังหวัดและข้อจำกัด</div>'+
  '<p>พื้นที่น้ำวัน B รวมเฉพาะ '+view.covered+' แปลงที่ผ่าน QA ส่วนพื้นที่น้ำเปลี่ยนสุทธิใช้ '+view.paired+' แปลงที่มีผลผ่าน QA ทั้งวัน A และ B</p>'+
  '<p>แปลงไม่มีข้อมูลจะไม่ถือเป็นน้ำ 0 ไร่ และต้องตรวจน้ำขึ้นลงกับข้อมูลภาคสนามก่อนตีความเป็นอุทกภัย</p></section>'+
- finalFooter(generated)+'</div>';
+ finalFooter(generated,2)+'</div>';
 }
 let pageIndex=0;
 function changePage(index){
