@@ -261,3 +261,51 @@
  body.mc-print-report .mcf-image-section{break-inside:avoid!important}
  body.mc-print-report .mcf-values{break-inside:avoid!important}
 }
+
+
+/* Real Sentinel-2 date-B true-color raster preview is the header backdrop. */
+.mcf-head{position:relative;isolation:isolate;overflow:hidden;background:#075b47!important}
+.mcf-sat-backdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.83;z-index:0;filter:saturate(1.07) contrast(1.05)}
+.mcf-head::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(0,49,34,.93) 0%,rgba(3,73,54,.88) 55%,rgba(3,70,55,.57) 100%);z-index:1;pointer-events:none}
+.mcf-head>*:not(.mcf-sat-backdrop){position:relative;z-index:2}
+.mc-report-navigation{display:flex;align-items:center;justify-content:center;gap:17px;padding:12px;background:#0e2a3a;border-top:1px solid #2a5063;border-bottom:1px solid #2a5063}
+.mc-page-btn{min-width:140px;border-radius:8px;border:1px solid #30829d;color:#d6f4fb;background:#16475c;padding:10px 14px;font:700 12px 'IBM Plex Sans Thai',sans-serif;cursor:pointer}
+.mc-page-btn:hover:not(:disabled){background:#167ba0}
+.mc-page-btn:disabled{opacity:.37;cursor:not-allowed}
+#mc-page-count{color:#c3e5ec;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;min-width:90px;text-align:center}
+.mc-report-paper.mcf-paginated{height:297mm;min-height:297mm;max-height:297mm;overflow:hidden!important;display:block}
+.mcf-page{height:297mm;width:210mm;overflow:hidden;background:#fafdf9;box-sizing:border-box}
+.mcf-page[hidden]{display:none!important}
+.mcf-page .mcf-sheet{height:100%;min-height:0;max-height:100%}
+.mcf-appendix-label{font-size:12px;font-weight:800;color:#0d6549;background:#e0f3e8;border-left:4px solid #0e8a5c;padding:9px 12px;margin:0 0 3mm}
+.mcf-appendix .mcf-image-section{margin:0 0 3mm}
+.mcf-appendix .mcf-grid .mcr-img{height:39mm;min-height:39mm;max-height:39mm}
+.mcf-appendix .mcf-grid .mcr-img-caption{margin-top:2mm}
+.mcf-missing-layer{border:1px dashed #b9cfbf;border-radius:3mm;background:#f0f6f2;color:#617967;padding:8mm 6mm;font-size:10px;text-align:center;line-height:1.5}
+.mcf-appendix-values{margin:3mm 0 0}
+.mcf-appendix-values th,.mcf-appendix-values td{font-size:9px;padding:1.8mm 1mm;overflow-wrap:anywhere}
+.mcf-source-cell{font-size:7px!important}
+.mcf-appendix-review{flex:1;margin-top:3mm;min-height:0;overflow:hidden}
+.mcf-appendix-review .mcf-review-note{font-size:9px;white-space:pre-wrap;overflow-wrap:anywhere}
+.mcf-appendix .mcf-prov-audit th,.mcf-appendix .mcf-prov-audit td{font-size:8.2px;white-space:nowrap;padding:2mm 1mm}
+.mcf-appendix .mcf-prov-audit th:first-child{width:auto}
+@media(max-width:700px){.mc-report-navigation{gap:7px;flex-wrap:wrap}.mc-page-btn{min-width:106px;padding:9px 6px}}
+@media print{
+ body.mc-print-report .mc-report-navigation{display:none!important}
+ body.mc-print-report .mc-report-paper.mcf-paginated{
+   display:block!important;height:auto!important;min-height:0!important;max-height:none!important;
+   width:210mm!important;overflow:visible!important;page-break-inside:auto!important;break-inside:auto!important
+ }
+ body.mc-print-report .mcf-page{display:none!important}
+ body.mc-print-report.mc-print-current .mcf-page.is-active{display:block!important}
+ body.mc-print-report.mc-print-all .mcf-page,
+ body.mc-print-report.mc-print-all .mcf-page[hidden]{display:block!important}
+ body.mc-print-report .mcf-page{
+   width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;
+   box-shadow:none!important;overflow:hidden!important;break-inside:avoid!important;page-break-inside:avoid!important
+ }
+ body.mc-print-report.mc-print-all .mcf-page:not(:last-child){break-after:page!important;page-break-after:always!important}
+ body.mc-print-report .mcf-head,body.mc-print-report .mcf-sat-backdrop,body.mc-print-report .mcf-appendix-label{
+   print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important
+ }
+}
