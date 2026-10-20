@@ -82,3 +82,5 @@
 
 #mc-results:not([hidden]){display:flex;flex-direction:column;gap:12px}
 #tab-center~.tab-panel{min-width:0}
+
+.tabs{flex-wrap:wrap}
