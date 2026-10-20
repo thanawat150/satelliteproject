@@ -7,9 +7,17 @@ const cp=require("node:child_process");
  const browser=await chromium.launch({channel:"chrome",headless:true,args:["--no-sandbox","--disable-dev-shm-usage"]});
  try{
   const page=await browser.newPage({viewport:{width:1280,height:950},deviceScaleFactor:1});
-  const errors=[];page.on("pageerror",e=>errors.push(e.message));
+  const errors=[];
+  page.on("pageerror",e=>errors.push("PAGE ERROR: "+e.stack));
+  page.on("console",msg=>{if(msg.type()==="error")errors.push("CONSOLE ERROR: "+msg.text())});
+  page.on("response",res=>{if(res.status()>=400)errors.push("HTTP "+res.status()+" "+res.url())});
   await page.goto(address,{waitUntil:"domcontentloaded",timeout:40000});
-  await page.waitForFunction(()=>document.body.dataset.reportReady==="true"||!!document.body.dataset.reportError,{timeout:45000});
+  try{
+   await page.waitForFunction(()=>document.body.dataset.reportReady==="true"||!!document.body.dataset.reportError,null,{timeout:20000});
+  }catch(e){
+   const state=await page.evaluate(()=>({status:document.querySelector("#status")?.innerText,bodyError:document.body.dataset.reportError,ready:document.body.dataset.reportReady,html:document.querySelector("#pages")?.innerText.slice(0,500),sources:[...document.querySelectorAll("script")].map(x=>x.src||"inline")}));
+   throw Error("Page readiness timeout: "+JSON.stringify(state)+"; errors: "+JSON.stringify(errors.slice(0,15))+"; exception: "+e.message);
+  }
   const error=await page.evaluate(()=>document.body.dataset.reportError);
   if(error)throw Error("Report render error: "+error);
   const stats=await page.evaluate(()=>window.__REPORT_READY__);
