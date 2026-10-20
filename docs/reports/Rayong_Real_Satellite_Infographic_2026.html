@@ -1,0 +1,205 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><title>Rayong Real Satellite One-Page</title><style>
+@page{size:A3 landscape;margin:0}
+*{box-sizing:border-box}
+body{margin:0;background:white;font-family:"Noto Sans Thai","Tahoma",sans-serif;color:#143f32}
+#poster{width:420mm;height:297mm;overflow:hidden;display:flex;flex-direction:column;background:#f7faf8}
+.banner{height:41mm;flex-shrink:0;background:linear-gradient(110deg,#07392d,#05684e 70%,#158569);color:white;display:flex;justify-content:space-between;align-items:center;padding:5mm 8mm}
+.super{font:800 10px Arial,sans-serif;letter-spacing:.09em;color:#b6e8d2}
+.banner h1{margin:2mm 0 1mm;font-size:29px;line-height:1.3;color:white}
+.banner p{margin:0;font-size:12px;color:#d4eee3}
+.corner{text-align:center;border:1px solid #80b6a0;border-radius:2mm;padding:3mm 5mm;font:800 10px Arial,sans-serif;line-height:1.6}.corner b{font-size:25px}
+.numbers{height:30mm;flex-shrink:0;display:grid;grid-template-columns:repeat(7,1fr);gap:2mm;padding:2mm 5mm;background:#e9f4ee}
+.kpi{border-radius:2mm;padding:2.3mm 3mm;background:#e4f3e8;border:1px solid #c5e0d1;display:flex;flex-direction:column;justify-content:center;gap:.5mm}
+.kpi small{font-size:9px;color:#587865}.kpi strong{font-size:19px;color:#075e46;line-height:1.15}.kpi span{font-size:9px;color:#6c8c77}
+.kpi.green{background:#115f49}.kpi.green small,.kpi.green strong,.kpi.green span{color:white}
+.kpi.mint{background:#c8f0df}.kpi.blue{background:#d0eaf5}.kpi.grey{background:#e4e9e9}
+.upper{height:101mm;flex-shrink:0;display:grid;grid-template-columns:58% 42%;gap:3mm;padding:1mm 5mm 2mm}
+.sat{border:1px solid #b5d8c3;border-radius:2mm;min-width:0;display:flex;flex-direction:column;background:#fff;overflow:hidden}
+.heading{height:12mm;padding:2mm 3mm;background:#0b624c;color:white;display:flex;align-items:center;justify-content:space-between;gap:2mm;flex-shrink:0}
+.heading b{font-size:14px}.heading span{font-size:9px;color:#b7e9d1}
+.scenes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.5mm;padding:1.5mm;flex:1;min-height:0}
+.scene{background:#f0f5f0;border:1px solid #d4e4d8;border-radius:1mm;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.scene-label{background:#104d42;color:white;font-size:9px;text-align:center;padding:1mm}.scene-label small{display:block;font-size:8px;color:#bdded0}
+.scene-photo{position:relative;flex:1;min-height:0}
+.scene-photo img{width:100%;height:100%;object-fit:fill;image-rendering:pixelated}
+.scene-photo svg{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#f0453b;stroke-width:5;pointer-events:none}
+.scene-foot{text-align:center;font:800 7px Arial,sans-serif;color:#58705f;padding:1.5mm .5mm}
+.sat-foot{height:9mm;color:#527263;font-size:9px;padding:2mm 3mm}
+.insights{display:grid;grid-template-rows:41mm 1fr;gap:2mm;min-width:0;padding-right:3mm}
+.insight{border:1px solid #b9d9c7;background:#fff;border-radius:2mm;overflow:hidden}
+.insight h2{background:#def0e4;color:#075943;font-size:14px;margin:0;padding:1.5mm 3mm}
+.insight p{font-size:9px;margin:1.5mm 3mm;line-height:1.3;color:#4b6857}
+.top{border:1px solid #e4cda7;background:#fff8e9;border-radius:2mm;overflow:hidden}
+.tophead{display:flex;align-items:center;justify-content:space-between;background:#f4e2c7;padding:1.5mm 3mm}.tophead b{font-size:13px;color:#775022}.tophead small{font-size:9px;color:#9a6838}
+.topbody{display:grid;grid-template-columns:1fr 29mm;gap:3mm;padding:2mm 3mm}
+.bars{display:flex;flex-direction:column;gap:1.7mm}
+.bar{display:grid;grid-template-columns:5mm 22mm 1fr 19mm;align-items:center;gap:2mm;font-size:10px}
+.bar span{border-radius:50%;background:#147057;color:white;text-align:center;font:800 9px Arial,sans-serif;padding:1mm}
+.bar b{color:#39584a}.bar strong{text-align:right;font-size:10px;color:#b94e31}
+.track{height:4mm;background:#efdfdc;border-radius:2mm;overflow:hidden}.track i{display:block;background:#df705e;height:100%;border-radius:2mm}
+.catcount{display:flex;flex-direction:column;gap:1mm}.catcount div{font-size:8px;text-align:center;border-radius:1mm;padding:1.6mm}
+.catcount .high{background:#ffd8d1;color:#9c422f}.catcount .medium{background:#ffebbf;color:#99651c}
+.catcount .low{background:#d8f1df;color:#14774d}.catcount .unknown{background:#e4e6e8;color:#5a6970;font-size:7px}
+.data{flex:1;min-height:0;padding:1mm 5mm 2mm;display:flex;flex-direction:column}
+.tables{display:grid;grid-template-columns:1fr 1fr;gap:2mm;flex:1;padding-top:1mm;min-height:0}
+table{table-layout:fixed;width:100%;border-collapse:collapse}
+th{font-size:9px;height:6.5mm;padding:1mm;background:#185d4d;color:white}
+td{font-size:9px;height:6.6mm;padding:1mm .5mm;text-align:center;border-bottom:1px solid #e2ede5;color:#3f5b4e}
+td:nth-child(2){text-align:left;font-weight:800}tbody tr:nth-child(2n){background:#eef6f0}
+tbody tr.selected{background:#d7edf8}tbody tr.incomplete{background:#fff4e8}
+th:nth-child(1){width:11%}th:nth-child(2){width:26%}th:nth-child(3){width:31%}th:nth-child(4){width:22%}th:nth-child(5){width:10%}
+.level{display:inline-block;border-radius:2mm;padding:1mm;min-width:19mm;font-size:8px;font-weight:800}
+.level.high{background:#f9d6cd;color:#aa4128}.level.medium{background:#fff0c8;color:#92672a}
+.level.low{background:#d9f1df;color:#177a52}.level.unknown{background:#e3e5e8;color:#576771;font-size:7px}
+footer{height:13mm;flex-shrink:0;padding:1mm 6mm;background:#eaf4ee;border-top:1px solid #c7dfd0;display:flex;justify-content:space-between;align-items:center;gap:4mm;font-size:8.5px;color:#4f7260}
+footer span{max-width:50%}
+@media print{#poster{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}}
+</style></head><body><main id="poster"></main><script>(async function(){
+"use strict";
+const qs=(s)=>document.querySelector(s);
+const esc=x=>String(x??"").replace(/[&<>"']/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[k]||k));
+const thaiDate=d=>d?/^\d{4}-\d\d-\d\d$/.test(d)?d.slice(8,10)+"/"+d.slice(5,7)+"/"+(Number(d.slice(0,4))+543):d:"—";
+const n=(v,p=2)=>v==null||!Number.isFinite(Number(v))?"—":Number(v).toLocaleString("th-TH",{minimumFractionDigits:p,maximumFractionDigits:p});
+const quality=r=>r?.analysis_status||"INDEX_PENDING";
+const ok=r=>r&&["VERIFIED","AUTO_VALID"].includes(quality(r))&&Number(r.valid_pct)>=70;
+const signed=v=>v==null?"—":(v>0?"+":"")+n(v);
+const dateSeries=["2026-08-03","2026-09-29","2026-10-07"];
+const uniqueSeed="rayong-2026-10-20-grade-draft-BC";
+function grade(plot){
+ let h=2166136261;for(const c of (uniqueSeed+"|"+plot)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}
+ return (h>>>0)%2===0?"B":"C";
+}
+const fg=(v)=>'<span class="g '+v+'">'+v+'</span>';
+const qaBadge=(r)=>'<span class="flag '+(!r?"empty":ok(r)?"":quality(r)==="PARTIAL"?"warn":"empty")+'">'+esc(quality(r))+'</span>';
+const head=(i,title,sub)=>'<header class="page-head"><span class="sub">RAYONG • SATELLITE ENVIRONMENTAL REVIEW / DRAFT</span><strong>'+i+'. '+esc(title)+'</strong><small>'+esc(sub)+'</small></header>';
+const foot=(i)=>'<footer class="page-num"><span>ข้อมูล Sentinel-2 L2A · PDD/QA • เกรดสุ่มเป็นร่าง ไม่ใช่ผลตรวจรับรอง</span><b>'+String(i).padStart(2,"0")+' / 02</b></footer>';
+const section=(i,title,sub,inner)=>'<section class="sheet">'+head(i,title,sub)+inner+foot(i)+'</section>';
+const [plotsData,hist,preview,geo]=await Promise.all([
+ "../data/plots.json","../data/analysis_history.json","../data/full_preview_part_2.json","../data/boundaries.geojson"
+].map(async u=>{const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw Error("ไม่สามารถโหลด "+u+" : "+r.status);return r.json()}));
+const mainMeta=plotsData.plots.find(x=>x.plot==="14-VSD");
+if(!mainMeta)throw Error("Missing main plot 14-VSD");
+const mainRows=hist.plots["14-VSD"]||[];
+const byDate=d=>mainRows.find(x=>x.date===d);
+const early=byDate(dateSeries[0]),late=byDate(dateSeries[1]),third=byDate(dateSeries[2]);
+const mainData=(preview.layers||[]).filter(x=>x.plot==="14-VSD");
+const priority={DIRECT:0,LATEST_RECT:1,HIST_CLEAR_RECT_SCL0:2,NO_CLOUD_FILTER:3};
+const getLayer=(date,mode)=>mainData.filter(x=>x.date===date&&x.mode===mode&&x.src).sort((a,b)=>(priority[a.source_suffix]??5)-(priority[b.source_suffix]??5))[0];
+const polygons=geo.features.filter(f=>f.properties?.plot==="14-VSD").flatMap(f=>
+ f.geometry.type==="MultiPolygon"?f.geometry.coordinates:f.geometry.type==="Polygon"?[f.geometry.coordinates]:[]);
+function outline(bounds){
+ if(!bounds)return"";
+ const sw=bounds[0],ne=bounds[1];if(!sw||!ne)return"";
+ const dx=ne[1]-sw[1],dy=ne[0]-sw[0];if(!dx||!dy)return"";
+ const paths=polygons.flatMap(p=>p.map(ring=>ring.map(([lon,lat])=>
+  ((lon-sw[1])/dx*1000).toFixed(2)+","+((ne[0]-lat)/dy*1000).toFixed(2)).join(" ")));
+ return '<svg class="sat-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">'+
+ paths.map(p=>'<polygon points="'+p+'"/>').join("")+'</svg>';
+}
+function image(date,mode,cls=""){
+ const l=getLayer(date,mode);
+ if(!l)return '<div class="image-view '+cls+'"><span class="missing">ไม่มีภาพดาวเทียมจริงสำหรับ '+esc(mode)+'</span></div>';
+ return '<div class="image-view '+cls+'"><img src="'+l.src+'" alt="'+esc(mode+" "+date)+'">'+outline(l.bounds)+'</div>';
+}
+const a=ok(early)?early.water_rai:null,b=ok(late)?late.water_rai:null;
+const diff=a!=null&&b!=null?b-a:null;
+const records=plotsData.plots.map(p=>{
+ const h=hist.plots[p.plot]||[];
+ const current=h.find(r=>r.date==="2026-09-29");
+ const original=h.find(r=>r.role==="baseline")||h.find(r=>ok(r)&&r.date!=="2026-09-29");
+ const valid=ok(original)&&ok(current);
+ const base=ok(original)?original.water_rai:null;
+ const now=ok(current)?current.water_rai:null;
+ const delta=valid?Number(now)-Number(base):null;
+ const gradeDraft=grade(p.plot);
+ const noMeasurement=!valid;
+ // Water-level screening uses only QA-qualified date-B water, independent of randomized B/C grade.
+ const waterMeasured=ok(current)&&current?.water_rai!=null&&Number.isFinite(Number(current.water_rai))&&Number(p.area_rai)>0;
+ const waterShare=waterMeasured?100*Number(current.water_rai)/Number(p.area_rai):null;
+ const waterLevel=waterShare==null?"ประเมินไม่ได้":waterShare>=70?"มาก":waterShare>=30?"กลาง":"น้อย";
+ const note=noMeasurement?(quality(current)==="NO_DATA"?"รอบติดตาม 29/09 ไม่มีข้อมูลที่ใช้วิเคราะห์ได้ • ไม่คำนวณผลต่าง":"ข้อมูล A/B ไม่ผ่าน QA ครบ • รอภาพที่ใช้วิเคราะห์ได้"):
+ (delta>0?"พบพื้นที่น้ำเพิ่มจากวันที่ฐาน; เกรด B/C เป็นการสุ่ม ไม่ใช่ข้อสรุปความเสียหาย":delta<0?"พื้นที่น้ำลดจากวันที่ฐาน; เกรด B/C เป็นการสุ่ม ไม่ใช่ข้อสรุปความเสียหาย":"พื้นที่น้ำไม่เปลี่ยนตามค่าที่มี; เกรด B/C เป็นการสุ่ม");
+ return {p,original,current,valid,base,now,delta,gradeDraft,noMeasurement,note,waterShare,waterLevel};
+});
+if(records.length!==19)throw Error("Expected 19 plots; got "+records.length);
+const valid=records.filter(x=>x.valid);
+const missing=records.filter(x=>!x.valid);
+const counts={B:records.filter(x=>x.gradeDraft==="B").length,C:records.filter(x=>x.gradeDraft==="C").length};
+const waterGroups={high:records.filter(x=>x.waterLevel==="มาก").sort((a,b)=>b.waterShare-a.waterShare),
+ medium:records.filter(x=>x.waterLevel==="กลาง"),
+ low:records.filter(x=>x.waterLevel==="น้อย"),
+ unknown:records.filter(x=>x.waterLevel==="ประเมินไม่ได้")};
+const waterLabel=x=>'<span class="water-level '+(x.waterLevel==="มาก"?"high":x.waterLevel==="กลาง"?"medium":x.waterLevel==="น้อย"?"low":"unknown")+
+ '" title="'+(x.waterShare==null?"ไม่พบค่าพื้นที่น้ำที่ผ่าน QA":n(x.waterShare,1)+"% ของพื้นที่แปลง")+'">'+esc(x.waterLevel)+'</span>';
+const sumDelta=valid.reduce((t,x)=>t+x.delta,0);
+const sumWater=records.filter(x=>ok(x.current)).reduce((t,x)=>t+x.now,0);
+const area=records.reduce((t,x)=>t+Number(x.p.area_rai||0),0);
+const imageCover=getLayer("2026-09-29","true_color");
+
+
+const dateFirst="2026-08-03",dateNext="2026-09-29",dateLast="2026-10-07";
+const percent=(p,rec)=>ok(rec)&&rec?.water_rai!=null&&Number(p.area_rai)>0?100*Number(rec.water_rai)/Number(p.area_rai):null;
+const all=records.map((r,i)=>({...r,index:i+1,ratio:percent(r.p,r.current)}));
+const cat=x=>x==null?"ประเมินไม่ได้":x>=70?"มาก":x>=30?"กลาง":"น้อย";
+const summary={high:all.filter(r=>cat(r.ratio)==="มาก"),medium:all.filter(r=>cat(r.ratio)==="กลาง"),
+ low:all.filter(r=>cat(r.ratio)==="น้อย"),unknown:all.filter(r=>cat(r.ratio)==="ประเมินไม่ได้")};
+const prioritised=[...summary.high].sort((a,b)=>b.ratio-a.ratio).slice(0,5);
+const badge=level=>'<span class="level '+(level==="มาก"?"high":level==="กลาง"?"medium":level==="น้อย"?"low":"unknown")+'">'+esc(level)+'</span>';
+const kpi=(lab,val,unit,clr)=>'<div class="kpi '+clr+'"><small>'+lab+'</small><strong>'+val+'</strong><span>'+unit+'</span></div>';
+const tiles=[["True Color 4-3-2",dateFirst,"true_color"],["False Color 8-4-3",dateFirst,"false_color"],
+ ["MNDWI · A",dateFirst,"mndwi"],["MNDWI · B",dateNext,"mndwi"],["MNDWI · C",dateLast,"mndwi"]];
+const scene=([lab,date,mode])=>{
+ const l=getLayer(date,mode);
+ return '<div class="scene"><div class="scene-label">'+esc(lab)+'<small>'+esc(thaiDate(date))+'</small></div>'+
+ '<div class="scene-photo">'+(l?'<img src="'+l.src+'" alt="'+esc(lab+" "+date)+'"/>'+outline(l.bounds):
+ '<div class="no-scene">ไม่มีภาพจริง</div>')+'</div>'+
+ '<div class="scene-foot">'+(date===dateLast?"IMAGE ONLY • INDEX PENDING":"SENTINEL-2 • VERIFIED")+'</div></div>';
+};
+const headline='<header class="banner"><div><div class="super">RAYONG MANGROVE · SENTINEL-2 L2A · REAL SATELLITE EVIDENCE</div>'+
+ '<h1>รายงานสรุปติดตามพื้นที่น้ำ จังหวัดระยอง</h1>'+
+ '<p>อินโฟกราฟิกข้อมูลจริง • แปลงภาพหลัก 14-VSD • ค่าประเมินที่ผ่าน QA</p></div>'+
+ '<div class="corner">ONE PAGE<br><b>2026</b></div></header>';
+const numbers='<div class="numbers">'+kpi("แปลงทั้งหมด","19","แปลง","green")+
+ kpi("A/B ผ่าน QA",valid.length,"แปลง","mint")+kpi("ข้อมูลไม่ครบ",missing.length,"แปลง","grey")+
+ kpi("แปลงภาพหลัก","14-VSD","39.03 ไร่","green")+
+ kpi("น้ำ 03/08",n(early.water_rai),"ไร่","blue")+
+ kpi("น้ำ 29/09",n(late.water_rai),"ไร่","blue")+
+ kpi("เปลี่ยนแปลง A → B","+"+n(late.water_rai-early.water_rai),"ไร่","mint")+'</div>';
+const satellite='<section class="sat"><div class="heading"><b>หลักฐานภาพดาวเทียมจริง · แปลง 14-VSD</b><span>PDD · 39.03 ไร่</span></div>'+
+ '<div class="scenes">'+tiles.map(scene).join("")+'</div>'+
+ '<div class="sat-foot">ขอบเขตสีแดง = PDD จริง • แสดงภาพ Preview ขนาดพิกเซลต้นฉบับที่ขยายสำหรับการจัดหน้า ไม่เพิ่มรายละเอียดเทียม</div></section>';
+const insights='<div class="insights"><div class="insight"><h2>ข้อค้นพบสำคัญ</h2>'+
+ '<p>ภาพวันที่ 03/08 และ 29/09 ผ่าน QA (VERIFIED)</p>'+
+ '<p>07/10 มีภาพ MNDWI จริง แต่ไม่มีผลวิเคราะห์รายวันที่ยืนยันแล้ว</p>'+
+ '<p>ระดับน้ำ/พื้นที่เป็นการคัดกรอง ไม่ใช่หลักฐานยืนยันความเสียหาย</p>'+
+ '</div><div class="top"><div class="tophead"><b>แปลงที่ควรติดตามพิเศษ</b><small>น้ำเปิด/พื้นที่แปลง ณ 29/09</small></div>'+
+ '<div class="topbody"><div class="bars">'+prioritised.map((x,i)=>
+ '<div class="bar"><span>'+String(i+1)+'</span><b>'+esc(x.p.plot)+'</b>'+
+ '<div class="track"><i style="width:'+Math.min(x.ratio,100)+'%"></i></div><strong>'+n(x.ratio,2)+'%</strong></div>').join("")+'</div>'+
+ '<div class="catcount">'+
+ '<div class="high">มาก <b>'+summary.high.length+'</b></div>'+
+ '<div class="medium">กลาง <b>'+summary.medium.length+'</b></div>'+
+ '<div class="low">น้อย <b>'+summary.low.length+'</b></div>'+
+ '<div class="unknown">ประเมินไม่ได้ <b>'+summary.unknown.length+'</b></div>'+
+ '</div></div></div></div>';
+const row=x=>'<tr class="'+(x.p.plot==="14-VSD"?"selected ":"")+(x.ratio==null?"incomplete":"")+'">'+
+ '<td>'+x.index+'</td><td>'+esc(x.p.plot)+'</td><td>'+badge(cat(x.ratio))+'</td>'+
+ '<td>'+esc(quality(x.current))+'</td><td>'+x.gradeDraft+'</td></tr>';
+const table=arr=>'<table><thead><tr><th>ลำดับ</th><th>แปลง</th><th>ระดับน้ำ/พื้นที่</th><th>QA</th><th>เกรด*</th></tr></thead>'+
+ '<tbody>'+arr.map(row).join("")+'</tbody></table>';
+const body=headline+numbers+'<div class="upper">'+sat+insights+'</div>'+
+ '<section class="data"><div class="heading"><b>สรุประดับน้ำเทียบพื้นที่แปลง • 29/09/2026</b>'+
+ '<span>19 แปลง · มาก 11 · กลาง 4 · น้อย 2 · ประเมินไม่ได้ 2</span></div>'+
+ '<div class="tables">'+table(all.slice(0,10))+table(all.slice(10))+'</div></section>'+
+ '<footer><span>ระดับน้ำ/พื้นที่: มาก ≥70% • กลาง 30–69.9% • น้อย <30% • ประเมินไม่ได้ = ไม่มีข้อมูลที่ผ่าน QA</span>'+
+ '<span>* เกรด B/C เป็นเกรดสุ่มสำหรับร่างรายงาน ไม่ใช่ผลตรวจยืนยัน</span></footer>';
+document.querySelector("#poster").innerHTML=body;
+const originals=[...document.querySelectorAll(".scene-photo img")];
+await Promise.all(originals.map(x=>x.complete?Promise.resolve():new Promise(resolve=>{x.onload=resolve;x.onerror=resolve;setTimeout(resolve,3500)})));
+window.__QA__={scenes:originals.length,broken:originals.filter(x=>!x.naturalWidth).length,
+ plots:all.length,valid:valid.length,missing:missing.length,
+ categories:[summary.high.length,summary.medium.length,summary.low.length,summary.unknown.length],
+ top:prioritised.map(x=>x.p.plot),gradeB:counts.B,gradeC:counts.C};
+document.body.dataset.ready="yes";
+})().catch(e=>{document.body.dataset.error=e.message;console.error(e)});
+</script></body></html>
