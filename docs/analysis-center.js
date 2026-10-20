@@ -104,7 +104,7 @@ function useSelection(){
 }
 function resetForChange(){
  if(state.mode==="auto"){setDefaults();state.dirty=false;drawControls();useSelection()}
- else{state.dirty=true;state.view=null;drawControls();$("mc-results").hidden=true;setStatus("เลือกวันที่แล้วกด «เปรียบเทียบข้อมูล» เพื่อแสดงผลตามวันที่ที่เลือก","warn");paintMap();}
+ else{state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);drawControls();$("mc-results").hidden=true;setStatus("เลือกวันที่แล้วกด «เปรียบเทียบข้อมูล» เพื่อแสดงผลตามวันที่ที่เลือก","warn");paintMap();}
 }
 function metric(label,value,detail=""){return '<article class="mc-metric"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(detail)+'</small></article>'}
 function addSign(v){return v==null?"—":(v>0?"+":"")+num(v)+" ไร่"}
@@ -161,6 +161,7 @@ function displayResults(){
  paintKpis(state.view);
  root.MonitoringReport?.render?.({view:state.view,mode:state.mode,generated:state.history?.generated_at});
  if(state.view.kind==="province")displayProvince(state.view);else displayPlot(state.view);
+ root.PlotReview?.onView?.(state.view);
  setStatus(state.mode==="auto"?"แสดงผลล่าสุดที่ผ่านเกณฑ์ QA จากฐานข้อมูล • ไม่ใช่การรันภาพใหม่":"เปรียบเทียบจากค่าที่มีจริงเรียบร้อย • ไม่มีการประมวลผล GeoTIFF ใหม่","ok");
  paintMap();
  drawChart();
@@ -244,7 +245,7 @@ async function renderPreview(){
  });
  container.innerHTML='<div class="mc-scenes">'+makeCards(mode).join("")+'</div><p class="mc-table-note">'+esc(layerNames[mode])+' • แสดงภาพจาก Raster จริง • ขอบแดงคือ PDD</p>';
  // The report always uses real True Color GeoTIFF-derived previews.
- root.MonitoringReport?.setPreview?.({plot,dates,html:makeCards("true_color").join("")});
+ root.MonitoringReport?.setPreview?.({plot,dates,html:makeCards("true_color").join(""),mndwiHtml:makeCards("mndwi").join("")});
 }
 function selectPlot(id){
  const p=state.plots.find(p=>p.plot===id);if(!p)return;
@@ -288,9 +289,9 @@ function wire(){
  on("mc-scope-province",()=>{state.scope="province";setDefaults();resetForChange();saveQuery()});
  on("mc-scope-plot",()=>{state.scope="plot";setDefaults();resetForChange();saveQuery()});
  on("mc-mode-auto",()=>{state.mode="auto";setDefaults();resetForChange();saveQuery()});
- on("mc-mode-manual",()=>{state.mode="manual";state.dirty=true;state.view=null;drawControls();$("mc-results").hidden=true;paintMap();setStatus("เลือกวันและกดเปรียบเทียบเพื่ออ่านผลที่คำนวณไว้แล้ว","warn");saveQuery()});
+ on("mc-mode-manual",()=>{state.mode="manual";state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);drawControls();$("mc-results").hidden=true;paintMap();setStatus("เลือกวันและกดเปรียบเทียบเพื่ออ่านผลที่คำนวณไว้แล้ว","warn");saveQuery()});
  on("mc-plot",e=>selectPlot(e.target.value),"change");
- ["a","b","c"].forEach((k,i)=>on("mc-date-"+k,e=>{state.dates[i]=e.target.value;state.dirty=true;state.view=null;$("mc-results").hidden=true;paintMap();setStatus("เปลี่ยนวันแล้ว • กดเปรียบเทียบข้อมูลเพื่อแสดงผลใหม่","warn")},"change"));
+ ["a","b","c"].forEach((k,i)=>on("mc-date-"+k,e=>{state.dates[i]=e.target.value;state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);$("mc-results").hidden=true;paintMap();setStatus("เปลี่ยนวันแล้ว • กดเปรียบเทียบข้อมูลเพื่อแสดงผลใหม่","warn")},"change"));
  on("mc-run",chooseManual);
  on("mc-refresh",async()=>{
   setStatus("กำลังตรวจฐานข้อมูลผลวิเคราะห์ล่าสุด...");try{const r=await fetch("data/analysis_history.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);state.history=await r.json();setDefaults();drawControls();useSelection()}catch(e){setStatus("โหลดผลวิเคราะห์ไม่ได้: "+e.message,"error")}
@@ -299,6 +300,7 @@ function wire(){
  on("mc-analysis-detail",e=>{if(e.target.open){paintMap();drawChart();setTimeout(()=>{state.map?.invalidateSize();state.chart?.resize()},120)}},"toggle");
  const printOne=()=>{
   if(!state.view||state.dirty){setStatus("กรุณากดวิเคราะห์ตามวันที่ก่อนบันทึกรายงาน PDF","warn");return}
+  if(!root.PlotReview?.canPrint?.() && state.scope==="plot")return;
   if(!root.MonitoringReport?.ready?.()){setStatus("รอการโหลดภาพประกอบรายงานให้เสร็จก่อนพิมพ์ หรือเลือกใช้รายงานที่แจ้งว่าไม่มีภาพ","warn");return}
   root.MonitoringReport?.print?.();
  };
