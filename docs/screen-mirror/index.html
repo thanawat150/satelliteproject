@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#13233f">
+  <meta name="description" content="แชร์หน้าจอโน้ตบุ๊กไปยัง iPhone ผ่านเบราว์เซอร์">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <title>Screen Mirror · ส่งหน้าจอไป iPhone</title>
+  <style>
+    :root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#758096;--line:#e6eaf1;--navy:#13233f;--blue:#2563eb;--orange:#ff6b35;--green:#0f9f74;--shadow:0 14px 40px rgba(29,43,76,.07)}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Thai",system-ui,sans-serif}
+    button,a{font:inherit} a{text-decoration:none;color:inherit}
+    main{max-width:1000px;margin:auto;padding:28px 18px 64px}
+    .hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}
+    .kicker{font:800 11px "Plus Jakarta Sans",sans-serif;letter-spacing:1.8px;color:var(--blue);text-transform:uppercase}
+    h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",sans-serif;margin:6px 0 8px}
+    .hero p{margin:0;color:var(--muted);max-width:680px;line-height:1.65}
+    .back{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;padding:9px 13px;background:#fff;color:#40516d;font-weight:700;white-space:nowrap}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr));gap:16px;margin-top:22px}
+    section{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:20px}
+    h2{font-size:19px;margin:0 0 5px;color:var(--navy)}
+    p{color:var(--muted);line-height:1.55}
+    .device{display:inline-flex;align-items:center;gap:7px;background:#edf3ff;color:#1d4ed8;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;margin-bottom:10px}
+    label{display:block;font-weight:700;margin:17px 0 7px;color:#34425a}
+    textarea{width:100%;min-height:118px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:12px;background:#f8faff;color:#172033;font:12px ui-monospace,monospace}
+    button{border:1px solid transparent;border-radius:12px;padding:10px 14px;color:#fff;background:var(--blue);font:inherit;font-weight:800;cursor:pointer;margin:5px 6px 0 0}
+    button:hover{background:#1d4ed8} button.secondary{color:#40516d;background:#fff;border-color:var(--line)} button.secondary:hover{background:#f7f9fc}
+    button:disabled{opacity:.48;cursor:wait}
+    .status{min-height:44px;border-radius:12px;padding:10px 12px;background:#f3f6fb;color:#52627a;margin-top:14px;font-size:.9rem}
+    .status[data-kind="bad"]{color:#b42318;background:#fff0f0}.status[data-kind="good"]{color:#087b5a;background:#e8f7f1}
+    video{display:block;width:100%;min-height:180px;max-height:70vh;object-fit:contain;background:#111827;border-radius:14px;margin-top:14px}
+    .notice{padding:14px 16px;border:1px dashed #d9dfeb;border-radius:14px;color:#69758a;font-size:12px;background:#fbfcfe;margin-top:18px}
+    footer{color:var(--muted);font-size:12px;padding:18px 4px}
+    @media(max-width:720px){main{padding:20px 12px 44px}.hero{display:block}.back{margin-top:14px}.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <div><div class="kicker">SCREEN MIRROR · WEBRTC</div>
+      <h1>ส่งหน้าจอโน้ตบุ๊กไป iPhone</h1>
+      <p>เปิดหน้านี้บนทั้งสองเครื่อง แล้วจับคู่ตามขั้นตอน ไม่ต้องติดตั้งแอปหรือเพิ่มกฎ Firewall</p>
+    </div>
+    <a class="back" href="../affiliate-posting/">← กลับหน้า Satellite Project</a>
+  </header>
+  <div class="grid">
+    <section aria-labelledby="sender-title">
+      <div class="device">01 · NOTEBOOK</div>
+      <h2 id="sender-title">แชร์หน้าจอ</h2>
+      <p>กดเริ่มแชร์ แล้วเลือกหน้าต่างหรือทั้งหน้าจอ จากนั้นส่ง Offer ให้อีกเครื่อง</p>
+      <button id="startShare">เริ่มแชร์หน้าจอ</button>
+      <button class="secondary" id="stopShare" disabled>หยุดแชร์</button>
+      <label for="offer">Offer สำหรับส่งไป iPhone</label>
+      <textarea id="offer" readonly placeholder="กดเริ่มแชร์หน้าจอก่อน"></textarea>
+      <button class="secondary" id="copyOffer" disabled>คัดลอก Offer</button>
+      <label for="answer">วาง Answer ที่ได้จาก iPhone</label>
+      <textarea id="answer" placeholder="วางข้อความ Answer ที่นี่"></textarea>
+      <button id="connect" disabled>เชื่อมต่อ</button>
+      <div id="sendStatus" class="status" role="status">สถานะ: ยังไม่เริ่มแชร์</div>
+    </section>
+    <section aria-labelledby="receiver-title">
+      <div class="device">02 · IPHONE</div>
+      <h2 id="receiver-title">รับภาพหน้าจอ</h2>
+      <p>วาง Offer ที่ได้จากโน้ตบุ๊ก แล้วกดสร้าง Answer ส่งข้อความกลับไป</p>
+      <label for="remoteOffer">Offer จากโน้ตบุ๊ก</label>
+      <textarea id="remoteOffer" placeholder="วางข้อความ Offer ที่นี่"></textarea>
+      <button id="makeAnswer">สร้าง Answer</button>
+      <label for="localAnswer">Answer สำหรับส่งกลับโน้ตบุ๊ก</label>
+      <textarea id="localAnswer" readonly placeholder="Answer จะแสดงที่นี่"></textarea>
+      <button class="secondary" id="copyAnswer" disabled>คัดลอก Answer</button>
+      <video id="remoteVideo" autoplay playsinline controls></video>
+      <div id="receiveStatus" class="status" role="status">สถานะ: รอ Offer</div>
+    </section>
+  </div>
+  <p class="notice">ใช้ STUN เพื่อช่วยเชื่อมต่อโดยตรง ภาพหน้าจอส่งตรงระหว่างอุปกรณ์ ไม่ผ่าน GitHub บางเครือข่ายมือถือหรือ hotspot อาจบล็อกการเชื่อมตรงได้</p>
+  <footer>ต้องเปิดผ่าน HTTPS (เช่น GitHub Pages) และอนุญาตการแชร์หน้าจอในเบราว์เซอร์ การเชื่อมต่อจะสิ้นสุดเมื่อกดหยุดแชร์หรือปิดหน้าเว็บ</footer>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const STUN = [{ urls: "stun:stun.l.google.com:19302" }];
+  let sender = null;
+  let receiver = null;
+  let screenStream = null;
+  const say = (id, message, kind = "") => { const el = $(id); el.textContent = message; el.dataset.kind = kind; };
+  const waitForIce = pc => new Promise(resolve => {
+    if (pc.iceGatheringState === "complete") return resolve();
+    let done = false;
+    const finish = () => { if (!done) { done = true; pc.removeEventListener("icegatheringstatechange", changed); resolve(); } };
+    const changed = () => { if (pc.iceGatheringState === "complete") finish(); };
+    pc.addEventListener("icegatheringstatechange", changed);
+    setTimeout(finish, 12000);
+  });
+  const setConnectionStatus = (pc, targetId) => {
+    pc.addEventListener("connectionstatechange", () => {
+      const state = pc.connectionState;
+      say(targetId, `สถานะการเชื่อมต่อ: ${state}`, state === "connected" ? "good" : state === "failed" ? "bad" : "");
+    });
+    pc.addEventListener("iceconnectionstatechange", () => {
+      if (pc.iceConnectionState === "failed") say(targetId, "เชื่อมไม่สำเร็จ เครือข่ายนี้อาจต้องใช้ TURN relay ซึ่งหน้า GitHub Pages ไม่มีให้", "bad");
+    });
+  };
+  const encode = desc => JSON.stringify({ type: desc.type, sdp: desc.sdp });
+  const parse = value => {
+    const parsed = JSON.parse(value);
+    if (!parsed || !["offer", "answer"].includes(parsed.type) || typeof parsed.sdp !== "string") throw new Error("รูปแบบข้อความไม่ถูกต้อง");
+    return parsed;
+  };
+  async function copy(textareaId, statusId) {
+    try { await navigator.clipboard.writeText($(textareaId).value); say(statusId, "คัดลอกแล้ว", "good"); }
+    catch { $(textareaId).select(); say(statusId, "เลือกข้อความไว้แล้ว กดคัดลอกด้วยตนเอง", ""); }
+  }
+  $("startShare").addEventListener("click", async () => {
+    const button = $("startShare"); button.disabled = true;
+    try {
+      if (!navigator.mediaDevices?.getDisplayMedia) throw new Error("เบราว์เซอร์นี้ไม่รองรับการแชร์หน้าจอ โปรดเปิดหน้า HTTPS ด้วย Chrome หรือ Edge บนโน้ตบุ๊ก");
+      screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 24, max: 30 } }, audio: false });
+      sender = new RTCPeerConnection({ iceServers: STUN });
+      setConnectionStatus(sender, "sendStatus");
+      screenStream.getTracks().forEach(track => sender.addTrack(track, screenStream));
+      screenStream.getVideoTracks()[0].addEventListener("ended", stop);
+      const offer = await sender.createOffer();
+      await sender.setLocalDescription(offer);
+      say("sendStatus", "กำลังเตรียม Offer…");
+      await waitForIce(sender);
+      $("offer").value = encode(sender.localDescription);
+      $("copyOffer").disabled = false;
+      $("connect").disabled = false;
+      $("stopShare").disabled = false;
+      say("sendStatus", "Offer พร้อมแล้ว ส่งข้อความไปวางบน iPhone", "good");
+    } catch (error) { say("sendStatus", error.message || "เริ่มแชร์ไม่สำเร็จ", "bad"); button.disabled = false; stop(false); }
+  });
+  $("copyOffer").addEventListener("click", () => copy("offer", "sendStatus"));
+  $("connect").addEventListener("click", async () => {
+    try {
+      if (!sender) throw new Error("เริ่มแชร์หน้าจอก่อน");
+      await sender.setRemoteDescription(parse($("answer").value));
+      say("sendStatus", "รับ Answer แล้ว กำลังเชื่อมต่อ…");
+    } catch (error) { say("sendStatus", error.message || "อ่าน Answer ไม่สำเร็จ", "bad"); }
+  });
+  $("makeAnswer").addEventListener("click", async () => {
+    const button = $("makeAnswer"); button.disabled = true;
+    try {
+      receiver?.close();
+      receiver = new RTCPeerConnection({ iceServers: STUN });
+      setConnectionStatus(receiver, "receiveStatus");
+      receiver.addEventListener("track", event => { $("remoteVideo").srcObject = event.streams[0]; });
+      await receiver.setRemoteDescription(parse($("remoteOffer").value));
+      const answer = await receiver.createAnswer();
+      await receiver.setLocalDescription(answer);
+      say("receiveStatus", "กำลังเตรียม Answer…");
+      await waitForIce(receiver);
+      $("localAnswer").value = encode(receiver.localDescription);
+      $("copyAnswer").disabled = false;
+      say("receiveStatus", "Answer พร้อมแล้ว ส่งกลับไปวางบนโน้ตบุ๊ก", "good");
+    } catch (error) { say("receiveStatus", error.message || "สร้าง Answer ไม่สำเร็จ", "bad"); }
+    finally { button.disabled = false; }
+  });
+  $("copyAnswer").addEventListener("click", () => copy("localAnswer", "receiveStatus"));
+  function stop(resetButton = true) {
+    screenStream?.getTracks().forEach(track => track.stop()); screenStream = null;
+    sender?.close(); sender = null;
+    $("stopShare").disabled = true; $("copyOffer").disabled = true; $("connect").disabled = true;
+    if (resetButton) { $("startShare").disabled = false; $("offer").value = ""; say("sendStatus", "หยุดแชร์แล้ว"); }
+  }
+  $("stopShare").addEventListener("click", () => stop());
+})();
+</script>
+</body>
+</html>
+
