@@ -1,2 +1,2 @@
-Error: Missing real GIS plot rows or polygon boundaries: 19 0
+Error: The poster must have 19 rows and absolutely no modified-image PDD overlays: 19 5
     at /home/runner/work/satelliteproject/satelliteproject/scripts/build_real_satellite_infographic.cjs:25:33
