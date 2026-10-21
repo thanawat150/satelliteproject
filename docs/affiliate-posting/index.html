@@ -399,7 +399,7 @@ body.has-sidebar .shell{max-width:1160px;margin-left:246px;margin-right:auto}
     <main class="list" id="list"></main>
   </section>
 
-  <div class="notice">ข้อมูลโหลดจาก <code>metricool-schedule.json</code> และ <code>schedule.json</code> ใน GitHub Pages เมื่อเปิดหน้า/กดรีเฟรช จึงเป็น <b>Snapshot</b> ไม่ใช่การเชื่อม Metricool แบบเรียลไทม์โดยตรง แคปชั่น Affiliate ที่ไม่มีข้อมูลยืนยันจะติดป้ายว่าเป็นร่างแนะนำ ต้องตรวจคลิปก่อนใช้ สถานะ “โพสต์แล้ว” บันทึกเฉพาะเบราว์เซอร์นี้</div>
+  <div class="notice">ข้อมูลโหลดจาก <code>metricool-schedule.json</code>, <code>ken-monitoring-drafts.json</code> และ <code>schedule.json</code> ใน GitHub Pages เมื่อเปิดหน้า/กดรีเฟรช จึงเป็น <b>Snapshot</b> ไม่ใช่การเชื่อม Metricool แบบเรียลไทม์โดยตรง แคปชั่น Affiliate ที่ไม่มีข้อมูลยืนยันจะติดป้ายว่าเป็นร่างแนะนำ ต้องตรวจคลิปก่อนใช้ สถานะ “โพสต์แล้ว” บันทึกเฉพาะเบราว์เซอร์นี้</div>
 </div>
 <div class="toast" id="toast">คัดลอกแล้ว</div>
 
@@ -438,6 +438,7 @@ const inventory = [
 ];
 
 let scheduledPosts = [];
+let contentDrafts = []; // Planned Ken Monitoring content, never part of Metricool snapshot.
 
 let salesPlan = [];
 
@@ -463,18 +464,21 @@ function rebuildSales(items){
 }
 async function refreshPostingData(){
   const cacheBust='?v='+Date.now();
-  const [m,s]=await Promise.all([
+  const [m,s,d]=await Promise.all([
     fetch('./metricool-schedule.json'+cacheBust,{cache:'no-store'}),
-    fetch('./schedule.json'+cacheBust,{cache:'no-store'})
+    fetch('./schedule.json'+cacheBust,{cache:'no-store'}),
+    fetch('./ken-monitoring-drafts.json'+cacheBust,{cache:'no-store'}).catch(()=>null)
   ]);
   if(!m.ok||!s.ok)throw new Error('GitHub source HTTP '+m.status+'/'+s.status);
   const [metricool,affiliate]=await Promise.all([m.json(),s.json()]);
   if(!Array.isArray(metricool.items)||!Array.isArray(affiliate.items))throw new Error('รูปแบบไฟล์ตารางไม่ถูกต้อง');
   scheduledPosts=metricool.items;
+  const drafts=d&&d.ok?await d.json():{items:[]};
+  contentDrafts=Array.isArray(drafts.items)?drafts.items:[];
   rebuildSales(affiliate.items);
   postingDataLoaded=true;
   const stamp=document.getElementById('dateSource');
-  if(stamp)stamp.textContent='GitHub Snapshot · คอนเทนต์ '+scheduledPosts.length+' รายการ · Affiliate '+schedule.length+' วัน · กดรีเฟรชเพื่ออัปเดต';
+  if(stamp)stamp.textContent='GitHub Snapshot · คอนเทนต์ '+scheduledPosts.length+' รายการ · ร่าง '+contentDrafts.length+' รายการ · Affiliate '+schedule.length+' วัน · กดรีเฟรชเพื่ออัปเดต';
   render();
 }
 let range='today';
@@ -574,6 +578,14 @@ function fmtDate(d){
   }).format(d);
 }
 
+function contentRowsForDate(ds){
+  const live=scheduledPosts.filter(x=>x.date.slice(0,10)===ds);
+  // Prefer verified Metricool rows when the same clip and platform are present.
+  const drafts=contentDrafts.filter(x=>x.date.slice(0,10)===ds && !live.some(y=>
+    x.network===y.network && x.drive_file_id && x.drive_file_id===y.drive_file_id
+  ));
+  return [...live,...drafts].sort((a,b)=>a.date.localeCompare(b.date));
+}
 function renderCalendar(){
   const grid=document.getElementById('calendarGrid');
   if(!grid)return;
@@ -585,10 +597,13 @@ function renderCalendar(){
     const d=new Date(start);d.setDate(start.getDate()+i);
     const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     const plan=schedule.find(x=>iso(x.date)===ds);
-    const content=scheduledPosts.filter(x=>x.date.slice(0,10)===ds);
+    const content=contentRowsForDate(ds);
     const isToday=ds===todayISO(),isOther=d.getMonth()!==m;
     let item='';
-    if(content.length)item+='<span class="cal-content">🎬 คอนเทนต์ '+content.length+' โพสต์</span>';
+    if(content.length){
+      const live=content.filter(x=>x.status!=='DRAFT').length,draft=content.length-live;
+      item+='<span class="cal-content">🎬 '+(live?live+' รายการ':'')+(live&&draft?' · ':'')+(draft?draft+' ร่าง':'')+'</span>';
+    }
     if(plan){
       const p=plan.product,st=done[plan.id]||{},complete=!!(st.tiktok&&st.shopee);
       item+=`<div class="cal-item ${escapeHtml(p.key)}">
@@ -611,10 +626,10 @@ function shiftCalendar(delta){
 function renderDayOverview(){
   const ds=focusDate();
   const entries=[];
-  const posts=scheduledPosts.filter(x=>x.date.slice(0,10)===ds);
+  const posts=contentRowsForDate(ds);
   for(const x of posts){
     const title=x.title||splitPostText(x.text||'').caption.split('\n')[0]||'คลิปคอนเทนต์';
-    entries.push({time:x.date.slice(11,16),label:networkLabel(x.network),title,anchor:'todayContentSection'});
+    entries.push({time:x.date.slice(11,16),label:networkLabel(x.network)+(x.status==='DRAFT'?' · ร่าง':''),title,anchor:'todayContentSection'});
   }
   const sales=schedule.filter(x=>iso(x.date)===ds);
   for(const x of sales){
@@ -668,7 +683,7 @@ function renderTodayContent(){
  const ds=focusDate();
   const titleEl=document.getElementById('contentByDateTitle');
   if(titleEl)titleEl.textContent='Ken Monitoring · แคปชั่นวันที่ '+fmtDate(new Date(ds+'T12:00:00+07:00'));
-  const rows=scheduledPosts.filter(x=>x.date.slice(0,10)===ds).sort((a,b)=>a.date.localeCompare(b.date));
+  const rows=contentRowsForDate(ds);
  if(badge)badge.textContent=rows.length+' แพลตฟอร์ม';
  if(!rows.length){el.innerHTML='<div class="empty">ไม่มีคอนเทนต์สำหรับวันที่เลือก</div>';return;}
  const groups=new Map();
@@ -683,31 +698,32 @@ function renderTodayContent(){
    const masterClip=first.drive_url||first.download_url||'';
    const cards=items.map(x=>{
      const hasDraft=!!x.suggested_text;
+     const isContentDraft=x.status==='DRAFT';
      const copy=(x.suggested_text||x.text||'').trim();
      const publishedClip=x.media||'';
      const name=networkLabel(x.network);
      const isErr=x.status==='ERROR';
-     const state=manualPosted(x)?'ฉันโพสต์เองแล้ว':isErr?'Metricool ผิดพลาด':x.status==='PENDING'?'รอเผยแพร่':x.status==='SUCCESS'?'Metricool โพสต์แล้ว':x.status||'ไม่ทราบสถานะ';
+     const state=isContentDraft?'ร่าง · ยังไม่ยืนยันตั้งเวลา':manualPosted(x)?'ฉันโพสต์เองแล้ว':isErr?'Metricool ผิดพลาด':x.status==='PENDING'?'รอเผยแพร่':x.status==='SUCCESS'?'Metricool โพสต์แล้ว':x.status||'ไม่ทราบสถานะ';
      return `<section class="platform-post-card ${isErr?'error':''}">
        <div class="platform-post-head"><span class="chip platform-${escapeHtml(x.network)}">${escapeHtml(name)}</span><span class="chip ${isErr && !manualPosted(x)?'err':'ok'}">${escapeHtml(state)}</span></div>
-       <div class="platform-post-meta">${escapeHtml(x.date.slice(11,16))} น. · ${hasDraft?'ร่างใหม่สำหรับโพสต์เอง':'ข้อความจาก Metricool'}</div>
+       <div class="platform-post-meta">${escapeHtml(x.date.slice(11,16))} น. · ${isContentDraft?'เวลาในแผนจาก Google Drive':hasDraft?'ร่างใหม่สำหรับโพสต์เอง':'ข้อความจาก Metricool'}</div>
        ${isErr?'<div class="warn">Metricool มีข้อผิดพลาด โปรดตรวจสอบและโพสต์เอง</div>':''}
-       ${hasDraft?'<div class="draft-notice">ข้อความนี้เป็นร่างใหม่ใน GitHub เท่านั้น ยังไม่ได้เปลี่ยนแคปชั่นใน Metricool</div>':''}
+       ${isContentDraft?'<div class="draft-notice">แคปชั่นจากแผน Google Drive · ยังไม่ยืนยันการตั้งเวลาใน Metricool และยังไม่ได้เผยแพร่</div>':hasDraft?'<div class="draft-notice">ข้อความนี้เป็นร่างใหม่ใน GitHub เท่านั้น ยังไม่ได้เปลี่ยนแคปชั่นใน Metricool</div>':''}
        ${publishingTitleBlock(x)}
        <div class="label">${x.network==='youtube'?'คำอธิบาย YouTube (Description)':'แคปชั่นพร้อมแฮชแท็ก'}</div>
        <div class="copybox"><p>${escapeHtml(copy)}</p><button class="copy" data-copy="${encodeURIComponent(copy)}">คัดลอกสำหรับ ${escapeHtml(name)}</button></div>
        <div class="scheduled-actions">
           ${x.download_url?`<a class="btn btn-primary" href="${escapeHtml(x.download_url)}" target="_blank" rel="noopener">⬇ ดาวน์โหลดจาก Drive</a>`:''}
           ${x.drive_url?`<a class="btn btn-secondary" href="${escapeHtml(x.drive_url)}" target="_blank" rel="noopener">📂 เปิดไฟล์ Drive</a>`:''}
-          ${publishedClip?`<a class="btn btn-secondary" href="${escapeHtml(publishedClip)}" target="_blank" rel="noopener">▶ เทียบกับเวอร์ชัน Metricool</a>`:'<span class="warn">ไม่พบไฟล์สื่อใน Metricool</span>'}
+          ${publishedClip?`<a class="btn btn-secondary" href="${escapeHtml(publishedClip)}" target="_blank" rel="noopener">▶ เทียบกับเวอร์ชัน Metricool</a>`:isContentDraft?'':'<span class="warn">ไม่พบไฟล์สื่อใน Metricool</span>'}
         </div>
         ${x.drive_match_method==='topic_folder_unverified'?'<div class="warn">⚠️ ไฟล์นี้จับคู่จากโฟลเดอร์หัวข้อเท่านั้น ยังไม่ได้ยืนยันเวอร์ชัน</div>':''}
-       ${manualTikTokAction(x)}
+       ${isContentDraft?'':manualTikTokAction(x)}
      </section>`;
    }).join('');
    return `<article class="scheduled-card">
      <div class="scheduled-top"><div><h3 class="scheduled-title">${escapeHtml(title)}</h3><div class="scheduled-meta">${escapeHtml(fmtDate(new Date(first.date+'+07:00')))} · ${escapeHtml(first.drive_file_name||'')}</div></div><span class="chip">${items.length} แพลตฟอร์ม</span></div>
-     <p class="group-note">ตรวจสอบไฟล์ที่ใช้โพสต์จริงได้ในแต่ละแพลตฟอร์ม ด้านล่างแยกไฟล์ต้นฉบับ Drive ไว้ต่างหาก (อาจเป็นคนละเวอร์ชัน)</p>
+     <p class="group-note">${first.status==='DRAFT'?'รายการจากแผนคอนเทนต์ Google Drive: เป็นร่างแคปชั่นและเวลา ยังไม่ยืนยันการตั้งโพสต์ใน Metricool':'ตรวจสอบไฟล์ที่ใช้โพสต์จริงได้ในแต่ละแพลตฟอร์ม ด้านล่างแยกไฟล์ต้นฉบับ Drive ไว้ต่างหาก (อาจเป็นคนละเวอร์ชัน)'}</p>
      <div class="platform-post-grid">${cards}</div>
      <div class="scheduled-actions">${masterClip?`<a class="btn btn-secondary" href="${escapeHtml(masterClip)}" target="_blank" rel="noopener">เปิดไฟล์ต้นฉบับใน Google Drive · ${escapeHtml(first.drive_file_name||"Master")}</a>`:""}</div>
    </article>`;
