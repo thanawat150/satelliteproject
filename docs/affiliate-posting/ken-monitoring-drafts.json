@@ -1,0 +1,59 @@
+{
+  "updated_at": "2026-10-21",
+  "timezone": "Asia/Bangkok",
+  "note": "Ken Monitoring content drafts from Google Drive. Not a Metricool live schedule or proof of publication.",
+  "items": [
+    {
+      "date": "2026-10-25T10:00:00",
+      "network": "instagram",
+      "title": "Script 04 — พิกัดผิดนิดเดียว ทำไมตำแหน่งถึงไปอยู่คนละที่",
+      "text": "หนึ่งในปัญหาที่คนเริ่มทำ GIS เจอบ่อยคือ “พิกัดดูถูก แต่ตำแหน่งไม่ตรง” 📍\nพิกัดต้องมากับระบบอ้างอิงที่ถูกต้อง ไม่ว่าจะเป็น CRS, Datum หรือ UTM Zone\nเช็กก่อนวิเคราะห์ ช่วยลดความผิดพลาดได้มาก\nเคยเจอ Layer เหลื่อมแบบนี้ไหม?\n\n#GIS #CRS #QGIS #UTM #KenMonitoring",
+      "status": "DRAFT",
+      "series": "Ken Monitoring — GIS Forestry Shorts",
+      "drive_file_id": "1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND",
+      "drive_file_name": "KenMonitoring_Script04_พิกัด_CRS_UTM.mp4",
+      "drive_url": "https://drive.google.com/file/d/1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND/view",
+      "source_url": "https://docs.google.com/document/d/1OW8aTdlZ8gHpMc8FbOcmWc0n0RfuuO6p_wlPw9sueCQ/edit",
+      "source_type": "google_drive_caption_plan"
+    },
+    {
+      "date": "2026-10-25T12:00:00",
+      "network": "facebook",
+      "title": "พิกัดถูก แต่ทำไมตำแหน่งผิดที่? | CRS / UTM",
+      "text": "พิกัดถูกทุกตัว แต่ทำไมหมุดไปโผล่ผิดที่? 📍\nก่อนเริ่มวิเคราะห์ GIS อย่าลืมตรวจ CRS, Datum และ UTM Zone เพราะตัวเลขพิกัดที่ดูเหมือนถูกต้องอาจแสดงผิดตำแหน่ง เมื่อระบบอ้างอิงไม่สอดคล้องกัน\n\n#GIS #CRS #UTM #QGIS #KenMonitoring",
+      "status": "DRAFT",
+      "series": "Ken Monitoring — GIS Forestry Shorts",
+      "drive_file_id": "1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND",
+      "drive_file_name": "KenMonitoring_Script04_พิกัด_CRS_UTM.mp4",
+      "drive_url": "https://drive.google.com/file/d/1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND/view",
+      "source_url": "https://docs.google.com/document/d/1OW8aTdlZ8gHpMc8FbOcmWc0n0RfuuO6p_wlPw9sueCQ/edit",
+      "source_type": "google_drive_caption_plan"
+    },
+    {
+      "date": "2026-10-25T16:00:00",
+      "network": "youtube",
+      "title": "พิกัดถูก แต่จุดผิดที่? เช็ก CRS / Datum / UTM ก่อน 📍",
+      "text": "ตัวเลขพิกัดอย่างเดียวไม่พอ 📍\nหาก CRS, Datum หรือ UTM ไม่ตรงกัน ชั้นข้อมูลอาจเหลื่อมและทำให้วิเคราะห์ผิดพื้นที่ได้\n\n#GIS #CRS #UTM #QGIS #KenMonitoring",
+      "status": "DRAFT",
+      "series": "Ken Monitoring — GIS Forestry Shorts",
+      "drive_file_id": "1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND",
+      "drive_file_name": "KenMonitoring_Script04_พิกัด_CRS_UTM.mp4",
+      "drive_url": "https://drive.google.com/file/d/1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND/view",
+      "source_url": "https://docs.google.com/document/d/1OW8aTdlZ8gHpMc8FbOcmWc0n0RfuuO6p_wlPw9sueCQ/edit",
+      "source_type": "google_drive_caption_plan"
+    },
+    {
+      "date": "2026-10-25T18:00:00",
+      "network": "tiktok",
+      "title": "พิกัดถูก แต่หมุดผิดที่? เช็ก CRS / Datum / UTM ก่อน",
+      "text": "บางครั้งปัญหาไม่ได้อยู่ที่ตัวเลขพิกัด แต่อยู่ที่ “ระบบอ้างอิง” 📍\nถ้า CRS / Datum / UTM ไม่ตรงกัน ต่อให้ตัวเลขดูถูก จุดก็เหลื่อมได้\nคุณเคยโดนปัญหา CRS เล่นงานไหม?\n\n#GIS #CRS #UTM #QGIS #KenMonitoring",
+      "status": "DRAFT",
+      "series": "Ken Monitoring — GIS Forestry Shorts",
+      "drive_file_id": "1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND",
+      "drive_file_name": "KenMonitoring_Script04_พิกัด_CRS_UTM.mp4",
+      "drive_url": "https://drive.google.com/file/d/1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND/view",
+      "source_url": "https://docs.google.com/document/d/1OW8aTdlZ8gHpMc8FbOcmWc0n0RfuuO6p_wlPw9sueCQ/edit",
+      "source_type": "google_drive_caption_plan"
+    }
+  ]
+}
