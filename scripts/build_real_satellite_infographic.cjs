@@ -22,7 +22,23 @@ const cp=require("node:child_process");
   if(qa.gradeB!==9||qa.gradeC!==10)throw Error("Incorrect user-requested randomized grades "+JSON.stringify(qa));
   const count=await page.locator("table tbody tr").count();
   const svgs=await page.locator(".scene-photo svg").count();
-  if(count!==19||svgs!==5)throw Error("Missing real GIS plot rows or polygon boundaries: "+count+" "+svgs);
+  if(count!==19||svgs!==0)throw Error("The poster must have 19 rows and absolutely no modified-image PDD overlays: "+count+" "+svgs);
+  const provenance=await page.evaluate(async()=>{
+    const imgData=await (await fetch("../data/full_preview_part_2.json",{cache:"no-store"})).json();
+    const images=[...document.querySelectorAll(".scene-photo img")];
+    const originals=images.map(img=>{
+      const record=imgData.layers.find(x=>x.plot==="14-VSD"&&x.date===img.dataset.date&&x.mode===img.dataset.mode);
+      const style=getComputedStyle(img);
+      return{date:img.dataset.date,mode:img.dataset.mode,
+        matchesSource:img.src===record?.src,
+        exactDimensions:img.naturalWidth===record?.width&&img.naturalHeight===record?.height,
+        styleUnmodified:style.filter==="none"&&style.objectFit==="contain"&&style.mixBlendMode==="normal",
+        anyOverlay:!!img.parentElement.querySelector("svg,canvas")};
+    });
+    return originals;
+  });
+  if(provenance.length!==5||provenance.some(x=>!x.matchesSource||!x.exactDimensions||!x.styleUnmodified||x.anyOverlay))
+   throw Error("Original raster source identity/visibility check failed: "+JSON.stringify(provenance));
   await page.evaluate(()=>document.fonts.ready);
   const rect=await page.locator("#poster").evaluate(el=>({w:el.clientWidth,h:el.clientHeight,scrollW:el.scrollWidth,scrollH:el.scrollHeight}));
   if(rect.scrollW>rect.w+2||rect.scrollH>rect.h+2)throw Error("Infographic overflow "+JSON.stringify(rect));
@@ -33,7 +49,7 @@ const cp=require("node:child_process");
   const info=cp.execFileSync("pdfinfo",[dest+".pdf"],{encoding:"utf8"});
   const pages=Number(info.match(/^Pages:\s*(\d+)/m)?.[1]);
   if(pages!==1)throw Error("Expected one PDF page, got "+pages);
-  console.log("PASS real satellite 5/5, actual PDD outlines 5/5, plots 19, categories 11/4/2/2, PDF pages 1",
+  console.log("PASS exact original satellite 5/5, no overlaid objects, 19 plots, QA groups 11/4/2/2, PDF pages 1",
    {qa,pngBytes:fs.statSync(dest+".png").size,pdfBytes:fs.statSync(dest+".pdf").size});
  }catch(e){fs.writeFileSync("docs/reports/real_satellite_infographic_build_error.txt",String(e.stack||e));throw e}
  finally{await browser.close()}
