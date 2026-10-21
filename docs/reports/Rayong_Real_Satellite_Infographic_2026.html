@@ -22,7 +22,10 @@ body{margin:0;background:white;font-family:"Noto Sans Thai","Tahoma",sans-serif;
 .scene-label{background:#104d42;color:white;font-size:9px;text-align:center;padding:1mm}.scene-label small{display:block;font-size:8px;color:#bdded0}
 .scene-photo{position:relative;flex:1;min-height:0}
 .scene-photo img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;background:#e1eee7;filter:none;mix-blend-mode:normal}
-.scene-photo svg{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#f0453b;stroke-width:5;pointer-events:none}
+.scene-photo svg.pdd-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.scene-photo svg.pdd-overlay polygon{fill:none;stroke-linejoin:round;stroke-linecap:round}
+.scene-photo svg.pdd-overlay .pdd-halo{stroke:#ffffff;stroke-width:1.5;opacity:.95}
+.scene-photo svg.pdd-overlay .pdd-line{stroke:#f23437;stroke-width:.8}
 .scene-foot{text-align:center;font:800 7px Arial,sans-serif;color:#58705f;padding:1.5mm .5mm}
 .sat-foot{height:9mm;color:#527263;font-size:9px;padding:2mm 3mm}
 .insights{display:grid;grid-template-rows:41mm 1fr;gap:2mm;min-width:0;padding-right:3mm}
@@ -148,10 +151,26 @@ const badge=level=>'<span class="level '+(level==="มาก"?"high":level==="�
 const kpi=(lab,val,unit,clr)=>'<div class="kpi '+clr+'"><small>'+lab+'</small><strong>'+val+'</strong><span>'+unit+'</span></div>';
 const tiles=[["True Color 4-3-2",dateFirst,"true_color"],["False Color 8-4-3",dateFirst,"false_color"],
  ["MNDWI · A",dateFirst,"mndwi"],["MNDWI · B",dateNext,"mndwi"],["MNDWI · C",dateLast,"mndwi"]];
+// Verified PDD boundary is a vector overlay in the report, not a change to the original satellite bytes.
+// Natural-sized SVG viewBox + preserveAspectRatio="xMidYMid meet" aligns with img object-fit: contain.
+function exactPddOverlay(layer){
+ if(!layer?.bounds||!layer?.width||!layer?.height||!polygons.length)return"";
+ const sw=layer.bounds[0],ne=layer.bounds[1];
+ const dx=ne[1]-sw[1],dy=ne[0]-sw[0];
+ if(!(dx>0&&dy>0))return"";
+ const coords=polygons.flatMap(poly=>poly.map(ring=>ring.map(([lon,lat])=>
+  (((lon-sw[1])/dx)*layer.width).toFixed(3)+","+(((ne[0]-lat)/dy)*layer.height).toFixed(3)
+ ).join(" ")));
+ const paths=coords.map(points=>'<polygon points="'+points+'"/>').join("");
+ return '<svg class="pdd-overlay" data-source="boundaries.geojson" data-plot="14-VSD" '+
+  'viewBox="0 0 '+layer.width+' '+layer.height+'" preserveAspectRatio="xMidYMid meet" '+
+  'role="img" aria-label="เส้นขอบเขตแปลง PDD 14-VSD สีแดง">'+
+  '<g class="pdd-halo">'+paths+'</g><g class="pdd-line">'+paths+'</g></svg>';
+}
 const scene=([lab,date,mode])=>{
  const l=getLayer(date,mode);
  return '<div class="scene"><div class="scene-label">'+esc(lab)+'<small>'+esc(thaiDate(date))+'</small></div>'+
- '<div class="scene-photo">'+(l?'<img src="'+l.src+'" alt="'+esc(lab+" "+date)+'" data-unaltered-source="full_preview_part_2.json" data-date="'+date+'" data-mode="'+mode+'" width="'+l.width+'" height="'+l.height+'"/>':
+ '<div class="scene-photo">'+(l?'<img src="'+l.src+'" alt="'+esc(lab+" "+date)+'" data-unaltered-source="full_preview_part_2.json" data-date="'+date+'" data-mode="'+mode+'" width="'+l.width+'" height="'+l.height+'"/>'+exactPddOverlay(l):
  '<div class="no-scene">ไม่มีภาพจริง</div>')+'</div>'+
  '<div class="scene-foot">'+(date===dateLast?"IMAGE ONLY • INDEX PENDING":"SENTINEL-2 • VERIFIED")+'</div></div>';
 };
@@ -167,7 +186,7 @@ const numbers='<div class="numbers">'+kpi("แปลงทั้งหมด","1
  kpi("เปลี่ยนแปลง A → B","+"+n(late.water_rai-early.water_rai),"ไร่","mint")+'</div>';
 const satellite='<section class="sat"><div class="heading"><b>ภาพต้นฉบับจากระบบดาวเทียม · แปลง 14-VSD</b><span>PDD · 39.03 ไร่</span></div>'+
  '<div class="scenes">'+tiles.map(scene).join("")+'</div>'+
- '<div class="sat-foot">ภาพ Preview ต้นฉบับจากระบบ 100% • ไม่ปรับสี ไม่ครอบตัด ไม่ซ้อนขอบเขต PDD • ขยายการแสดงผลโดยไม่แก้ไฟล์ภาพ</div></section>';
+ '<div class="sat-foot">ภาพ Sentinel-2 ต้นฉบับ 100% ไม่แก้พิกเซล • เส้นแดงเป็น Vector ขอบเขต PDD จริงจาก GIS วางทับบนภาพ</div></section>';
 const insights='<div class="insights"><div class="insight"><h2>ข้อค้นพบสำคัญ</h2>'+
  '<p>ผลวิเคราะห์วันที่ 03/08 และ 29/09 ผ่าน QA (VERIFIED)</p>'+
  '<p>07/10 มีภาพ MNDWI จริง แต่ไม่มีผลวิเคราะห์รายวันที่ยืนยันแล้ว</p>'+
