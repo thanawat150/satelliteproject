@@ -5,6 +5,7 @@ on:
     paths:
       - 'docs/reports/Rayong_Real_Satellite_Infographic_2026.html'
       - 'scripts/build_real_satellite_infographic.cjs'
+      - 'scripts/extract_14vsd_unmodified.cjs'
       - '.github/workflows/rayong-real-satellite-infographic.yml'
   workflow_dispatch:
 
@@ -35,7 +36,9 @@ jobs:
             curl -fsS http://127.0.0.1:8765/reports/Rayong_Real_Satellite_Infographic_2026.html -o /dev/null && break
             sleep 1
           done
-      - name: Verify data and render exact pixels
+      - name: Extract native satellite images byte-for-byte
+        run: node scripts/extract_14vsd_unmodified.cjs
+      - name: Verify original source identity and render report
         run: node scripts/build_real_satellite_infographic.cjs
       - name: Publish diagnostic message for investigation
         if: failure()
@@ -61,12 +64,13 @@ jobs:
           path: |
             docs/reports/Rayong_Real_Satellite_Infographic_2026.png
             docs/reports/Rayong_Real_Satellite_Infographic_2026.pdf
+            docs/reports/original_14VSD_satellite/
           if-no-files-found: error
       - name: Publish actual infographic exports
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/reports/Rayong_Real_Satellite_Infographic_2026.png docs/reports/Rayong_Real_Satellite_Infographic_2026.pdf
+          git add docs/reports/Rayong_Real_Satellite_Infographic_2026.png docs/reports/Rayong_Real_Satellite_Infographic_2026.pdf docs/reports/original_14VSD_satellite/
           if ! git diff --cached --quiet; then
             git commit -m "Publish one-page infographic built from actual Sentinel-2 previews"
             git push origin HEAD:main
