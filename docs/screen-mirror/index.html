@@ -29,9 +29,9 @@
     button:disabled{opacity:.5;cursor:wait}
     .status{min-height:44px;border-radius:12px;padding:10px 12px;background:#f3f6fb;color:#52627a;margin-top:15px;font-size:.92rem}
     .status[data-kind="bad"]{color:var(--red);background:#fff0f0}.status[data-kind="good"]{color:#087b5a;background:#e8f7f1}
-    .invite{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:16px}
-    #qr{background:#fff;padding:10px;border:1px solid var(--line);border-radius:14px;min-width:180px;min-height:180px;display:grid;place-items:center}
-    #qr img{max-width:180px}
+    .codebox{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:16px;padding:16px;background:#f8faff;border:1px solid var(--line);border-radius:15px}
+    .code-number{font:800 clamp(28px,7vw,42px)/1.1 "Plus Jakarta Sans",monospace;letter-spacing:.12em;color:var(--navy)}
+    input{font:700 20px "Plus Jakarta Sans",sans-serif;letter-spacing:.12em;width:min(100%,260px);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--navy);background:#f8faff}
     .hidden{display:none!important}
     video{display:block;width:100%;max-height:72vh;min-height:220px;object-fit:contain;background:#111827;border-radius:15px;margin-top:15px}
     .notice{padding:13px 15px;border:1px dashed #d9dfeb;border-radius:14px;color:#69758a;font-size:12px;background:#fbfcfe;margin-top:17px}
@@ -39,7 +39,6 @@
     @media(max-width:650px){main{padding:20px 12px 40px}.hero{display:block}.back{margin-top:14px}section{padding:18px}#qr{margin:auto}.invite{justify-content:center;text-align:center}}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js" defer></script>
 </head>
 <body>
 <main>
@@ -55,40 +54,42 @@
   <section id="hostPanel">
     <div class="step">ขั้นที่ 1 · โน้ตบุ๊ก</div>
     <h2>เริ่มแชร์หน้าจอ</h2>
-    <p>กดปุ่มด้านล่าง แล้วเลือกหน้าจอที่ต้องการแชร์ จากนั้นใช้กล้อง iPhone สแกน QR</p>
+    <p>กดเริ่มแชร์แล้วเลือกหน้าจอ จากนั้นบอกรหัส 8 หลักนี้กับ iPhone</p>
     <button id="startShare">เริ่มแชร์หน้าจอ</button>
     <button id="stopShare" class="secondary hidden">หยุดแชร์</button>
-    <div id="invite" class="invite hidden">
-      <div id="qr" aria-label="QR สำหรับเชื่อมต่อ"></div>
-      <div><strong>สแกน QR นี้ด้วย iPhone</strong><p>ถ้าสแกนไม่ได้ กดคัดลอกลิงก์แล้วส่งให้ iPhone</p><button id="copyLink" class="secondary">คัดลอกลิงก์</button></div>
+    <div id="codeBox" class="codebox hidden">
+      <div><div class="step">รหัสเครื่องของรอบนี้</div><div id="machineCode" class="code-number">--------</div></div>
+      <button id="copyCode" class="secondary">คัดลอกรหัส</button>
     </div>
     <div id="hostStatus" class="status" role="status">สถานะ: ยังไม่ได้เริ่มแชร์</div>
   </section>
 
-  <section id="viewerPanel" class="hidden">
+  <section id="viewerPanel">
     <div class="step">ขั้นที่ 2 · iPhone</div>
     <h2>เชื่อมต่อกับโน้ตบุ๊ก</h2>
-    <p>กดปุ่มด้านล่างเพื่อรับภาพหน้าจอ</p>
+    <p>พิมพ์รหัส 8 หลักที่แสดงบนโน้ตบุ๊ก แล้วกดเชื่อมต่อ</p>
+    <label for="codeInput">รหัสเครื่อง</label><br>
+    <input id="codeInput" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="เช่น 48273106" aria-label="รหัสเครื่อง 8 หลัก">
+    <br>
     <button id="join">เชื่อมต่อและดูหน้าจอ</button>
     <video id="remoteVideo" autoplay playsinline muted controls></video>
     <div id="viewerStatus" class="status" role="status">สถานะ: พร้อมเชื่อมต่อ</div>
   </section>
 
-  <p class="notice">การจับคู่ใช้ PeerJS Cloud เพื่อส่งข้อมูลเชื่อมต่อเท่านั้น; ภาพส่งตรงระหว่างอุปกรณ์ ไม่ผ่าน PeerJS หรือ GitHub เมื่อเครือข่ายบล็อกการเชื่อมต่อตรง การเชื่อมต่ออาจล้มเหลวได้</p>
-  <footer>แชร์ลิงก์/QR เฉพาะกับ iPhone ของคุณ และกดหยุดแชร์เมื่อใช้เสร็จ</footer>
+  <p class="notice">ใช้ PeerJS Cloud เพื่อจับคู่ด้วยรหัสเครื่องเท่านั้น ภาพส่งตรงระหว่างอุปกรณ์ ไม่ผ่าน PeerJS หรือ GitHub รหัสเปลี่ยนทุกครั้งที่เริ่มแชร์; hotspot บางเครือข่ายอาจบล็อกการเชื่อมต่อตรง</p>
+  <footer>รหัสเครื่องใช้ได้ระหว่างที่กำลังแชร์เท่านั้น กดหยุดแชร์เมื่อใช้เสร็จ</footer>
 </main>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
   const qs = new URLSearchParams(location.search);
-  const hostId = qs.get("join");
   const iceServers = [{ urls: "stun:stun.l.google.com:19302" }];
   let peer = null;
   let connection = null;
   let pc = null;
   let screenStream = null;
-  let invitation = "";
   let busy = false;
+  let machineCode = "";
   const status = (id, message, kind = "") => { const el = $(id); el.textContent = message; el.dataset.kind = kind; };
   const waitForIce = target => new Promise(resolve => {
     if (target.iceGatheringState === "complete") return resolve();
@@ -125,15 +126,19 @@
     });
     channel.on("close", () => status("hostStatus", "iPhone ตัดการเชื่อมต่อ"));
   }
+  function newMachineCode() {
+    const values = new Uint32Array(1);
+    crypto.getRandomValues(values);
+    return String(values[0] % 100000000).padStart(8, "0");
+  }
   function startHost() {
     if (!navigator.mediaDevices?.getDisplayMedia) throw new Error("กรุณาเปิดเว็บนี้ด้วย Chrome หรือ Edge บนโน้ตบุ๊ก");
-    peer = new Peer();
+    machineCode = newMachineCode();
+    peer = new Peer(`sm-${machineCode}`);
     peer.on("open", id => {
-      invitation = `${location.origin}${location.pathname}?join=${encodeURIComponent(id)}`;
-      $("invite").classList.remove("hidden");
-      $("qr").replaceChildren();
-      if (window.QRCode) new QRCode($("qr"), { text: invitation, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.M });
-      status("hostStatus", "พร้อมแล้ว สแกน QR ด้วย iPhone", "good");
+      $("machineCode").textContent = machineCode;
+      $("codeBox").classList.remove("hidden");
+      status("hostStatus", "พร้อมแล้ว พิมพ์รหัสนี้บน iPhone", "good");
     });
     peer.on("connection", channel => {
       if (busy) { channel.close(); return; }
@@ -141,14 +146,17 @@
       status("hostStatus", "เจอ iPhone แล้ว กำลังเชื่อมต่อ…");
       sendOffer(channel);
     });
-    peer.on("error", error => status("hostStatus", `เชื่อมต่อไม่สำเร็จ: ${error.type || error.message}`, "bad"));
+    peer.on("error", error => {
+      if (error.type === "unavailable-id") { status("hostStatus", "รหัสซ้ำ กำลังสร้างรหัสใหม่…"); peer.destroy(); startHost(); return; }
+      status("hostStatus", `เชื่อมต่อไม่สำเร็จ: ${error.type || error.message}`, "bad");
+    });
   }
   function stopHost() {
     screenStream?.getTracks().forEach(track => track.stop()); screenStream = null;
     pc?.close(); pc = null;
     connection?.close(); connection = null;
     peer?.destroy(); peer = null; busy = false;
-    $("invite").classList.add("hidden"); $("stopShare").classList.add("hidden"); $("startShare").disabled = false;
+    $("codeBox").classList.add("hidden"); $("stopShare").classList.add("hidden"); $("startShare").disabled = false;
     status("hostStatus", "หยุดแชร์แล้ว");
   }
   $("startShare").addEventListener("click", async () => {
@@ -158,22 +166,23 @@
       screenStream.getVideoTracks()[0].addEventListener("ended", stopHost);
       startHost();
       $("stopShare").classList.remove("hidden");
-      status("hostStatus", "กำลังรอให้ iPhone สแกน QR…");
+      status("hostStatus", "กำลังสร้างรหัสเครื่อง…");
     } catch (error) { status("hostStatus", error.message || "เริ่มแชร์ไม่สำเร็จ", "bad"); button.disabled = false; stopHost(); }
   });
   $("stopShare").addEventListener("click", stopHost);
-  $("copyLink").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(invitation); status("hostStatus", "คัดลอกลิงก์แล้ว ส่งให้ iPhone ได้เลย", "good"); }
-    catch { status("hostStatus", "คัดลอกไม่ได้ ลองใช้กล้อง iPhone สแกน QR", "bad"); }
+  $("copyCode").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(machineCode); status("hostStatus", "คัดลอกรหัสแล้ว", "good"); }
+    catch { status("hostStatus", "คัดลอกรหัสไม่ได้ ลองจดรหัส 8 หลัก", "bad"); }
   });
   async function joinHost() {
-    if (!hostId) return;
+    const entered = $("codeInput").value.replace(/\D/g, "");
+    if (entered.length !== 8) { status("viewerStatus", "กรุณาใส่รหัสให้ครบ 8 หลัก", "bad"); return; }
     $("join").disabled = true;
     try {
       peer = new Peer();
       peer.on("error", error => status("viewerStatus", `เชื่อมต่อไม่สำเร็จ: ${error.type || error.message}`, "bad"));
       peer.on("open", () => {
-        connection = peer.connect(hostId, { reliable: true });
+        connection = peer.connect(`sm-${entered}`, { reliable: true });
         connection.on("open", () => status("viewerStatus", "เจอโน้ตบุ๊กแล้ว กำลังรับภาพ…"));
         connection.on("data", async message => {
           if (message?.type !== "offer") return;
@@ -194,7 +203,6 @@
       });
     } catch (error) { status("viewerStatus", error.message || "เชื่อมต่อไม่สำเร็จ", "bad"); $("join").disabled = false; }
   }
-  if (hostId) { $("hostPanel").classList.add("hidden"); $("viewerPanel").classList.remove("hidden"); }
   $("join").addEventListener("click", joinHost);
 })();
 </script>
