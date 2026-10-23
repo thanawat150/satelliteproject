@@ -688,7 +688,7 @@ function renderTodayContent(){
  if(!rows.length){el.innerHTML='<div class="empty">ไม่มีคอนเทนต์สำหรับวันที่เลือก</div>';return;}
  const groups=new Map();
  for(const x of rows){
-   const key=x.drive_file_id||x.drive_url||x.download_url||x.media||x.title||x.text;
+   const key=x.content_id||x.drive_file_id||x.drive_url||x.download_url||x.media||x.title||x.text;
    if(!groups.has(key))groups.set(key,[]);
    groups.get(key).push(x);
  }
@@ -706,9 +706,9 @@ function renderTodayContent(){
      const state=isContentDraft?'ร่าง · ยังไม่ยืนยันตั้งเวลา':manualPosted(x)?'ฉันโพสต์เองแล้ว':isErr?'Metricool ผิดพลาด':x.status==='PENDING'?'รอเผยแพร่':x.status==='SUCCESS'?'Metricool โพสต์แล้ว':x.status||'ไม่ทราบสถานะ';
      return `<section class="platform-post-card ${isErr?'error':''}">
        <div class="platform-post-head"><span class="chip platform-${escapeHtml(x.network)}">${escapeHtml(name)}</span><span class="chip ${isErr && !manualPosted(x)?'err':'ok'}">${escapeHtml(state)}</span></div>
-       <div class="platform-post-meta">${escapeHtml(x.date.slice(11,16))} น. · ${isContentDraft?'เวลาในแผนจาก Google Drive':hasDraft?'ร่างใหม่สำหรับโพสต์เอง':'ข้อความจาก Metricool'}</div>
+       <div class="platform-post-meta">${escapeHtml(x.date.slice(11,16))} น. · ${isContentDraft?(x.proposed_date?'เวลาเสนอ · ยังไม่ยืนยัน':'เวลาในแผนจาก Google Drive'):hasDraft?'ร่างใหม่สำหรับโพสต์เอง':'ข้อความจาก Metricool'}</div>
        ${isErr?'<div class="warn">Metricool มีข้อผิดพลาด โปรดตรวจสอบและโพสต์เอง</div>':''}
-       ${isContentDraft?'<div class="draft-notice">แคปชั่นจากแผน Google Drive · ยังไม่ยืนยันการตั้งเวลาใน Metricool และยังไม่ได้เผยแพร่</div>':hasDraft?'<div class="draft-notice">ข้อความนี้เป็นร่างใหม่ใน GitHub เท่านั้น ยังไม่ได้เปลี่ยนแคปชั่นใน Metricool</div>':''}
+       ${isContentDraft?`<div class="draft-notice">${x.proposed_date?'ร่างแคปชั่นใหม่ · วันที่และเวลาเสนอ · ยังไม่พบวิดีโอ Final · ไม่ได้ตั้งเวลาโพสต์ใน Metricool':'แคปชั่นจากแผน Google Drive · ยังไม่ยืนยันการตั้งเวลาใน Metricool และยังไม่ได้เผยแพร่'}</div>`:hasDraft?'<div class="draft-notice">ข้อความนี้เป็นร่างใหม่ใน GitHub เท่านั้น ยังไม่ได้เปลี่ยนแคปชั่นใน Metricool</div>':''}
        ${publishingTitleBlock(x)}
        <div class="label">${x.network==='youtube'?'คำอธิบาย YouTube (Description)':'แคปชั่นพร้อมแฮชแท็ก'}</div>
        <div class="copybox"><p>${escapeHtml(copy)}</p><button class="copy" data-copy="${encodeURIComponent(copy)}">คัดลอกสำหรับ ${escapeHtml(name)}</button></div>
@@ -722,8 +722,8 @@ function renderTodayContent(){
      </section>`;
    }).join('');
    return `<article class="scheduled-card">
-     <div class="scheduled-top"><div><h3 class="scheduled-title">${escapeHtml(title)}</h3><div class="scheduled-meta">${escapeHtml(fmtDate(new Date(first.date+'+07:00')))} · ${escapeHtml(first.drive_file_name||'')}</div></div><span class="chip">${items.length} แพลตฟอร์ม</span></div>
-     <p class="group-note">${first.status==='DRAFT'?'รายการจากแผนคอนเทนต์ Google Drive: เป็นร่างแคปชั่นและเวลา ยังไม่ยืนยันการตั้งโพสต์ใน Metricool':'ตรวจสอบไฟล์ที่ใช้โพสต์จริงได้ในแต่ละแพลตฟอร์ม ด้านล่างแยกไฟล์ต้นฉบับ Drive ไว้ต่างหาก (อาจเป็นคนละเวอร์ชัน)'}</p>
+     <div class="scheduled-top"><div><h3 class="scheduled-title">${escapeHtml(title)}</h3><div class="scheduled-meta">${escapeHtml(fmtDate(new Date(first.date+'+07:00')))} · ${escapeHtml(first.drive_file_name||(first.production_status==='OUTLINE_ONLY'?'ยังไม่พบไฟล์คลิป Final':''))}</div></div><span class="chip">${items.length} แพลตฟอร์ม</span></div>
+     <p class="group-note">${first.status==='DRAFT'?(first.proposed_date?'ร่างตาม Roadmap: วันเวลาเป็นข้อเสนอ ยังไม่พบวิดีโอ Final และยังไม่ได้ตั้งเวลา Metricool':'รายการจากแผนคอนเทนต์ Google Drive: เป็นร่างแคปชั่นและเวลา ยังไม่ยืนยันการตั้งโพสต์ใน Metricool'):'ตรวจสอบไฟล์ที่ใช้โพสต์จริงได้ในแต่ละแพลตฟอร์ม ด้านล่างแยกไฟล์ต้นฉบับ Drive ไว้ต่างหาก (อาจเป็นคนละเวอร์ชัน)'}</p>
      <div class="platform-post-grid">${cards}</div>
      <div class="scheduled-actions">${masterClip?`<a class="btn btn-secondary" href="${escapeHtml(masterClip)}" target="_blank" rel="noopener">เปิดไฟล์ต้นฉบับใน Google Drive · ${escapeHtml(first.drive_file_name||"Master")}</a>`:""}</div>
    </article>`;
