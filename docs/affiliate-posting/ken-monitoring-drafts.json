@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-10-21",
+  "updated_at": "2026-10-23",
   "timezone": "Asia/Bangkok",
-  "note": "Ken Monitoring content drafts from Google Drive. Not a Metricool live schedule or proof of publication.",
+  "note": "Ken Monitoring content drafts and proposed posting dates. Not proof of Metricool scheduling or actual publication.",
   "items": [
     {
       "date": "2026-10-25T10:00:00",
@@ -54,6 +54,66 @@
       "drive_url": "https://drive.google.com/file/d/1wCU_zmyO6kdXIViVJ2EACroIXVTsTcND/view",
       "source_url": "https://docs.google.com/document/d/1OW8aTdlZ8gHpMc8FbOcmWc0n0RfuuO6p_wlPw9sueCQ/edit",
       "source_type": "google_drive_caption_plan"
+    },
+    {
+      "date": "2026-10-27T10:00:00",
+      "network": "instagram",
+      "title": "มีแค่พิกัด ก็สร้างแผนที่พื้นที่ป่าได้ไหม?",
+      "text": "มีแค่พิกัด ไม่มีไฟล์ขอบเขต ก็เริ่มทำแผนที่ได้ 📍🌳\n\nแต่การเอาจุดมาต่อเป็น Polygon ไม่ใช่แค่ลากเส้นให้ครบ ต้องตรวจระบบพิกัด ลำดับจุด ความครบถ้วน และเทียบกับภาพฐานก่อน\n\nเพราะต่อจุดผิดแค่บางตำแหน่ง พื้นที่ทั้งแปลงก็อาจคลาดเคลื่อนได้\n\n#KenMonitoring #GIS #QGIS #Coordinates #Mapping #งานป่าไม้",
+      "content_id": "gis-forestry-shorts-05",
+      "status": "DRAFT",
+      "series": "Ken Monitoring — GIS Forestry Shorts",
+      "source_url": "https://docs.google.com/spreadsheets/d/1cxds6-IuDxQAgSloorUG4kixEAlTsC3wjrttDP1mIz0/edit",
+      "source_type": "gis_shorts_roadmap_outline",
+      "production_status": "OUTLINE_ONLY",
+      "proposed_date": true,
+      "media_status": "NOT_READY",
+      "note": "โพสต์นี้เป็นแคปชั่นร่างเสนอสำหรับ 27 ต.ค. ยังไม่พบวิดีโอ Final และไม่ได้ตั้งเวลาใน Metricool"
+    },
+    {
+      "date": "2026-10-27T12:00:00",
+      "network": "facebook",
+      "title": "มีแค่พิกัด จะสร้างแผนที่พื้นที่ป่าได้อย่างไร? | GIS",
+      "text": "ถ้ามีข้อมูลเพียงชุดพิกัด เราสร้างแผนที่ขอบเขตพื้นที่ป่าได้ไหม? 🗺️\n\nพิกัดสามารถนำเข้า GIS เพื่อสร้างจุด จัดลำดับ และเชื่อมเป็นขอบเขต Polygon ได้ แต่ก่อนคำนวณพื้นที่ควรตรวจ CRS/Datum ความครบของพิกัด ลำดับจุด และ Geometry ว่ามีเส้นตัดกันเองหรือไม่\n\nสุดท้ายต้องเปรียบเทียบกับข้อมูลอ้างอิงหรือหลักฐานภาคสนามด้วย เพราะขอบเขตที่วาดออกมาได้ ไม่ได้หมายความว่าจะถูกต้องเสมอไป\n\n#GIS #ภูมิสารสนเทศ #QGIS #Coordinates #Polygon #งานป่าไม้",
+      "content_id": "gis-forestry-shorts-05",
+      "status": "DRAFT",
+      "series": "Ken Monitoring — GIS Forestry Shorts",
+      "source_url": "https://docs.google.com/spreadsheets/d/1cxds6-IuDxQAgSloorUG4kixEAlTsC3wjrttDP1mIz0/edit",
+      "source_type": "gis_shorts_roadmap_outline",
+      "production_status": "OUTLINE_ONLY",
+      "proposed_date": true,
+      "media_status": "NOT_READY",
+      "note": "โพสต์นี้เป็นแคปชั่นร่างเสนอสำหรับ 27 ต.ค. ยังไม่พบวิดีโอ Final และไม่ได้ตั้งเวลาใน Metricool"
+    },
+    {
+      "date": "2026-10-27T16:00:00",
+      "network": "youtube",
+      "title": "มีแค่พิกัด สร้างขอบเขตแปลงป่าใน QGIS ได้ไหม? | GIS Shorts",
+      "text": "มีแค่พิกัด ก็เริ่มสร้างแผนที่ขอบเขตพื้นที่ป่าได้ 📍\n\nคลิปนี้ชวนดูวิธีคิดจากชุดพิกัด → จุด (Points) → ขอบเขต (Polygon) รวมถึงเหตุผลที่ต้องเช็ก CRS ลำดับจุด และ Topology ก่อนนำไปคำนวณพื้นที่หรือใช้ทำงานภาคสนาม\n\nข้อสำคัญ: สร้าง Polygon ได้ ไม่ได้แปลว่าขอบเขตถูกต้องโดยอัตโนมัติ\n\n#GIS #QGIS #Coordinates #Polygon #Mapping #Shorts",
+      "content_id": "gis-forestry-shorts-05",
+      "status": "DRAFT",
+      "series": "Ken Monitoring — GIS Forestry Shorts",
+      "source_url": "https://docs.google.com/spreadsheets/d/1cxds6-IuDxQAgSloorUG4kixEAlTsC3wjrttDP1mIz0/edit",
+      "source_type": "gis_shorts_roadmap_outline",
+      "production_status": "OUTLINE_ONLY",
+      "proposed_date": true,
+      "media_status": "NOT_READY",
+      "note": "โพสต์นี้เป็นแคปชั่นร่างเสนอสำหรับ 27 ต.ค. ยังไม่พบวิดีโอ Final และไม่ได้ตั้งเวลาใน Metricool"
+    },
+    {
+      "date": "2026-10-27T18:00:00",
+      "network": "tiktok",
+      "title": "มีแค่พิกัด สร้างแผนที่ได้จริงไหม?",
+      "text": "มีแค่พิกัด แต่ไม่มีแผนที่… สร้างขอบเขตแปลงป่าได้ไหม? 📍🌳\n\nทำได้ ถ้าข้อมูลครบและเรียงจุดถูกต้อง แต่ถ้าต่อจุดผิดลำดับ Polygon อาจผิดทั้งแปลง!\n\nก่อนใช้จริงต้องเช็ก CRS, Geometry และเทียบภาพฐานด้วย\n\n#GIS #QGIS #พิกัด #แผนที่ #งานป่าไม้ #KenMonitoring",
+      "content_id": "gis-forestry-shorts-05",
+      "status": "DRAFT",
+      "series": "Ken Monitoring — GIS Forestry Shorts",
+      "source_url": "https://docs.google.com/spreadsheets/d/1cxds6-IuDxQAgSloorUG4kixEAlTsC3wjrttDP1mIz0/edit",
+      "source_type": "gis_shorts_roadmap_outline",
+      "production_status": "OUTLINE_ONLY",
+      "proposed_date": true,
+      "media_status": "NOT_READY",
+      "note": "โพสต์นี้เป็นแคปชั่นร่างเสนอสำหรับ 27 ต.ค. ยังไม่พบวิดีโอ Final และไม่ได้ตั้งเวลาใน Metricool"
     }
   ]
 }
