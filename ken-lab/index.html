@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101a2a">
+  <meta name="description" content="Affiliate Lab — discover products, craft scripts, storyboard and video prompts">
+  <title>Affiliate Lab · AI Sales & Creative Studio</title>
+  <link rel="stylesheet" href="./styles.css?v=3">
+  <link rel="stylesheet" href="./geo-tools.css?v=3">
+  <link rel="stylesheet" href="./product-factory.css?v=5">
+  <link rel="stylesheet" href="./production-wizard.css?v=3">
+  <link rel="stylesheet" href="./affiliate-studios.css?v=2">
+  <link rel="stylesheet" href="./shopee-publisher.css?v=1">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <a href="?tab=home" class="brand" data-nav="home" aria-label="Affiliate Lab หน้าแรก"><span class="brand-icon">A<span>+</span></span><span><strong>AFFILIATE LAB</strong><small>AI SALES & CREATIVE STUDIO</small></span></a>
+      <div class="menu-label">WORKSPACE</div>
+      <nav id="nav-main" aria-label="เมนูหลัก">
+        <button data-nav="home" class="nav-item active"><span class="nav-symbol">▦</span>ภาพรวม</button>
+        <button data-nav="discover" class="nav-item"><span class="nav-symbol">⌕</span>Product Discovery <span class="nav-pill">NEW</span></button>
+        <a href="../shopee-publisher/?view=dashboard" class="nav-item"><span class="nav-symbol">▣</span>Shopee Video Publisher <span class="nav-pill">NEW ↗</span></a>
+        <button data-nav="characters" class="nav-item"><span class="nav-symbol">♟</span>Character Studio <span class="nav-pill">NEW</span></button>
+        <button data-nav="scripts" class="nav-item"><span class="nav-symbol">✎</span>Script Studio <span class="nav-pill">NEW</span></button>
+        <button data-nav="storyboards" class="nav-item"><span class="nav-symbol">▤</span>Storyboard Studio <span class="nav-pill">NEW</span></button>
+        <button data-nav="video-prompts" class="nav-item"><span class="nav-symbol">▶</span>Video Prompt Studio <span class="nav-pill">NEW</span></button>
+        <button data-nav="product" class="nav-item"><span class="nav-symbol">◈</span>Product Script Factory <span class="nav-pill">NEW</span></button>
+        <div class="menu-label extra-space">ADVANCED TOOLS</div><button data-nav="production" class="nav-item"><span class="nav-symbol">▣</span>Production Workflow <span class="nav-pill">6 STEPS</span></button>
+        <button data-nav="content" class="nav-item"><span class="nav-symbol">✎</span>Content Factory <span class="nav-pill">LIVE</span></button>
+        <button data-nav="video" class="nav-item"><span class="nav-symbol">▶</span>Auto Video Studio <span class="nav-pill">LIVE</span></button>
+      </nav>
+      <div class="menu-label extra-space" hidden>GEO TOOLS · LEGACY</div>
+      <nav id="nav-geo" aria-label="เครื่องมือภูมิสารสนเทศเดิม" hidden>
+        <button data-nav="maps" class="nav-item"><span class="nav-symbol">◇</span>GIS Auto Map <span class="nav-pill">LIVE</span></button>
+        <button data-nav="field" class="nav-item"><span class="nav-symbol">▤</span>Field Report <span class="nav-pill">LIVE</span></button>
+        <button data-nav="satellite" class="nav-item"><span class="nav-symbol">◎</span>Satellite Intelligence <span class="nav-pill">LIVE</span></button>
+        <button data-nav="learning" class="nav-item"><span class="nav-symbol">✦</span>GeoAI Learning Lab</button>
+      </nav>
+      <div class="sidebar-foot"><div class="online-dot"></div><span>Local-first · ไม่ต้องล็อกอิน</span><small>AFFILIATE LAB · v1.2 Publisher</small></div>
+    </aside>
+    <div class="mobilebar"><button id="menuToggle" class="icon-btn" aria-label="เปิดเมนู">☰</button><strong>AFFILIATE <span>LAB</span></strong><button id="mobileCreate" class="mini-create">+ สร้างคลิป</button></div>
+    <div id="navOverlay" class="nav-overlay" hidden></div>
+    <main class="main">
+      <header class="topbar"><div><div class="breadcrumb">AFFILIATE LAB / <span id="breadcrumbCurrent">OVERVIEW</span></div><h1 id="pageTitle">ศูนย์รวมเครื่องมือของคุณ</h1><p id="pageSubtitle">จากไอเดียสู่ผลงาน — ในที่เดียว</p></div><div class="top-actions"><div id="saveIndicator" class="saved-indicator"><span class="tiny-dot"></span>บันทึกในเครื่อง</div><button class="btn btn-ghost small" id="restoreBtn" title="นำข้อมูลสำรองกลับเข้าเว็บ">↥ กู้คืน</button><button class="btn btn-ghost small" id="backupBtn" title="สำรองข้อมูลเป็นไฟล์ JSON">↧ สำรองข้อมูล</button></div></header>
+      <section id="app" aria-live="polite"></section>
+      <footer class="footer">AFFILIATE LAB · ข้อมูลราคา ยอดขาย และค่าคอมมิชชันต้องอ้างอิงแหล่งจริง · ตรวจสอบข้อความก่อนนำไปโฆษณา</footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="restoreFile" accept=".json,application/json" hidden>
+  <script src="./geo-tools.js?v=3"></script>
+  <script defer src="./product-factory.js?v=6"></script>
+  <script defer src="./affiliate-prompt-pack.js?v=1"></script>
+  <script defer src="./production-wizard.js?v=6"></script>
+  <script defer src="./affiliate-studios.js?v=3"></script>
+  <script defer src="./shopee-publisher.js?v=2"></script>
+  <script type="module" src="./app.js?v=12"></script>
+</body>
+</html>

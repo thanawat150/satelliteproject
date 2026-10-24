@@ -1,0 +1,112 @@
+{
+  "provinces": [
+    "prachuap",
+    "trang"
+  ],
+  "pairs": [
+    {
+      "plot": "66-STC",
+      "region": "prachuap",
+      "date": "2026-10-02",
+      "ten": {
+        "id": "1gq_paHVoZ3hS3ubLllrjkxjNgdNwZXCt",
+        "name": "RYF__66-STC__Sentinel-2__S2_20261002_10m_LATEST_RECT.tif"
+      },
+      "twenty": {
+        "id": "1DRhY8qBRyXUw8RgpF2c6R9fuqGJ1VmHL",
+        "name": "RYF__66-STC__Sentinel-2__S2_20261002_20m_LATEST_RECT.tif"
+      }
+    },
+    {
+      "plot": "66-STC",
+      "region": "prachuap",
+      "date": "2026-10-07",
+      "ten": {
+        "id": "1fHmDbDiD9W6xWgQak3uacgl-lQQvfXaZ",
+        "name": "66-STC_S2_20261007_10m.tif"
+      },
+      "twenty": {
+        "id": "1M3Deue_AdGyBqw97E87-jo6ShwWDVihR",
+        "name": "66-STC_S2_20261007_20m.tif"
+      }
+    },
+    {
+      "plot": "66-STC",
+      "region": "prachuap",
+      "date": "2026-09-29",
+      "ten": {
+        "id": "1LaytBo6_bHDeVMLZV1tPC1e9o5BqkDYa",
+        "name": "RYF__66-STC__Sentinel-2__S2_20260929_10m_LATEST_RECT.tif"
+      },
+      "twenty": {
+        "id": "11Ou2UskWQnGzMDjidV4DXU1Si3UYP536",
+        "name": "RYF__66-STC__Sentinel-2__S2_20260929_20m_LATEST_RECT.tif"
+      }
+    },
+    {
+      "plot": "66-STC",
+      "region": "prachuap",
+      "date": "2026-06-19",
+      "ten": {
+        "id": "1SryWgNVbAfA4_Al2OD2qclQgrXGm06ub",
+        "name": "RYF__66-STC__Sentinel-2__S2_20260619_10m_HIST_CLEAR_RECT_SCL0.tif"
+      },
+      "twenty": {
+        "id": "1Tt94plxqd3ldJ3mztycsjTKREx7kq3iT",
+        "name": "RYF__66-STC__Sentinel-2__S2_20260619_20m_HIST_CLEAR_RECT_SCL0.tif"
+      }
+    },
+    {
+      "plot": "66-VSD",
+      "region": "trang",
+      "date": "2026-10-07",
+      "ten": {
+        "id": "1qmPfDgJFEVCvAEVaibjchmDwZ5c_CI6e",
+        "name": "66-VSD_S2_20261007_10m.tif"
+      },
+      "twenty": {
+        "id": "1KtP2v9cmhuehyPh82zatF-aHD-vkvAQB",
+        "name": "66-VSD_S2_20261007_20m.tif"
+      }
+    },
+    {
+      "plot": "66-VSD",
+      "region": "trang",
+      "date": "2026-10-02",
+      "ten": {
+        "id": "1e4ekfMSOkQeUt0Gjdo8y-MN0VoObpQ-v",
+        "name": "RYF__66-VSD__Sentinel-2__S2_20261002_10m_LATEST_RECT.tif"
+      },
+      "twenty": {
+        "id": "1RFmmb-lGabkbBT9nPTvvyXRWkLEX85iI",
+        "name": "RYF__66-VSD__Sentinel-2__S2_20261002_20m_LATEST_RECT.tif"
+      }
+    },
+    {
+      "plot": "66-VSD",
+      "region": "trang",
+      "date": "2026-09-29",
+      "ten": {
+        "id": "1yb0PsdwmGsFkMHK-FktdzeM8fBkJE2Z5",
+        "name": "RYF__66-VSD__Sentinel-2__S2_20260929_10m_LATEST_RECT.tif"
+      },
+      "twenty": {
+        "id": "1O8LNZXAUfw08zGZmW7agH-mOVcJ7jZG7",
+        "name": "RYF__66-VSD__Sentinel-2__S2_20260929_20m_LATEST_RECT.tif"
+      }
+    },
+    {
+      "plot": "66-VSD",
+      "region": "trang",
+      "date": "2026-07-31",
+      "ten": {
+        "id": "1y_tBRBul49No85pxB0k7h1ygg_UjcRhV",
+        "name": "RYF__66-VSD__Sentinel-2__S2_20260731_10m_HIST_CLEAR_RECT_SCL0.tif"
+      },
+      "twenty": {
+        "id": "12mss6-A_KgpmCv76n8tscaRDnR65ljtN",
+        "name": "RYF__66-VSD__Sentinel-2__S2_20260731_20m_HIST_CLEAR_RECT_SCL0.tif"
+      }
+    }
+  ]
+}

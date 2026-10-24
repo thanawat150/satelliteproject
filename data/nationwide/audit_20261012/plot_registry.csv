@@ -1,0 +1,162 @@
+plot_id,legacy_plot_code,province,source_path,boundary_source,boundary_role,pdd_verified_geometry,pdd_base_member,geometry_conflict,identity_status
+gis:0001,100-VSD,กระบี่,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0002,101(1)-VSD,กระบี่,VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0003,105-VSD,กระบี่,VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0004,35-STC,กระบี่,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0005,38-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0006,39-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0007,40-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0008,41-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0009,42-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0010,43-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0011,44-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0012,45-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0013,46-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0014,47-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0015,48-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0016,49-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0017,50-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0018,51-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0019,52-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0020,53-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0021,54-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0022,55-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0023,56(1)-STC,กระบี่,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0024,57(1)-STC,กระบี่,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0025,58(1)-STC,กระบี่,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0026,59-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0027,60(1)-STC,กระบี่,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0028,62-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0029,63-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0030,64-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0031,65-STC,กระบี่,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0032,96-VSD,กระบี่,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0033,97-VSD,กระบี่,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0034,98-VSD,กระบี่,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0035,99-VSD,กระบี่,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0036,1-STC,จันทบุรี,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0037,10-STC,จันทบุรี,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0038,10-VSD,จันทบุรี,VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0039,11-VSD,จันทบุรี,VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0040,12-VSD,จันทบุรี,VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0041,13(1)-VSD,จันทบุรี,VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0042,13-VSD,จันทบุรี,VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0043,2-STC,จันทบุรี,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0044,4-STC,จันทบุรี,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0045,5-STC,จันทบุรี,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0046,6-STC,จันทบุรี,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0047,7-STC,จันทบุรี,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0048,9-STC,จันทบุรี,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,True,SOURCE_FEATURE_REQUIRES_VERSION_REVIEW
+gis:0049,9-VSD,จันทบุรี,VSD/Shapefile/VSD PDD/VSD 32648/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0050,36-STC,ฉะเชิงเทรา,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0051,18-VSD,ชุมพร,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0052,19(1)-VSD,ชุมพร,VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0053,19-VSD,ชุมพร,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0054,58-VSD,ตรัง,VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0055,64-VSD,ตรัง,VSD/Shapefile/VSD PDD/VSD 32647/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,False,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0056,66-VSD,ตรัง,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0057,1-VSD,ตราด,VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0058,2-VSD,ตราด,VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0059,3-VSD,ตราด,VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0060,4-VSD,ตราด,VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0061,5-VSD,ตราด,VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0062,6-VSD,ตราด,VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0063,7-VSD,ตราด,VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0064,8-VSD,ตราด,VSD/Shapefile/VSD PDD/VSD 32648/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0065,22-VSD,นครศรีธรรมราช,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0066,23-VSD,นครศรีธรรมราช,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0067,66-STC,ประจวบคีรีขันธ์,STC/Shapefile/STC PDD/MOC_3.shp,MOC.zip native PDD shapefile,primary,True,True,True,SOURCE_FEATURE_REQUIRES_VERSION_REVIEW
+gis:0068,28-STC,ปัตตานี,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0069,29-STC,ปัตตานี,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0070,88-VSD,ปัตตานี,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0071,89-VSD,ปัตตานี,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0072,90-VSD,ปัตตานี,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0073,91-VSD,ปัตตานี,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0074,92-VSD,ปัตตานี,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0075,93-VSD,ปัตตานี,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0076,94-VSD,ปัตตานี,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0077,95-VSD,ปัตตานี,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0078,24-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0079,25-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0080,27-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0081,28-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0082,29-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0083,30-STC,พังงา,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0084,30-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0085,31-STC,พังงา,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0086,31-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0087,32-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0088,33-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0089,34-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0090,35-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0091,36-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0092,37-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0093,38-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0094,39-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0095,40-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0096,41-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0097,42-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0098,43-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0099,44-VSD,พังงา,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0100,67-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0101,68-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0102,69-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0103,70-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0104,71-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0105,72-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0106,73-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0107,74-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0108,75-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0109,76-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0110,77-STC,พังงา,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0111,102-VSD,ภูเก็ต,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0112,78-STC,ภูเก็ต,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0113,79-STC,ภูเก็ต,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0114,80-STC,ภูเก็ต,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0115,81-STC,ระนอง,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0116,13-STC,ระยอง,STC/Shapefile/STC PDD/Standard.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0117,14(1)-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0118,14-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0119,14-VSD,ระยอง,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0120,15-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0121,15-VSD,ระยอง,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0122,16-STC,ระยอง,STC/Shapefile/STC PDD/Standard.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0123,16-VSD,ระยอง,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0124,17-STC,ระยอง,STC/Shapefile/STC PDD/Standard.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0125,17-VSD,ระยอง,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0126,18(1)-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0127,18-STC,ระยอง,STC/Shapefile/STC PDD/Standard.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0128,19-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0129,20-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0130,21-STC,ระยอง,STC/Shapefile/STC PDD/Standard.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0131,22(1)-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0132,22-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0133,23(1)-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0134,23-STC,ระยอง,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0135,68-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0136,69-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0137,70-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0138,71(1)-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0139,71-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0140,72-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0141,73-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0142,74-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0143,85-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0144,86-VSD,สตูล,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0145,88-STC,สตูล,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0146,89(1)-STC,สตูล,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0147,89-STC,สตูล,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0148,90(1)-STC,สตูล,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0149,90-STC,สตูล,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0150,87-VSD,สมุทรสงคราม,VSD/Shapefile/VSD PDD/VSD 32647/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0151,91-STC,สมุทรสงคราม,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0152,92-STC,สมุทรสงคราม,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0153,93-STC,สมุทรสงคราม,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0154,94-STC,สมุทรสงคราม,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0155,95-STC,สมุทรสงคราม,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0156,96-STC,สมุทรสงคราม,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0157,97-STC,สมุทรสงคราม,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0158,98-STC,สมุทรสงคราม,STC/Shapefile/STC PDD/MOC_2.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+gis:0159,37-STC,สุราษฎร์ธานี,STC/Shapefile/STC PDD/MOC_1.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
+registry:66(1)-STC,66(1)-STC,,,repository monitoring registry,missing,False,False,True,REGISTERED_NO_CONFIRMED_GEOMETRY_KEEP_SEPARATE_FROM_66-STC
+

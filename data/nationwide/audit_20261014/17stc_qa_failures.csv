@@ -1,0 +1,6 @@
+﻿plot,date,qa_valid_pct,cloud_pct,shadow_pct,unclassified_pct,reason,review_note
+17-STC,2026-01-05,59.9275,0.0000,0.0000,40.0725,SCL classes 2/4/5/6 cover less than 60% of plot pixels,Scene remains visible; per-scene indices are provided with PARTIAL status.
+17-STC,2026-01-15,52.4025,0.0000,0.0000,47.5975,SCL classes 2/4/5/6 cover less than 60% of plot pixels,Scene remains visible; per-scene indices are provided with PARTIAL status.
+17-STC,2026-02-04,50.8613,0.0000,0.0000,49.1387,SCL classes 2/4/5/6 cover less than 60% of plot pixels,Scene remains visible; per-scene indices are provided with PARTIAL status.
+17-STC,2026-03-13,57.5703,0.0000,0.0000,42.4297,SCL classes 2/4/5/6 cover less than 60% of plot pixels,Scene remains visible; per-scene indices are provided with PARTIAL status.
+17-STC,2026-10-02,0.7253,99.2747,0.0000,0.0000,SCL classes 2/4/5/6 cover less than 60% of plot pixels,Scene remains visible; per-scene indices are provided with PARTIAL status.

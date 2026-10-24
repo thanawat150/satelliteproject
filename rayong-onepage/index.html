@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#12372e">
+<meta name="description" content="จังหวัดระยอง: ภาพรวม 19 แปลง และภาพ Sentinel-2 สามช่วงพร้อมขอบเขต PDD">
+<title>Rayong | Satellite Flood & Forest Monitoring</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+:root{--bg:#f4f7f3;--white:#fff;--green:#153e32;--mint:#bdf4cb;--ink:#1e382e;--muted:#71867a;--line:#dfe8e0;--red:#c75b4a;--gold:#ba8541;--ok:#3c986d;--radius:17px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font:14px/1.65 'IBM Plex Sans Thai',Tahoma,sans-serif;color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8adcaf;outline-offset:2px}
+#app{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:100vh}.aside{background:#11382e;color:#e8f5ea;height:100vh;position:sticky;top:0;overflow:auto;display:flex;flex-direction:column}.brand{padding:24px 21px;border-bottom:1px solid #ffffff1e}.brand b{display:block;font:800 17px 'Plus Jakarta Sans',sans-serif;letter-spacing:.02em}.brand small{color:#aacbbb;font-size:11px;line-height:1.65}.sidebody{padding:18px 14px}.sidebody input{width:100%;background:#0b2c24;color:white;padding:12px;border:1px solid #ffffff22;border-radius:11px}.sidenav{display:flex;gap:6px;margin:16px 0}.sidenav button{flex:1;border:0;border-radius:9px;padding:10px 5px;background:#0b2e25;color:#b8d2c3}.sidenav button.on{background:#cef3d6;color:#194b36;font-weight:700}.slbl{font:700 10px 'Plus Jakarta Sans',sans-serif;letter-spacing:.13em;color:#9fc3b1;margin:18px 7px 8px}.pbtn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 11px;border:0;border-radius:10px;background:transparent;color:#d7e8da;text-align:left}.pbtn:hover{background:#ffffff15}.pbtn.on{background:#e9f7eb;color:#193c2e;font-weight:700}.dot{height:9px;width:9px;flex:0 0 9px;border-radius:50%}.pbtn .nm{flex:1;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px}.pbtn small{font-size:10px;opacity:.75}.sidefoot{margin-top:auto;border-top:1px solid #ffffff23;padding:16px 20px;font-size:10px;color:#a5c3b3}
+.content{min-width:0}.topbar{position:sticky;top:0;z-index:20;background:#ffffffeb;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);padding:17px clamp(17px,3vw,40px);display:flex;justify-content:space-between;align-items:center;gap:12px}.topbar .k{font:700 10px 'Plus Jakarta Sans',sans-serif;color:#8aa096;letter-spacing:.15em}.topbar h1{font-size:19px;margin:1px 0 0}.topbar .tools{display:flex;gap:8px}.action{border:1px solid #d4e1d8;padding:10px 12px;background:#fff;color:#25503a;text-decoration:none;border-radius:10px;font-size:12px;font-weight:700;white-space:nowrap}.action.dark{background:#164437;color:#fff}.inner{max-width:1470px;padding:25px clamp(16px,3vw,40px) 48px;margin:auto}
+.view{display:none}.view.active{display:block}.hero{border-radius:22px;background:linear-gradient(115deg,#164536,#1a523d 65%,#316b4b);padding:30px 32px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;right:-100px;top:-160px;width:430px;height:430px;border:1px solid #ffffff25;border-radius:50%;box-shadow:0 0 0 55px #ffffff0a}.hero h2{position:relative;font-size:clamp(23px,2.5vw,36px);line-height:1.35;margin:12px 0 8px}.hero p{position:relative;color:#c7e2d1;font-size:12px;margin:0}.hero .count{position:relative;text-align:right;white-space:nowrap;font:800 60px 'Plus Jakarta Sans',sans-serif;color:#c6f3cd}.hero .count span{display:block;font:600 11px 'IBM Plex Sans Thai',sans-serif;color:#d0ead7}
+.eyebrow{font:800 10px 'Plus Jakarta Sans',sans-serif;letter-spacing:.17em;color:#8bae9c}.hero .eyebrow{color:#b8d7c5}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:15px}.tile{background:#fff;border:1px solid var(--line);border-radius:15px;padding:19px 20px;box-shadow:0 7px 23px #234d2f08}.tile label{color:var(--muted);font-size:11px}.tile strong{font:800 29px 'Plus Jakarta Sans',sans-serif;display:block;margin-top:8px}.tile small{font-size:11px;color:#84938b}
+.section{margin-top:25px}.sectionhead{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:13px;flex-wrap:wrap}.sectionhead h3{margin:0;font-size:20px;line-height:1.3}.sectionhead p{margin:5px 0 0;color:var(--muted);font-size:11px}.card{background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:0 6px 24px #1b4d2b09}.ovgrid{display:grid;grid-template-columns:1.12fr .88fr;gap:15px}.mapbox{padding:18px}.mapcanvas{background:linear-gradient(#f8fbf9,#eff6f0);aspect-ratio:1/1;height:auto;min-height:310px;max-height:540px;border-radius:13px;overflow:hidden;position:relative}.mapcanvas #googleOverview{position:absolute;inset:0;display:none}.hybridtools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.googleMapFrame{width:100%;height:100%}.hybridCallout{padding:17px;text-align:center;font-size:12px;line-height:1.8;color:#61796b}.hybridCallout strong{display:block;color:#1e563b;font-size:14px;margin-bottom:6px}.hybridCallout .action{display:inline-block;margin-top:9px}.mapcanvas svg{width:100%;height:100%}.legend{margin-top:12px;color:#6b8373;font-size:11px;display:flex;gap:14px;flex-wrap:wrap}.legend span{display:flex;align-items:center;gap:5px}.ranking{padding:18px;overflow:auto}.rowrank{display:grid;grid-template-columns:30px minmax(70px,1fr) 100px;gap:9px;padding:11px 0;border-bottom:1px solid #edf2ed;align-items:center}.rowrank:last-child{border-bottom:0}.rank{font:700 11px 'Plus Jakarta Sans',sans-serif;color:#91a398}.rank .wide{height:5px;margin-top:5px;border-radius:4px;background:#e7efea;overflow:hidden}.rank .wide i{display:block;height:100%;background:#c67c65}.rowrank b{font-size:13px}.rowrank button{border:0;color:#20674c;background:none;font-weight:700;text-align:left;padding:0}.muted{color:var(--muted)}.tablebox{overflow:auto}.tablebox table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{padding:12px 15px;border-bottom:1px solid #ebf0eb;text-align:left}th{font-size:10px;letter-spacing:.07em;color:#75887d;background:#f9fbf9}td{font-size:12px}tr:last-child td{border-bottom:0}td button{color:#1e644a;background:transparent;border:0;padding:0;font-weight:700}
+.examples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.example{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden;min-width:0}.example .exhead{padding:12px 14px;display:flex;justify-content:space-between;gap:9px;font-size:12px}.example .exhead small{color:#66806e}.example .pic{aspect-ratio:1/1;height:auto;display:grid;place-items:center;background:#e9f1ea;overflow:hidden}.example .pic img{max-width:100%;max-height:100%;object-fit:contain}.statuspill{padding:4px 9px;border-radius:30px;font-size:10px;font-weight:700;background:#f0f5f0}
+.detailhead{display:flex;justify-content:space-between;gap:20px;align-items:end;flex-wrap:wrap}.detailhead h2{font-size:32px;line-height:1.2;margin:7px 0 4px}.detailhead p{font-size:12px;color:var(--muted);margin:0}.modebar{display:flex;gap:5px;background:#fff;border:1px solid #dfe9e2;padding:5px;border-radius:11px;flex-wrap:wrap}.modebar button{border:0;border-radius:8px;padding:8px 11px;background:transparent;color:#637a6e;font-size:11px}.modebar button.on{background:#dff3e5;color:#165b3e;font-weight:700}
+.facts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;margin-top:16px}.fact{background:#fff;border:1px solid #e0e8e1;border-radius:12px;padding:13px 15px;min-width:0}.fact label{display:block;color:var(--muted);font-size:11px}.fact strong{display:block;margin-top:6px;font-size:15px;word-break:break-word}
+.periods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.period{overflow:hidden}.period .ph{padding:15px;display:flex;justify-content:space-between;align-items:start;gap:10px}.ph b{display:block;font-size:14px}.ph small{color:#7e9484}.qa{display:inline-block;padding:3px 8px;border-radius:999px;background:#eaf6ed;color:#33744e;font-size:10px;font-weight:700;margin-top:6px}.qa.bad{background:#fff2e6;color:#956a32}.qa.none{background:#edf0ec;color:#6a7b70}.stage{background:#eaf0ec;aspect-ratio:1/1;height:auto;display:flex;align-items:center;justify-content:center;padding:10px;overflow:hidden;position:relative}.stage.hybrid{padding:0}.viewport{position:relative;max-width:100%;max-height:100%;display:inline-flex;align-items:center;justify-content:center;line-height:0}.viewport img{width:100%;height:100%;display:block}.viewport svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.viewport path{fill:none;stroke:#f83e34;stroke-width:2.4;vector-effect:non-scaling-stroke;filter:drop-shadow(0 1px 1px #fff)}.empty{padding:12px;color:#74877a;font-size:12px;text-align:center}.period .pf{border-top:1px solid #edf0ed;padding:11px 15px;color:#697e71;font-size:11px;min-height:52px}.subline{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.subline label{font-size:11px;color:#6d8274;display:flex;align-items:center;gap:7px}.detailsplit{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.dataCard{padding:20px}.indexes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.index{text-align:left;padding:11px;border:1px solid #e4ebe5;background:#fafcfa;border-radius:11px}.index span{font:800 12px 'Plus Jakarta Sans',sans-serif}.index strong{display:block;margin-top:7px;font-size:16px}.index small{display:block;color:#7b9082;font-size:10px}.notice{background:#f7faf7;border-left:3px solid #78ae89;padding:12px 14px;border-radius:6px;color:#526d5b;font-size:12px;margin-top:16px}.history{max-height:270px;overflow:auto}.history table{width:100%;border-collapse:collapse;font-size:11px}.history th,.history td{padding:9px;border-bottom:1px solid #eaf0ea;font-size:11px}.source{font-size:11px;color:#76877b;line-height:1.9;margin:20px 0}.source a{color:#2a6e53}#banner{display:none;background:#fff0df;padding:10px 22px;color:#825a22;font-size:12px;border-bottom:1px solid #e9cba5}
+#mobileMenu{display:none}
+@media(max-width:1280px){.periods{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:1180px){.ovgrid,.detailsplit{grid-template-columns:1fr}.metrics,.facts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:800px){#app{grid-template-columns:1fr}#mobileMenu{display:inline-block}.aside{position:fixed;left:0;top:0;width:min(310px,85vw);z-index:40;transform:translateX(-100%);transition:transform .2s}.aside.open{transform:none}.inner{padding:18px 13px 36px}.topbar{padding:12px 13px}.topbar h1{font-size:16px}.topbar .tools a{display:none}.hero{padding:21px;gap:6px}.hero .count{font-size:43px}.metrics,.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.periods{grid-template-columns:1fr}.examples{grid-template-columns:1fr}.indexes{grid-template-columns:repeat(3,minmax(0,1fr))}.stage{height:auto;aspect-ratio:1/1}}
+@media print{.aside,.topbar,.modebar,.action{display:none!important}#app{display:block}.content{width:100%}.inner{max-width:none;padding:0}.view:not(.active){display:none}.card,.tile{box-shadow:none}.stage{height:220px}body{background:white}}
+</style>
+</head>
+<body>
+<div id="app">
+<aside id="aside" class="aside"><div class="brand"><b>RAYONG <span style="color:#c5f2d1">MONITOR</span></b><small>Satellite & Flood Impact Intelligence<br>Sentinel-2 L2A / PDD verified boundary</small></div>
+<div class="sidebody"><input id="filter" aria-label="ค้นหาแปลง" placeholder="ค้นหาแปลง เช่น 16-STC"><div class="sidenav"><button id="navOverview" class="on">ภาพรวมจังหวัด</button><button id="navDetail">รายแปลง</button></div><div class="slbl">ALL PLOTS · RAYONG</div><div id="plotList"><p style="padding:15px;color:#b1c8b8">กำลังโหลดรายชื่อ...</p></div></div>
+<div class="sidefoot">ข้อมูลผลวิเคราะห์: 29 กันยายน 2569<br>ภาพล่าสุดในชุดเว็บไซต์: ตรวจจากวันภาพจริง<br>เว็บย่อยนี้แยกจากระบบรายงานหลัก</div></aside>
+<div class="content"><div class="topbar"><div><span class="k">RAYONG • ENVIRONMENTAL MONITORING</span><h1 id="pageTitle">ภาพรวมจังหวัดระยอง</h1></div><div class="tools"><button id="mobileMenu" class="action">☰</button><a class="action" href="../?tab=report" target="_blank" rel="noopener">ระบบรายงานเดิม ↗</a><button class="action dark" id="print">พิมพ์ / PDF</button></div></div><div id="banner" role="status"></div>
+<div class="inner">
+<section id="overview" class="view active">
+<div class="hero"><div><span class="eyebrow">PROVINCIAL OVERVIEW · 2026</span><h2>การติดตามผลกระทบน้ำท่วม<br>ในแปลงป่าจังหวัดระยอง</h2><p>สรุปผลจากขอบเขต PDD จริงและการวิเคราะห์ Sentinel-2 L2A • ภาพและค่าตัวเลขแต่ละวันแยก QA ชัดเจน</p></div><div class="count" id="total">—<span>แปลงในระบบ</span></div></div>
+<div class="metrics" id="metrics"></div>
+<div class="section ovgrid">
+<div class="card mapbox"><div class="sectionhead"><div><h3>แผนผังขอบเขต PDD ทั้งจังหวัด</h3><p>ตำแหน่งตามพิกัดจริง • คลิกแปลงเพื่อดูภาพดาวเทียม</p></div></div><div class="hybridtools"><button class="action dark" id="googleActivateOverview">แสดง Google Hybrid + PDD</button><a class="action" id="overviewGoogleLink" target="_blank" rel="noopener">เปิด Google Satellite ↗</a></div><div class="mapcanvas"><svg id="map" viewBox="0 0 650 330"></svg><div id="googleOverview"></div></div><p class="muted" style="font-size:11px;margin:9px 0">Google Hybrid เป็นแผนที่อ้างอิง ไม่ใช่ภาพย้อนหลังรายวัน</p><div class="legend"><span><i class="dot" style="background:#c75b4a"></i>HIGH</span><span><i class="dot" style="background:#ba8541"></i>WATCH</span><span><i class="dot" style="background:#3c986d"></i>NORMAL</span><span><i class="dot" style="background:#95a19a"></i>NO DATA</span></div></div>
+<div class="card ranking"><div class="sectionhead"><div><h3>แปลงที่มีพื้นที่น้ำมาก</h3><p>เรียงตามพื้นที่น้ำในผลประเมิน 29 ก.ย. 2569</p></div></div><div id="ranking"></div></div>
+</div>
+<div class="section"><div class="sectionhead"><div><h3>ภาพ Sentinel-2 จริง · 3 ช่วงเวลา</h3><p>ภาพตัวอย่างแปลง 13-STC • กดภาพเพื่อเปิดหน้ารายแปลงและเส้น PDD</p></div><button class="action" id="openExample">เปิดรายละเอียด ↗</button></div><div class="examples" id="examples"></div></div>
+<div class="section"><div class="sectionhead"><div><h3>ข้อมูลทั้งหมด 19 แปลง</h3><p>เลือกแปลงเพื่อดูภาพ, PDD, QA, ดัชนีและประวัติ</p></div></div><div class="card tablebox"><table><thead><tr><th>แปลง</th><th>สถานะ</th><th>พื้นที่ (ไร่)</th><th>น้ำก่อนเหตุการณ์</th><th>น้ำ 29 ก.ย.</th><th>NDVI 29 ก.ย.</th><th>รายงาน</th></tr></thead><tbody id="overviewRows"></tbody></table></div></div>
+</section>
+<section id="detail" class="view">
+<div class="detailhead"><div><span class="eyebrow">PLOT ASSESSMENT • SENTINEL-2 L2A</span><h2 id="plotName">—</h2><p id="plotDesc">ภาพประกอบจริงพร้อมขอบเขต PDD</p></div><div class="modebar" id="modes"><button class="on" data-mode="true_color">สีจริง</button><button data-mode="false_color">สีเท็จ</button><button data-mode="ndvi">NDVI</button><button data-mode="mndwi">MNDWI</button><button data-mode="bsi">BSI</button></div></div>
+<div class="facts" id="facts"></div>
+<div class="section subline"><div><h3 style="margin:0;font-size:20px">ภาพสี่เหลี่ยม 1:1 · Sentinel-2 สามช่วง + Google Hybrid</h3><p style="margin:3px 0 0;color:var(--muted);font-size:11px">ภาพจริงจากฐานข้อมูลโครงการ เส้นสีแดงคือขอบเขต PDD</p></div><label><input type="checkbox" id="togglePDD" checked> แสดงขอบเขต PDD</label></div>
+<div class="periods section" id="periods"></div>
+<div class="section detailsplit">
+<div class="card dataCard"><div class="sectionhead"><div><h3>ดัชนีและผลวิเคราะห์</h3><p>ค่าจากรายงานที่ผ่าน QA เท่านั้น</p></div></div><div class="indexes" id="indices"></div><div class="notice" id="insight"></div><p style="margin-top:15px"><a id="pdfReport" class="action" target="_blank" rel="noopener">เปิดรายงานต้นฉบับ ↗</a></p></div>
+<div class="card dataCard"><div class="sectionhead"><div><h3>ประวัติ & ความถูกต้องของข้อมูล</h3><p>วันที่ภาพอาจใหม่กว่าวันที่ผลวิเคราะห์ผ่าน QA</p></div></div><div class="history"><table><thead><tr><th>วันที่</th><th>QA</th><th>valid</th><th>น้ำ (ไร่)</th><th>NDVI</th></tr></thead><tbody id="historyRows"></tbody></table></div></div>
+</div>
+</section>
+<p class="source">แหล่งข้อมูล: <a href="../data/plots.json" target="_blank">plots.json</a> · <a href="../data/analysis_history.json" target="_blank">analysis_history.json</a> · <a href="../data/boundaries.geojson" target="_blank">PDD boundaries.geojson</a> · full_preview_part_1–10.json / Sentinel-2 L2A.<br>ภาพล่าสุดหมายถึง <strong>ภาพล่าสุดที่จัดเก็บในชุดข้อมูลเว็บไซต์</strong> ไม่ใช่ภาพดาวเทียมวันนี้ และภาพที่ QA ไม่ผ่านจะไม่ถูกนำมาสร้างตัวเลขวิเคราะห์ใหม่</p>
+</div></div></div>
+<script>
+'use strict';
+const ROOT='../data/'; let googleApiPromise=null,googleApiKey=''; const S={plots:[],history:{},boundaries:null,parts:new Map(),selected:'13-STC',mode:'true_color',view:'overview',showPDD:true,renderId:0};
+const $=x=>document.querySelector(x);
+const fnum=(n,k=2)=>n==null||!Number.isFinite(Number(n))?'—':Number(n).toLocaleString('th-TH',{minimumFractionDigits:k,maximumFractionDigits:k});
+const short=d=>d?d.split('-').reverse().join('/'):'—';
+const clean=s=>String(s??'');
+const color=s=>({HIGH:'#c75b4a',WATCH:'#ba8541',NORMAL:'#3c986d',NO_DATA:'#95a19a'})[s]||'#95a19a';
+function showError(t){const b=$('#banner');b.style.display='block';b.textContent=t}
+async function json(path){const r=await fetch(ROOT+path,{cache:'no-cache'});if(!r.ok)throw Error(path+': HTTP '+r.status);return await r.json()}
+function plot(id){return S.plots.find(x=>x.plot===id)}
+function hist(id){return S.history?.plots?.[id]||[]}
+function qa(id,date){return hist(id).find(x=>x.date===date)||null}
+function verified(x){return !!x&&x.analysis_status==='VERIFIED'&&Number(x.valid_pct)>=70}
+const escapeHtml=x=>clean(x).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+function dates(p){const first=(p.baseline||'').replace(/(\d{4})(\d{2})(\d{2})/,'$1-$2-$3'); const current=(p.current||'').replace(/(\d{4})(\d{2})(\d{2})/,'$1-$2-$3');return {baseline:first,flood:current||'2026-09-29'}}
+function latestDate(data,id){const dates=(data.layers||[]).filter(x=>x.plot===id&&x.mode==='true_color').map(x=>x.date).sort();return dates.at(-1)||null}
+function statusChip(status){return '<span style="color:'+color(status)+';font-weight:700">'+escapeHtml(status)+'</span>'}
+function card(label,value,more){return '<div class="tile"><label>'+label+'</label><strong>'+value+'</strong><small>'+more+'</small></div>'}
+function drawOverview(){
+const n=S.plots.length,c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};
+let totalArea=0,water=0,valid=0;for(const p of S.plots){c[p.status]=(c[p.status]||0)+1;totalArea+=Number(p.area_rai)||0;if(p.water_current_rai!=null&&verified(qa(p.plot,dates(p).flood))){water+=Number(p.water_current_rai);valid++}}
+$('#total').innerHTML=n+'<span>แปลงในระบบ</span>';
+$('#metrics').innerHTML=card('พื้นที่ขอบเขตแปลงรวม',fnum(totalArea),'ไร่ · รวมขอบเขตตามฐานข้อมูล')+card('HIGH / WATCH',c.HIGH+' / '+c.WATCH,'แปลง')+card('NORMAL / NO DATA',c.NORMAL+' / '+c.NO_DATA,'แปลง')+card('พื้นที่น้ำวันที่ประเมิน',fnum(water),'ไร่ · '+valid+' แปลงที่มีผล VERIFIED');
+const rows=[...S.plots].filter(p=>p.water_current_rai!=null&&verified(qa(p.plot,dates(p).flood))).sort((a,b)=>b.water_current_rai-a.water_current_rai).slice(0,8);
+const max=rows[0]?.water_current_rai||1;
+$('#ranking').innerHTML=rows.map((p,i)=>'<div class="rowrank"><span class="rank">'+String(i+1).padStart(2,'0')+'</span><div><button data-plot="'+escapeHtml(p.plot)+'">'+escapeHtml(p.plot)+'</button><div class="wide"><i style="width:'+(100*p.water_current_rai/max)+'%"></i></div></div><b style="text-align:right">'+fnum(p.water_current_rai)+' ไร่</b></div>').join('');
+$('#overviewRows').innerHTML=S.plots.map(p=>{const v=verified(qa(p.plot,dates(p).flood));return '<tr><td><button data-plot="'+escapeHtml(p.plot)+'">'+escapeHtml(p.plot)+'</button></td><td>'+statusChip(p.status)+'</td><td>'+fnum(p.area_rai)+'</td><td>'+fnum(p.water_before_rai)+'</td><td>'+(v?fnum(p.water_current_rai):'—')+'</td><td>'+(v?fnum(p.ndvi_current,3):'—')+'</td><td><button data-plot="'+escapeHtml(p.plot)+'">เปิดภาพ ↗</button></td></tr>'}).join('');
+document.querySelectorAll('[data-plot]').forEach(b=>b.addEventListener('click',()=>openPlot(b.dataset.plot)));
+drawMap();
+}
+function rings(g){if(!g)return[]; if(g.type==='Polygon')return g.coordinates; if(g.type==='MultiPolygon')return g.coordinates.flatMap(p=>p);return []}
+function allPoints(){const arr=[];for(const feat of S.boundaries?.features||[])for(const r of rings(feat.geometry))arr.push(...r);return arr}
+function drawMap(){
+const svg=$('#map');const pts=allPoints();const xs=(pts.length?pts.map(p=>p[0]):S.plots.map(p=>p.lon)),ys=(pts.length?pts.map(p=>p[1]):S.plots.map(p=>p.lat));
+const minX=Math.min(...xs)-.006,maxX=Math.max(...xs)+.006,minY=Math.min(...ys)-.006,maxY=Math.max(...ys)+.006;
+const px=x=>35+(x-minX)/(maxX-minX)*580,py=y=>295-(y-minY)/(maxY-minY)*260;
+let h='';for(let i=0;i<=5;i++){h+='<line x1="'+(35+i*116)+'" y1="20" x2="'+(35+i*116)+'" y2="302" stroke="#dce9de"/>'}for(let i=0;i<=4;i++){h+='<line x1="25" y1="'+(32+i*64)+'" x2="620" y2="'+(32+i*64)+'" stroke="#dce9de"/>'}
+for(const feat of S.boundaries?.features||[]){let d='';for(const r of rings(feat.geometry)){r.forEach((point,i)=>d+=(i===0?'M':'L')+px(point[0]).toFixed(2)+' '+py(point[1]).toFixed(2)+' ');d+='Z '};const p=plot(feat.properties?.plot);h+='<path d="'+d+'" fill="'+(p?.status==='HIGH'?'#dd8c7745':'#7ea98b38')+'" stroke="'+color(p?.status)+'" stroke-width="1.5"/>'}
+for(const p of S.plots){const on=p.plot===S.selected;h+='<g class="plot-marker" data-p="'+escapeHtml(p.plot)+'" style="cursor:pointer"><circle cx="'+px(p.lon)+'" cy="'+py(p.lat)+'" r="'+(on?7:4.5)+'" fill="'+color(p.status)+'" stroke="white" stroke-width="2"/><title>'+escapeHtml(p.plot)+'</title></g>';if(on)h+='<text x="'+(px(p.lon)+9)+'" y="'+(py(p.lat)+5)+'" font-size="12" font-weight="700" fill="#174936">'+escapeHtml(p.plot)+'</text>'}
+h+='<text x="32" y="323" font-size="10" fill="#6e887b">อ้างอิงพิกัด WGS84 · ไม่ใช่ภาพถ่ายพื้นหลัง</text>';svg.innerHTML=h;
+svg.querySelectorAll('.plot-marker').forEach(b=>b.addEventListener('click',()=>openPlot(b.dataset.p)));
+}
+function side(){
+const search=$('#filter').value.trim().toLowerCase();
+$('#plotList').innerHTML=S.plots.filter(p=>p.plot.toLowerCase().includes(search)).map(p=>'<button class="pbtn '+(p.plot===S.selected?'on':'')+'" data-p="'+escapeHtml(p.plot)+'"><i class="dot" style="background:'+color(p.status)+'"></i><span class="nm">'+escapeHtml(p.plot)+'</span><small>'+fnum(p.area_rai)+' ไร่</small></button>').join('');
+$('#plotList').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>openPlot(b.dataset.p)));
+}
+function setView(v){
+S.view=v;
+$('#overview').classList.toggle('active',v==='overview');
+$('#detail').classList.toggle('active',v==='detail');
+$('#navOverview').classList.toggle('on',v==='overview');
+$('#navDetail').classList.toggle('on',v==='detail');
+$('#pageTitle').textContent=v==='overview'?'ภาพรวมจังหวัดระยอง':'ประเมินแปลง '+S.selected;
+$('#aside').classList.remove('open');
+window.scrollTo({top:0,behavior:'instant'});
+}
+function openPlot(id){if(!plot(id))return;S.selected=id;side();setView('detail');renderPlot();const url=new URL(location.href);url.searchParams.set('plot',id);history.replaceState(null,'',url)}
+function fact(k,v){return '<div class="fact"><label>'+k+'</label><strong>'+v+'</strong></div>'}
+function indexTile(k,a,b){return '<div class="index"><span>'+k+'</span><strong>'+fnum(b,3)+'</strong><small>ก่อน: '+fnum(a,3)+'</small></div>'}
+function reportIndex(p,prev,now){
+const v=verified(now),v0=verified(prev);
+return {ndvi:[v0?p.ndvi_before:null,v?p.ndvi_current:null],ndre:[v0?p.ndre_before:null,v?p.ndre_current:null],ndmi:[v0?p.ndmi_before:null,v?p.ndmi_current:null],mndwi:[v0?p.mndwi_before:null,v?p.mndwi_current:null],bsi:[v0?prev?.bsi:null,v?now?.bsi:null]};
+}
+function renderPlot(){
+const p=plot(S.selected),dt=dates(p),prev=qa(p.plot,dt.baseline),curr=qa(p.plot,dt.flood),v=verified(curr);
+$('#plotName').textContent=p.plot;
+$('#plotDesc').textContent='จังหวัดระยอง · '+fnum(p.area_rai)+' ไร่ · '+p.status+' · พิกัด '+Number(p.lat).toFixed(5)+', '+Number(p.lon).toFixed(5);
+$('#facts').innerHTML=fact('พื้นที่แปลง',fnum(p.area_rai)+' ไร่')+fact('สถานะ',statusChip(p.status))+fact('ก่อนเหตุการณ์',short(dt.baseline))+fact('วันที่ประเมิน',short(dt.flood))+fact('น้ำช่วงประเมิน',v?fnum(p.water_current_rai)+' ไร่':'รอข้อมูล QA');
+const idx=reportIndex(p,prev,curr);
+$('#indices').innerHTML=Object.entries(idx).map(x=>indexTile(x[0].toUpperCase(),...x[1])).join('');
+const change=v&&verified(prev)&&p.water_before_rai!=null?(Number(p.water_current_rai)-Number(p.water_before_rai)):null;
+$('#insight').textContent=change==null?'ข้อมูลผลวิเคราะห์ในช่วงนี้ยังไม่ครบหรือไม่ผ่าน QA; แสดงภาพได้ แต่ไม่สรุปปริมาณน้ำจากภาพเอง':
+'พื้นที่น้ำจาก '+fnum(p.water_before_rai)+' ไร่ เป็น '+fnum(p.water_current_rai)+' ไร่ ('+(change>=0?'เพิ่มขึ้น ':'ลดลง ')+fnum(Math.abs(change))+' ไร่) เปรียบเทียบคนละวันที่มีผล VERIFIED; ยังไม่ใช่ผลยืนยันสภาพปัจจุบัน';
+const a=$('#pdfReport');if(p.report_url){a.href=p.report_url;a.style.display='inline-block'}else{a.removeAttribute('href');a.style.display='none'}
+const historyRows=hist(p.plot).slice().sort((a,b)=>b.date.localeCompare(a.date));
+$('#historyRows').innerHTML=historyRows.map(x=>'<tr><td>'+short(x.date)+'</td><td>'+escapeHtml(x.analysis_status)+'</td><td>'+fnum(x.valid_pct,1)+'%</td><td>'+fnum(verified(x)?x.water_rai:null)+'</td><td>'+fnum(verified(x)?x.ndvi:null,3)+'</td></tr>').join('');
+$('#periods').innerHTML=['baseline','flood','latest'].map((t,i)=>'<article class="card period"><div class="ph"><div><b>'+['01 · ก่อนเหตุการณ์','02 · ช่วงประเมินน้ำท่วม','03 · ภาพล่าสุดในระบบ'][i]+'</b><small id="date-'+t+'">กำลังตรวจวันที่</small></div><div><span id="qa-'+t+'" class="qa none">รอข้อมูล</span></div></div><div class="stage" id="img-'+t+'"><span class="empty">กำลังโหลด Sentinel-2...</span></div><div class="pf" id="note-'+t+'">พรีวิว Sentinel-2 ของโครงการ</div></article>').join('');
+
+$('#periods').innerHTML += '<article class="card period"><div class="ph"><div><b>04 · Google Satellite Hybrid</b><small>แผนที่อ้างอิง ไม่ใช่ภาพย้อนหลัง</small></div><div><span class="qa bad">BASEMAP</span></div></div><div class="stage hybrid" id="hybridStage"><div class="hybridCallout"><strong>Google Satellite Hybrid + PDD</strong>แผนที่ดาวเทียมพร้อมชื่อถนนและเส้น PDD<br><button class="action dark" id="hybridConnect">เชื่อม Google Hybrid</button><br><a class="action" target="_blank" rel="noopener" id="hybridExternal">เปิด Google Satellite ↗</a></div></div><div class="pf">Google Hybrid ไม่ใช่ภาพ Sentinel-2 วันที่ประเมิน</div></article>';
+$('#hybridExternal').href=googleLink(p.lat,p.lon,18);$('#hybridConnect').onclick=connectGoogle;
+const key=++S.renderId;loadPeriods(p,key);if(googleApiPromise)googleApiPromise.then(drawHybridDetail).catch(()=>{});
+}
+async function part(n){if(!S.parts.has(n)){const promise=json('full_preview_part_'+n+'.json').catch(e=>{S.parts.delete(n);throw e});S.parts.set(n,promise)}return S.parts.get(n)}
+function sourcePart(id){const ids=S.plots.map(p=>p.plot);return Math.floor(ids.indexOf(id)/2)+1}
+function getLayer(db,id,date,mode){const L=(db.layers||[]).filter(x=>x.plot===id&&x.date===date&&x.mode===mode&&x.src);
+L.sort((a,b)=>Number(String(a.source_suffix).includes('NO_CLOUD_FILTER'))-Number(String(b.source_suffix).includes('NO_CLOUD_FILTER')));
+return L[0]||null}
+function qaPill(t,x){const el=$('#qa-'+t);if(!el)return;el.textContent=x?.analysis_status?(x.analysis_status+' · '+fnum(x.valid_pct,0)+'% valid'):'ยังไม่ยืนยัน QA';el.className='qa '+(verified(x)?'':'bad')}
+function stage(t,layer,id){
+const el=$('#img-'+t);
+if(!layer){el.innerHTML='<div class="empty">ไม่พบภาพ '+escapeHtml(S.mode)+' ของวันที่นี้<br>ไม่สร้างภาพทดแทน</div>';return}
+const w=Number(layer.width)||128,h=Number(layer.height)||128;
+const aspect=w/h;let paths='';
+const feat=S.boundaries?.features?.find(x=>x.properties?.plot===id);
+if(feat&&Array.isArray(layer.bounds)){
+const [[minLat,minLon],[maxLat,maxLon]]=layer.bounds;
+if(maxLat>minLat&&maxLon>minLon)for(const ring of rings(feat.geometry)){
+let d='';for(let i=0;i<ring.length;i++){const xy=ring[i],px=(xy[0]-minLon)/(maxLon-minLon)*w,py=(maxLat-xy[1])/(maxLat-minLat)*h;d+=(i?'L':'M')+px.toFixed(3)+' '+py.toFixed(3)+' '}paths+='<path d="'+d+'Z"/>'}}
+const overlay=paths?'<svg aria-label="ขอบเขต PDD" style="display:'+(S.showPDD?'block':'none')+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none">'+paths+'</svg>':'';
+const viewport=document.createElement('div');viewport.className='viewport';viewport.style.aspectRatio=w+'/'+h;
+viewport.style.width=aspect>=1?'100%':'auto';viewport.style.height=aspect>=1?'auto':'100%';
+viewport.innerHTML='<img alt="ภาพ Sentinel-2 จริง '+escapeHtml(id)+'" src="'+layer.src+'">'+overlay;
+const img=viewport.querySelector('img');img.onerror=()=>{el.innerHTML='<div class="empty">โหลดภาพจากฐานข้อมูลไม่สำเร็จ</div>'};
+el.innerHTML='';el.appendChild(viewport);
+}
+async function loadPeriods(p,key){
+const dt=dates(p);
+try{
+const db=await part(sourcePart(p.plot));if(key!==S.renderId)return;
+const latest=latestDate(db,p.plot);const datesBy={baseline:dt.baseline,flood:dt.flood,latest};
+for(const name of ['baseline','flood','latest']){
+const date=datesBy[name],q=qa(p.plot,date);$('#date-'+name).textContent=short(date);qaPill(name,q);
+const l=date?getLayer(db,p.plot,date,S.mode):null;stage(name,l,p.plot);
+const note=$('#note-'+name);
+note.textContent=l?'แหล่งภาพ: Sentinel-2 L2A · '+(l.resolution_m||'ตามต้นฉบับ')+' · '+(l.source_suffix||'พรีวิวจริง'):'ยังไม่มีพรีวิวในชุดข้อมูล';
+}
+}catch(e){if(key!==S.renderId)return;for(const n of ['baseline','flood','latest']){$('#img-'+n).innerHTML='<div class="empty">โหลดพรีวิวไม่สำเร็จ · '+escapeHtml(e.message)+'</div>'}}
+}
+async function sample(){
+if(!plot('13-STC'))return;
+try{const p=plot('13-STC'),d=dates(p),db=await part(sourcePart(p.plot)),l=latestDate(db,p.plot),times=[['ก่อนเหตุการณ์',d.baseline],['ช่วงน้ำท่วม',d.flood],['ภาพล่าสุด',l]];
+$('#examples').innerHTML=times.map(x=>{const layer=getLayer(db,p.plot,x[1],'true_color');return '<button class="example" data-sample="1" style="padding:0;text-align:left;cursor:pointer"><div class="exhead"><b>'+x[0]+'</b><small>'+short(x[1])+'</small></div><div class="pic">'+(layer?'<img alt="Sentinel-2 '+x[0]+'" src="'+layer.src+'">':'<span class="empty">ไม่พบภาพจริง</span>')+'</div><div class="exhead"><small>13-STC · กดเพื่อดูเส้น PDD</small><b style="color:#1e694d">ดูแปลง ↗</b></div></button>'}).join('');
+$('#examples').querySelectorAll('button').forEach(b=>b.onclick=()=>openPlot('13-STC'))
+}catch(e){$('#examples').innerHTML='<div class="empty">ไม่สามารถดึงภาพตัวอย่าง: '+escapeHtml(e.message)+'</div>'}
+}
+
+function googleLink(lat,lon,zoom=18){return 'https://www.google.com/maps/@?api=1&map_action=map&center='+encodeURIComponent(Number(lat).toFixed(6)+','+Number(lon).toFixed(6))+'&zoom='+zoom+'&basemap=satellite'}
+function connectGoogle(){
+ if(window.google?.maps){renderGoogle();return;}
+ const key=window.prompt('กรอก Google Maps JavaScript API Key ที่จำกัด HTTP referrer เป็น https://thanawat150.github.io/*\nKey จะใช้เฉพาะในแท็บนี้และไม่บันทึกลง GitHub',googleApiKey);
+ if(!key)return;
+ googleApiKey=key.trim();if(!/^[a-zA-Z0-9_-]{20,}$/.test(googleApiKey)){showError('รูปแบบ API Key ไม่ถูกต้อง');return}
+ if(!googleApiPromise){
+  googleApiPromise=new Promise((resolve,reject)=>{
+   window.rayongGoogleReady=()=>resolve(window.google.maps);
+   const e=document.createElement('script');e.async=true;
+   e.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(googleApiKey)+'&v=weekly&callback=rayongGoogleReady';
+   e.onerror=()=>reject(Error('ไม่สามารถโหลด Google Maps API'));document.head.appendChild(e);
+   setTimeout(()=>{if(!window.google?.maps)reject(Error('Google Maps ไม่ทำงาน กรุณาตรวจ API Key, Billing และ HTTP referrer'))},18000);
+  }).catch(e=>{googleApiPromise=null;showError(e.message);throw e});
+ }
+ googleApiPromise.then(renderGoogle).catch(()=>{});
+}
+function addGooglePDD(map,selected,all){
+ map.data.forEach(feature=>map.data.remove(feature));
+ const features=(S.boundaries?.features||[]).filter(f=>all||f.properties?.plot===selected);
+ if(features.length)map.data.addGeoJson({type:'FeatureCollection',features});
+ map.data.setStyle(f=>{const active=f.getProperty('plot')===selected;return {strokeColor:active?'#ff4031':'#ee967c',strokeWeight:active?3:2,fillColor:'#fa6e55',fillOpacity:active?.20:.07,clickable:true}});
+ map.data.addListener('click',e=>{const pid=e.feature.getProperty('plot');if(pid&&plot(pid))openPlot(pid)});
+}
+function drawHybridDetail(){
+ if(!window.google?.maps||S.view!=='detail')return;
+ const p=plot(S.selected),el=$('#hybridStage');if(!p||!el)return;
+ el.innerHTML='<div id="gHybridPlot" class="googleMapFrame"></div>';
+ const map=new google.maps.Map($('#gHybridPlot'),{center:{lat:Number(p.lat),lng:Number(p.lon)},zoom:18,mapTypeId:google.maps.MapTypeId.HYBRID,streetViewControl:false,mapTypeControl:true});
+ addGooglePDD(map,p.plot,false);
+ const feat=S.boundaries?.features?.find(x=>x.properties?.plot===p.plot);
+ if(feat){const b=new google.maps.LatLngBounds();for(const r of rings(feat.geometry))for(const pt of r)b.extend({lat:pt[1],lng:pt[0]});if(!b.isEmpty())map.fitBounds(b,30)}
+}
+function drawHybridOverview(){
+ if(!window.google?.maps)return;
+ $('#googleOverview').style.display='block';$('#map').style.display='none';
+ const map=new google.maps.Map($('#googleOverview'),{center:{lat:12.725,lng:101.725},zoom:12,mapTypeId:google.maps.MapTypeId.HYBRID,mapTypeControl:true});
+ addGooglePDD(map,S.selected,true);
+ const b=new google.maps.LatLngBounds();for(const p of S.plots)b.extend({lat:Number(p.lat),lng:Number(p.lon)});if(!b.isEmpty())map.fitBounds(b,28);
+}
+function renderGoogle(){drawHybridOverview();drawHybridDetail()}
+
+function setup(){
+$('#filter').addEventListener('input',side);$('#googleActivateOverview').onclick=connectGoogle;$('#overviewGoogleLink').href=googleLink(12.725,101.725,12);
+$('#navOverview').onclick=()=>{setView('overview');const u=new URL(location.href);u.searchParams.delete('plot');history.replaceState(null,'',u)};
+$('#navDetail').onclick=()=>openPlot(S.selected);
+$('#openExample').onclick=()=>openPlot('13-STC');
+$('#togglePDD').onchange=e=>{S.showPDD=e.target.checked;document.querySelectorAll('.viewport svg').forEach(el=>el.style.display=S.showPDD?'block':'none')};
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{S.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('on',x===b));if(S.view==='detail')renderPlot()}));
+$('#mobileMenu').onclick=()=>$('#aside').classList.toggle('open');
+$('#print').onclick=()=>window.print();
+}
+async function boot(){
+setup();
+try{
+const [p,h,b]=await Promise.all([json('plots.json'),json('analysis_history.json'),json('boundaries.geojson')]);S.plots=p.plots||[];S.history=h;S.boundaries=b;
+if(!S.plots.length)throw Error('ไม่มีรายการแปลง');
+const q=new URL(location.href).searchParams.get('plot');if(q&&plot(q))S.selected=q;else S.selected=S.plots[0].plot;
+side();drawOverview();sample();if(q&&plot(q))openPlot(q);
+}catch(e){showError('ไม่สามารถอ่านข้อมูลจริงจากโครงการ: '+e.message+'. เปิดผ่าน GitHub Pages และตรวจว่ามีไฟล์ /docs/data ครบ')}
+}
+boot();
+</script></body></html>
