@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#13233f">
+  <meta name="description" content="แชร์หน้าจอโน้ตบุ๊กไปยัง iPhone ผ่านเบราว์เซอร์">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <title>Screen Mirror · ส่งหน้าจอไป iPhone</title>
+  <style>
+    :root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#758096;--line:#e6eaf1;--navy:#13233f;--blue:#2563eb;--green:#0f9f74;--red:#b42318;--shadow:0 14px 40px rgba(29,43,76,.07)}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Thai",system-ui,sans-serif}
+    button,a{font:inherit} a{text-decoration:none;color:inherit}
+    main{max-width:900px;margin:auto;padding:28px 18px 60px}
+    .hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}
+    .kicker{font:800 11px "Plus Jakarta Sans",sans-serif;letter-spacing:1.8px;color:var(--blue);text-transform:uppercase}
+    h1{font:800 clamp(26px,4vw,42px)/1.08 "Plus Jakarta Sans","IBM Plex Sans Thai",sans-serif;margin:6px 0 8px}
+    .hero p{margin:0;color:var(--muted);max-width:650px;line-height:1.65}
+    .back{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;padding:9px 13px;background:#fff;color:#40516d;font-weight:700;white-space:nowrap}
+    section{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:22px;margin-top:16px}
+    h2{font-size:20px;margin:0 0 5px;color:var(--navy)}
+    p{color:var(--muted);line-height:1.6}
+    .step{display:inline-flex;background:#edf3ff;color:#1d4ed8;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;margin-bottom:10px}
+    button{border:1px solid transparent;border-radius:12px;padding:11px 16px;color:#fff;background:var(--blue);font:inherit;font-weight:800;cursor:pointer;margin:5px 6px 0 0}
+    button:hover{background:#1d4ed8} button.secondary{color:#40516d;background:#fff;border-color:var(--line)} button.secondary:hover{background:#f7f9fc}
+    button:disabled{opacity:.5;cursor:wait}
+    .status{min-height:44px;border-radius:12px;padding:10px 12px;background:#f3f6fb;color:#52627a;margin-top:15px;font-size:.92rem}
+    .status[data-kind="bad"]{color:var(--red);background:#fff0f0}.status[data-kind="good"]{color:#087b5a;background:#e8f7f1}
+    .codebox{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:16px;padding:16px;background:#f8faff;border:1px solid var(--line);border-radius:15px}
+    .code-number{font:800 clamp(28px,7vw,42px)/1.1 "Plus Jakarta Sans",monospace;letter-spacing:.12em;color:var(--navy)}
+    input{font:700 20px "Plus Jakarta Sans",sans-serif;letter-spacing:.12em;width:min(100%,260px);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--navy);background:#f8faff}
+    .hidden{display:none!important}
+    video{display:block;width:100%;max-height:72vh;min-height:220px;object-fit:contain;background:#111827;border-radius:15px;margin-top:15px}
+    .notice{padding:13px 15px;border:1px dashed #d9dfeb;border-radius:14px;color:#69758a;font-size:12px;background:#fbfcfe;margin-top:17px}
+    footer{color:var(--muted);font-size:12px;padding:16px 4px}
+    @media(max-width:650px){main{padding:20px 12px 40px}.hero{display:block}.back{margin-top:14px}section{padding:18px}#qr{margin:auto}.invite{justify-content:center;text-align:center}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js" defer></script>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <div>
+      <div class="kicker">SCREEN MIRROR · SATELLITE PROJECT</div>
+      <h1>ส่งหน้าจอโน้ตบุ๊กไป iPhone</h1>
+      <p>ไม่ต้องติดตั้งโปรแกรมบนโน้ตบุ๊ก แค่เปิดเว็บแล้วสแกน QR</p>
+    </div>
+    <a class="back" href="../affiliate-posting/">← กลับหน้าเดิม</a>
+  </header>
+
+  <section id="hostPanel">
+    <div class="step">ขั้นที่ 1 · โน้ตบุ๊ก</div>
+    <h2>เริ่มแชร์หน้าจอ</h2>
+    <p>กดเริ่มแชร์แล้วเลือกหน้าจอ จากนั้นบอกรหัส 8 หลักนี้กับ iPhone</p>
+    <button id="startShare">เริ่มแชร์หน้าจอ</button>
+    <button id="stopShare" class="secondary hidden">หยุดแชร์</button>
+    <div id="codeBox" class="codebox hidden">
+      <div><div class="step">รหัสเครื่องของรอบนี้</div><div id="machineCode" class="code-number">--------</div></div>
+      <button id="copyCode" class="secondary">คัดลอกรหัส</button>
+    </div>
+    <div id="hostStatus" class="status" role="status">สถานะ: ยังไม่ได้เริ่มแชร์</div>
+  </section>
+
+  <section id="viewerPanel">
+    <div class="step">ขั้นที่ 2 · iPhone</div>
+    <h2>เชื่อมต่อกับโน้ตบุ๊ก</h2>
+    <p>พิมพ์รหัส 8 หลักที่แสดงบนโน้ตบุ๊ก แล้วกดเชื่อมต่อ</p>
+    <label for="codeInput">รหัสเครื่อง</label><br>
+    <input id="codeInput" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="เช่น 48273106" aria-label="รหัสเครื่อง 8 หลัก">
+    <br>
+    <button id="join">เชื่อมต่อและดูหน้าจอ</button>
+    <video id="remoteVideo" autoplay playsinline muted controls></video>
+    <div id="viewerStatus" class="status" role="status">สถานะ: พร้อมเชื่อมต่อ</div>
+  </section>
+
+  <p class="notice">ใช้ PeerJS Cloud เพื่อจับคู่ด้วยรหัสเครื่องเท่านั้น ภาพส่งตรงระหว่างอุปกรณ์ ไม่ผ่าน PeerJS หรือ GitHub รหัสเปลี่ยนทุกครั้งที่เริ่มแชร์; hotspot บางเครือข่ายอาจบล็อกการเชื่อมต่อตรง</p>
+  <footer>รหัสเครื่องใช้ได้ระหว่างที่กำลังแชร์เท่านั้น กดหยุดแชร์เมื่อใช้เสร็จ</footer>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const qs = new URLSearchParams(location.search);
+  const iceServers = [{ urls: "stun:stun.l.google.com:19302" }];
+  let peer = null;
+  let connection = null;
+  let pc = null;
+  let screenStream = null;
+  let busy = false;
+  let machineCode = "";
+  const status = (id, message, kind = "") => { const el = $(id); el.textContent = message; el.dataset.kind = kind; };
+  const waitForIce = target => new Promise(resolve => {
+    if (target.iceGatheringState === "complete") return resolve();
+    let done = false;
+    const finish = () => { if (!done) { done = true; target.removeEventListener("icegatheringstatechange", changed); resolve(); } };
+    const changed = () => { if (target.iceGatheringState === "complete") finish(); };
+    target.addEventListener("icegatheringstatechange", changed);
+    setTimeout(finish, 12000);
+  });
+  function showState(target, id) {
+    target.addEventListener("iceconnectionstatechange", () => {
+      if (target.iceConnectionState === "connected" || target.iceConnectionState === "completed") status(id, "เชื่อมต่อแล้ว กำลังรับภาพหน้าจอ", "good");
+      if (target.iceConnectionState === "failed") status(id, "เชื่อมไม่สำเร็จ เครือข่ายนี้อาจบล็อกการเชื่อมต่อตรง", "bad");
+      if (target.iceConnectionState === "disconnected") status(id, "การเชื่อมต่อขาด รอสักครู่…");
+    });
+  }
+  function sendOffer(channel) {
+    channel.on("open", async () => {
+      try {
+        pc = new RTCPeerConnection({ iceServers });
+        showState(pc, "hostStatus");
+        screenStream.getTracks().forEach(track => pc.addTrack(track, screenStream));
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        await waitForIce(pc);
+        channel.send({ type: "offer", sdp: pc.localDescription.toJSON() });
+        status("hostStatus", "iPhone เชื่อมเข้ามาแล้ว กำลังตั้งภาพ…");
+      } catch (error) { status("hostStatus", error.message || "เริ่มเชื่อมต่อไม่สำเร็จ", "bad"); }
+    });
+    channel.on("data", async message => {
+      if (message?.type !== "answer" || !pc) return;
+      try { await pc.setRemoteDescription(message.sdp); }
+      catch (error) { status("hostStatus", error.message || "รับคำตอบจาก iPhone ไม่สำเร็จ", "bad"); }
+    });
+    channel.on("close", () => status("hostStatus", "iPhone ตัดการเชื่อมต่อ"));
+  }
+  function newMachineCode() {
+    const values = new Uint32Array(1);
+    crypto.getRandomValues(values);
+    return String(values[0] % 100000000).padStart(8, "0");
+  }
+  function startHost() {
+    if (!navigator.mediaDevices?.getDisplayMedia) throw new Error("กรุณาเปิดเว็บนี้ด้วย Chrome หรือ Edge บนโน้ตบุ๊ก");
+    machineCode = newMachineCode();
+    peer = new Peer(`sm-${machineCode}`);
+    peer.on("open", id => {
+      $("machineCode").textContent = machineCode;
+      $("codeBox").classList.remove("hidden");
+      status("hostStatus", "พร้อมแล้ว พิมพ์รหัสนี้บน iPhone", "good");
+    });
+    peer.on("connection", channel => {
+      if (busy) { channel.close(); return; }
+      busy = true; connection = channel;
+      status("hostStatus", "เจอ iPhone แล้ว กำลังเชื่อมต่อ…");
+      sendOffer(channel);
+    });
+    peer.on("error", error => {
+      if (error.type === "unavailable-id") { status("hostStatus", "รหัสซ้ำ กำลังสร้างรหัสใหม่…"); peer.destroy(); startHost(); return; }
+      status("hostStatus", `เชื่อมต่อไม่สำเร็จ: ${error.type || error.message}`, "bad");
+    });
+  }
+  function stopHost() {
+    screenStream?.getTracks().forEach(track => track.stop()); screenStream = null;
+    pc?.close(); pc = null;
+    connection?.close(); connection = null;
+    peer?.destroy(); peer = null; busy = false;
+    $("codeBox").classList.add("hidden"); $("stopShare").classList.add("hidden"); $("startShare").disabled = false;
+    status("hostStatus", "หยุดแชร์แล้ว");
+  }
+  $("startShare").addEventListener("click", async () => {
+    const button = $("startShare"); button.disabled = true;
+    try {
+      screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 24, max: 30 } }, audio: false });
+      screenStream.getVideoTracks()[0].addEventListener("ended", stopHost);
+      startHost();
+      $("stopShare").classList.remove("hidden");
+      status("hostStatus", "กำลังสร้างรหัสเครื่อง…");
+    } catch (error) { status("hostStatus", error.message || "เริ่มแชร์ไม่สำเร็จ", "bad"); button.disabled = false; stopHost(); }
+  });
+  $("stopShare").addEventListener("click", stopHost);
+  $("copyCode").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(machineCode); status("hostStatus", "คัดลอกรหัสแล้ว", "good"); }
+    catch { status("hostStatus", "คัดลอกรหัสไม่ได้ ลองจดรหัส 8 หลัก", "bad"); }
+  });
+  async function joinHost() {
+    const entered = $("codeInput").value.replace(/\D/g, "");
+    if (entered.length !== 8) { status("viewerStatus", "กรุณาใส่รหัสให้ครบ 8 หลัก", "bad"); return; }
+    $("join").disabled = true;
+    try {
+      peer = new Peer();
+      peer.on("error", error => status("viewerStatus", `เชื่อมต่อไม่สำเร็จ: ${error.type || error.message}`, "bad"));
+      peer.on("open", () => {
+        connection = peer.connect(`sm-${entered}`, { reliable: true });
+        connection.on("open", () => status("viewerStatus", "เจอโน้ตบุ๊กแล้ว กำลังรับภาพ…"));
+        connection.on("data", async message => {
+          if (message?.type !== "offer") return;
+          try {
+            pc = new RTCPeerConnection({ iceServers });
+            showState(pc, "viewerStatus");
+            pc.ontrack = event => { $("remoteVideo").srcObject = event.streams[0]; $("remoteVideo").play().catch(() => {}); };
+            await pc.setRemoteDescription(message.sdp);
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            await waitForIce(pc);
+            connection.send({ type: "answer", sdp: pc.localDescription.toJSON() });
+            status("viewerStatus", "รับคำขอแล้ว กำลังเชื่อมต่อภาพ…");
+          } catch (error) { status("viewerStatus", error.message || "เปิดภาพไม่สำเร็จ", "bad"); $("join").disabled = false; }
+        });
+        connection.on("error", error => status("viewerStatus", error.message || "เชื่อมต่อไม่สำเร็จ", "bad"));
+        connection.on("close", () => status("viewerStatus", "การเชื่อมต่อปิดแล้ว"));
+      });
+    } catch (error) { status("viewerStatus", error.message || "เชื่อมต่อไม่สำเร็จ", "bad"); $("join").disabled = false; }
+  }
+  $("join").addEventListener("click", joinHost);
+})();
+</script>
+</body>
+</html>
+
