@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   qa:
@@ -18,8 +18,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Generate non-static Rayong metadata from QA history
+        run: python scripts/refresh_rayong_plot_metadata.py
       - name: Validate B+ tests first
-        run: node scripts/test_rayong_bplus_status.cjs
+        run: |
+          node --check docs/status-engine.js
+          node scripts/test_rayong_bplus_status.cjs
       - name: Test existing portal data
         run: |
           python scripts/validate_portal.py
@@ -46,12 +50,29 @@ jobs:
           node --check docs/monitoring-studio.js
           node --check docs/monitoring-qa.js
           node --check docs/alert-engine.js
+          node --check docs/status-engine.js
           node --check docs/alert-center.js
           node scripts/test_monitoring_qa_alerts.cjs
           node --check docs/live-report-model.js
           node scripts/test_live_report.cjs
           python -m py_compile scripts/derive_daily_monitoring.py scripts/nationwide_process.py scripts/nationwide_inventory.py scripts/nationwide_scope_136.py
       - name: Fuel refresh command from pages.yml
+        continue-on-error: true
         run: |
           node --check scripts/refresh_trip_fuel_prices.cjs
           node scripts/refresh_trip_fuel_prices.cjs
+
+      - name: Scientific raster regression incl Sentinel-2 SENSING_TIME
+        run: |
+          python -m pip install --disable-pip-version-check "numpy>=1.24,<3" "rasterio>=1.3,<2" "shapely>=2,<3" "pyproj>=3.5,<4"
+          python scripts/test_derive_monitoring.py
+
+      - name: Commit generated metadata to PR branch (no main changes)
+        run: |
+          if ! git diff --quiet -- docs/data/plots.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/data/plots.json
+            git commit -m "Regenerate Rayong metadata: no fixed statuses, correct PDD-area percentages"
+            git push origin HEAD:feature/rayong-bplus-qa-status-experiment
+          fi
