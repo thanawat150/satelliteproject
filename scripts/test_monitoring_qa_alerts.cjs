@@ -37,6 +37,7 @@ changed["17-STC"]=[{date:"2026-10-06",analysis_status:"VERIFIED",water_rai:1,wat
 const latest=alertEngine.build({history:changed,plots,images});
 assert.ok(latest.some(x=>x.plot==="17-STC"&&x.date==="2026-10-09"&&x.type==="water"&&x.priority==="P2"),"Recent first qualified increase should be WATCH/P2");
 changed["17-STC"].unshift({date:"2026-10-03",analysis_status:"VERIFIED",water_rai:0,water_pct:0,ndvi:.56,ndre:.44,ndmi:.21,valid_pct:95});
+changed["17-STC"][1].water_rai=6; // Both 0 -> 6 and 6 -> 29 rise by at least 5 rai.
 const confirmed=alertEngine.build({history:changed,plots,images});
 assert.ok(confirmed.some(x=>x.plot==="17-STC"&&x.date==="2026-10-09"&&x.type==="water"&&x.priority==="P1"),"Two repeated QA-valid rises should trigger HIGH/P1");
 changed["17-STC"][0].valid_pct=null;
