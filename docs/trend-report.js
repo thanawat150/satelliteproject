@@ -10,8 +10,8 @@ async function load(force=false){
  if(loading)return loading;
  if(history&&!force)return history;
  loading=Promise.all([
-   fetch("data/analysis_history.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("analysis_history HTTP "+r.status);return r.json()}),
-   fetch("data/water_history.geojson",{cache:"no-store"}).then(r=>r.ok?r.json():({type:"FeatureCollection",features:[]})).catch(()=>({type:"FeatureCollection",features:[]}))
+   DataStore.json("analysis_history.json",{fresh:force}),
+   DataStore.json("water_history.geojson",{optional:true,fallback:{type:"FeatureCollection",features:[]}})
  ]).then(([h,w])=>{history=h;waterFC=w;return h}).finally(()=>{loading=null});
  return loading;
 }

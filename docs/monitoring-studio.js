@@ -11,7 +11,7 @@ const ms={ready:false,rows:[],previews:new Map(),visual:new Map(),full:new Map()
 const log=e=>console.warn("Monitoring Studio:",e);
 function eltxt(id,s){let e=$(id);if(e)e.textContent=s}
 function selectVal(id,v){const e=$(id);if(e&&[...e.options].some(o=>o.value===v))e.value=v}
-async function json(path){const r=await fetch("data/"+path,{cache:"no-store"});if(!r.ok)throw Error(path+" HTTP "+r.status);return r.json()}
+async function json(path){return DataStore.json(path)}
 function dateRows(p){return [...new Set(ms.rows.filter(x=>x.plot===p).map(x=>x.date))].sort()}
 function observation(p,d){return (ms.history[p]||[]).find(x=>x.date===d)}
 function plotInfo(p){return ms.plots.find(x=>x.plot===p)}

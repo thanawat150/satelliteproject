@@ -100,12 +100,11 @@ root.addEventListener('change',e=>{
 });
 async function load(){
  try{
-  const [partRes,historyRes,plotsRes]=await Promise.all([fetch('data/satellite_parts.json',{cache:'no-store'}),fetch('data/analysis_history.json',{cache:'no-store'}),fetch('data/plots.json',{cache:'no-store'})]);
-  if(!partRes.ok)throw Error('satellite_parts.json HTTP '+partRes.status);
-  const meta=await partRes.json(),chunks=await Promise.all(meta.parts.map(async x=>{const r=await fetch('data/'+x.file,{cache:'no-store'});if(!r.ok)throw Error(x.file+' HTTP '+r.status);return r.json()}));
+  const [meta,historyData,plotsData]=await Promise.all([DataStore.json('satellite_parts.json'),DataStore.json('analysis_history.json',{optional:true}),DataStore.json('plots.json',{optional:true})]);
+  const chunks=await Promise.all(meta.parts.map(x=>DataStore.json(x.file)));
   state.files=[...new Map(chunks.flat().filter(x=>x.id&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)).map(x=>[x.id,x])).values()];
-  if(historyRes.ok)state.analysis=(await historyRes.json()).plots||{};
-  if(plotsRes.ok&&window.MonitoringAlerts?.build)state.alerts=window.MonitoringAlerts.build({history:state.analysis,plots:(await plotsRes.json()).plots||[],images:state.files});
+  if(historyData)state.analysis=historyData.plots||{};
+  if(plotsData&&window.MonitoringAlerts?.build)state.alerts=window.MonitoringAlerts.build({history:state.analysis,plots:plotsData.plots||[],images:state.files});
   state.loaded=true;
   const p=new URLSearchParams(location.search),date=p.get('cal_date'),plot=p.get('cal_plot');
   if(plot&&state.files.some(x=>x.plot===plot))state.plot=plot;

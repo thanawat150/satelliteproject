@@ -24,7 +24,7 @@ function valueText(r,key){
  return !a?"—":n(a.value)+" "+(a.provisional?"*":"");
 }
 function sourceInfo(r){return r&&r.valid_pct!=null?n(r.valid_pct,1)+"% usable":"ยังไม่มีผล QA";}
-async function fetchJson(url){const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw Error(url+" HTTP "+r.status);return r.json()}
+async function fetchJson(url){return DataStore.json(url)}
 async function loadCommon(){
  if(!catalog)catalog=await fetchJson("data/satellite_parts.json");
  if(!geo)geo=await fetchJson("data/boundaries.geojson");

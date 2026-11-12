@@ -7,7 +7,7 @@ const fmt=n=>n==null||!Number.isFinite(Number(n))?"—":Number(n).toLocaleString
 const date=s=>s?s.split("-").reverse().join("/"):"—";
 let state={alerts:[],plots:[],history:{},images:[],map:null,layer:null,loaded:false,fetching:null};
 const rank={P1:1,P2:2,P3:3};
-async function fetchJSON(n){const r=await fetch("data/"+n,{cache:"no-store"});if(!r.ok)throw Error(n+" HTTP "+r.status);return r.json()}
+async function fetchJSON(n){return DataStore.json(n)}
 async function reload(){
  if(state.fetching)return state.fetching;
  state.fetching=(async()=>{

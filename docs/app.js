@@ -22,20 +22,17 @@ const dateTH=s=>{if(!s||s.length!==8)return '—';return `${s.slice(6,8)}/${s.sl
 const delta=(a,b,digits=3)=>a==null||b==null?'N/A':`${b-a>=0?'+':''}${(b-a).toFixed(digits)}`;
 
 async function init(){
-  const [r,b,w,sb]=await Promise.all([
-    fetch('data/plots.json',{cache:'no-store'}),
-    fetch('data/boundaries.geojson',{cache:'no-store'}),
-    fetch('data/new_water.geojson',{cache:'no-store'}),
-    fetch('data/satellite_bounds.json',{cache:'no-store'})
+  // DataStore throws "<file> HTTP <status>" for non-OK responses, same as the previous checks.
+  const [r,b,w,sbData]=await Promise.all([
+    DataStore.json('plots.json'),
+    DataStore.json('boundaries.geojson'),
+    DataStore.json('new_water.geojson'),
+    DataStore.json('satellite_bounds.json')
   ]);
-  if(!r.ok) throw new Error(`plots.json HTTP ${r.status}`);
-  if(!b.ok) throw new Error(`boundaries.geojson HTTP ${b.status}`);
-  if(!w.ok) throw new Error(`new_water.geojson HTTP ${w.status}`);
-  if(!sb.ok) throw new Error(`satellite_bounds.json HTTP ${sb.status}`);
-  dataset=await r.json(); plots=dataset.plots;
-  boundaryFC=await b.json();
-  newWaterFC=await w.json();
-  const sbData=await sb.json(); satelliteBounds=sbData.overlays||[];
+  dataset=r; plots=dataset.plots;
+  boundaryFC=b;
+  newWaterFC=w;
+  satelliteBounds=sbData.overlays||[];
   satelliteBoundsByKey=new Map(satelliteBounds.map(x=>[`${x.plot}|${x.date}`,x]));
   boundaryByPlot=new Map(boundaryFC.features.map(f=>[f.properties.plot,f]));
   // Report area alone does not verify the footprint geometry. Suppress discrepant polygons globally.
@@ -123,21 +120,13 @@ function fileSizePretty(n){
 async function loadSatelliteLibrary(){
   const status=document.getElementById('satellite-sync-status');
   try{
-    const r=await fetch('data/satellite_parts.json',{cache:'no-store'});
-    if(!r.ok)throw new Error(`satellite_parts.json HTTP ${r.status}`);
-    satellitePartsMeta=await r.json();
-    let pr=null;try{pr=await fetch('data/jpg_previews.json',{cache:'no-store'});if(pr.ok)jpgPreviewMap=await pr.json()}catch(_){jpgPreviewMap={}}
-    const chunks=await Promise.all(satellitePartsMeta.parts.map(async part=>{
-      const rr=await fetch('data/'+part.file,{cache:'no-store'});
-      if(!rr.ok)throw new Error(`${part.file} HTTP ${rr.status}`);
-      return rr.json();
-    }));
+    satellitePartsMeta=await DataStore.json('satellite_parts.json');
+    jpgPreviewMap=await DataStore.json('jpg_previews.json',{optional:true,fallback:{}});
+    const chunks=await Promise.all(satellitePartsMeta.parts.map(part=>DataStore.json(part.file)));
     // Each source GeoTIFF has a separate browser-renderable image built from its real raster bands.
     // Keep the original Drive link as a download source and never ask browsers to preview a TIFF.
     const displayChunks=await Promise.all(satellitePartsMeta.parts.map(async (_,i)=>{
-      const resp=await fetch('data/existing_display_part_'+(i+1)+'.json',{cache:'no-store'});
-      if(!resp.ok)throw new Error('display previews part '+(i+1)+' HTTP '+resp.status);
-      return resp.json();
+      return DataStore.json('existing_display_part_'+(i+1)+'.json');
     }));
     const previews=new Map(displayChunks.flatMap(c=>Object.entries(c.files||{})));
     const byId=new Map();chunks.flat().forEach(x=>byId.set(x.id,x));

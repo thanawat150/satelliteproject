@@ -8,6 +8,12 @@ on:
       - "docs/nationwide.html"
       - "docs/nationwide-catalog.js"
       - "docs/map-studio.js"
+      - "docs/index.html"
+      - "docs/data-store.js"
+      - "docs/app.js"
+      - "docs/analysis-center.js"
+      - "docs/styles.css"
+      - "scripts/test_portal_requests.cjs"
       - "docs/data/nationwide/catalog_*.json"
       - ".github/workflows/test_monitor_ui.yml"
   workflow_dispatch:
@@ -35,3 +41,4 @@ jobs:
         run: |
           node scripts/test_monitoring_ui.cjs
           node scripts/test_nationwide_catalog.cjs
+          node scripts/test_portal_requests.cjs

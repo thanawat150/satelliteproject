@@ -255,11 +255,11 @@ function drawChart(){
 }
 async function previewPart(plot){
  const token=++state.token;
- if(!state.previewParts){try{const r=await fetch("data/satellite_parts.json",{cache:"no-store"});if(!r.ok)throw Error("manifest");state.previewParts=await r.json()}catch(e){setText("mc-preview-message","โหลดข้อมูลภาพไม่สำเร็จ");return null}}
+ if(!state.previewParts){try{state.previewParts=await root.DataStore.json("satellite_parts.json")}catch(e){setText("mc-preview-message","โหลดข้อมูลภาพไม่สำเร็จ");return null}}
  if(token!==state.token||state.scope!=="plot"||state.plot!==plot)return null;
  const part=(state.previewParts.parts||[]).findIndex(x=>x.plots?.includes(plot));
  if(part<0)return null;
- if(!state.preview.has(part)){try{const r=await fetch("data/full_preview_part_"+(part+1)+".json",{cache:"no-store"});if(!r.ok)throw Error("full preview");state.preview.set(part,await r.json())}catch(e){return null}}
+ if(!state.preview.has(part)){try{state.preview.set(part,await root.DataStore.json("full_preview_part_"+(part+1)+".json"))}catch(e){return null}}
  if(token!==state.token||state.scope!=="plot"||state.plot!==plot)return null;
  return state.preview.get(part).layers||[];
 }
@@ -343,7 +343,7 @@ function wire(){
  ["a","b","c"].forEach((k,i)=>on("mc-date-"+k,e=>{invalidateFinal();state.dates[i]=e.target.value;state.dirty=true;state.view=null;root.PlotReview?.onView?.(null);$("mc-results").hidden=true;paintMap();setStatus("เปลี่ยนวันแล้ว • กดเปรียบเทียบข้อมูลเพื่อแสดงผลใหม่","warn")},"change"));
  on("mc-run",chooseManual);
  on("mc-refresh",async()=>{
-  setStatus("กำลังตรวจฐานข้อมูลผลวิเคราะห์ล่าสุด...");try{const r=await fetch("data/analysis_history.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);state.history=await r.json();setDefaults();drawControls();useSelection()}catch(e){setStatus("โหลดผลวิเคราะห์ไม่ได้: "+e.message,"error")}
+  setStatus("กำลังตรวจฐานข้อมูลผลวิเคราะห์ล่าสุด...");try{state.history=await root.DataStore.json("analysis_history.json",{fresh:true});setDefaults();drawControls();useSelection()}catch(e){setStatus("โหลดผลวิเคราะห์ไม่ได้: "+e.message,"error")}
  });
  on("mc-layer",()=>{if(!state.dirty&&state.view?.kind==="plot")renderPreview()},"change");
  on("mc-analysis-detail",e=>{if(e.target.open){paintMap();drawChart();setTimeout(()=>{state.map?.invalidateSize();state.chart?.resize()},120)}},"toggle");
@@ -377,9 +377,7 @@ async function init({plots,boundaries,scenes,selectedPlot}){
  $("mc-plot").value=state.plot;
  wire();
  try{
-  const r=await fetch("data/analysis_history.json",{cache:"no-store"});
-  if(!r.ok)throw Error("HTTP "+r.status);
-  state.history=await r.json();
+  state.history=await root.DataStore.json("analysis_history.json");
   setDefaults();drawControls();state.ready=true;
   if(state.mode==="auto")useSelection();else{state.dirty=true;$("mc-results").hidden=true;setStatus("เลือกวันที่แล้วกดเปรียบเทียบข้อมูล","warn")}
   if(state.visible)paintMap();

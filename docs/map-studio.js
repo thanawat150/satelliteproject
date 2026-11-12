@@ -95,11 +95,11 @@ function pick(p,d,mode){
 async function init(){
  if(initialized)return;initialized=true;
  try{
-   const parts=await Promise.allSettled(Array.from({length:10},(_,i)=>fetch("data/full_preview_part_"+(i+1)+".json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("full preview part "+(i+1)+" HTTP "+r.status);return r.json()})));
+   const parts=await Promise.allSettled(Array.from({length:10},(_,i)=>DataStore.json("full_preview_part_"+(i+1)+".json")));
    entries=parts.filter(x=>x.status==="fulfilled").flatMap(x=>Array.isArray(x.value.layers)?x.value.layers:[]);if(!entries.length)throw Error("Missing full preview layers");
  }catch(e){
    console.warn("Full preview layers unavailable, falling back to compact quicklooks",e);
-   try{const r=await fetch("data/visual_layers.json",{cache:"no-store"});if(r.ok){const j=await r.json();entries=Array.isArray(j.layers)?j.layers:[];}}catch(_){}
+   try{const j=await DataStore.json("visual_layers.json",{optional:true});if(j){entries=Array.isArray(j.layers)?j.layers:[];}}catch(_){}
  }
  ["boundary","water","labels"].forEach(k=>{const e=$("studio-"+k);if(e)e.addEventListener("change",()=>{state[k]=e.checked;applyVisibility();})});
  $("studio-mode")?.addEventListener("change",e=>setMode(e.target.value));
