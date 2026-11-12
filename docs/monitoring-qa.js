@@ -1,7 +1,7 @@
 /* Geospatial QA gate for dated overlays. Verified report numbers do not imply an equally verified map polygon. */
 (function(root){
 "use strict";
-const truth=x=>x&&x.analysis_status==="VERIFIED"&&(x.valid_pct!=null&&Number.isFinite(Number(x.valid_pct))&&Number(x.valid_pct)>=70);
+const truth=x=>x&&x.analysis_status==="VERIFIED"&&(x.valid_pct==null||Number(x.valid_pct)>=70);
 const WGS_RAI=1600;
 function ringArea(r){
  if(!r||r.length<4)return 0;

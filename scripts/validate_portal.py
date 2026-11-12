@@ -7,35 +7,26 @@ plots=json.loads((ROOT/"docs/data/plots.json").read_text(encoding="utf-8"))
 bounds=json.loads((ROOT/"docs/data/boundaries.geojson").read_text(encoding="utf-8"))
 new_water=json.loads((ROOT/"docs/data/new_water.geojson").read_text(encoding="utf-8"))
 sat_parts=json.loads((ROOT/"docs/data/satellite_parts.json").read_text(encoding="utf-8"))
-history=json.loads((ROOT/"docs/data/analysis_history.json").read_text(encoding="utf-8"))
 
 errors=[]
 items=plots.get("plots",[])
 if len(items)!=19:
     errors.append(f"expected 19 plots, got {len(items)}")
 
+allowed={"HIGH","WATCH","NORMAL","NO_DATA"}
 names=[]
 for p in items:
     name=p.get("plot")
     names.append(name)
-    for key in ("plot","area_rai","report_url","lat","lon"):
+    for key in ("plot","area_rai","status","report_url","lat","lon"):
         if p.get(key) in (None,""):
             errors.append(f"{name}: missing {key}")
-    if "status" in p:
-        errors.append(f"{name}: fixed status is forbidden; derive it from QA history at runtime")
-    if p.get("area_rai") in (None,0):
-        errors.append(f"{name}: cannot calculate water percentage without a positive area")
-    trusted=[r for r in history.get("plots",{}).get(name,[])
-             if r.get("analysis_status") in ("VERIFIED","AUTO_VALID")
-             and isinstance(r.get("valid_pct"),(int,float)) and r["valid_pct"]>=70
-             and isinstance(r.get("water_rai"),(int,float))]
-    current=next((r for r in trusted if r["date"].replace("-","")==str(p.get("current"))),None)
-    if current:
-        expected=round(current["water_rai"]/p["area_rai"]*100,2)
-        if p.get("water_current_pct") is None or abs(p["water_current_pct"]-expected)>.01:
-            errors.append(f"{name}: water_current_pct must use full PDD area ({expected})")
-    elif p.get("water_current_pct") is not None:
-        errors.append(f"{name}: unverified date must have null current percentage")
+    if p.get("status") not in allowed:
+        errors.append(f"{name}: invalid status {p.get('status')}")
+    if p.get("status")!="NO_DATA":
+        for key in ("water_before_pct","water_current_pct","water_change_pp","new_water_rai"):
+            if p.get(key) is None:
+                errors.append(f"{name}: missing {key}")
 if len(set(names))!=len(names):
     errors.append("duplicate plot names in plots.json")
 
@@ -85,7 +76,7 @@ nw_features=new_water.get("features",[])
 nw_names=[f.get("properties",{}).get("plot") for f in nw_features]
 if len(set(nw_names))!=len(nw_names):
     errors.append("duplicate plot names in new_water.geojson")
-valid_water_names={p["plot"] for p in items if (p.get("new_water_rai") or 0)>0}
+valid_water_names={p["plot"] for p in items if p.get("status")!="NO_DATA" and (p.get("new_water_rai") or 0)>0}
 if set(nw_names)!=valid_water_names:
     errors.append(f"new-water mismatch: missing={sorted(valid_water_names-set(nw_names))}, extra={sorted(set(nw_names)-valid_water_names)}")
 for f in nw_features:

@@ -2,8 +2,7 @@ const STATUS = {
   HIGH:{label:'สัญญาณน้ำสูง',color:'#fb5a5a'},
   WATCH:{label:'เฝ้าระวัง',color:'#f59e0b'},
   NORMAL:{label:'ปกติ/ลดลง',color:'#22c55e'},
-  NO_DATA:{label:'ข้อมูลไม่เพียงพอ',color:'#64748b'},
-  WAIT_BASELINE:{label:'รอภาพฐานใหม่',color:'#a78bfa'}
+  NO_DATA:{label:'ข้อมูลไม่เพียงพอ',color:'#64748b'}
 };
 const VEG = {
   STRESS_SIGNAL:'มีสัญญาณพืชเครียดจากสภาพเปียก/น้ำขัง', WATCH:'ควรติดตามพืช', STABLE:'ยังไม่พบสัญญาณเสื่อมชัด', NO_DATA:'ไม่มีข้อมูลพืช'
@@ -23,26 +22,17 @@ const dateTH=s=>{if(!s||s.length!==8)return '—';return `${s.slice(6,8)}/${s.sl
 const delta=(a,b,digits=3)=>a==null||b==null?'N/A':`${b-a>=0?'+':''}${(b-a).toFixed(digits)}`;
 
 async function init(){
-  const [r,b,w,sb,h]=await Promise.all([
+  const [r,b,w,sb]=await Promise.all([
     fetch('data/plots.json',{cache:'no-store'}),
     fetch('data/boundaries.geojson',{cache:'no-store'}),
     fetch('data/new_water.geojson',{cache:'no-store'}),
-    fetch('data/satellite_bounds.json',{cache:'no-store'}),
-    fetch('data/analysis_history.json',{cache:'no-store'})
+    fetch('data/satellite_bounds.json',{cache:'no-store'})
   ]);
   if(!r.ok) throw new Error(`plots.json HTTP ${r.status}`);
   if(!b.ok) throw new Error(`boundaries.geojson HTTP ${b.status}`);
   if(!w.ok) throw new Error(`new_water.geojson HTTP ${w.status}`);
   if(!sb.ok) throw new Error(`satellite_bounds.json HTTP ${sb.status}`);
-  if(!h.ok) throw new Error(`analysis_history.json HTTP ${h.status}`);
-  dataset=await r.json();
-  const qaHistory=await h.json();
-  if(!window.MonitoringStatus?.apply)throw new Error('ไม่พบระบบคำนวณสถานะ B+');
-  // Runtime derives every status from trusted dated history; ignore legacy static status fields.
-  plots=window.MonitoringStatus.apply(dataset.plots,qaHistory.plots);
-  const thresholdInfo=document.getElementById('bplus-trial-label');
-  if(thresholdInfo)thresholdInfo.textContent='เกณฑ์ทดลอง B+: ช่วงเปรียบเทียบไม่เกิน '+window.MonitoringStatus.EXPERIMENTAL_MAX_BASELINE_DAYS+
-    ' วัน • เกณฑ์น้ำเพิ่มต่อเนื่องสองรอบจึงเป็นระดับสูง • สถานะรอภาพฐานใหม่ไม่ใช่ปกติ';
+  dataset=await r.json(); plots=dataset.plots;
   boundaryFC=await b.json();
   newWaterFC=await w.json();
   const sbData=await sb.json(); satelliteBounds=sbData.overlays||[];
@@ -105,8 +95,8 @@ function bindUI(){
 }
 function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap){fullMap.invalidateSize();if(selected){populateMapSatelliteDates(selected);updateMapSatelliteOverlay(selected);focusMaps(selected)}}if(tab==='overview'&&overviewMap)overviewMap.invalidateSize();window.MonitoringStudio?.showTab?.(tab);window.AnalysisCenter?.showTab?.(tab);if(tab==='alerts')window.AlertCenter?.show?.();if(tab==='report')renderReportPreview()},160)}
 function openReportCenter(){switchTab('report');renderReportPreview()}
-function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0,WAIT_BASELINE:0};plots.forEach(p=>{c[p.status]=(c[p.status]||0)+1});document.getElementById('kpi-total').textContent=plots.length;document.getElementById('kpi-high').textContent=c.HIGH;document.getElementById('kpi-watch').textContent=c.WATCH;document.getElementById('kpi-nodata').textContent=c.NO_DATA;document.getElementById('kpi-wait-baseline').textContent=c.WAIT_BASELINE}
-function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)&&(!alertOnly||new Set(window.AlertCenter?.alerts?.().map(x=>x.plot)||[]).has(p.plot))).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div><div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.setAttribute('role','button');d.tabIndex=0;d.title=p.reason||STATUS[p.status]?.label||'';d.setAttribute('aria-label','เปิดรายงานแปลง '+p.plot+' • '+STATUS[p.status].label);d.onclick=()=>selectSidebarPlot(p);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectSidebarPlot(p)}};list.appendChild(d)})}
+function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};plots.forEach(p=>c[p.status]++);document.getElementById('kpi-total').textContent=plots.length;document.getElementById('kpi-high').textContent=c.HIGH;document.getElementById('kpi-watch').textContent=c.WATCH;document.getElementById('kpi-nodata').textContent=c.NO_DATA}
+function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)&&(!alertOnly||new Set(window.AlertCenter?.alerts?.().map(x=>x.plot)||[]).has(p.plot))).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div><div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','เปิดรายงานแปลง '+p.plot);d.onclick=()=>selectSidebarPlot(p);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectSidebarPlot(p)}};list.appendChild(d)})}
 function selectSidebarPlot(p){
   // Sidebar selection opens the report; on an open report tab it refreshes in place.
   if(!p)return;
@@ -119,8 +109,8 @@ function selectSidebarPlot(p){
   }
   if(!reportWasActive)switchTab('report');
 }
-function renderPriority(){const el=document.getElementById('priority-list');el.innerHTML='';const sorted=plots.filter(p=>['HIGH','WATCH','WAIT_BASELINE'].includes(p.status)).sort((a,b)=>{const order={HIGH:0,WATCH:1,WAIT_BASELINE:2};return order[a.status]-order[b.status]||(b.water_change_pp??-999)-(a.water_change_pp??-999)}).slice(0,7);sorted.forEach((p,i)=>{const d=document.createElement('div');d.className='priority-item';d.innerHTML=`<div class="priority-rank">${i+1}</div><div><strong>${p.plot}</strong><small>${STATUS[p.status].label} • ${p.status==='WAIT_BASELINE'?'เกิน '+window.MonitoringStatus.EXPERIMENTAL_MAX_BASELINE_DAYS+' วัน ต้องหาภาพฐานใหม่':'น้ำล่าสุด '+fmt(p.water_current_pct)+'%'}</small></div><div class="priority-value" style="color:${STATUS[p.status].color}">${p.status==='WAIT_BASELINE'?'รอฐาน':fmt(p.water_change_pp)+' pp'}</div>`;d.title=p.reason||'';d.onclick=()=>selectPlot(p);el.appendChild(d)})}
-function summaryText(p){if(p.status==='NO_DATA')return 'ภาพปัจจุบันไม่มี valid pixels เพียงพอ จึงยังไม่ควรสรุปผลกระทบของแปลงนี้';const veg=VEG[p.vegetation_status];if(p.status==='HIGH')return `พบสัญญาณน้ำเพิ่มขึ้นอย่างชัดเจนภายในแปลง โดยมีพื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;if(p.status==='WATCH')return `พบการเปลี่ยนแปลงของน้ำที่ควรติดตามต่อ (เกณฑ์ทดลอง) • ${p.reason} • ${veg}`;if(p.status==='WAIT_BASELINE')return `รอภาพฐานใหม่: ${p.reason} • ไม่ถือว่าอยู่ในสภาวะปกติ`;return `ไม่พบสัญญาณน้ำเพิ่มสูงในรอบเปรียบเทียบนี้ • ${veg}`}
+function renderPriority(){const el=document.getElementById('priority-list');el.innerHTML='';const sorted=plots.filter(p=>p.status!=='NO_DATA').sort((a,b)=>(b.water_change_pp??-999)-(a.water_change_pp??-999)).slice(0,7);sorted.forEach((p,i)=>{const d=document.createElement('div');d.className='priority-item';d.innerHTML=`<div class="priority-rank">${i+1}</div><div><strong>${p.plot}</strong><small>${STATUS[p.status].label} • น้ำล่าสุด ${fmt(p.water_current_pct)}%</small></div><div class="priority-value">${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} pp</div>`;d.onclick=()=>selectPlot(p);el.appendChild(d)})}
+function summaryText(p){if(p.status==='NO_DATA')return 'ภาพปัจจุบันไม่มี valid pixels เพียงพอ จึงยังไม่ควรสรุปผลกระทบของแปลงนี้';const veg=VEG[p.vegetation_status];if(p.status==='HIGH')return `พบสัญญาณน้ำเพิ่มขึ้นอย่างชัดเจนภายในแปลง โดยมีพื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;if(p.status==='WATCH')return `พบการเปลี่ยนแปลงของน้ำที่ควรติดตามต่อ พื้นที่น้ำใหม่ประมาณ ${fmt(p.new_water_rai)} ไร่ • ${veg}`;return `ไม่พบสัญญาณน้ำเพิ่มสูงในรอบเปรียบเทียบนี้ • ${veg}`}
 function selectPlot(p,updateUrl=true){selected=p;const detailPane=document.querySelector("#tab-overview .detail-card");if(detailPane)detailPane.scrollTop=0;renderSidebar();document.getElementById('detail-title').textContent=p.plot;const st=document.getElementById('detail-status');st.textContent=STATUS[p.status].label;st.className=`status-pill status-${p.status}`;document.getElementById('detail-area').textContent=`พื้นที่ PDD ${fmt(p.area_rai)} ไร่`;const mapBoundaryNote=document.getElementById('pdd-boundary-note');if(mapBoundaryNote){const f=boundaryByPlot.get(p.plot);mapBoundaryNote.textContent=f?.properties?.boundary_role==='primary'?('ขอบเขตหลัก PDD • '+p.plot+' • พื้นที่จากแนวขอบเขต '+fmt(f.properties.geometry_area_rai)+' ไร่ • ขอบเขตยืนยันกรมเก็บเป็นข้อมูลสำรอง'):'ขอบเขตหลัก PDD';}document.getElementById('detail-dates').textContent=`${dateTH(p.baseline)} → ${dateTH(p.current)}`;document.getElementById('plain-summary').textContent=summaryText(p);document.getElementById('water-values').textContent=`${fmt(p.water_before_rai)} → ${fmt(p.water_current_rai)} ไร่`;document.getElementById('water-delta').textContent=p.water_change_pp==null?'N/A':`${p.water_change_pp>=0?'+':''}${fmt(p.water_change_pp)} จุดเปอร์เซ็นต์`;document.getElementById('ndvi-values').textContent=`${idx(p.ndvi_before)} → ${idx(p.ndvi_current)}`;document.getElementById('ndvi-delta').textContent=delta(p.ndvi_before,p.ndvi_current);document.getElementById('ndre-values').textContent=`${idx(p.ndre_before)} → ${idx(p.ndre_current)}`;document.getElementById('ndre-delta').textContent=delta(p.ndre_before,p.ndre_current);document.getElementById('ndmi-values').textContent=`${idx(p.ndmi_before)} → ${idx(p.ndmi_current)}`;document.getElementById('ndmi-delta').textContent=delta(p.ndmi_before,p.ndmi_current);updateChart(p);mapSatelliteFileId='auto';focusMaps(p);document.getElementById('report-plot').value=p.plot;updateMapHighlight();syncSatellitePlotFilter(p.plot);populateMapSatelliteDates(p);updateMapSatelliteOverlay(p);if(updateUrl)updateQuery({plot:p.plot});window.MonitoringStudio?.onPlotChange?.(p);window.FieldExport?.onPlotChange?.(p);window.AnalysisCenter?.onPlotChange?.(p);if(document.getElementById('tab-report')?.classList.contains('active'))renderReportPreview();}
 function datePretty(s){
   if(!s)return '—';

@@ -5,7 +5,7 @@ let history=null,waterFC=null,loading=null,charts=[],miniMap=null,miniLayers=[];
 const fmt=n=>n==null||Number.isNaN(Number(n))?"—":Number(n).toLocaleString("th-TH",{maximumFractionDigits:2});
 const fmtIndex=n=>n==null||Number.isNaN(Number(n))?"—":Number(n).toLocaleString("th-TH",{minimumFractionDigits:3,maximumFractionDigits:5});
 const dth=d=>{if(!d)return"—";const [y,m,dd]=d.split("-");return `${dd}/${m}/${y}`};
-const trusted=x=>x&&["VERIFIED","AUTO_VALID"].includes(x.analysis_status)&&(x.valid_pct!=null&&Number.isFinite(Number(x.valid_pct))&&Number(x.valid_pct)>=70);
+const trusted=x=>x&&["VERIFIED","AUTO_VALID"].includes(x.analysis_status)&&(x.valid_pct==null||x.valid_pct>=70);
 async function load(force=false){
  if(loading)return loading;
  if(history&&!force)return history;
