@@ -598,3 +598,7 @@
 .field-workspace #field-stage-export{padding-bottom:5px}
 .field-workspace .field-points-list{max-height:240px;overflow-y:auto}
 @media(max-width:680px){.field-studio-tabs button span{font-size:10px}.field-studio-tabs button small{font-size:8px}.field-workspace .field-stage{padding:7px 0}}
+
+/* Water polygon that failed the area QA check (app.js polygonQaIssues) */
+.plot-qa{margin-top:6px}
+.qa-chip{display:inline-block;border:1px solid #f59e0b;color:#f59e0b;font-size:11px;line-height:1.5;border-radius:999px;padding:1px 8px}

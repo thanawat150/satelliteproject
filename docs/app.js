@@ -10,6 +10,8 @@ const VEG = {
 let dataset=null, plots=[], selected=null, overviewMap=null, fullMap=null, chart=null, activeStatus='ALL', alertOnly=false;
 let satelliteFiles=[], satellitePartsMeta=null, jpgPreviewMap={};
 let satelliteBounds=[], satelliteBoundsByKey=new Map();
+let polygonQaIssues=new Map(); // plot -> reason the new-water polygon failed QA
+const escAttr=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const satelliteImageLayers={overview:null,full:null};
 let mapSatelliteDate=null, mapSatelliteOpacity=1, mapSatelliteVisible=true, mapSatelliteFileId='auto';
 let boundaryFC=null, boundaryByPlot=new Map();
@@ -44,7 +46,7 @@ async function init(){
     const a=String(info.baseline).replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
     const b=String(info.current).replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
     const quality=window.MonitoringQA.verifyPair(info,a,b,historyForGeometry.plots?.[info.plot]||[],f);
-    if(!quality.ok)console.warn("Skipping inconsistent water polygon:",info.plot,quality.reason);
+    if(!quality.ok){polygonQaIssues.set(info.plot,quality.reason);console.warn("Skipping inconsistent water polygon:",info.plot,quality.reason);}
     return quality.ok;
   }).map(f=>[f.properties.plot,f]));
   document.getElementById('updated-pill').textContent=`อัปเดต ${dataset.updated}`;
@@ -93,7 +95,7 @@ function bindUI(){
 function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap){fullMap.invalidateSize();if(selected){populateMapSatelliteDates(selected);updateMapSatelliteOverlay(selected);focusMaps(selected)}}if(tab==='overview'&&overviewMap)overviewMap.invalidateSize();window.MonitoringStudio?.showTab?.(tab);window.AnalysisCenter?.showTab?.(tab);if(tab==='alerts')window.AlertCenter?.show?.();if(tab==='report')renderReportPreview()},160)}
 function openReportCenter(){switchTab('report');renderReportPreview()}
 function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};plots.forEach(p=>c[p.status]++);document.getElementById('kpi-total').textContent=plots.length;document.getElementById('kpi-high').textContent=c.HIGH;document.getElementById('kpi-watch').textContent=c.WATCH;document.getElementById('kpi-nodata').textContent=c.NO_DATA}
-function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)&&(!alertOnly||new Set(window.AlertCenter?.alerts?.().map(x=>x.plot)||[]).has(p.plot))).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div><div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','เปิดรายงานแปลง '+p.plot);d.onclick=()=>selectSidebarPlot(p);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectSidebarPlot(p)}};list.appendChild(d)})}
+function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)&&(!alertOnly||new Set(window.AlertCenter?.alerts?.().map(x=>x.plot)||[]).has(p.plot))).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div>${polygonQaIssues.has(p.plot)?`<div class="plot-qa"><span class="qa-chip" title="${escAttr(polygonQaIssues.get(p.plot))}">Polygon น้ำรอตรวจ</span></div>`:''}<div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','เปิดรายงานแปลง '+p.plot);d.onclick=()=>selectSidebarPlot(p);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectSidebarPlot(p)}};list.appendChild(d)})}
 function selectSidebarPlot(p){
   // Sidebar selection opens the report; on an open report tab it refreshes in place.
   if(!p)return;

@@ -33,6 +33,9 @@ async function main(){
   const dup=Object.entries(counts).filter(([,n])=>n>1).map(([p,n])=>p.split("/").pop()+" x"+n);
   assert.deepEqual(dup,[],"no data file fetched twice: "+dup.join(", "));
   assert.equal(await page.locator("#plot-list .plot-item").count(),19,"page still renders 19 plot cards");
+  const cardText=id=>page.evaluate(id=>[...document.querySelectorAll("#plot-list .plot-item")].find(el=>el.querySelector("strong")?.textContent.trim()===id)?.innerText??"(missing card "+id+")",id);
+  for(const id of ["17-STC","18(1)-STC"])assert.ok((await cardText(id)).includes("Polygon น้ำรอตรวจ"),"polygon QA chip shown: "+id);
+  assert.ok(!(await cardText("13-STC")).includes("Polygon น้ำรอตรวจ"),"polygon QA chip shown only for failed polygons: 13-STC");
   assert.deepEqual(errors,[],"page throws no errors");
   console.log("PORTAL REQUESTS TEST PASS:",Object.keys(counts).length,"data files,",requests.length,"requests");
  }finally{await browser.close()}
