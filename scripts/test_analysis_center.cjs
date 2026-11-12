@@ -31,6 +31,10 @@ assert.equal(unsafe.paired,false,'PARTIAL cannot be promoted to a verified compa
 assert.equal(unsafe.change,null);
 const provinceDates=model.provinceDefaults(history,data.plots);
 const province=model.makeProvince(history,data.plots,provinceDates);
+assert.equal(typeof model.qaCountByDate,'function','model.qaCountByDate is not a function');
+const qaCounts=model.qaCountByDate(history,data.plots);
+assert.equal(qaCounts.get('2026-09-29'),17,'QA pass count for 29/09/2569');
+assert.equal(qaCounts.get(provinceDates[1]),Math.max(...qaCounts.values()),'Day B default is the best-covered date');
 assert.equal(province.items.length,19);
 assert(province.covered>=1&&province.covered<=19);
 assert(province.paired<=province.covered);

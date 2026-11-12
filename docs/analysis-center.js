@@ -19,9 +19,13 @@ function plotDefaults(history,p,scenes=[]){
  const c=dates.slice().reverse().find(d=>d!==a&&d!==b)||"";
  return [a,b,c];
 }
-function provinceDefaults(history,plots){
+function qaCountByDate(history,plots){
  const count=new Map();
  for(const p of plots)for(const r of rowsFor(history,p.plot))if(trusted(r))count.set(r.date,(count.get(r.date)||0)+1);
+ return count;
+}
+function provinceDefaults(history,plots){
+ const count=qaCountByDate(history,plots);
  const ranked=[...count].sort((a,b)=>b[1]-a[1]||b[0].localeCompare(a[0]));
  const b=ranked[0]?.[0]||"";
  const paired=ranked.filter(([d])=>d!==b).map(([d,n])=>({date:d,count:plots.filter(p=>trusted(rowAt(history,p.plot,d))&&trusted(rowAt(history,p.plot,b))).length,n})).sort((a,b)=>b.count-a.count||b.n-a.n||b.date.localeCompare(a.date));
@@ -72,9 +76,9 @@ function updateChips(){
  setText("mc-context",state.scope==="province"?"19 แปลงในจังหวัดระยอง • ข้อมูลระดับจังหวัดจากผล QA จริง":"แปลง "+state.plot+" • วิเคราะห์เฉพาะขอบเขต PDD");
  setText("mc-mode-note",state.mode==="auto"?"ระบบเลือกวันที่มีผลผ่าน QA โดยอัตโนมัติ และอ่านข้อมูลจากคลังที่ประมวลผลไว้แล้ว ไม่ได้สั่งรันดาวเทียมใหม่":"เลือกวันที่แล้วกด «เปรียบเทียบข้อมูล» ใช้ผลวิเคราะห์ที่มีอยู่เท่านั้น • หากยังไม่มีดัชนีจะแจ้ง INDEX_PENDING ไม่คำนวณจาก JPG");
 }
-function fillSelect(id,values,chosen){
+function fillSelect(id,values,chosen,label=dateTH){
  const el=$(id);if(!el)return;
- el.innerHTML='<option value="">— ไม่มีวันที่ —</option>'+values.map(d=>'<option value="'+esc(d)+'">'+esc(dateTH(d))+'</option>').join("");
+ el.innerHTML='<option value="">— ไม่มีวันที่ —</option>'+values.map(d=>'<option value="'+esc(d)+'">'+esc(label(d))+'</option>').join("");
  el.value=values.includes(chosen)?chosen:"";
  el.disabled=state.mode==="auto"||!values.length;
 }
@@ -87,7 +91,9 @@ function drawControls(){
  const days=state.scope==="province"?
  [...new Set(state.plots.flatMap(p=>rowsFor(state.history,p.plot).map(r=>r.date)))].sort():
  datesFor(state.history,state.plot,state.scenes);
- ["a","b","c"].forEach((k,i)=>fillSelect("mc-date-"+k,days,state.dates[i]));
+ let label=dateTH;
+ if(state.scope==="province"){const qa=qaCountByDate(state.history,state.plots),n=state.plots.length;label=d=>dateTH(d)+" · ผ่าน QA "+(qa.get(d)||0)+"/"+n}
+ ["a","b","c"].forEach((k,i)=>fillSelect("mc-date-"+k,days,state.dates[i],label));
  const title=state.scope==="province"?"จังหวัดระยอง":"แปลง "+state.plot;
  setText("mc-title",title);
  setText("mc-source","ผลวิเคราะห์เผยแพร่ "+(state.history?.generated_at?new Date(state.history.generated_at).toLocaleString("th-TH",{timeZone:"Asia/Bangkok"}):"ไม่ระบุ")+
@@ -392,5 +398,5 @@ function onPlotChange(p){
  state.plot=p.plot;
  if(state.scope==="plot"){setDefaults();resetForChange()}
 }
-root.AnalysisCenter={init,showTab,onPlotChange,onReviewSaved,invalidateFinal,setScope:s=>{if(s!=="plot"&&s!=="province")return;state.scope=s;setDefaults();resetForChange();saveQuery()},model:{trusted,qa,plotDefaults,provinceDefaults,makePlot,makeProvince,rowAt}};
+root.AnalysisCenter={init,showTab,onPlotChange,onReviewSaved,invalidateFinal,setScope:s=>{if(s!=="plot"&&s!=="province")return;state.scope=s;setDefaults();resetForChange();saveQuery()},model:{trusted,qa,qaCountByDate,plotDefaults,provinceDefaults,makePlot,makeProvince,rowAt}};
 })(window);
