@@ -44,8 +44,6 @@
           <button class="filter" data-status="HIGH">สูง</button>
           <button class="filter" data-status="WATCH">เฝ้าระวัง</button>
           <button class="filter" data-status="NORMAL">ปกติ</button>
-           <button class="filter" data-status="WAIT_BASELINE">รอภาพฐานใหม่</button>
-           <button class="filter" data-status="NO_DATA">ข้อมูลไม่พอ</button>
         </div>
         <button type="button" id="sidebar-alert-only" class="alert-plot-only" aria-pressed="false">แสดงเฉพาะแปลงที่มี Alert</button>
       </div>
@@ -228,18 +226,16 @@
 
       <section class="tab-panel" id="tab-overview">
         <div id="overview-alert-strip" class="overview-alert-strip"><span>กำลังโหลดสัญญาณเฝ้าระวัง...</span></div>
-        <p class="trial-policy" id="bplus-trial-label">เกณฑ์ทดลอง B+: กำลังอ่านช่วงเวลาจากระบบ...</p>
-         <div class="kpi-grid">
+        <div class="kpi-grid">
           <div class="kpi"><span>แปลงทั้งหมด</span><strong id="kpi-total">—</strong><small>จังหวัดระยอง</small></div>
           <div class="kpi danger"><span>สัญญาณน้ำสูง</span><strong id="kpi-high">—</strong><small>ควรตรวจสอบก่อน</small></div>
           <div class="kpi warning"><span>เฝ้าระวัง</span><strong id="kpi-watch">—</strong><small>ติดตามรอบถัดไป</small></div>
           <div class="kpi muted"><span>ข้อมูลไม่เพียงพอ</span><strong id="kpi-nodata">—</strong><small>เมฆ/ไม่มี valid pixels</small></div>
-           <div class="kpi baseline"><span>รอภาพฐานใหม่</span><strong id="kpi-wait-baseline">—</strong><small>แยกจากสถานะปกติ</small></div>
         </div>
 
         <div class="overview-grid">
           <section class="card map-card">
-            <div class="card-head"><div><div class="eyebrow">SITUATION MAP</div><h3>สถานการณ์ล่าสุด</h3></div><div class="legend"><span><i class="dot high"></i>สูง</span><span><i class="dot watch"></i>เฝ้าระวัง</span><span><i class="dot normal"></i>ปกติ</span><span><i class="dot nodata"></i>ไม่มีข้อมูล</span><span><i class="dot pending-baseline"></i>รอภาพฐานใหม่</span><span class="legend-note">ชั้นน้ำใหม่ซ่อนเป็นค่าเริ่มต้น · เปิดได้ที่แผนที่</span></div></div>
+            <div class="card-head"><div><div class="eyebrow">SITUATION MAP</div><h3>สถานการณ์ล่าสุด</h3></div><div class="legend"><span><i class="dot high"></i>สูง</span><span><i class="dot watch"></i>เฝ้าระวัง</span><span><i class="dot normal"></i>ปกติ</span><span><i class="dot nodata"></i>ไม่มีข้อมูล</span><span class="legend-note">ชั้นน้ำใหม่ซ่อนเป็นค่าเริ่มต้น · เปิดได้ที่แผนที่</span></div></div>
             <div class="overview-sat-controls">
               <label>วันที่<select id="overview-sat-date" aria-label="วันที่ภาพบนแผนที่ภาพรวม"><option value="">กำลังโหลด...</option></select></label>
               <label>ไฟล์ภาพ<select id="overview-sat-file" aria-label="เลือกไฟล์ภาพแผนที่ภาพรวม"><option value="auto">อัตโนมัติ</option></select></label>
@@ -607,11 +603,10 @@
   <script src="monitoring-report.js?v=20261020-satpager1"></script>
   <script src="plot-review.js?v=20261020-singlefinal1"></script>
   <script src="analysis-center.js?v=20261020-satpager1"></script>
-  <script src="status-engine.js?v=bplus-trial1"></script>
-   <script src="app.js?v=bplus-trial1"></script>
+  <script src="app.js?v=20261020-onepage-center2"></script>
   <script src="field-export.js?v=20261014-survey-studio15"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
-  <script src="alert-engine.js?v=bplus-trial1"></script>
+  <script src="alert-engine.js?v=20261008-alertfix2"></script>
   <script src="alert-center.js?v=20261008-alertfix2"></script>
   <script src="monitoring-studio.js?v=20261009-reportselect1"></script>
   <script src="calendar.js?v=20261008-alertfix3"></script>

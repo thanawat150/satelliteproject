@@ -144,29 +144,6 @@ def geoms_as_crs(feature, crs):
     return clean_shape(transform(proj.transform, shape(feature["geometry"])))
 
 
-def sentinel_sensing_time(tif10, tif20, scene_date: str):
-    """Preserve actual UTC SENSING_TIME from GeoTIFF metadata. Never infer overpass hour."""
-    captured = []
-    for dataset in (tif10, tif20):
-        tags = {**dataset.tags(), **dataset.tags(1)}
-        candidate = tags.get("SENSING_TIME") or tags.get("SENSING_TIME_UTC")
-        if not candidate:
-            continue
-        try:
-            instant = datetime.fromisoformat(str(candidate).strip().replace("Z", "+00:00"))
-            if instant.tzinfo is None:
-                continue
-            utc = instant.astimezone(timezone.utc)
-            if utc.date().isoformat() != scene_date:
-                raise ValueError(f"SENSING_TIME date mismatch for {dataset.name}")
-            captured.append(utc.isoformat().replace("+00:00", "Z"))
-        except (TypeError, ValueError) as exc:
-            raise ValueError(f"Unreliable Sentinel-2 SENSING_TIME in {dataset.name}: {exc}") from exc
-    if len(set(captured))>1:
-        raise ValueError("Conflicting SENSING_TIME metadata between 10m and 20m rasters")
-    return captured[0] if captured else None
-
-
 def analyze(plot: str, date: str, tif10: Path, tif20: Path, allow_verified=False):
     scenes = read_json("analysis_jobs.json", {"algorithm": ALGORITHM, "processed": {}})
     fingerprint = hashlib.sha256((ALGORITHM + "|" + hash_file(tif10) + "|" + hash_file(tif20)).encode()).hexdigest()
@@ -184,7 +161,6 @@ def analyze(plot: str, date: str, tif10: Path, tif20: Path, allow_verified=False
     if not boundary or boundary.get("properties", {}).get("boundary_quality") != "verified":
         raise ValueError(f"No verified project polygon: {plot}")
     with rasterio.open(tif10) as ten, rasterio.open(tif20) as twenty:
-        sensing_time=sentinel_sensing_time(ten, twenty, date)
         if ten.crs is None or twenty.crs is None:
             raise ValueError("Input GeoTIFF lacks CRS")
         projected = clean_shape(transform(
@@ -230,8 +206,6 @@ def analyze(plot: str, date: str, tif10: Path, tif20: Path, allow_verified=False
             "bsi": percent_finite(bsi, clear) if status == "AUTO_VALID" else None,
             "change_water_rai": None, "new_water_rai": None, "lost_water_rai": None,
             "source": "sentinel2_raster_automated",
-            "sensing_time_utc": sensing_time,
-            "sensing_time_source": "SENSING_TIME_METADATA" if sensing_time else "NOT_AVAILABLE_IN_SOURCE_TIFF",
             "algorithm_version": ALGORITHM, "source_fingerprint": fingerprint
         }
         # Separate geometry products from manual VERIFIED baseline PDFs; never rewrite them.
