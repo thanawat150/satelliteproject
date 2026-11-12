@@ -56,7 +56,17 @@ function classify(plot,history){
   return {...result,status:"WAIT_BASELINE",reason:"ระยะห่างภาพ "+result.gap_days+" วัน เกินเกณฑ์ทดลอง "+TRIAL.maxDays+" วัน"};
  }
  // First water increase => WATCH; only two consecutive qualified increases => HIGH.
- if(!signal(previous,latest,area))return {...result,status:"NORMAL",reason:"น้ำเพิ่มแต่ต่ำกว่าเกณฑ์แจ้งเตือนเบื้องต้น"};
+ if(!signal(previous,latest,area)){
+  // If a prior qualified rise was observed and the most recent water remains
+  // elevated (but does not rise again by the alert threshold), retain WATCH,
+  // never auto-upgrade this single elevated follow-up to HIGH.
+  const held=!!antecedent&&gap(antecedent.date,previous.date)>0&&
+   gap(antecedent.date,previous.date)<=TRIAL.maxDays&&
+   signal(antecedent,previous,area)&&signal(antecedent,latest,area)&&
+   number(latest.water_rai)>=number(previous.water_rai);
+  return {...result,status:held?"WATCH":"NORMAL",
+   reason:held?"พื้นที่น้ำยังคงสูงหลังการตรวจพบครั้งก่อน รอหลักฐานเพิ่ม":"น้ำเพิ่มแต่ต่ำกว่าเกณฑ์แจ้งเตือนเบื้องต้น"};
+ }
  const persistent=!!antecedent&&
   gap(antecedent.date,previous.date)<=TRIAL.maxDays&&
   gap(antecedent.date,previous.date)>0&&
