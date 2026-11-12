@@ -37,6 +37,11 @@ async function main(){
   for(const id of ["17-STC","18(1)-STC"])assert.ok((await cardText(id)).includes("Polygon น้ำรอตรวจ"),"polygon QA chip shown: "+id);
   assert.ok(!(await cardText("13-STC")).includes("Polygon น้ำรอตรวจ"),"polygon QA chip shown only for failed polygons: 13-STC");
   assert.deepEqual(errors,[],"page throws no errors");
+  assert.match((await page.locator("#updated-pill").innerText()).trim(),/^อัปเดต \d{2}\/\d{2}\/25\d{2}$/,"header date is BE");
+  for(const tab of ["satellite","compare"]){await page.click(`[data-tab="${tab}"]`);await page.waitForLoadState("networkidle");await page.waitForTimeout(800)}
+  const noAlt=await page.$$eval("img:not([alt])",els=>els.map(e=>(e.className||e.parentElement?.className||"")+" "+String(e.src).slice(-40)));
+  assert.deepEqual(noAlt,[],"every img has alt");
+  await page.click('[data-tab="center"]');
   assert.equal(await page.locator("#top-more").isVisible(),false,"desktop hides the more-menu button");
   assert.equal(await page.getByRole("button",{name:"คัดลอกลิงก์"}).isVisible(),true,"desktop shows header actions");
   await page.close();

@@ -20,6 +20,7 @@ const mapLayers={overview:new Map(),full:new Map()};
 const newWaterLayers={overview:null,full:null};
 const fmt=n=>n===null||n===undefined||Number.isNaN(n)?'N/A':Number(n).toLocaleString('th-TH',{maximumFractionDigits:2});
 const idx=n=>n===null||n===undefined||Number.isNaN(n)?'N/A':Number(n).toFixed(3);
+const formatThaiDateISO=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));return m?`${m[3]}/${m[2]}/${Number(m[1])+543}`:'—'};
 const dateTH=s=>{if(!s||s.length!==8)return '—';return `${s.slice(6,8)}/${s.slice(4,6)}/${s.slice(0,4)}`};
 const delta=(a,b,digits=3)=>a==null||b==null?'N/A':`${b-a>=0?'+':''}${(b-a).toFixed(digits)}`;
 
@@ -49,7 +50,7 @@ async function init(){
     if(!quality.ok){polygonQaIssues.set(info.plot,quality.reason);console.warn("Skipping inconsistent water polygon:",info.plot,quality.reason);}
     return quality.ok;
   }).map(f=>[f.properties.plot,f]));
-  document.getElementById('updated-pill').textContent=`อัปเดต ${dataset.updated}`;
+  document.getElementById('updated-pill').textContent=`อัปเดต ${formatThaiDateISO(dataset.updated)}`;
   ['verified-folder','verified-folder-2'].forEach(id=>{const el=document.getElementById(id);el.href=dataset.report_folder});
   bindUI(); renderKPIs(); renderSidebar(); renderPriority(); renderMatrix(); initMaps(); populateReportSelect();
 
