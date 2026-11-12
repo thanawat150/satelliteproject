@@ -133,7 +133,7 @@ function refreshSourceOptions(plot){
   const hint=$("field-source-description");if(hint)hint.textContent=sourceDescription(floodFeature(plot));
 }
 async function loadHistoricalFlood(){
-  try{const j=await DataStore.json("water_history.geojson",{optional:true});if(!j)return;waterHistoryFeatures=Array.isArray(j.features)?j.features:[];
+  try{if(!window.DataStore)return;const j=await window.DataStore.json("water_history.geojson",{optional:true});if(!j)return;waterHistoryFeatures=Array.isArray(j.features)?j.features:[];
     const p=activePlot||((typeof selected!=="undefined")?selected:null);if(p){refreshSourceOptions(p.plot);redrawFloodBoundary();updatePanel();}
   }catch(e){console.warn("Field water history not available",e)}
 }

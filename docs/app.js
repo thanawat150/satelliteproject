@@ -11,6 +11,7 @@ let dataset=null, plots=[], selected=null, overviewMap=null, fullMap=null, chart
 let satelliteFiles=[], satellitePartsMeta=null, jpgPreviewMap={};
 let satelliteBounds=[], satelliteBoundsByKey=new Map();
 let polygonQaIssues=new Map(); // plot -> reason the new-water polygon failed QA
+let polygonQaPending=new Set(); // plots whose polygon is hidden because QA history could not be loaded
 const escAttr=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const satelliteImageLayers={overview:null,full:null};
 let mapSatelliteDate=null, mapSatelliteOpacity=1, mapSatelliteVisible=true, mapSatelliteFileId='auto';
@@ -20,7 +21,7 @@ const mapLayers={overview:new Map(),full:new Map()};
 const newWaterLayers={overview:null,full:null};
 const fmt=n=>n===null||n===undefined||Number.isNaN(n)?'N/A':Number(n).toLocaleString('th-TH',{maximumFractionDigits:2});
 const idx=n=>n===null||n===undefined||Number.isNaN(n)?'N/A':Number(n).toFixed(3);
-const formatThaiDateISO=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));return m?`${m[3]}/${m[2]}/${Number(m[1])+543}`:'—'};
+const formatThaiDateISO=iso=>{if(iso==null||iso==='')return '—';const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso));return m?`${m[3]}/${m[2]}/${Number(m[1])+543}`:String(iso)};
 const dateTH=s=>{if(!s||s.length!==8)return '—';return `${s.slice(6,8)}/${s.slice(4,6)}/${s.slice(0,4)}`};
 const delta=(a,b,digits=3)=>a==null||b==null?'N/A':`${b-a>=0?'+':''}${(b-a).toFixed(digits)}`;
 
@@ -43,6 +44,7 @@ async function init(){
   try{historyForGeometry=await window.TrendReport?.load?.()}catch(e){console.warn("QA history unavailable for overlay safety",e)}
   newWaterByPlot=new Map(newWaterFC.features.filter(f=>{
     const info=plots.find(x=>x.plot===f.properties?.plot);
+    if(info&&!historyForGeometry)polygonQaPending.add(info.plot);
     if(!info||!window.MonitoringQA?.verifyPair||!historyForGeometry)return false;
     const a=String(info.baseline).replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
     const b=String(info.current).replace(/^(\d{4})(\d{2})(\d{2})$/,"$1-$2-$3");
@@ -72,7 +74,11 @@ async function init(){
   renderReportPreview();
 }
 function bindUI(){
-  document.getElementById('top-more')?.addEventListener('click',()=>{const bar=document.getElementById('top-actions'),open=bar.classList.toggle('open');document.getElementById('top-more').setAttribute('aria-expanded',open?'true':'false')});
+  const topMore=document.getElementById('top-more'),topBar=document.getElementById('top-actions');
+  const setTopMenu=open=>{if(!topMore||!topBar)return;topBar.classList.toggle('open',open);topMore.setAttribute('aria-expanded',open?'true':'false')};
+  topMore?.addEventListener('click',e=>{e.stopPropagation();setTopMenu(!topBar.classList.contains('open'))});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&topBar?.classList.contains('open')){setTopMenu(false);topMore.focus()}});
+  document.addEventListener('click',e=>{if(topBar?.classList.contains('open')&&!topBar.contains(e.target))setTopMenu(false)});
   document.getElementById('search-input').addEventListener('input',renderSidebar);
   document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeStatus=b.dataset.status;renderSidebar()}));
   document.getElementById('sidebar-alert-only')?.addEventListener('click',()=>{alertOnly=!alertOnly;const b=document.getElementById('sidebar-alert-only');b.classList.toggle('is-active',alertOnly);b.setAttribute('aria-pressed',alertOnly?'true':'false');if(alertOnly)window.AlertCenter?.load?.().then(renderSidebar);renderSidebar()});
@@ -97,7 +103,7 @@ function bindUI(){
 function switchTab(tab,updateUrl=true){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('active',x.id===`tab-${tab}`));if(updateUrl)updateQuery({tab});setTimeout(()=>{if(tab==='map'&&fullMap){fullMap.invalidateSize();if(selected){populateMapSatelliteDates(selected);updateMapSatelliteOverlay(selected);focusMaps(selected)}}if(tab==='overview'&&overviewMap)overviewMap.invalidateSize();window.MonitoringStudio?.showTab?.(tab);window.AnalysisCenter?.showTab?.(tab);if(tab==='alerts')window.AlertCenter?.show?.();if(tab==='report')renderReportPreview()},160)}
 function openReportCenter(){switchTab('report');renderReportPreview()}
 function renderKPIs(){const c={HIGH:0,WATCH:0,NORMAL:0,NO_DATA:0};plots.forEach(p=>c[p.status]++);document.getElementById('kpi-total').textContent=plots.length;document.getElementById('kpi-high').textContent=c.HIGH;document.getElementById('kpi-watch').textContent=c.WATCH;document.getElementById('kpi-nodata').textContent=c.NO_DATA}
-function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)&&(!alertOnly||new Set(window.AlertCenter?.alerts?.().map(x=>x.plot)||[]).has(p.plot))).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div>${polygonQaIssues.has(p.plot)?`<div class="plot-qa"><span class="qa-chip" title="${escAttr(polygonQaIssues.get(p.plot))}">Polygon น้ำรอตรวจ</span></div>`:''}<div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','เปิดรายงานแปลง '+p.plot);d.onclick=()=>selectSidebarPlot(p);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectSidebarPlot(p)}};list.appendChild(d)})}
+function renderSidebar(){const q=document.getElementById('search-input').value.trim().toLowerCase();const list=document.getElementById('plot-list');list.innerHTML='';plots.filter(p=>(activeStatus==='ALL'||p.status===activeStatus)&&p.plot.toLowerCase().includes(q)&&(!alertOnly||new Set(window.AlertCenter?.alerts?.().map(x=>x.plot)||[]).has(p.plot))).forEach(p=>{const d=document.createElement('div');d.className=`plot-item ${selected?.plot===p.plot?'active':''}`;d.innerHTML=`<div class="plot-top"><strong>${p.plot}</strong><span><i class="status-dot" style="background:${STATUS[p.status].color}"></i><small>${STATUS[p.status].label}</small></span></div>${polygonQaIssues.has(p.plot)?`<div class="plot-qa"><span class="qa-chip" title="${escAttr(polygonQaIssues.get(p.plot))}">Polygon น้ำรอตรวจ</span></div>`:polygonQaPending.has(p.plot)?`<div class="plot-qa"><span class="qa-chip" title="โหลดประวัติผล QA ไม่สำเร็จ จึงยังไม่แสดง Polygon น้ำของแปลงนี้">รอผล QA</span></div>`:''}<div class="plot-bottom"><span>${fmt(p.area_rai)} ไร่</span><span>${p.water_change_pp==null?'N/A':`${p.water_change_pp>0?'+':''}${fmt(p.water_change_pp)} pp`}</span></div>`;d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','เปิดรายงานแปลง '+p.plot);d.onclick=()=>selectSidebarPlot(p);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectSidebarPlot(p)}};list.appendChild(d)})}
 function selectSidebarPlot(p){
   // Sidebar selection opens the report; on an open report tab it refreshes in place.
   if(!p)return;

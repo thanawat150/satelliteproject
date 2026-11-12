@@ -43,5 +43,10 @@ const s=context.window.DataStore;
  // fresh bypasses memo
  await s.json("a.json",{fresh:true});
  assert.equal(calls["data/a.json"],2,"fresh bypasses memo");
+ // fresh request that fails while a good copy is stored: next call fetches again and recovers
+ responses["data/a.json"]=[503];
+ await assert.rejects(s.json("a.json",{fresh:true}),/a\.json HTTP 503/,"failed fresh request rejects");
+ assert.deepEqual(await s.json("a.json"),{v:1},"after a failed fresh request the next call fetches again");
+ assert.equal(calls["data/a.json"],4,"failed fresh request is not remembered");
  console.log("DATA STORE TEST PASS");
 })().catch(e=>{console.error(e);process.exit(1)});
