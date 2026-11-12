@@ -2,7 +2,7 @@
 (function(global){
 "use strict";
 function ordered(rows){return [...(rows||[])].filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(String(x.date||""))).sort((a,b)=>a.date.localeCompare(b.date))}
-function trusted(x){return !!x&&["VERIFIED","AUTO_VALID"].includes(x.analysis_status)&&(x.valid_pct==null||Number(x.valid_pct)>=70)&&Number.isFinite(x.water_rai)&&Number.isFinite(x.water_pct)}
+function trusted(x){return !!x&&["VERIFIED","AUTO_VALID"].includes(x.analysis_status)&&(x.valid_pct!=null&&Number.isFinite(Number(x.valid_pct))&&Number(x.valid_pct)>=70)&&Number.isFinite(x.water_rai)&&Number.isFinite(x.water_pct)}
 function make(records,sceneDates){
  const all=ordered(records),good=all.filter(trusted),current=good.at(-1)||null,previous=good.at(-2)||null;
  const dates=[...new Set([...(sceneDates||[]),...all.map(x=>x.date)].filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(String(x))))].sort();

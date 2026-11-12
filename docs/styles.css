@@ -598,3 +598,13 @@
 .field-workspace #field-stage-export{padding-bottom:5px}
 .field-workspace .field-points-list{max-height:240px;overflow-y:auto}
 @media(max-width:680px){.field-studio-tabs button span{font-size:10px}.field-studio-tabs button small{font-size:8px}.field-workspace .field-stage{padding:7px 0}}
+
+/* B+ experimental water monitoring status. Distinct from NORMAL and NO_DATA. */
+.kpi-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+.kpi.baseline strong{color:#c4b5fd}
+.trial-policy{margin-bottom:10px;color:#e9d5ff;background:#261b40;border:1px solid #7c3aed;border-radius:9px;padding:9px 12px;font-size:11px;font-weight:600;line-height:1.6}
+.status-WAIT_BASELINE{color:#d8caff;background:#352253;border-color:#9068d7}
+.dot.pending-baseline{background:#a78bfa}
+.plot-item:has(.status-dot[style*="167, 139, 250"]){border-left:3px solid #a78bfa}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.trial-policy{font-size:10px}}
