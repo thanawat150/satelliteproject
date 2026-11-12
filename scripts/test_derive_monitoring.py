@@ -49,6 +49,7 @@ with tempfile.TemporaryDirectory(prefix="monitor_test_") as td:
         bands=["B5","B6","B7","B8A","B11","B12","SCL","MSK_CLDPRB","QA20","NDRE","NDMI","MNDWI"]
         with rasterio.open(twenty_path, "w", driver="GTiff", height=h20, width=w20,
                            count=len(bands), dtype="float32", crs="EPSG:32647", transform=tr20) as dst:
+            dst.update_tags(SENSING_TIME="2026-11-01T03:12:34Z" if shift==0 else "2026-11-04T03:12:34Z")
             values=[.10,.12,.13,.30,.06,.04,4,0,0,.25,.30,-.40]
             for i,(label,value) in enumerate(zip(bands,values),start=1):
                 arr=np.full((h20,w20), value,dtype="float32")
@@ -60,6 +61,9 @@ with tempfile.TemporaryDirectory(prefix="monitor_test_") as td:
     write_twenty(0)
     first=mod.analyze("13-STC","2026-11-01",ten_path,twenty_path)
     assert first["status"]=="AUTO_VALID" and first["valid_pct"]>=99, first
+    first_row=next(r for r in mod.read_json("analysis_history.json",{})["plots"]["13-STC"] if r["date"]=="2026-11-01")
+    assert first_row["sensing_time_utc"]=="2026-11-01T03:12:34Z",first_row
+    assert first_row["sensing_time_source"]=="SENSING_TIME_METADATA",first_row
     assert first["water_rai"]>0,first
     water_history=mod.read_json("water_history.geojson", {"features":[]})
     actual=next(f for f in water_history["features"] if f["properties"]["plot"]=="13-STC" and f["properties"]["date"]=="2026-11-01")
@@ -70,6 +74,8 @@ with tempfile.TemporaryDirectory(prefix="monitor_test_") as td:
     write_twenty(1)
     second=mod.analyze("13-STC","2026-11-04",ten_path,twenty_path)
     assert second["status"]=="AUTO_VALID",second
+    second_row=next(r for r in mod.read_json("analysis_history.json",{})["plots"]["13-STC"] if r["date"]=="2026-11-04")
+    assert second_row["sensing_time_utc"]=="2026-11-04T03:12:34Z",second_row
     assert second["new_water_rai"] is not None and second["new_water_rai"]>0,second
     assert second["lost_water_rai"] is not None and second["lost_water_rai"]>0,second
     features=mod.read_json("monitoring_hotspots.geojson",{"features":[]})["features"]
