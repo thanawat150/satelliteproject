@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
-  <link rel="stylesheet" href="styles.css?v=20261112-qachip1" />
+  <link rel="stylesheet" href="styles.css?v=20261112-mobilehead1" />
   <link rel="stylesheet" href="three-period-report.css?v=20261015-r1" />
   <link rel="stylesheet" href="analysis-center.css?v=20261020-v3" />
   <link rel="stylesheet" href="monitoring-report.css?v=20261020-satpager1" />
@@ -23,13 +23,14 @@
       <div class="brand-mark">≈</div>
       <div><h1>Flood & Environmental Monitoring</h1><p>ระบบติดตามสถานการณ์น้ำท่วมและผลกระทบสิ่งแวดล้อม • จังหวัดระยอง</p></div>
     </div>
-    <div class="top-actions">
+    <div class="top-actions" id="top-actions">
       <span class="update-pill" id="updated-pill">กำลังโหลด...</span>
       <button class="ghost-btn" onclick="copyShareLink()">คัดลอกลิงก์</button>
       <a class="ghost-btn" id="verified-folder" target="_blank" rel="noopener">Verified Reports</a>
       <button class="ghost-btn header-calendar-btn" type="button" onclick="switchTab('calendar')">📅 ปฏิทินภาพ</button>
       <a class="ghost-btn" href="nationwide.html" title="คลังภาพดาวเทียม 136 แปลง 2020–2026 และรายงาน QA">🗺️ ทุกจังหวัด · 136 แปลง</a>
       <button class="primary-btn" onclick="openReportCenter()">สร้าง Report</button>
+      <button id="top-more" class="ghost-btn top-more" type="button" aria-expanded="false" aria-controls="top-actions" aria-label="เมนูเพิ่มเติม">⋯</button>
     </div>
   </header>
 
@@ -604,7 +605,7 @@
   <script src="monitoring-report.js?v=20261020-satpager1"></script>
   <script src="plot-review.js?v=20261020-singlefinal1"></script>
   <script src="analysis-center.js?v=20261112-qacount1"></script>
-  <script src="app.js?v=20261112-qachip1"></script>
+  <script src="app.js?v=20261112-mobilehead1"></script>
   <script src="field-export.js?v=20261112-datastore1"></script>
   <script src="monitoring-qa.js?v=20261008-alertfix2"></script>
   <script src="alert-engine.js?v=20261008-alertfix2"></script>

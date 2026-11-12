@@ -71,6 +71,7 @@ async function init(){
   renderReportPreview();
 }
 function bindUI(){
+  document.getElementById('top-more')?.addEventListener('click',()=>{const bar=document.getElementById('top-actions'),open=bar.classList.toggle('open');document.getElementById('top-more').setAttribute('aria-expanded',open?'true':'false')});
   document.getElementById('search-input').addEventListener('input',renderSidebar);
   document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeStatus=b.dataset.status;renderSidebar()}));
   document.getElementById('sidebar-alert-only')?.addEventListener('click',()=>{alertOnly=!alertOnly;const b=document.getElementById('sidebar-alert-only');b.classList.toggle('is-active',alertOnly);b.setAttribute('aria-pressed',alertOnly?'true':'false');if(alertOnly)window.AlertCenter?.load?.().then(renderSidebar);renderSidebar()});

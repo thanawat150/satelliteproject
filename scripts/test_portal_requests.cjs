@@ -37,7 +37,22 @@ async function main(){
   for(const id of ["17-STC","18(1)-STC"])assert.ok((await cardText(id)).includes("Polygon น้ำรอตรวจ"),"polygon QA chip shown: "+id);
   assert.ok(!(await cardText("13-STC")).includes("Polygon น้ำรอตรวจ"),"polygon QA chip shown only for failed polygons: 13-STC");
   assert.deepEqual(errors,[],"page throws no errors");
-  console.log("PORTAL REQUESTS TEST PASS:",Object.keys(counts).length,"data files,",requests.length,"requests");
+  assert.equal(await page.locator("#top-more").isVisible(),false,"desktop hides the more-menu button");
+  assert.equal(await page.getByRole("button",{name:"คัดลอกลิงก์"}).isVisible(),true,"desktop shows header actions");
+  await page.close();
+
+  const mobile=await openPortal({width:375,height:812});
+  const m=mobile.page;
+  const headerH=await m.locator("header.topbar").evaluate(el=>el.getBoundingClientRect().height);
+  assert.ok(headerH<=140,"mobile header compact: "+Math.round(headerH)+"px");
+  const copy=m.getByRole("button",{name:"คัดลอกลิงก์"});
+  assert.equal(await copy.isVisible(),false,"more menu hides actions until opened");
+  await m.click("#top-more");
+  assert.equal(await copy.isVisible(),true,"more menu reveals actions");
+  assert.equal(await m.getAttribute("#top-more","aria-expanded"),"true","more menu sets aria-expanded");
+  assert.ok(await m.evaluate(()=>document.documentElement.scrollWidth<=375),"no horizontal scroll on mobile");
+  assert.deepEqual(mobile.errors,[],"mobile page throws no errors");
+  console.log("PORTAL REQUESTS TEST PASS:",Object.keys(counts).length,"data files,",requests.length,"requests; mobile header",Math.round(headerH),"px");
  }finally{await browser.close()}
 }
 main().catch(e=>{console.error(e);process.exit(1)});

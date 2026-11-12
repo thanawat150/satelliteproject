@@ -602,3 +602,7 @@
 /* Water polygon that failed the area QA check (app.js polygonQaIssues) */
 .plot-qa{margin-top:6px}
 .qa-chip{display:inline-block;border:1px solid #f59e0b;color:#f59e0b;font-size:11px;line-height:1.5;border-radius:999px;padding:1px 8px}
+
+/* Mobile header: keep "สร้าง Report" + ⋯ menu; other actions open from the menu */
+.top-more{display:none}
+@media(max-width:640px){.topbar{flex-wrap:wrap;align-items:center}.brand{flex:1;min-width:0}.brand h1{font-size:14px}.top-actions{flex-wrap:wrap;justify-content:flex-end}.top-actions>*:not(.primary-btn):not(.top-more){display:none}.top-more{display:inline-block;padding:9px 12px;font-size:14px;line-height:1}.top-actions.open{flex-basis:100%;justify-content:flex-start}.top-actions.open>*:not(.primary-btn):not(.top-more){display:inline-block}}
