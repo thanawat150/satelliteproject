@@ -7,12 +7,13 @@ const fmt=n=>n==null||!Number.isFinite(Number(n))?"—":Number(n).toLocaleString
 const date=s=>s?s.split("-").reverse().join("/"):"—";
 let state={alerts:[],plots:[],history:{},images:[],map:null,layer:null,loaded:false,fetching:null};
 const rank={P1:1,P2:2,P3:3};
-async function fetchJSON(n){return DataStore.json(n)}
-async function reload(){
+async function fetchJSON(n,fresh=false){return DataStore.json(n,{fresh})}
+// fresh:true is the "ตรวจข้อมูลบนเว็บอีกครั้ง" button: re-read the web instead of the page-load copy.
+async function reload({fresh=false}={}){
  if(state.fetching)return state.fetching;
  state.fetching=(async()=>{
-  const [h,p,meta]=await Promise.all([fetchJSON("analysis_history.json"),fetchJSON("plots.json"),fetchJSON("satellite_parts.json")]);
-  const blocks=await Promise.all(meta.parts.map(x=>fetchJSON(x.file)));
+  const [h,p,meta]=await Promise.all([fetchJSON("analysis_history.json",fresh),fetchJSON("plots.json",fresh),fetchJSON("satellite_parts.json",fresh)]);
+  const blocks=await Promise.all(meta.parts.map(x=>fetchJSON(x.file,fresh)));
   state.history=h.plots||{};state.plots=p.plots||[];
   state.images=[...new Map(blocks.flat().filter(x=>x.id&&x.plot&&x.date).map(x=>[x.id,x])).values()];
   if(!window.MonitoringAlerts?.build)throw Error("Alert Engine ยังไม่พร้อม");
@@ -95,12 +96,12 @@ function csv(){
 }
 function bind(){
  for(const id of ["alert-priority","alert-type","alert-plot"])$(id)?.addEventListener("change",show);
- $("alert-reload")?.addEventListener("click",reload);
+ $("alert-reload")?.addEventListener("click",()=>reload({fresh:true}));
  $("alert-export")?.addEventListener("click",csv);
  $("alert-list")?.addEventListener("click",evt=>{
   const btn=evt.target.closest("[data-alert-action]");if(btn)openAlert(btn.dataset.alertId,btn.dataset.alertAction)
  });
 }
-window.AlertCenter={load:reload,show:()=>{if(state.loaded)show();else reload()},alerts:()=>state.alerts.slice()};
+window.AlertCenter={load:()=>reload(),refresh:()=>reload({fresh:true}),show:()=>{if(state.loaded)show();else reload()},alerts:()=>state.alerts.slice()};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{bind();reload()},{once:true});else{bind();reload()}
 })();

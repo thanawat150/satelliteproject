@@ -45,6 +45,7 @@ jobs:
         run: |
           node --check docs/data-store.js
           node scripts/test_data_store.cjs
+          node scripts/test_refresh_paths.cjs
           node --check docs/app.js
           node --check docs/analysis-center.js
           node --check docs/three-period-report.js

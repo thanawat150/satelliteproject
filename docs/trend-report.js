@@ -11,7 +11,7 @@ async function load(force=false){
  if(history&&!force)return history;
  loading=Promise.all([
    DataStore.json("analysis_history.json",{fresh:force}),
-   DataStore.json("water_history.geojson",{optional:true,fallback:{type:"FeatureCollection",features:[]}})
+   DataStore.json("water_history.geojson",{optional:true,fresh:force,fallback:{type:"FeatureCollection",features:[]}})
  ]).then(([h,w])=>{history=h;waterFC=w;return h}).finally(()=>{loading=null});
  return loading;
 }
