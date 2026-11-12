@@ -1,0 +1,57 @@
+name: Rayong B+ PR Regression (No Deploy)
+on:
+  push:
+    branches:
+      - feature/rayong-bplus-qa-status-experiment
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate B+ tests first
+        run: node scripts/test_rayong_bplus_status.cjs
+      - name: Test existing portal data
+        run: |
+          python scripts/validate_portal.py
+          python scripts/validate_nationwide.py
+      - name: All Node syntax and tests from pages.yml
+        run: |
+          node --check docs/app.js
+          node --check docs/analysis-center.js
+          node --check docs/three-period-report.js
+          node scripts/test_analysis_center.cjs
+          node --check docs/field-export.js
+          node scripts/test_field_export.cjs
+          node scripts/test_field_export_all_plots.cjs
+          node scripts/test_field_multi_polygon.cjs
+          node scripts/test_field_drag_points.cjs
+          node scripts/test_field_survey_studio.cjs
+          node --check docs/calendar.js
+          node --check docs/map-studio.js
+          node scripts/test_satellite_sharp_water.cjs
+          node --check docs/trend-report.js
+          node --check docs/nationwide.js
+          node --check docs/nationwide-catalog.js
+          node --check docs/report-selector.js
+          node --check docs/monitoring-studio.js
+          node --check docs/monitoring-qa.js
+          node --check docs/alert-engine.js
+          node --check docs/alert-center.js
+          node scripts/test_monitoring_qa_alerts.cjs
+          node --check docs/live-report-model.js
+          node scripts/test_live_report.cjs
+          python -m py_compile scripts/derive_daily_monitoring.py scripts/nationwide_process.py scripts/nationwide_inventory.py scripts/nationwide_scope_136.py
+      - name: Fuel refresh command from pages.yml
+        run: |
+          node --check scripts/refresh_trip_fuel_prices.cjs
+          node scripts/refresh_trip_fuel_prices.cjs
