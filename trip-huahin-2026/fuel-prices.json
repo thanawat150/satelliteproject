@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "provider": "BCP",
+  "providerName": "บางจาก",
+  "source": "https://oil-price.bangchak.co.th/ApiOilPrice2/thai",
+  "sourceKind": "live-provider-api",
+  "asOf": "2026-11-10",
+  "checkedAt": "2026-11-14T08:02:05.404Z",
+  "updateStatus": "live",
+  "note": "ราคาประมาณการอ้างอิงน้ำมันบางจาก; ราคาแต่ละสถานีหรือจังหวัดอาจแตกต่าง โปรดตรวจสอบก่อนเติม",
+  "unit": "THB/L",
+  "prices": {
+    "gasohol95": 39.34,
+    "gasohol91": 38.97,
+    "e20": 31.3,
+    "e85": 30.63,
+    "dieselB7": 40.79
+  }
+}
