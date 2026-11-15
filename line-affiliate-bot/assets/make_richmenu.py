@@ -31,6 +31,13 @@ def icon(d, kind, cx, cy, r, color):
         d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=color, width=w)
         d.line([cx, cy, cx, cy - r*0.6], fill=color, width=w)
         d.line([cx, cy, cx + r*0.45, cy + r*0.3], fill=color, width=w)
+    elif kind == "plus":
+        d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=color)
+        d.rectangle([cx - r*0.12, cy - r*0.6, cx + r*0.12, cy + r*0.6], fill=(255, 255, 255))
+        d.rectangle([cx - r*0.6, cy - r*0.12, cx + r*0.6, cy + r*0.12], fill=(255, 255, 255))
+    elif kind == "send":
+        d.polygon([(cx - r, cy - r*0.1), (cx + r, cy - r*0.9), (cx + r*0.35, cy + r)], fill=color)
+        d.polygon([(cx - r*0.15, cy + r*0.1), (cx + r, cy - r*0.9), (cx + r*0.05, cy + r*0.75)], fill=(255, 255, 255))
     elif kind == "upload":
         d.polygon([(cx, cy - r), (cx - r*0.7, cy - r*0.2), (cx - r*0.25, cy - r*0.2), (cx - r*0.25, cy + r*0.4), (cx + r*0.25, cy + r*0.4), (cx + r*0.25, cy - r*0.2), (cx + r*0.7, cy - r*0.2)], fill=color)
         d.rounded_rectangle([cx - r, cy + r*0.6, cx + r, cy + r], r//8, fill=color)
@@ -50,17 +57,26 @@ def draw(path, size, cols, rows, tiles):
         cx = x0 + tw/2
         d.ellipse([cx - th*0.17, y0 + th*0.1, cx + th*0.17, y0 + th*0.44], fill=(230, 249, 238))
         icon(d, kind, cx, y0 + th*0.27, int(th*0.1), ACCENT)
+        # Pillow (no raqm) cannot stack an upper vowel + tone mark, e.g. "เพิ่ม": draw the tone mark by hand.
+        mark_at = None
+        for v in ("ิ่", "ี่", "ิ้", "ี้"):
+            if v in title:
+                mark_at = title.index(v); tone = v[1]; title = title.replace(v, v[0], 1); break
         d.text((cx, y0 + th*0.62), title, font=fb, fill=BG, anchor="mm")
+        if mark_at is not None:
+            left = cx - fb.getlength(title) / 2
+            x = left + fb.getlength(title[:mark_at + 1])
+            d.text((x - fb.size*0.06, y0 + th*0.62 - fb.size*0.27), tone, font=fb, fill=BG, anchor="rm")
         d.text((cx, y0 + th*0.82), sub, font=fs, fill=SUB, anchor="mm")
     im.save(path, "JPEG", quality=88, optimize=True)
     print(path, os.path.getsize(path))
 
 draw(os.path.join(HERE, "richmenu-owner.jpg"), (2500, 1686), 3, 2, [
-    ("ใครส่งงาน", "สรุป 7 วันล่าสุด", "people"),
+    ("เพิ่มงาน", "สร้างหัวข้องานใหม่", "plus"),
     ("ปฏิทินส่งงาน", "ดูเป็นรายวัน", "calendar"),
     ("ถาม AI", "ถามเรื่องการส่งงาน", "ai"),
     ("หัวข้องาน", "งานเปิดรับไฟล์", "folder"),
-    ("งานวันนี้", "ไฟล์ส่งเข้าวันนี้", "today"),
+    ("ส่งงาน", "รูป / ไฟล์ / zip", "send"),
     ("วิธีส่งงาน", "ส่งไฟล์ แล้วเลือกหัวข้อ", "upload"),
 ])
 draw(os.path.join(HERE, "richmenu-user.jpg"), (2500, 843), 3, 1, [

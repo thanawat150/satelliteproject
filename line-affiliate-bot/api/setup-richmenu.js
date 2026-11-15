@@ -34,7 +34,7 @@ const MENUS = {
   owner: {
     image: 'richmenu-owner.jpg',
     body: { size: { width: 2500, height: 1686 }, selected: true, name: 'ken-owner', chatBarText: 'เมนูผู้ดูแล',
-      areas: grid(2500, 1686, 3, 2, ['ใครส่งงาน', 'ปฏิทิน', 'ถาม AI', 'หัวข้องาน', 'งานวันนี้', 'วิธีส่งงาน']) }
+      areas: grid(2500, 1686, 3, 2, ['เพิ่มงาน', 'ปฏิทิน', 'ถาม AI', 'หัวข้องาน', 'ส่งงาน', 'วิธีส่งงาน']) }
   }
 };
 

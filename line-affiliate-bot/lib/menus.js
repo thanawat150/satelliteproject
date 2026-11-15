@@ -33,7 +33,8 @@ export function mainCarousel(owner) {
   ];
   if (owner) {
     cards.unshift(
-      card({ emoji: '👥', title: 'ใครส่งงานบ้าง', desc: 'สรุปการส่งงาน 7 วันล่าสุด', buttons: [msgButton('ดูสรุป', 'ใครส่งงาน'), msgButton('งานวันนี้', 'งานวันนี้', false)] }),
+      card({ emoji: '📤', title: 'ส่งงาน', desc: 'ถ่ายรูป เลือกรูป หรือแนบไฟล์ แล้วเลือกหัวข้อ', buttons: [msgButton('ส่งงาน', 'ส่งงาน')] }),
+      card({ emoji: '➕', title: 'เพิ่มงาน', desc: 'สร้างหัวข้องานใหม่ (โฟลเดอร์ใน Drive)', buttons: [msgButton('เพิ่มงาน', 'เพิ่มงาน'), msgButton('ใครส่งงานบ้าง', 'ใครส่งงาน', false)], color: '#FEF6EE' }),
       card({ emoji: '📅', title: 'ปฏิทินส่งงาน', desc: 'ดูว่าวันไหนมีคนส่งงานบ้าง', buttons: [msgButton('เดือนนี้', 'ปฏิทิน')], color: '#EEF2FF' }),
       card({ emoji: '🤖', title: 'ถาม AI', desc: 'ถามเรื่องการส่งงานด้วยภาษาพูด', buttons: [msgButton('เริ่มถาม', 'ถาม AI')], color: '#F4F3FF' })
     );
@@ -71,5 +72,17 @@ export function askAiPrompt() {
     type: 'text',
     text: '🤖 พิมพ์คำถามได้เลย หรือกดตัวอย่างด้านล่าง',
     quickReply: { items: examples.map(q => ({ type: 'action', action: { type: 'message', label: q.slice(0, 20), text: q } })) }
+  };
+}
+
+// "ส่งงาน": camera / photo buttons (LINE quick reply). Other files: attach with the chat's + button.
+export function sendWorkPrompt() {
+  return {
+    type: 'text',
+    text: '📤 ส่งงานได้เลย\n• รูป: กดปุ่มกล้องหรือรูปด้านล่าง\n• PDF / zip / ไฟล์อื่น: กด + ที่ช่องแชต → ไฟล์\nส่งแล้วบอทจะถามว่าเป็นงานอะไร',
+    quickReply: { items: [
+      { type: 'action', action: { type: 'camera', label: '📷 ถ่ายรูป' } },
+      { type: 'action', action: { type: 'cameraRoll', label: '🖼️ เลือกรูป' } }
+    ] }
   };
 }
