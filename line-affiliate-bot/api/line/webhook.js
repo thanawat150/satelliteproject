@@ -1,5 +1,5 @@
 // LINE webhook. Affiliate/TikTok schedule commands (วันนี้, พรุ่งนี้, ตาราง, ส่ง..., สถานะ,
-// checklist) were retired 2026-11-15. The bot now serves the mangrove map system;
+// checklist) were retired 2026-11-15. The bot is now the central notifier for all systems;
 // notifications are pushed through /api/notify.
 import crypto from 'node:crypto';
 
@@ -29,8 +29,9 @@ async function reply(replyToken, texts) {
 
 function menuText() {
   return [
-    '🌿 บอทแจ้งเตือนระบบแผนที่ป่าชายเลน',
-    'บอทจะส่งสรุปให้อัตโนมัติเมื่อทำแผนที่ร่างเสร็จ (จำนวนแปลงที่ผ่าน / ต้องตรวจ)',
+    '🔔 Ken LINE Bot',
+    'บอทแจ้งเตือนกลาง: รับแจ้งเตือนจากทุกระบบ (Mangrove / Satellite Monitoring / รายงานภาพดาวเทียม / ประมวลผลข้อมูล ฯลฯ)',
+    'ข้อความจะขึ้นต้นด้วย [ชื่อระบบ] ที่ส่งมา',
     '',
     'คำสั่ง',
     'userid — ดู LINE User ID',
@@ -41,7 +42,7 @@ function menuText() {
 }
 
 export async function GET() {
-  return Response.json({ ok: true, service: 'Mangrove map LINE webhook' });
+  return Response.json({ ok: true, service: 'Ken central LINE webhook' });
 }
 
 export async function POST(request) {
