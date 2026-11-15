@@ -4,8 +4,6 @@
 // Each tap sends a ready-made message, so the bot answers automatically.
 // Re-running replaces menus this endpoint created earlier (names start with "ken-").
 import crypto from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 
 const API = 'https://api.line.me/v2/bot';
 const DATA_API = 'https://api-data.line.me/v2/bot';
@@ -51,9 +49,11 @@ async function line(method, url, body, headers = {}) {
   return text ? JSON.parse(text) : {};
 }
 
-async function createMenu(def) {
+async function createMenu(def, origin) {
   const { richMenuId } = await line('POST', API + '/richmenu', JSON.stringify(def.body), { 'Content-Type': 'application/json' });
-  const img = readFileSync(path.join(process.cwd(), 'assets', def.image));
+  const res = await fetch(new URL('/' + def.image, origin)); // served from public/ (see build script)
+  if (!res.ok) throw new Error('image ' + def.image + ' -> ' + res.status);
+  const img = Buffer.from(await res.arrayBuffer());
   await line('POST', DATA_API + '/richmenu/' + richMenuId + '/content', img, { 'Content-Type': 'image/jpeg' });
   return richMenuId;
 }
@@ -66,8 +66,9 @@ export async function POST(request) {
   try {
     const { richmenus = [] } = await line('GET', API + '/richmenu/list');
     const old = richmenus.filter(m => String(m.name).startsWith('ken-'));
-    const userId = await createMenu(MENUS.user);
-    const ownerId = await createMenu(MENUS.owner);
+    const origin = new URL(request.url).origin;
+    const userId = await createMenu(MENUS.user, origin);
+    const ownerId = await createMenu(MENUS.owner, origin);
     await line('POST', API + '/user/all/richmenu/' + userId);
     await line('POST', API + '/user/' + process.env.LINE_USER_ID + '/richmenu/' + ownerId);
     for (const m of old) await line('DELETE', API + '/richmenu/' + m.richMenuId).catch(() => {});
