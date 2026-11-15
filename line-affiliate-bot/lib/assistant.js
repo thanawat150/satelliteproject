@@ -123,8 +123,8 @@ function userPrompt(question, items) {
 }
 
 // Google Gemini (free tier available via Google AI Studio). Model override: GEMINI_MODEL.
-export async function askGemini(question, items) {
-  const model = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+// Free-tier models are often overloaded (503): retry once, then try GEMINI_FALLBACK_MODEL.
+async function geminiOnce(model, question, items) {
   const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
@@ -132,12 +132,28 @@ export async function askGemini(question, items) {
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents: [{ role: 'user', parts: [{ text: userPrompt(question, items) }] }],
       generationConfig: { maxOutputTokens: 2000 }
-    })
+    }),
+    signal: AbortSignal.timeout(15000)
   });
   if (!r.ok) { const e = new Error('gemini ' + r.status); e.status = r.status; throw e; }
   const data = await r.json();
   const text = (data.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('').trim();
   return text || 'ไม่มีคำตอบ';
+}
+
+export async function askGemini(question, items) {
+  const primary = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+  const fallback = process.env.GEMINI_FALLBACK_MODEL || 'gemini-flash-lite-latest';
+  const retryable = e => [429, 500, 503].includes(e?.status) || e?.name === 'TimeoutError';
+  try { return await geminiOnce(primary, question, items); } catch (e) {
+    if (!retryable(e)) throw e;
+    console.error('GEMINI_RETRY', e.status || e.name);
+  }
+  await new Promise(res => setTimeout(res, 1500));
+  try { return await geminiOnce(primary, question, items); } catch (e) {
+    if (!retryable(e) || fallback === primary) throw e;
+  }
+  return geminiOnce(fallback, question, items);
 }
 
 export async function askClaude(question, items) {
@@ -199,7 +215,8 @@ export async function handleText(text, source) {
     return [today.length ? summaryText(today, 1).replace('1 วันล่าสุด', 'วันนี้') : 'วันนี้ยังไม่มีใครส่งงาน'];
   }
   const who = t.match(/^(?:ใครส่งงาน|ส่งงาน|สรุปงาน)\s*(.*)$/);
-  if (who) {
+  // "ใครส่งงาน <หัวข้อ>" is a command; "ใครส่งงานบ้างวันนี้" and other questions go to the AI.
+  if (who && !/[?？]|บ้าง|ไหม|มั้ย|วันนี้|เมื่อวาน|สัปดาห์|เดือน|ปี/.test(who[1])) {
     const { items } = await driveCall('list', { sinceDays: 30 });
     const topic = who[1].trim();
     if (topic) {

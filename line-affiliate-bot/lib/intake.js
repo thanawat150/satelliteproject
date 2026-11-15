@@ -84,6 +84,8 @@ export async function handleFile(event) {
   });
 }
 
+// Questions are never taken as topic names (e.g. "วันนี้ใครส่งงานบ้าง").
+const LOOKS_LIKE_QUESTION = /[?？]|ไหม|มั้ย|หรือเปล่า|อะไร|ใคร|บ้าง|ยังไง|อย่างไร|เท่าไร|กี่|ทำไม|เมื่อไร|ที่ไหน|ขอ|ช่วย/;
 const NOT_TOPIC = /^(เมนู|menu|help|ช่วย|ช่วยเหลือ|วิธีส่งงาน|หัวข้องาน|งานที่ฉันส่ง|ใครส่งงาน|งานวันนี้|ปฏิทิน|ถาม AI|userid|user id|id)$/i;
 
 async function finalizeAndReply(event, payload) {
@@ -106,7 +108,7 @@ async function finalizeAndReply(event, payload) {
 // Returns true when the text was used as a topic.
 export async function handleTopicText(event, text) {
   const name = String(text || '').trim();
-  if (!driveConfigured() || !name || name.length > 80 || NOT_TOPIC.test(name)) return false;
+  if (!driveConfigured() || !name || name.length > 60 || NOT_TOPIC.test(name) || LOOKS_LIKE_QUESTION.test(name)) return false;
   return finalizeAndReply(event, { topicName: name });
 }
 

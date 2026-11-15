@@ -42,14 +42,15 @@ export async function replyLine(replyToken, messages) {
   const r = await fetch(API + '/message/reply', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeader() },
-    body: JSON.stringify({ replyToken, messages: list })
+    body: JSON.stringify({ replyToken, messages: list }),
+    signal: AbortSignal.timeout(10000)
   });
   if (!r.ok) console.error('LINE reply failed', r.status, await r.text());
 }
 
 // Download the binary content of a file/image/video/audio message.
 export async function getMessageContent(messageId) {
-  const r = await fetch(DATA_API + '/message/' + encodeURIComponent(messageId) + '/content', { headers: authHeader() });
+  const r = await fetch(DATA_API + '/message/' + encodeURIComponent(messageId) + '/content', { headers: authHeader(), signal: AbortSignal.timeout(15000) });
   if (r.status === 202) return { notReady: true };
   if (!r.ok) throw new Error('LINE content failed: ' + r.status);
   const buf = Buffer.from(await r.arrayBuffer());
