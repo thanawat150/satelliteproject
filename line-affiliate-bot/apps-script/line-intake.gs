@@ -34,6 +34,8 @@ function doPost(e) {
       case 'finalize': return out_(withLock_(() => finalize_(req)));
       case 'redate': return out_(withLock_(() => redate_(req)));
       case 'list': return out_(list_(req));
+      case 'await': return out_(withLock_(() => awaitTopic_(req)));
+      case 'createTopic': return out_(withLock_(() => createTopic_(req)));
       default: return out_({ ok: false, error: 'unknown action' });
     }
   } catch (err) {
@@ -73,23 +75,38 @@ function stage_(req) {
   pending.push(file.getId());
   props.setProperty(pkey, JSON.stringify(pending));
   props.setProperty(key, file.getId());
+  // Ask for a topic on the first file of a batch, or again if the last question was over a
+  // minute ago (an earlier batch was never answered), so the sender is never left in silence.
+  const akey = 'a:' + m.chatId + ':' + m.userId;
+  const ask = pending.length === 1 || Date.now() - Number(props.getProperty(akey) || 0) > 60000;
+  if (ask) props.setProperty(akey, String(Date.now()));
   prune_(props);
-  return { ok: true, fileId: file.getId(), name: file.getName(), pendingCount: pending.length };
+  return { ok: true, fileId: file.getId(), name: file.getName(), pendingCount: pending.length, ask: ask };
 }
 
 function finalize_(req) {
   const props = PropertiesService.getScriptProperties();
   const pkey = pendingKey_(req.chatId, req.userId);
   const pending = JSON.parse(props.getProperty(pkey) || '[]');
-  if (!pending.length) return { ok: true, count: 0 };
+  if (!pending.length) {
+    // No files waiting: a typed name right after "เพิ่มงาน" creates a new topic folder.
+    const wkey = awaitKey_(req.chatId, req.userId);
+    const since = Number(props.getProperty(wkey) || 0);
+    if (req.topicName && since && Date.now() - since < 15 * 60000) {
+      props.deleteProperty(wkey);
+      const t = ensureTopic_(req.topicName);
+      if (!t) return { ok: false, error: 'topic name required' };
+      return { ok: true, count: 0, awaited: true, topicName: t.folder.getName(), topicCreated: t.created, folderUrl: t.folder.getUrl() };
+    }
+    return { ok: true, count: 0 };
+  }
   // topicId = existing topic folder; topicName = typed name -> find or create that folder
   let topic, created = false;
   if (req.topicId) topic = DriveApp.getFolderById(req.topicId);
   else {
-    const name = safeName_(String(req.topicName || '').trim().replace(/^_+/, '')).slice(0, 80);
-    if (!name) return { ok: false, error: 'topic name required' };
-    const it = root_().getFoldersByName(name);
-    if (it.hasNext()) topic = it.next(); else { topic = root_().createFolder(name); created = true; }
+    const t = ensureTopic_(req.topicName);
+    if (!t) return { ok: false, error: 'topic name required' };
+    topic = t.folder; created = t.created;
   }
   const date = req.date || today_();
   const dest = folder_(topic, date);
@@ -99,6 +116,29 @@ function finalize_(req) {
   props.setProperty('b:' + batchId, JSON.stringify({ ids: res.ids, topicId: topic.getId() }));
   return Object.assign({ ok: true, batchId: batchId, topicName: topic.getName(), topicCreated: created, date: date, folderUrl: dest.getUrl() }, res.summary);
 }
+
+// "เพิ่มงาน": remember that this sender's next typed text is a new topic name.
+function awaitTopic_(req) {
+  PropertiesService.getScriptProperties().setProperty(awaitKey_(req.chatId, req.userId), String(Date.now()));
+  return { ok: true };
+}
+
+// "เพิ่มงาน <ชื่อ>": create (or find) the topic folder right away.
+function createTopic_(req) {
+  const t = ensureTopic_(req.topicName);
+  if (!t) return { ok: false, error: 'topic name required' };
+  return { ok: true, topicName: t.folder.getName(), topicCreated: t.created, folderUrl: t.folder.getUrl() };
+}
+
+function ensureTopic_(rawName) {
+  const name = safeName_(String(rawName || '').trim().replace(/^_+/, '')).slice(0, 80);
+  if (!name) return null;
+  const it = root_().getFoldersByName(name);
+  if (it.hasNext()) return { folder: it.next(), created: false };
+  return { folder: root_().createFolder(name), created: true };
+}
+
+function awaitKey_(chatId, userId) { return 'w:' + chatId + ':' + userId; }
 
 function redate_(req) {
   const props = PropertiesService.getScriptProperties();

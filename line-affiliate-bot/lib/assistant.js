@@ -2,7 +2,8 @@
 // from the Drive log, shows a submission calendar, and uses Claude for free-form questions.
 import Anthropic from '@anthropic-ai/sdk';
 import { driveCall, driveConfigured } from './drive.js';
-import { mainCarousel, topicsCarousel, howToText, askAiPrompt } from './menus.js';
+import { mainCarousel, topicsCarousel, howToText, askAiPrompt, sendWorkPrompt } from './menus.js';
+import { chatIdOf } from './line.js';
 
 const TZ = 'Asia/Bangkok';
 const MODEL = 'claude-opus-5-5';
@@ -190,6 +191,7 @@ export async function handleText(text, source) {
   const lower = t.toLowerCase();
   if (['เมนู', 'menu', 'help', 'ช่วย', 'ช่วยเหลือ'].includes(lower)) return [mainCarousel(owner)];
   if (t === 'วิธีส่งงาน') return [howToText()];
+  if (t === 'ส่งงาน') return [sendWorkPrompt()];
   if (!driveConfigured()) return ['ระบบเก็บไฟล์ยังไม่ได้ตั้งค่า (DRIVE_UPLOAD_URL / DRIVE_UPLOAD_SECRET)'];
   if (t === 'หัวข้องาน') {
     const { topics } = await driveCall('topics');
@@ -204,6 +206,16 @@ export async function handleText(text, source) {
 
   // ----- owner only -----
   if (t === 'ถาม AI') return [askAiPrompt()];
+  const add = t.match(/^เพิ่มงาน\s*(.*)$/);
+  if (add) {
+    const name = add[1].trim();
+    if (!name) {
+      await driveCall('await', { chatId: chatIdOf(source), userId: source.userId || '' });
+      return ['➕ พิมพ์ชื่องานใหม่ได้เลย เช่น "ตรวจ FCD รอบ 2" (ภายใน 15 นาที)'];
+    }
+    const res = await driveCall('createTopic', { topicName: name });
+    return [(res.topicCreated ? '✅ สร้างงาน "' : 'ℹ️ มีงาน "') + res.topicName + '" ' + (res.topicCreated ? 'แล้ว' : 'อยู่แล้ว') + '\n📂 ' + res.folderUrl];
+  }
   if (/^ปฏิทิน/.test(t)) {
     const { y, m } = parseCalendarMonth(t);
     const { items } = await driveCall('list', { sinceDays: 400, limit: 2000 });
@@ -214,7 +226,7 @@ export async function handleText(text, source) {
     const today = todayItems(items);
     return [today.length ? summaryText(today, 1).replace('1 วันล่าสุด', 'วันนี้') : 'วันนี้ยังไม่มีใครส่งงาน'];
   }
-  const who = t.match(/^(?:ใครส่งงาน|ส่งงาน|สรุปงาน)\s*(.*)$/);
+  const who = t.match(/^(?:ใครส่งงาน|สรุปงาน)\s*(.*)$/);
   // "ใครส่งงาน <หัวข้อ>" is a command; "ใครส่งงานบ้างวันนี้" and other questions go to the AI.
   if (who && !/[?？]|บ้าง|ไหม|มั้ย|วันนี้|เมื่อวาน|สัปดาห์|เดือน|ปี/.test(who[1])) {
     const { items } = await driveCall('list', { sinceDays: 30 });

@@ -70,27 +70,34 @@ export async function handleFile(event) {
       receivedAt: new Date(event.timestamp || Date.now()).toISOString(), size: content.buf.length
     }
   });
-  // Ask the topic once per batch (first pending file only), so an album of photos gets one question.
-  if (staged.duplicate || staged.pendingCount !== 1) return;
+  // Ask once per batch (an album gets one question); the Apps Script also says "ask" again when an
+  // earlier batch was left unanswered for over a minute.
+  const ask = staged.ask ?? staged.pendingCount === 1;
+  if (staged.duplicate || !ask) return;
+  const waiting = staged.pendingCount > 1 ? ' (รอเลือกหัวข้อรวม ' + staged.pendingCount + ' ไฟล์)' : '';
   const { topics } = await driveCall('topics');
   if (!topics.length) {
-    await replyLine(event.replyToken, '📥 รับไฟล์ ' + name + ' แล้ว\nงานนี้เป็นงานอะไรครับ? พิมพ์ชื่องานได้เลย (ระบบจะสร้างโฟลเดอร์ให้)');
+    await replyLine(event.replyToken, '📥 รับไฟล์ ' + name + ' แล้ว' + waiting + '\nงานนี้เป็นงานอะไรครับ? พิมพ์ชื่องานได้เลย (ระบบจะสร้างโฟลเดอร์ให้)');
     return;
   }
   await replyLine(event.replyToken, {
     type: 'text',
-    text: '📥 รับไฟล์ ' + name + ' แล้ว\nงานนี้เป็นงานอะไรครับ? กดเลือกหัวข้อด้านล่าง\nหรือพิมพ์ชื่องานใหม่ได้เลย (ระบบจะสร้างโฟลเดอร์ให้)' + (topics.length > 13 ? '\n(แสดง 13 หัวข้อแรก)' : ''),
+    text: '📥 รับไฟล์ ' + name + ' แล้ว' + waiting + '\nงานนี้เป็นงานอะไรครับ? กดเลือกหัวข้อด้านล่าง\nหรือพิมพ์ชื่องานใหม่ได้เลย (ระบบจะสร้างโฟลเดอร์ให้)' + (topics.length > 13 ? '\n(แสดง 13 หัวข้อแรก)' : ''),
     quickReply: topicQuickReply(topics)
   });
 }
 
 // Questions are never taken as topic names (e.g. "วันนี้ใครส่งงานบ้าง").
 const LOOKS_LIKE_QUESTION = /[?？]|ไหม|มั้ย|หรือเปล่า|อะไร|ใคร|บ้าง|ยังไง|อย่างไร|เท่าไร|กี่|ทำไม|เมื่อไร|ที่ไหน|ขอ|ช่วย/;
-const NOT_TOPIC = /^(เมนู|menu|help|ช่วย|ช่วยเหลือ|วิธีส่งงาน|หัวข้องาน|งานที่ฉันส่ง|ใครส่งงาน|งานวันนี้|ปฏิทิน|ถาม AI|userid|user id|id)$/i;
+const NOT_TOPIC = /^(เมนู|menu|help|ช่วย|ช่วยเหลือ|วิธีส่งงาน|หัวข้องาน|งานที่ฉันส่ง|ใครส่งงาน|งานวันนี้|ปฏิทิน|ถาม AI|ส่งงาน|เพิ่มงาน.*|userid|user id|id)$/i;
 
 async function finalizeAndReply(event, payload) {
   const source = event.source || {};
   const res = await driveCall('finalize', { chatId: chatIdOf(source), userId: source.userId || '', ...payload });
+  if (!res.count && res.awaited) {
+    await replyLine(event.replyToken, (res.topicCreated ? '✅ สร้างงาน "' : 'ℹ️ มีงาน "') + res.topicName + '" ' + (res.topicCreated ? 'แล้ว' : 'อยู่แล้ว') + '\nส่งไฟล์แล้วเลือกหัวข้อนี้ได้เลย\n📂 ' + res.folderUrl);
+    return true;
+  }
   if (!res.count) return false;
   const lines = ['✅ เก็บ ' + res.count + ' ไฟล์ ในงาน "' + res.topicName + '"' + (res.topicCreated ? ' (สร้างหัวข้อใหม่)' : '') + ' วันที่ ' + res.date + ' แล้ว'];
   if (res.extracted) lines.push('📦 แตก zip ได้ ' + res.extracted + ' ไฟล์');
