@@ -71,7 +71,7 @@ def draw(path, size, cols, rows, tiles):
     im.save(path, "JPEG", quality=88, optimize=True)
     print(path, os.path.getsize(path))
 
-draw(os.path.join(HERE, "richmenu-owner.jpg"), (2500, 1686), 3, 2, [
+draw(os.path.join(HERE, "richmenu-owner-basic.jpg"), (2500, 1686), 3, 2, [
     ("เพิ่มงาน", "สร้างหัวข้องานใหม่", "plus"),
     ("ปฏิทินส่งงาน", "ดูเป็นรายวัน", "calendar"),
     ("ถาม AI", "ถามเรื่องการส่งงาน", "ai"),
@@ -79,7 +79,7 @@ draw(os.path.join(HERE, "richmenu-owner.jpg"), (2500, 1686), 3, 2, [
     ("ส่งงาน", "รูป / ไฟล์ / zip", "send"),
     ("วิธีส่งงาน", "ส่งไฟล์ แล้วเลือกหัวข้อ", "upload"),
 ])
-draw(os.path.join(HERE, "richmenu-user.jpg"), (2500, 843), 3, 1, [
+draw(os.path.join(HERE, "richmenu-user-basic.jpg"), (2500, 843), 3, 1, [
     ("วิธีส่งงาน", "ส่งไฟล์ แล้วเลือกหัวข้อ", "upload"),
     ("หัวข้องาน", "งานเปิดรับไฟล์", "folder"),
     ("ไฟล์ของฉัน", "เช็กว่าเข้าระบบแล้ว", "mine"),

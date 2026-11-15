@@ -9,16 +9,23 @@ function uriButton(label, uri) {
   return { type: 'button', style: 'secondary', height: 'sm', action: { type: 'uri', label: label.slice(0, 40), uri } };
 }
 
-function card({ emoji, title, desc, buttons, color = '#ECFDF3' }) {
-  return {
+// Card images live in public/ (copied from assets/ at build time).
+const BASE = 'https://' + (process.env.VERCEL_PROJECT_PRODUCTION_URL || 'satelliteproject-line-affiliate-bot.vercel.app');
+const img = name => BASE + '/' + name + '.jpg';
+
+function card({ emoji, title, desc, buttons, color = '#ECFDF3', image }) {
+  const titleText = { type: 'text', text: title, weight: 'bold', size: 'md', align: 'center', wrap: true };
+  const descText = { type: 'text', text: desc, size: 'sm', color: '#667085', wrap: true, align: 'center', margin: 'sm' };
+  const bubble = {
     type: 'bubble', size: 'kilo',
-    header: { type: 'box', layout: 'vertical', backgroundColor: color, paddingAll: '16px', contents: [
-      { type: 'text', text: emoji, size: '3xl', align: 'center' },
-      { type: 'text', text: title, weight: 'bold', size: 'md', align: 'center', wrap: true, margin: 'sm' }
-    ] },
-    body: { type: 'box', layout: 'vertical', contents: [{ type: 'text', text: desc, size: 'sm', color: '#667085', wrap: true, align: 'center' }] },
+    body: { type: 'box', layout: 'vertical', contents: image ? [titleText, descText] : [descText] },
     footer: { type: 'box', layout: 'vertical', spacing: 'sm', contents: buttons }
   };
+  if (image) bubble.hero = { type: 'image', url: img(image), size: 'full', aspectRatio: '1040:585', aspectMode: 'cover' };
+  else bubble.header = { type: 'box', layout: 'vertical', backgroundColor: color, paddingAll: '16px', contents: [
+    { type: 'text', text: emoji, size: '3xl', align: 'center' }, { ...titleText, margin: 'sm' }
+  ] };
+  return bubble;
 }
 
 function carousel(altText, bubbles) {
@@ -28,15 +35,15 @@ function carousel(altText, bubbles) {
 export function mainCarousel(owner) {
   const cards = [
     card({ emoji: '📤', title: 'วิธีส่งงาน', desc: 'ส่งไฟล์เข้าแชตนี้หรือในกลุ่ม แล้วเลือกหัวข้องาน ระบบเก็บลง Drive ให้', buttons: [msgButton('ดูวิธีส่งงาน', 'วิธีส่งงาน')] }),
-    card({ emoji: '📁', title: 'หัวข้องาน', desc: 'ดูรายชื่องานที่เปิดรับไฟล์', buttons: [msgButton('ดูหัวข้องาน', 'หัวข้องาน')], color: '#EFF8FF' }),
-    card({ emoji: '🧾', title: 'งานที่ฉันส่ง', desc: 'เช็กว่าไฟล์ที่ส่งไปเข้าระบบแล้วหรือยัง', buttons: [msgButton('ดูงานที่ฉันส่ง', 'งานที่ฉันส่ง')], color: '#FEF6EE' })
+    card({ emoji: '📁', title: 'หัวข้องาน', desc: 'ดูรายชื่องานที่เปิดรับไฟล์', buttons: [msgButton('ดูหัวข้องาน', 'หัวข้องาน')], color: '#EFF8FF', image: 'card-topics' }),
+    card({ emoji: '🧾', title: 'งานที่ฉันส่ง', desc: 'เช็กว่าไฟล์ที่ส่งไปเข้าระบบแล้วหรือยัง', buttons: [msgButton('ดูงานที่ฉันส่ง', 'งานที่ฉันส่ง')], color: '#FEF6EE', image: 'card-mine' })
   ];
   if (owner) {
     cards.unshift(
-      card({ emoji: '📤', title: 'ส่งงาน', desc: 'ถ่ายรูป เลือกรูป หรือแนบไฟล์ แล้วเลือกหัวข้อ', buttons: [msgButton('ส่งงาน', 'ส่งงาน')] }),
-      card({ emoji: '➕', title: 'เพิ่มงาน', desc: 'สร้างหัวข้องานใหม่ (โฟลเดอร์ใน Drive)', buttons: [msgButton('เพิ่มงาน', 'เพิ่มงาน'), msgButton('ใครส่งงานบ้าง', 'ใครส่งงาน', false)], color: '#FEF6EE' }),
-      card({ emoji: '📅', title: 'ปฏิทินส่งงาน', desc: 'ดูว่าวันไหนมีคนส่งงานบ้าง', buttons: [msgButton('เดือนนี้', 'ปฏิทิน')], color: '#EEF2FF' }),
-      card({ emoji: '🤖', title: 'ถาม AI', desc: 'ถามเรื่องการส่งงานด้วยภาษาพูด', buttons: [msgButton('เริ่มถาม', 'ถาม AI')], color: '#F4F3FF' })
+      card({ emoji: '📤', title: 'ส่งงาน', desc: 'ถ่ายรูป เลือกรูป หรือแนบไฟล์ แล้วเลือกหัวข้อ', buttons: [msgButton('ส่งงาน', 'ส่งงาน')], image: 'card-send' }),
+      card({ emoji: '➕', title: 'เพิ่มงาน', desc: 'สร้างหัวข้องานใหม่ (โฟลเดอร์ใน Drive)', buttons: [msgButton('เพิ่มงาน', 'เพิ่มงาน'), msgButton('ใครส่งงานบ้าง', 'ใครส่งงาน', false)], color: '#FEF6EE', image: 'card-add' }),
+      card({ emoji: '📅', title: 'ปฏิทินส่งงาน', desc: 'ดูว่าวันไหนมีคนส่งงานบ้าง', buttons: [msgButton('เดือนนี้', 'ปฏิทิน')], color: '#EEF2FF', image: 'card-calendar' }),
+      card({ emoji: '🤖', title: 'ถาม AI', desc: 'ถามเรื่องการส่งงานด้วยภาษาพูด', buttons: [msgButton('เริ่มถาม', 'ถาม AI')], color: '#F4F3FF', image: 'card-ai' })
     );
   }
   return carousel('เมนูน้องโกงกาง', cards);
