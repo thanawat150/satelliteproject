@@ -21,7 +21,8 @@ notifications from every system. LINE credentials live only in this Vercel proje
 | `MAP_NOTIFY_SECRET` | auth for `/api/notify` and `/api/setup-richmenu` (random, never the LINE token) |
 | `DRIVE_UPLOAD_URL` | Apps Script web app URL (`apps-script/line-intake.gs`) |
 | `DRIVE_UPLOAD_SECRET` | shared secret with the Apps Script (Script Properties) |
-| `ANTHROPIC_API_KEY` | optional: AI answers for the owner (falls back to plain summaries) |
+| `ANTHROPIC_API_KEY` | optional: AI answers for the owner with Claude (used first if set) |
+| `GEMINI_API_KEY` | optional: AI answers with Google Gemini instead (free tier in AI Studio); `GEMINI_MODEL` overrides the default `gemini-flash-latest` |
 
 No longer used (safe to remove later): `CRON_SECRET`, `LINE_REMINDER_SECRET`.
 
@@ -56,7 +57,8 @@ Python helper (stdlib only): `D:\createmap\OpenAreas_AI\ai_model\line_notify.py`
 - Rich menu (bottom): everyone gets วิธีส่งงาน / หัวข้องาน / งานที่ฉันส่ง; the owner (`LINE_USER_ID`)
   gets ใครส่งงาน / ปฏิทิน / ถาม AI / หัวข้องาน / งานวันนี้ / วิธีส่งงาน. Each tap sends that text.
 - Owner commands: `ใครส่งงาน [หัวข้อ]`, `งานวันนี้`, `ปฏิทิน [2569-10]` (Flex month view),
-  `ถาม AI`, or any question → Claude (`claude-opus-5-5`, effort low) answers from the log.
-  File names and sender names in the log are sent to the Anthropic API for those answers.
+  `ถาม AI`, or any question → Claude (`claude-opus-5-5`, effort low) or Gemini answers from the log;
+  with neither key set, the bot replies with a plain summary. File names and sender names in the
+  log are sent to the chosen AI provider for those answers.
 - Rich menu images: `assets/richmenu-*.jpg` (regenerate with `python assets/make_richmenu.py`,
   or replace with designed images of the same size: owner 2500×1686 in a 3×2 grid, user 2500×843 in a 3×1 grid).
