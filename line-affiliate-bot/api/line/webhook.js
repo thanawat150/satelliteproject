@@ -7,7 +7,7 @@
 // Notifications from other systems still go through /api/notify.
 import crypto from 'node:crypto';
 import { replyLine } from '../../lib/line.js';
-import { isFileMessage, handleFile, handlePostback } from '../../lib/intake.js';
+import { isFileMessage, handleFile, handlePostback, handleTopicText } from '../../lib/intake.js';
 import { handleText } from '../../lib/assistant.js';
 
 function validSignature(raw, signature, secret) {
@@ -27,8 +27,10 @@ async function handleEvent(event) {
   if (isFileMessage(event)) return handleFile(event);
   if (event.type === 'follow') return replyLine(event.replyToken, await handleText('เมนู', source));
   if (event.type !== 'message' || event.message?.type !== 'text') return;
-  if (source.type !== 'user') return; // group / room chat: stay quiet
   const text = String(event.message.text || '').trim();
+  // A sender with files waiting for a topic: their next text is the topic name (1:1 or group).
+  if (await handleTopicText(event, text)) return;
+  if (source.type !== 'user') return; // other group / room chat: stay quiet
   if (['userid', 'user id', 'id'].includes(text.toLowerCase())) {
     return replyLine(event.replyToken, 'LINE User ID ของคุณ:\n' + source.userId);
   }
