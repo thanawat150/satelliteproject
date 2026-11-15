@@ -1,7 +1,14 @@
-// LINE webhook. Affiliate/TikTok schedule commands (วันนี้, พรุ่งนี้, ตาราง, ส่ง..., สถานะ,
-// checklist) were retired 2026-11-15. The bot is now the central notifier for all systems;
-// notifications are pushed through /api/notify.
+// LINE webhook.
+// - Files sent in a 1:1 chat or a group are staged to Google Drive; the sender picks a
+//   job topic, then the bot replies to the sender only (lib/intake.js).
+// - 1:1 text: tap-to-ask menus for everyone; the owner (LINE_USER_ID) also gets
+//   submission summaries, a calendar and AI answers (lib/assistant.js).
+// - Group text is ignored so the bot never answers ordinary chat.
+// Notifications from other systems still go through /api/notify.
 import crypto from 'node:crypto';
+import { replyLine } from '../../lib/line.js';
+import { isFileMessage, handleFile, handlePostback } from '../../lib/intake.js';
+import { handleText } from '../../lib/assistant.js';
 
 function validSignature(raw, signature, secret) {
   if (!signature || !secret) return false;
@@ -11,34 +18,21 @@ function validSignature(raw, signature, secret) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-async function reply(replyToken, texts) {
-  const token = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-  if (!replyToken || !token) return;
-  const list = Array.isArray(texts) ? texts : [texts];
-  const messages = list.slice(0,5).map(text => ({ type:'text', text:String(text).slice(0,4900) }));
-  const r = await fetch('https://api.line.me/v2/bot/message/reply', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
-    },
-    body: JSON.stringify({ replyToken, messages })
-  });
-  if (!r.ok) console.error('LINE reply failed', r.status, await r.text());
-}
+const JOIN_TEXT = '👋 สวัสดีครับ ส่งไฟล์งานในกลุ่มนี้ได้เลย บอทจะถามว่าเป็นงานอะไร แล้วเก็บลง Google Drive ให้ (zip แตกไฟล์ให้อัตโนมัติ)';
 
-function menuText() {
-  return [
-    '🔔 Ken LINE Bot',
-    'บอทแจ้งเตือนกลาง: รับแจ้งเตือนจากทุกระบบ (Mangrove / Satellite Monitoring / รายงานภาพดาวเทียม / ประมวลผลข้อมูล ฯลฯ)',
-    'ข้อความจะขึ้นต้นด้วย [ชื่อระบบ] ที่ส่งมา',
-    '',
-    'คำสั่ง',
-    'userid — ดู LINE User ID',
-    'เมนู — ดูข้อความนี้',
-    '',
-    'หมายเหตุ: แจ้งเตือน TikTok/Affiliate เดิมปิดแล้ว'
-  ].join('\n');
+async function handleEvent(event) {
+  const source = event.source || {};
+  if (event.type === 'join') return replyLine(event.replyToken, JOIN_TEXT);
+  if (event.type === 'postback') return handlePostback(event);
+  if (isFileMessage(event)) return handleFile(event);
+  if (event.type === 'follow') return replyLine(event.replyToken, await handleText('เมนู', source));
+  if (event.type !== 'message' || event.message?.type !== 'text') return;
+  if (source.type !== 'user') return; // group / room chat: stay quiet
+  const text = String(event.message.text || '').trim();
+  if (['userid', 'user id', 'id'].includes(text.toLowerCase())) {
+    return replyLine(event.replyToken, 'LINE User ID ของคุณ:\n' + source.userId);
+  }
+  return replyLine(event.replyToken, await handleText(text, source));
 }
 
 export async function GET() {
@@ -47,34 +41,22 @@ export async function GET() {
 
 export async function POST(request) {
   const raw = await request.text();
-  const signature = request.headers.get('x-line-signature');
-
-  if (!validSignature(raw, signature, process.env.LINE_CHANNEL_SECRET)) {
+  if (!validSignature(raw, request.headers.get('x-line-signature'), process.env.LINE_CHANNEL_SECRET)) {
     return Response.json({ ok: false, error: 'invalid signature' }, { status: 401 });
   }
-
   let body;
-  try {
-    body = raw ? JSON.parse(raw) : {};
-  } catch {
+  try { body = raw ? JSON.parse(raw) : {}; } catch {
     return Response.json({ ok: false, error: 'invalid json' }, { status: 400 });
   }
-
   for (const event of body.events || []) {
-    const userId = event?.source?.userId;
-    if (!event.replyToken || (event.type !== 'follow' && event.type !== 'message')) continue;
-    const incoming = event?.message?.type === 'text' ? String(event.message.text || '').trim().toLowerCase() : '';
-    if (incoming === 'userid' || incoming === 'user id' || incoming === 'id') {
-      await reply(
-        event.replyToken,
-        userId
-          ? 'LINE User ID ของคุณ:\n' + userId + '\n\nนำค่านี้ไปใส่ใน Vercel Environment Variable ชื่อ LINE_USER_ID'
-          : 'ยังอ่าน LINE User ID ไม่ได้ ลองส่งข้อความใหม่อีกครั้ง'
-      );
-    } else {
-      await reply(event.replyToken, menuText());
+    try {
+      await handleEvent(event);
+    } catch (e) {
+      console.error('EVENT_ERROR', event.type, event.message?.type, e?.message);
+      if (event.replyToken && (isFileMessage(event) || event.type === 'postback')) {
+        await replyLine(event.replyToken, '⚠️ บันทึกไฟล์ไม่สำเร็จ ลองส่งใหม่อีกครั้ง หรือแจ้งผู้ดูแล').catch(() => {});
+      }
     }
   }
-
-  return Response.json({ ok: true }, { status: 200 });
+  return Response.json({ ok: true });
 }
