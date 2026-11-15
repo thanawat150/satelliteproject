@@ -6,6 +6,7 @@ export async function driveCall(action, payload = {}) {
   const r = await fetch(url, {
     method: 'POST',
     redirect: 'follow',
+    signal: AbortSignal.timeout(Number(process.env.DRIVE_TIMEOUT_MS) || 35000),
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ...payload, action, secret })
   });

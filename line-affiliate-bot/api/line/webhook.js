@@ -55,9 +55,16 @@ export async function POST(request) {
       await handleEvent(event);
     } catch (e) {
       console.error('EVENT_ERROR', event.type, event.message?.type, e?.message);
-      if (event.replyToken && (isFileMessage(event) || event.type === 'postback')) {
-        await replyLine(event.replyToken, '⚠️ บันทึกไฟล์ไม่สำเร็จ ลองส่งใหม่อีกครั้ง หรือแจ้งผู้ดูแล').catch(() => {});
-      }
+      if (!event.replyToken) continue;
+      const msg = String(e?.message || '');
+      // Group chat: answer only when the Drive web app itself replied with an error (the sender had
+      // files waiting); stay silent on outages so ordinary group messages never get error replies.
+      const groupText = event.type === 'message' && event.message?.type === 'text' && event.source?.type !== 'user';
+      if (groupText && !msg.startsWith('Drive web app error')) continue;
+      const text = isFileMessage(event) || event.type === 'postback' || msg.startsWith('Drive web app')
+        ? '⚠️ บันทึกไฟล์ไม่สำเร็จ ลองใหม่อีกครั้ง หรือแจ้งผู้ดูแล'
+        : '⚠️ ตอนนี้ระบบตอบไม่ได้ ลองใหม่อีกครั้งในอีกสักครู่';
+      await replyLine(event.replyToken, text).catch(() => {});
     }
   }
   return Response.json({ ok: true });
