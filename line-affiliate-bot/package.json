@@ -1,5 +1,5 @@
 {
-  "name": "ken-affiliate-line-bot",
+  "name": "nong-kongkang-line-bot",
   "version": "1.0.0",
   "private": true,
   "engines": {
@@ -10,7 +10,6 @@
     "build": "mkdir -p public && cp index.html public/index.html && cp assets/*.jpg public/"
   },
   "dependencies": {
-    "@vercel/blob": "^2.6.1",
     "@anthropic-ai/sdk": "1.3.0"
   }
 }

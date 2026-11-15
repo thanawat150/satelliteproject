@@ -36,6 +36,8 @@ function doPost(e) {
       case 'list': return out_(list_(req));
       case 'await': return out_(withLock_(() => awaitTopic_(req)));
       case 'createTopic': return out_(withLock_(() => createTopic_(req)));
+      case 'closeTopic': return out_(withLock_(() => renameTopic_(req.topicName, true)));
+      case 'openTopic': return out_(withLock_(() => renameTopic_(req.topicName, false)));
       default: return out_({ ok: false, error: 'unknown action' });
     }
   } catch (err) {
@@ -55,7 +57,44 @@ function topics_() {
     if (!f.getName().startsWith('_')) list.push({ id: f.getId(), name: f.getName(), url: f.getUrl() });
   }
   list.sort((a, b) => a.name.localeCompare(b.name, 'th'));
-  return { ok: true, topics: list };
+  const lock = LockService.getScriptLock();
+  if (lock.tryLock(2000)) {
+    try { cleanupStale_(); } catch (err) { console.error('cleanup', err); } finally { lock.releaseLock(); }
+  }
+  return { ok: true, topics: list, rootUrl: root_().getUrl() };
+}
+
+// "ปิดงาน" hides a topic by prefixing "_" (no button); "เปิดงาน" shows it again.
+function renameTopic_(rawName, close) {
+  const name = String(rawName || '').trim().replace(/^_+/, '');
+  if (!name) return { ok: false, error: 'topic name required' };
+  const it = root_().getFoldersByName(close ? name : '_' + name);
+  if (!it.hasNext()) return { ok: true, found: false, topicName: name };
+  const f = it.next();
+  f.setName(close ? '_' + name : name);
+  return { ok: true, found: true, topicName: name, closed: close, folderUrl: f.getUrl() };
+}
+
+// Files nobody picked a topic for within STALE_DAYS move to "_ค้างไม่มีหัวข้อ" (runs at most every 6 h).
+const STALE_DAYS = 7;
+function cleanupStale_() {
+  const props = PropertiesService.getScriptProperties();
+  if (Date.now() - Number(props.getProperty('lastCleanup') || 0) < 6 * 3600000) return;
+  props.setProperty('lastCleanup', String(Date.now()));
+  const cutoff = Date.now() - STALE_DAYS * 86400000;
+  const stale = folder_(root_(), '_ค้างไม่มีหัวข้อ');
+  const moved = new Set();
+  const it = folder_(root_(), STAGING_NAME).getFiles();
+  while (it.hasNext()) {
+    const f = it.next();
+    if (f.getDateCreated().getTime() < cutoff) { f.moveTo(stale); moved.add(f.getId()); }
+  }
+  if (!moved.size) return;
+  const all = props.getProperties();
+  Object.keys(all).filter(k => k.startsWith('p:')).forEach(k => {
+    const left = JSON.parse(all[k] || '[]').filter(id => !moved.has(id));
+    if (left.length) props.setProperty(k, JSON.stringify(left)); else props.deleteProperty(k);
+  });
 }
 
 function stage_(req) {

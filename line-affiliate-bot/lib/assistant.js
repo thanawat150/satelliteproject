@@ -206,6 +206,15 @@ export async function handleText(text, source) {
 
   // ----- owner only -----
   if (t === 'ถาม AI') return [askAiPrompt()];
+  const oc = t.match(/^(ปิดงาน|เปิดงาน)\s*(.*)$/);
+  if (oc) {
+    const name = oc[2].trim();
+    if (!name) return ['พิมพ์ชื่องานต่อท้าย เช่น "' + oc[1] + ' ภาพโดรน 47-STC"'];
+    const close = oc[1] === 'ปิดงาน';
+    const res = await driveCall(close ? 'closeTopic' : 'openTopic', { topicName: name });
+    if (!res.found) return ['ไม่พบงาน "' + name + '"' + (close ? ' ที่เปิดอยู่' : ' ที่ปิดไว้')];
+    return [(close ? '🔒 ปิดงาน "' + name + '" แล้ว (ไม่ขึ้นเป็นปุ่มตอนส่งไฟล์ ไฟล์เดิมยังอยู่)' : '🔓 เปิดงาน "' + name + '" แล้ว') + '\n📂 ' + res.folderUrl];
+  }
   const add = t.match(/^เพิ่มงาน\s*(.*)$/);
   if (add) {
     const name = add[1].trim();

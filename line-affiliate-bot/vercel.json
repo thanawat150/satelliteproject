@@ -1,10 +1,18 @@
 {
-  "crons": [],
+  "crons": [
+    {
+      "path": "/api/cron/weekly",
+      "schedule": "0 2 * * 1"
+    }
+  ],
   "functions": {
     "api/line/webhook.js": {
       "maxDuration": 60
     },
     "api/setup-richmenu.js": {
+      "maxDuration": 60
+    },
+    "api/cron/weekly.js": {
       "maxDuration": 60
     }
   }
