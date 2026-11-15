@@ -74,34 +74,48 @@ export async function handleFile(event) {
   if (staged.duplicate || staged.pendingCount !== 1) return;
   const { topics } = await driveCall('topics');
   if (!topics.length) {
-    await replyLine(event.replyToken, 'รับไฟล์แล้ว แต่ยังไม่มีหัวข้องานในโฟลเดอร์ Drive — แจ้งผู้ดูแลให้สร้างโฟลเดอร์หัวข้อก่อน');
+    await replyLine(event.replyToken, '📥 รับไฟล์ ' + name + ' แล้ว\nงานนี้เป็นงานอะไรครับ? พิมพ์ชื่องานได้เลย (ระบบจะสร้างโฟลเดอร์ให้)');
     return;
   }
   await replyLine(event.replyToken, {
     type: 'text',
-    text: '📥 รับไฟล์ ' + name + ' แล้ว\nงานนี้เป็นงานอะไรครับ? เลือกหัวข้อด้านล่าง' + (topics.length > 13 ? '\n(แสดง 13 หัวข้อแรก)' : ''),
+    text: '📥 รับไฟล์ ' + name + ' แล้ว\nงานนี้เป็นงานอะไรครับ? กดเลือกหัวข้อด้านล่าง\nหรือพิมพ์ชื่องานใหม่ได้เลย (ระบบจะสร้างโฟลเดอร์ให้)' + (topics.length > 13 ? '\n(แสดง 13 หัวข้อแรก)' : ''),
     quickReply: topicQuickReply(topics)
   });
+}
+
+const NOT_TOPIC = /^(เมนู|menu|help|ช่วย|ช่วยเหลือ|วิธีส่งงาน|หัวข้องาน|งานที่ฉันส่ง|ใครส่งงาน|งานวันนี้|ปฏิทิน|ถาม AI|userid|user id|id)$/i;
+
+async function finalizeAndReply(event, payload) {
+  const source = event.source || {};
+  const res = await driveCall('finalize', { chatId: chatIdOf(source), userId: source.userId || '', ...payload });
+  if (!res.count) return false;
+  const lines = ['✅ เก็บ ' + res.count + ' ไฟล์ ในงาน "' + res.topicName + '"' + (res.topicCreated ? ' (สร้างหัวข้อใหม่)' : '') + ' วันที่ ' + res.date + ' แล้ว'];
+  if (res.extracted) lines.push('📦 แตก zip ได้ ' + res.extracted + ' ไฟล์');
+  if (res.zipErrors?.length) lines.push('⚠️ แตก zip ไม่ได้: ' + res.zipErrors.join('; ').slice(0, 300) + ' (เก็บ zip ไว้แล้ว)');
+  lines.push('📂 ' + res.folderUrl);
+  await replyLine(event.replyToken, {
+    type: 'text',
+    text: lines.join('\n'),
+    quickReply: { items: [{ type: 'action', action: { type: 'datetimepicker', label: '📅 เปลี่ยนวันที่', data: 'a=d&b=' + res.batchId, mode: 'date' } }] }
+  });
+  return true;
+}
+
+// Text typed while the sender has files waiting = a topic name (new folder if needed).
+// Returns true when the text was used as a topic.
+export async function handleTopicText(event, text) {
+  const name = String(text || '').trim();
+  if (!driveConfigured() || !name || name.length > 80 || NOT_TOPIC.test(name)) return false;
+  return finalizeAndReply(event, { topicName: name });
 }
 
 export async function handlePostback(event) {
   const data = new URLSearchParams(event.postback?.data || '');
   const source = event.source || {};
   if (data.get('a') === 't') {
-    const res = await driveCall('finalize', { chatId: chatIdOf(source), userId: source.userId || '', topicId: data.get('f') });
-    if (!res.count) {
-      await replyLine(event.replyToken, 'ไม่มีไฟล์ที่รอเลือกหัวข้อ (อาจเลือกไปแล้ว)');
-      return;
-    }
-    const lines = ['✅ เก็บ ' + res.count + ' ไฟล์ ในงาน "' + res.topicName + '" วันที่ ' + res.date + ' แล้ว'];
-    if (res.extracted) lines.push('📦 แตก zip ได้ ' + res.extracted + ' ไฟล์');
-    if (res.zipErrors?.length) lines.push('⚠️ แตก zip ไม่ได้: ' + res.zipErrors.join('; ').slice(0, 300) + ' (เก็บ zip ไว้แล้ว)');
-    lines.push('📂 ' + res.folderUrl);
-    await replyLine(event.replyToken, {
-      type: 'text',
-      text: lines.join('\n'),
-      quickReply: { items: [{ type: 'action', action: { type: 'datetimepicker', label: '📅 เปลี่ยนวันที่', data: 'a=d&b=' + res.batchId, mode: 'date' } }] }
-    });
+    const done = await finalizeAndReply(event, { topicId: data.get('f') });
+    if (!done) await replyLine(event.replyToken, 'ไม่มีไฟล์ที่รอเลือกหัวข้อ (อาจเลือกไปแล้ว)');
     return;
   }
   if (data.get('a') === 'd') {

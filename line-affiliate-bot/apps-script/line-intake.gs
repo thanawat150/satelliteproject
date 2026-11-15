@@ -82,14 +82,22 @@ function finalize_(req) {
   const pkey = pendingKey_(req.chatId, req.userId);
   const pending = JSON.parse(props.getProperty(pkey) || '[]');
   if (!pending.length) return { ok: true, count: 0 };
-  const topic = DriveApp.getFolderById(req.topicId);
+  // topicId = existing topic folder; topicName = typed name -> find or create that folder
+  let topic, created = false;
+  if (req.topicId) topic = DriveApp.getFolderById(req.topicId);
+  else {
+    const name = safeName_(String(req.topicName || '').trim().replace(/^_+/, '')).slice(0, 80);
+    if (!name) return { ok: false, error: 'topic name required' };
+    const it = root_().getFoldersByName(name);
+    if (it.hasNext()) topic = it.next(); else { topic = root_().createFolder(name); created = true; }
+  }
   const date = req.date || today_();
   const dest = folder_(topic, date);
   const res = placeFiles_(pending, dest, topic.getName(), date);
   props.deleteProperty(pkey);
   const batchId = String(Date.now());
-  props.setProperty('b:' + batchId, JSON.stringify({ ids: res.ids, topicId: req.topicId }));
-  return Object.assign({ ok: true, batchId: batchId, topicName: topic.getName(), date: date, folderUrl: dest.getUrl() }, res.summary);
+  props.setProperty('b:' + batchId, JSON.stringify({ ids: res.ids, topicId: topic.getId() }));
+  return Object.assign({ ok: true, batchId: batchId, topicName: topic.getName(), topicCreated: created, date: date, folderUrl: dest.getUrl() }, res.summary);
 }
 
 function redate_(req) {
