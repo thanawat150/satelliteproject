@@ -1,7 +1,11 @@
 {
   "crons": [],
   "functions": {
-    "api/line/webhook.js": { "maxDuration": 60 },
-    "api/setup-richmenu.js": { "maxDuration": 60, "includeFiles": "assets/*.jpg" }
+    "api/line/webhook.js": {
+      "maxDuration": 60
+    },
+    "api/setup-richmenu.js": {
+      "maxDuration": 60
+    }
   }
 }
