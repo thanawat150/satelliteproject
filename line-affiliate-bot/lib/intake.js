@@ -38,6 +38,14 @@ export function topicQuickReply(topics) {
   return { items };
 }
 
+// Files over the limit: give the Drive folder link so the sender can upload there directly.
+async function replyTooBig(event, name, size) {
+  let link = '';
+  try { link = (await driveCall('topics')).rootUrl || ''; } catch {}
+  await replyLine(event.replyToken, '⚠️ ' + name + ' ใหญ่ ' + mb(size) + ' เกิน 20 MB ส่งผ่าน LINE ไม่ได้\n' +
+    (link ? '📂 อัปขึ้น Drive โดยตรงที่นี่ (เลือกโฟลเดอร์งาน):\n' + link : 'กรุณาอัปขึ้น Google Drive โดยตรง'));
+}
+
 export async function handleFile(event) {
   const msg = event.message;
   if (!driveConfigured()) {
@@ -45,7 +53,7 @@ export async function handleFile(event) {
     return;
   }
   if (msg.type === 'file' && msg.fileSize > MAX_BYTES) {
-    await replyLine(event.replyToken, '⚠️ ไฟล์ ' + msg.fileName + ' ใหญ่ ' + mb(msg.fileSize) + ' เกิน 20 MB — กรุณาอัปขึ้น Google Drive โดยตรง');
+    await replyTooBig(event, msg.fileName, msg.fileSize);
     return;
   }
   const content = await getMessageContent(msg.id);
@@ -54,7 +62,7 @@ export async function handleFile(event) {
     return;
   }
   if (content.buf.length > MAX_BYTES) {
-    await replyLine(event.replyToken, '⚠️ ไฟล์ใหญ่ ' + mb(content.buf.length) + ' เกิน 20 MB — กรุณาอัปขึ้น Google Drive โดยตรง');
+    await replyTooBig(event, 'ไฟล์นี้', content.buf.length);
     return;
   }
   const source = event.source || {};
@@ -89,7 +97,7 @@ export async function handleFile(event) {
 
 // Questions are never taken as topic names (e.g. "วันนี้ใครส่งงานบ้าง").
 const LOOKS_LIKE_QUESTION = /[?？]|ไหม|มั้ย|หรือเปล่า|อะไร|ใคร|บ้าง|ยังไง|อย่างไร|เท่าไร|กี่|ทำไม|เมื่อไร|ที่ไหน|ขอ|ช่วย/;
-const NOT_TOPIC = /^(เมนู|menu|help|ช่วย|ช่วยเหลือ|วิธีส่งงาน|หัวข้องาน|งานที่ฉันส่ง|ใครส่งงาน|งานวันนี้|ปฏิทิน|ถาม AI|ส่งงาน|เพิ่มงาน.*|userid|user id|id)$/i;
+const NOT_TOPIC = /^(เมนู|menu|help|ช่วย|ช่วยเหลือ|วิธีส่งงาน|หัวข้องาน|งานที่ฉันส่ง|ใครส่งงาน|งานวันนี้|ปฏิทิน|ถาม AI|ส่งงาน|เพิ่มงาน.*|ปิดงาน.*|เปิดงาน.*|userid|user id|id)$/i;
 
 async function finalizeAndReply(event, payload) {
   const source = event.source || {};

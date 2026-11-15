@@ -1,4 +1,4 @@
-# Ken LINE Bot — Central LINE Notification
+# น้องโกงกาง — Central LINE bot (file intake + notifications)
 
 One LINE Official Account (the existing "Ken Affiliate Alert" OA) receives
 notifications from every system. LINE credentials live only in this Vercel project.
@@ -24,7 +24,8 @@ notifications from every system. LINE credentials live only in this Vercel proje
 | `ANTHROPIC_API_KEY` | optional: AI answers for the owner with Claude (used first if set) |
 | `GEMINI_API_KEY` | optional: AI answers with Google Gemini instead (free tier in AI Studio); `GEMINI_MODEL` overrides the default `gemini-flash-latest` |
 
-No longer used (safe to remove later): `CRON_SECRET`, `LINE_REMINDER_SECRET`.
+`CRON_SECRET` authorizes the Monday 09:00 weekly summary cron (`/api/cron/weekly`; no push when nothing was submitted).
+No longer used (safe to remove): `LINE_REMINDER_SECRET`, `LINE_TEST_TRIGGER_SECRET`, `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY`.
 
 ## Adding a new system
 No LINE setup is needed. Call the API with the shared secret and your system's name:
@@ -62,3 +63,8 @@ Python helper (stdlib only): `D:\createmap\OpenAreas_AI\ai_model\line_notify.py`
   log are sent to the chosen AI provider for those answers.
 - Rich menu images: `assets/richmenu-*.jpg` (regenerate with `python assets/make_richmenu.py`,
   or replace with designed images of the same size: owner 2500×1686 in a 3×2 grid, user 2500×843 in a 3×1 grid).
+
+## Housekeeping
+- Files left without a topic for 7 days move from `_รอเลือกหัวข้อ` to `_ค้างไม่มีหัวข้อ` (checked at most every 6 h).
+- Owner: `ปิดงาน <ชื่อ>` hides a topic (folder renamed with a leading `_`), `เปิดงาน <ชื่อ>` shows it again.
+- Files over 20 MB get a link to the Drive folder to upload directly.

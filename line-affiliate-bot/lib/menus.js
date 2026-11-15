@@ -39,7 +39,7 @@ export function mainCarousel(owner) {
       card({ emoji: '🤖', title: 'ถาม AI', desc: 'ถามเรื่องการส่งงานด้วยภาษาพูด', buttons: [msgButton('เริ่มถาม', 'ถาม AI')], color: '#F4F3FF' })
     );
   }
-  return carousel('เมนู Ken LINE Bot', cards);
+  return carousel('เมนูน้องโกงกาง', cards);
 }
 
 export function topicsCarousel(topics, owner) {

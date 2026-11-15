@@ -18,7 +18,7 @@ function validSignature(raw, signature, secret) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-const JOIN_TEXT = '👋 สวัสดีครับ ส่งไฟล์งานในกลุ่มนี้ได้เลย บอทจะถามว่าเป็นงานอะไร แล้วเก็บลง Google Drive ให้ (zip แตกไฟล์ให้อัตโนมัติ)';
+const JOIN_TEXT = '👋 สวัสดีครับ น้องโกงกางมาแล้ว ส่งไฟล์งานในกลุ่มนี้ได้เลย บอทจะถามว่าเป็นงานอะไร แล้วเก็บลง Google Drive ให้ (zip แตกไฟล์ให้อัตโนมัติ)';
 
 async function handleEvent(event) {
   const source = event.source || {};
@@ -38,7 +38,7 @@ async function handleEvent(event) {
 }
 
 export async function GET() {
-  return Response.json({ ok: true, service: 'Ken central LINE webhook' });
+  return Response.json({ ok: true, service: 'น้องโกงกาง LINE webhook' });
 }
 
 export async function POST(request) {
