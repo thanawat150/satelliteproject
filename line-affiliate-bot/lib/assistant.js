@@ -111,24 +111,45 @@ export function parseCalendarMonth(text) {
   return { y, m: Math.min(Math.max(mo, 1), 12) };
 }
 
+const SYSTEM_PROMPT = 'คุณเป็นผู้ช่วยของ Ken ตอบคำถามเรื่องการส่งงานเข้าระบบ LINE → Google Drive จากบันทึกที่ให้มาเท่านั้น ' +
+  'ตอบภาษาไทย สั้น กระชับ เหมาะกับการอ่านใน LINE (ไม่ใช้ตาราง markdown) ถ้าบันทึกไม่มีข้อมูลให้บอกตรง ๆ ว่าไม่มี ' +
+  'วันที่ในบันทึกเป็นเวลาไทย (ค.ศ.) ส่วนวันที่งานเป็น พ.ศ.';
+
+function userPrompt(question, items) {
+  const log = items.map(i => [i.receivedAt, i.workDate, i.topic, i.sender, i.chat, i.fileName, i.fromZip].join(' | ')).join('\n');
+  return 'วันนี้: ' + new Intl.DateTimeFormat('th-TH', { timeZone: TZ, dateStyle: 'full' }).format(new Date()) +
+    '\n\nบันทึกการส่งงาน (เวลารับ | วันที่งาน | หัวข้อ | ผู้ส่ง | แชต | ชื่อไฟล์ | แตกจาก zip):\n' + (log || '(ว่าง)') +
+    '\n\nคำถาม: ' + question;
+}
+
+// Google Gemini (free tier available via Google AI Studio). Model override: GEMINI_MODEL.
+export async function askGemini(question, items) {
+  const model = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: [{ role: 'user', parts: [{ text: userPrompt(question, items) }] }],
+      generationConfig: { maxOutputTokens: 2000 }
+    })
+  });
+  if (!r.ok) { const e = new Error('gemini ' + r.status); e.status = r.status; throw e; }
+  const data = await r.json();
+  const text = (data.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('').trim();
+  return text || 'ไม่มีคำตอบ';
+}
+
 export async function askClaude(question, items) {
   const client = new Anthropic();
-  const log = items.map(i => [i.receivedAt, i.workDate, i.topic, i.sender, i.chat, i.fileName, i.fromZip].join(' | ')).join('\n');
   const response = await client.beta.messages.create({
     model: MODEL,
     max_tokens: 2000,
     betas: ['server-side-fallback-2026-07-01'],
     fallbacks: 'default',
     output_config: { effort: 'low' },
-    system: 'คุณเป็นผู้ช่วยของ Ken ตอบคำถามเรื่องการส่งงานเข้าระบบ LINE → Google Drive จากบันทึกที่ให้มาเท่านั้น ' +
-      'ตอบภาษาไทย สั้น กระชับ เหมาะกับการอ่านใน LINE (ไม่ใช้ตาราง markdown) ถ้าบันทึกไม่มีข้อมูลให้บอกตรง ๆ ว่าไม่มี ' +
-      'วันที่ในบันทึกเป็นเวลาไทย (ค.ศ.) ส่วนวันที่งานเป็น พ.ศ.',
-    messages: [{
-      role: 'user',
-      content: 'วันนี้: ' + new Intl.DateTimeFormat('th-TH', { timeZone: TZ, dateStyle: 'full' }).format(new Date()) +
-        '\n\nบันทึกการส่งงาน (เวลารับ | วันที่งาน | หัวข้อ | ผู้ส่ง | แชต | ชื่อไฟล์ | แตกจาก zip):\n' + (log || '(ว่าง)') +
-        '\n\nคำถาม: ' + question
-    }]
+    system: SYSTEM_PROMPT,
+    messages: [{ role: 'user', content: userPrompt(question, items) }]
   });
   if (response.stop_reason === 'refusal') return 'ขอโทษครับ ตอบคำถามนี้ไม่ได้';
   const text = response.content.filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
@@ -188,11 +209,12 @@ export async function handleText(text, source) {
     return [summaryText(within(items, 7), 7)];
   }
   const { items } = await driveCall('list', { sinceDays: 60, limit: 400 });
-  if (!process.env.ANTHROPIC_API_KEY) return [summaryText(within(items, 7), 7) + '\n\n(ยังไม่ได้ตั้ง ANTHROPIC_API_KEY จึงตอบเป็นสรุปแทน AI)'];
+  const ask = process.env.ANTHROPIC_API_KEY ? askClaude : process.env.GEMINI_API_KEY ? askGemini : null;
+  if (!ask) return [summaryText(within(items, 7), 7) + '\n\n(ยังไม่ได้ตั้ง ANTHROPIC_API_KEY หรือ GEMINI_API_KEY จึงตอบเป็นสรุปแทน AI)'];
   try {
-    return [await askClaude(t, items)];
+    return [await ask(t, items)];
   } catch (e) {
-    console.error('CLAUDE_ERROR', e?.status, e?.message);
+    console.error('AI_ERROR', e?.status, e?.message);
     return ['AI ตอบไม่ได้ตอนนี้ (' + (e?.status || 'error') + ')\n\n' + summaryText(within(items, 7), 7)];
   }
 }
