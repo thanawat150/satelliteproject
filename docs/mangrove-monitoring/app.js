@@ -679,8 +679,8 @@ function plotDetail(p){const scenes=plotScenes(p.code),valid=validScenes(p.code)
 function analysisPage(){const p=plotOf(state.plot),sc=plotScenes(state.plot);
  const key=firstAvailableSeries(state.plot,Object.prototype.hasOwnProperty.call(SERIES,state.metric)?state.metric:'ndvi');
  state.metric=key;
- root.innerHTML=commonHead('Environmental Analytics','กราฟแสดงค่าที่คำนวณได้จากทุกภาพโดยไม่กรองสถานะ QA • สถานะคุณภาพแสดงกำกับ',btn('Export CSV','exportscenes',state.plot,'primary'))+
- '<div class="controls"><label>แปลง <select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label>'+btn('ดูแปลงบนแผนที่','setview','map')+'</div>'+
+ root.innerHTML=commonHead('Environmental Analytics','กราฟแสดงค่าที่คำนวณได้จากทุกภาพโดยไม่กรองสถานะ QA • สถานะคุณภาพแสดงกำกับ',btn('Export ค่าทั้งหมด CSV','exportscenes',state.plot,'primary'))+
+ '<div class="controls"><label>แปลง <select id="plot-select">'+allPlots().map(x=>'<option value="'+html(x.code)+'" '+(x.code===state.plot?'selected':'')+'>'+html(x.code)+'</option>').join('')+'</select></label>'+btn('ดูแปลงบนแผนที่','setview','map')+btn('Export ค่าทั้งหมด JSON','exportscenesjson',state.plot)+'</div>'+
  (p?'<div class="grid kpis" id="analysis-metric-kpis">'+timeSeriesKpis(state.plot,key)+'</div>':'')+
  '<section class="panel" id="imagery-explorer"></section>'+timeSeriesPanel(state.plot,key)+
  '<div class="panel"><div class="panel-header"><h2>ประวัติค่าดัชนีและคุณภาพภาพ</h2><small>ดัชนีจาก TIFF แสดงค่าเฉลี่ยจริงรายภาพ • พื้นที่แสดงเมื่อมีค่าคำนวณจริง พร้อมสถานะ QA</small></div><div class="table-wrap"><table class="tbl"><thead><tr><th>วันที่ถ่ายภาพ</th><th>QA</th><th>% ใช้ได้</th><th>NDVI</th><th>NDRE</th><th>NDMI (B8A)</th><th>NDWI</th><th>MNDWI</th><th>BSI</th><th>Water ไร่</th><th>Vegetation ไร่</th></tr></thead><tbody>'+sc.map(x=>'<tr><td>'+html(x.date)+'</td><td>'+tag(x.analysis_status,qaOk(x)?'':x.analysis_status==='PARTIAL'?'warn':'danger')+'</td><td class="num">'+fmt(x.qa_valid_pct)+'</td>'+['ndvi','evi','savi','gli','ndre','ndmi','ndwi','mndwi','bsi'].map(k=>'<td class="num">'+(qaOk(x)||x.source_index_stats?fmt(x[k],4):'—')+'</td>').join('')+['water_rai','vegetation_rai'].map(k=>'<td class="num">'+fmt(x[k],2)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></div>'+
@@ -818,7 +818,7 @@ async function load(){clearMap();root.innerHTML='<div class="loading"><span clas
  for(const archive of a.slice(8)){if(!archive)continue;const scenes=a[2].scenes||(a[2].scenes=[]);const byKey=new Map(scenes.map(x=>[x.plot+'|'+x.date,x]));for(const scene of archive.scenes||[]){const key=scene.plot+'|'+scene.date,prior=byKey.get(key);if(!prior){scenes.push(scene);byKey.set(key,scene);continue;}for(const index of ['evi','savi','gli']){const stat=scene.source_index_stats?.[index];if(stat&&Number(stat.sample_pixels)>0&&Number.isFinite(Number(stat.plot_mean))){prior.source_index_stats={...(prior.source_index_stats||{}),[index]:stat};prior[index]=stat.plot_mean;}}}Object.assign(a[2].plots||(a[2].plots={}),archive.plot_registry?{[archive.plot]:archive.plot_registry}:{});}
  parseData(a[0],a[1],a[2],a[3]);
  }catch(e){console.error(e);root.innerHTML=message('<b>เชื่อมข้อมูลไม่สำเร็จ</b> • '+html(e.message)+'<br>ลองเปิดหน้าใหม่ หรือดูข้อมูลต้นฉบับที่ SatelliteProject')+'<a class="btn" href="../nationwide.html">เปิด SatelliteProject</a>';toast('มีข้อผิดพลาดในการดึงข้อมูล');}}
-function csvDownload(filename,headers,rows){const safe=x=>{let s=String(x??'');if(/^[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};const body='\uFEFF'+[headers,...rows].map(r=>r.map(safe).join(',')).join('\r\n');download(filename,body,'text/csv;charset=utf-8');}
+function csvDownload(filename,headers,rows){const safe=x=>{let s=String(x??'');if(/^(?:[=+@]|-(?!\d|\.\d))/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};const body='\uFEFF'+[headers,...rows].map(r=>r.map(safe).join(',')).join('\r\n');download(filename,body,'text/csv;charset=utf-8');}
 function download(name,content,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);}
 function doAction(action,value){if(action==='waterimage'){const plot=value||state.waterPlot||state.plot;setView('insights',plot);window.MMCImagery?.selectDate(state.waterDatePlot===plot?state.waterDate:plotScenes(plot).at(-1)?.date,'mndwi');return;}if(action==='setview'){setView(value);return;}if(action==='plot'){setView('plots',value);return;}if(action==='analyse'){setView('analysis',value);return;}if(action==='insight'){setView('insights',value);return;}if(action==='print'){window.print();return;}if(action==='external'){window.open(new URL(value,location.href).href,'_blank','noopener');return;}
  if(action==='exportgeo'){const arr=value==='filter'?filtered().filter(x=>x.geometry):[plotOf(value)].filter(x=>x&&x.geometry);if(!arr.length){toast('แปลงนี้ไม่มี Boundary ที่สามารถส่งออกได้');return;}download(value==='filter'?'mmc_filtered_plots.geojson':value+'_boundary.geojson',JSON.stringify({type:'FeatureCollection',features:arr.map(x=>({type:'Feature',properties:{plot:x.code,province:x.province,boundary_source:x.group},geometry:x.geometry}))}),'application/geo+json');return;}
@@ -841,7 +841,28 @@ if(action==='exportvisualqa'){
  if(action==='exportnonqagaps'){csvDownload('mmc_nonqa_visual_missing.csv',['plot','date','qa_status','qa_valid_pct','original_tif10','original_tif10_file_id'],missingVisualRecords().map(x=>[x.plot,x.date,x.analysis_status,x.qa_valid_pct,x.original_tif10||'',x.original_tif10_file_id||'']));return;}
  if(action==='exportgaps'){csvDownload('mmc_qa_preview_gaps.csv',['plot','date','qa','qa_valid_pct','usable_pixels','total_pixels','original_tif10','original_tif10_file_id'],missingQaRecords().map(x=>[x.plot,x.date,x.analysis_status,x.qa_valid_pct,x.usable_pixels,x.total_pixels,x.original_tif10||'',x.original_tif10_file_id||'']));return;}
  if(action==='exportplots'){const p=filtered();csvDownload('mmc_public_plot_registry.csv',['plot_code','company','province','boundary_group','geometry_rai','monitoring_state'],p.map(x=>[x.code,x.company,x.province,x.group,x.area??'',plotStatus(x.code)]));return;}
- if(action==='exportscenes'){const p=value||state.plot;csvDownload(p+'_satellite_qa.csv',['plot','date','status','qa_valid_pct','ndvi','ndre','ndmi','mndwi','bsi','water_rai','vegetation_rai','bare_soil_rai','original_tif10','original_tif20'],plotScenes(p).map(x=>[x.plot,x.date,x.analysis_status,x.qa_valid_pct,...['ndvi','ndre','ndmi','mndwi','bsi'].map(k=>(qaOk(x)||x.source_index_stats)?x[k]??'':''),...['water_rai','vegetation_rai','bare_soil_rai'].map(k=>x[k]??''),x.original_tif10||'',x.original_tif20||'']));return;}
+ if(action==='exportscenes'||action==='exportscenesjson'){
+  const p=value||state.plot,rows=plotScenes(p),metrics=Object.keys(SERIES);
+  const environmentRows=cache.environment?.plots?.[p]?.scenes||[],rainByDate=new Map(environmentRows.map(row=>[row.date,row]));
+  const normalized=rows.map(scene=>{
+   const rain=rainByDate.get(scene.date)||{};
+   const values=Object.fromEntries(metrics.map(metric=>{
+    const stat=scene.source_index_stats?.[metric];
+    const raw=stat&&Number(stat.sample_pixels)>0?stat.plot_mean:(scene[metric]??rain[metric]??null);
+    return [metric,raw===undefined||raw===''?null:raw];
+   }));
+   return {scene,values};
+  });
+  if(action==='exportscenesjson'){
+   const exportData={plot:p,exported_at:new Date().toISOString(),record_count:normalized.length,metric_keys:metrics,
+    note:'ส่งออกทุกค่าที่มีในผลประมวลผล ไม่กรองตาม QA; ค่า null/ว่างหมายถึงไม่มีผลคำนวณ ไม่ใช่ศูนย์',
+    observations:normalized.map(({scene,values})=>({...scene,metric_values:values,source_index_stats:scene.source_index_stats||{},rainfall_context:rainByDate.get(scene.date)||null}))};
+   download(p+'_all_processed_values.json',JSON.stringify(exportData,null,2),'application/json;charset=utf-8');return;
+  }
+  const headers=['plot','acquisition_date','qa_status','qa_valid_pct',...metrics,'index_statistics_json','original_tif10','original_tif20','original_tif60','source_file_ids_json','source_paths_json','source_checksums_json','processing_algorithm','qa_rule'];
+  const csvRows=normalized.map(({scene,values})=>[scene.plot||p,scene.date,scene.analysis_status??'',scene.qa_valid_pct??'',...metrics.map(metric=>values[metric]??''),JSON.stringify(scene.source_index_stats||{}),scene.original_tif10||'',scene.original_tif20||'',scene.original_tif60||'',JSON.stringify(scene.source_file_ids||[]),JSON.stringify(scene.source_paths||[]),JSON.stringify(scene.source_checksums||{}),scene.algorithm||'',scene.qa_rule||'']);
+  csvDownload(p+'_all_processed_values.csv',headers,csvRows);return;
+ }
  if(action==='exportevidence'){const code=value||state.plot,p=plotOf(code);const rows=plotScenes(code);const evidence={
   report_type:'MMC_EVIDENCE_PREVIEW_NOT_VERIFIED',
   preview_manifest_version:cache.imagery?.version||null,
@@ -874,4 +895,5 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{const id=e.target.id;if(e.target.matches('[data-ts-metric]')){const metric=e.target.dataset.tsMetric;state.tsMetrics=e.target.checked?[...new Set([...(state.tsMetrics||[]),metric])]:state.tsMetrics.filter(k=>k!==metric);refreshTimeSeriesRange();return;}if(id==='ts-year-from'){state.tsYearFrom=e.target.value;if(Number(state.tsYearFrom)>Number(state.tsYearTo))state.tsYearTo=state.tsYearFrom;const end=$('ts-year-to');if(end)end.value=state.tsYearTo;refreshTimeSeriesRange();return;}if(id==='ts-year-to'){state.tsYearTo=e.target.value;if(Number(state.tsYearTo)<Number(state.tsYearFrom))state.tsYearFrom=state.tsYearTo;const start=$('ts-year-from');if(start)start.value=state.tsYearFrom;refreshTimeSeriesRange();return;}if(id==='ts-year-interval'){state.tsYearInterval=Math.max(1,Number(e.target.value)||1);refreshTimeSeriesRange();return;}if(id==='company'||id==='province'){state[id]=e.target.value;draw();}if(id==='water-plot-select'){state.waterPlot=e.target.value;state.waterDate='';state.waterDatePlot='';draw();return;}if(id==='water-date-select'){state.waterDate=e.target.value;state.waterDatePlot=state.view==='insights'?state.plot:(state.waterPlot||state.plot);draw();if(state.view==='insights')window.MMCImagery?.selectDate(state.waterDate,'mndwi');return;}if(id==='plot-select'){state.plot=e.target.value;state.tsYearFrom='';state.tsYearTo='';draw();let u=new URL(location.href);u.searchParams.set('plot',state.plot);history.replaceState({},'',u.pathname+u.search);}if(id==='metric-select'||id==='timeseries-metric-select'){changeTimeSeriesMetric(e.target.value);return;}if(id==='risk-kind'){state.riskKind=e.target.value;draw();}if(id==='risk-unit'){state.riskUnit=e.target.value;state.riskThreshold=state.riskUnit==='percent'?10:1;draw();}if(id==='risk-threshold'){state.riskThreshold=Math.max(0,Number(e.target.value)||0);draw();}});
 load();
 })();
+
 
