@@ -38,6 +38,9 @@ function doPost(e) {
       case 'createTopic': return out_(withLock_(() => createTopic_(req)));
       case 'closeTopic': return out_(withLock_(() => renameTopic_(req.topicName, true)));
       case 'openTopic': return out_(withLock_(() => renameTopic_(req.topicName, false)));
+      case 'listNotes': return out_(listNotes_());
+      case 'addNote': return out_(withLock_(() => addNoteDirect_(req)));
+      case 'doneNote': return out_(withLock_(() => doneNote_(req)));
       default: return out_({ ok: false, error: 'unknown action' });
     }
   } catch (err) {
@@ -127,11 +130,19 @@ function finalize_(req) {
   const props = PropertiesService.getScriptProperties();
   const pkey = pendingKey_(req.chatId, req.userId);
   const pending = JSON.parse(props.getProperty(pkey) || '[]');
-  if (!pending.length) {
-    // No files waiting: a typed name right after "เพิ่มงาน" creates a new topic folder.
-    const wkey = awaitKey_(req.chatId, req.userId);
-    const since = Number(props.getProperty(wkey) || 0);
-    if (req.topicName && since && Date.now() - since < 15 * 60000) {
+  // After "เพิ่มงาน": the next typed text is a to-do note ("note:<ts>") or a new topic name ("<ts>").
+  const wkey = awaitKey_(req.chatId, req.userId);
+  const wval = String(props.getProperty(wkey) || '');
+  const isNote = wval.startsWith('note:');
+  const since = Number(isNote ? wval.slice(5) : wval) || 0;
+  const awaiting = since && Date.now() - since < 15 * 60000;
+  if (awaiting && isNote && req.noteText) {
+    props.deleteProperty(wkey);
+    const n = addNote_(req.noteText, req.senderName || '');
+    return { ok: true, count: 0, awaited: true, note: true, noteText: n.text, openNotes: n.open };
+  }
+  if (!pending.length || (!req.topicId && !req.topicName)) {
+    if (awaiting && !isNote && req.topicName) {
       props.deleteProperty(wkey);
       const t = ensureTopic_(req.topicName);
       if (!t) return { ok: false, error: 'topic name required' };
@@ -163,10 +174,54 @@ function finalize_(req) {
   return Object.assign({ ok: true, batchId: batchId, topicName: topic.getName(), topicCreated: created, date: date, folderUrl: dest.getUrl() }, res.summary);
 }
 
-// "เพิ่มงาน": remember that this sender's next typed text is a new topic name.
+// "เพิ่มหัวข้อ" / "จดงาน": remember that this sender's next typed text is a topic name or a note.
 function awaitTopic_(req) {
-  PropertiesService.getScriptProperties().setProperty(awaitKey_(req.chatId, req.userId), String(Date.now()));
+  PropertiesService.getScriptProperties().setProperty(awaitKey_(req.chatId, req.userId), (req.mode === 'note' ? 'note:' : '') + Date.now());
   return { ok: true };
+}
+
+// ---------- to-do notes (sheet "งานที่ต้องทำ" in the log spreadsheet) ----------
+// Columns: id | จดเมื่อ | งาน | ผู้จด | สถานะ (รอทำ/เสร็จ) | เสร็จเมื่อ
+function notesSheet_() {
+  const ss = logSheet_().getParent();
+  let sh = ss.getSheetByName('งานที่ต้องทำ');
+  if (!sh) { sh = ss.insertSheet('งานที่ต้องทำ'); sh.appendRow(['id', 'จดเมื่อ', 'งาน', 'ผู้จด', 'สถานะ', 'เสร็จเมื่อ']); }
+  return sh;
+}
+
+function openNotes_() {
+  const rows = notesSheet_().getDataRange().getValues().slice(1);
+  return rows.filter(r => r[0] && r[4] !== 'เสร็จ').map(r => ({
+    id: String(r[0]), at: Utilities.formatDate(new Date(r[1]), TZ, "yyyy-MM-dd'T'HH:mm"), text: String(r[2]), by: String(r[3])
+  }));
+}
+
+function addNote_(text, by) {
+  const t = String(text).trim().slice(0, 1000);
+  notesSheet_().appendRow([String(Date.now()), new Date(), t, by, 'รอทำ', '']);
+  return { text: t, open: openNotes_().length };
+}
+
+function listNotes_() { return { ok: true, notes: openNotes_() }; }
+
+// "เสร็จ <n>": n = position in the open list (1-based), or an id.
+function doneNote_(req) {
+  const open = openNotes_();
+  const n = Number(req.n);
+  const target = n >= 1 && n <= open.length ? open[n - 1] : open.find(x => x.id === String(req.id || req.n));
+  if (!target) return { ok: true, found: false, open: open.length };
+  const sh = notesSheet_();
+  const data = sh.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === target.id) { sh.getRange(i + 1, 5, 1, 2).setValues([['เสร็จ', new Date()]]); break; }
+  }
+  return { ok: true, found: true, text: target.text, open: open.length - 1 };
+}
+
+function addNoteDirect_(req) {
+  const n = addNote_(req.noteText || '', req.senderName || '');
+  if (!n.text) return { ok: false, error: 'note text required' };
+  return { ok: true, noteText: n.text, openNotes: n.open };
 }
 
 // "เพิ่มงาน <ชื่อ>": create (or find) the topic folder right away.

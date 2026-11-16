@@ -2,7 +2,7 @@
 // from the Drive log, shows a submission calendar, and uses Claude for free-form questions.
 import Anthropic from '@anthropic-ai/sdk';
 import { driveCall, driveConfigured } from './drive.js';
-import { mainCarousel, topicsCarousel, howToText, askAiPrompt, sendWorkPrompt } from './menus.js';
+import { mainCarousel, topicsCarousel, howToText, askAiPrompt, sendWorkPrompt, addChoicePrompt, notesMessage } from './menus.js';
 import { chatIdOf } from './line.js';
 
 const TZ = 'Asia/Bangkok';
@@ -215,13 +215,34 @@ export async function handleText(text, source) {
     if (!res.found) return ['ไม่พบงาน "' + name + '"' + (close ? ' ที่เปิดอยู่' : ' ที่ปิดไว้')];
     return [(close ? '🔒 ปิดงาน "' + name + '" แล้ว (ไม่ขึ้นเป็นปุ่มตอนส่งไฟล์ ไฟล์เดิมยังอยู่)' : '🔓 เปิดงาน "' + name + '" แล้ว') + '\n📂 ' + res.folderUrl];
   }
+  if (t === 'เพิ่มงาน') return [addChoicePrompt()];
+  if (t === 'เพิ่มหัวข้อ') {
+    await driveCall('await', { chatId: chatIdOf(source), userId: source.userId || '', mode: 'topic' });
+    return ['📁 พิมพ์ชื่อหัวข้องานใหม่ได้เลย เช่น "ตรวจ FCD รอบ 2" (ภายใน 15 นาที)'];
+  }
+  const note = t.match(/^จดงาน\s*([\s\S]*)$/);
+  if (note) {
+    const body = note[1].trim();
+    if (!body) {
+      await driveCall('await', { chatId: chatIdOf(source), userId: source.userId || '', mode: 'note' });
+      return ['📝 พิมพ์สิ่งที่ต้องทำได้เลย เช่น "แก้สีแผนที่ 47-STC" (ภายใน 15 นาที)'];
+    }
+    const res = await driveCall('addNote', { noteText: body });
+    return [{ type: 'text', text: '📝 จดแล้ว: ' + res.noteText + '\nงานรอทำ ' + res.openNotes + ' งาน', quickReply: { items: [{ type: 'action', action: { type: 'message', label: '📋 งานที่จด', text: 'งานที่จด' } }] } }];
+  }
+  if (t === 'งานที่จด') {
+    const { notes } = await driveCall('listNotes');
+    return [notesMessage(notes)];
+  }
+  const done = t.match(/^เสร็จ\s*(\d+)$/);
+  if (done) {
+    const res = await driveCall('doneNote', { n: Number(done[1]) });
+    if (!res.found) return ['ไม่พบงานลำดับที่ ' + done[1] + ' (งานรอทำ ' + res.open + ' งาน)'];
+    return ['✅ เสร็จแล้ว: ' + res.text + '\nเหลือรอทำ ' + res.open + ' งาน'];
+  }
   const add = t.match(/^เพิ่มงาน\s*(.*)$/);
   if (add) {
     const name = add[1].trim();
-    if (!name) {
-      await driveCall('await', { chatId: chatIdOf(source), userId: source.userId || '' });
-      return ['➕ พิมพ์ชื่องานใหม่ได้เลย เช่น "ตรวจ FCD รอบ 2" (ภายใน 15 นาที)'];
-    }
     const res = await driveCall('createTopic', { topicName: name });
     return [(res.topicCreated ? '✅ สร้างงาน "' : 'ℹ️ มีงาน "') + res.topicName + '" ' + (res.topicCreated ? 'แล้ว' : 'อยู่แล้ว') + '\n📂 ' + res.folderUrl];
   }

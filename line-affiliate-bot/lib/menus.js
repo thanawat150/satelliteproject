@@ -41,7 +41,7 @@ export function mainCarousel(owner) {
   if (owner) {
     cards.unshift(
       card({ emoji: '📤', title: 'ส่งงาน', desc: 'ถ่ายรูป เลือกรูป หรือแนบไฟล์ แล้วเลือกหัวข้อ', buttons: [msgButton('ส่งงาน', 'ส่งงาน')], image: 'card-send' }),
-      card({ emoji: '➕', title: 'เพิ่มงาน', desc: 'สร้างหัวข้องานใหม่ (โฟลเดอร์ใน Drive)', buttons: [msgButton('เพิ่มงาน', 'เพิ่มงาน'), msgButton('ใครส่งงานบ้าง', 'ใครส่งงาน', false)], color: '#FEF6EE', image: 'card-add' }),
+      card({ emoji: '➕', title: 'เพิ่มงาน', desc: 'สร้างหัวข้องานใหม่ หรือจดงานที่ต้องทำ (เปิดคอมแล้วเด้งให้ดู)', buttons: [msgButton('📁 เพิ่มหัวข้อ', 'เพิ่มหัวข้อ'), msgButton('📝 จดงาน', 'จดงาน'), msgButton('📋 งานที่จด', 'งานที่จด', false)], color: '#FEF6EE', image: 'card-add' }),
       card({ emoji: '📅', title: 'ปฏิทินส่งงาน', desc: 'ดูว่าวันไหนมีคนส่งงานบ้าง', buttons: [msgButton('เดือนนี้', 'ปฏิทิน')], color: '#EEF2FF', image: 'card-calendar' }),
       card({ emoji: '🤖', title: 'ถาม AI', desc: 'ถามเรื่องการส่งงานด้วยภาษาพูด', buttons: [msgButton('เริ่มถาม', 'ถาม AI')], color: '#F4F3FF', image: 'card-ai' })
     );
@@ -91,5 +91,35 @@ export function sendWorkPrompt() {
       { type: 'action', action: { type: 'camera', label: '📷 ถ่ายรูป' } },
       { type: 'action', action: { type: 'cameraRoll', label: '🖼️ เลือกรูป' } }
     ] }
+  };
+}
+
+// "เพิ่มงาน": choose a new upload topic or a to-do note.
+export function addChoicePrompt() {
+  return {
+    type: 'text',
+    text: '➕ จะเพิ่มอะไรครับ?\n📁 หัวข้องาน: โฟลเดอร์ใหม่สำหรับรับไฟล์\n📝 จดงาน: บันทึกสิ่งที่ต้องทำ (เปิดคอมแล้วเด้งรายการให้ดู)',
+    quickReply: { items: [
+      { type: 'action', action: { type: 'message', label: '📁 เพิ่มหัวข้อ', text: 'เพิ่มหัวข้อ' } },
+      { type: 'action', action: { type: 'message', label: '📝 จดงาน', text: 'จดงาน' } },
+      { type: 'action', action: { type: 'message', label: '📋 งานที่จด', text: 'งานที่จด' } }
+    ] }
+  };
+}
+
+// Open to-do notes, numbered; quick replies mark one as done ("เสร็จ <n>").
+export function notesMessage(notes) {
+  if (!notes.length) {
+    return { type: 'text', text: '📋 ไม่มีงานที่จดค้างไว้', quickReply: { items: [{ type: 'action', action: { type: 'message', label: '📝 จดงาน', text: 'จดงาน' } }] } };
+  }
+  const lines = ['📋 งานที่จดไว้ (' + notes.length + ' งาน)'];
+  notes.slice(0, 30).forEach((n, i) => lines.push((i + 1) + ') ' + n.text + '  · ' + n.at.slice(5, 10).replace('-', '/')));
+  if (notes.length > 30) lines.push('…และอีก ' + (notes.length - 30) + ' งาน');
+  lines.push('', 'ทำเสร็จแล้วพิมพ์ "เสร็จ <เลข>" หรือกดปุ่มด้านล่าง');
+  return {
+    type: 'text',
+    text: lines.join('\n').slice(0, 4900),
+    quickReply: { items: notes.slice(0, 12).map((n, i) => ({ type: 'action', action: { type: 'message', label: ('✅ ' + (i + 1) + ' ' + n.text).slice(0, 20), text: 'เสร็จ ' + (i + 1) } }))
+      .concat([{ type: 'action', action: { type: 'message', label: '📝 จดเพิ่ม', text: 'จดงาน' } }]) }
   };
 }
