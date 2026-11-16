@@ -138,7 +138,11 @@ export async function handlePostback(event) {
   if (data.get('a') === 'd') {
     const iso = event.postback?.params?.date;
     if (!iso) return;
-    const res = await driveCall('redate', { batchId: data.get('b'), date: toBuddhistDate(iso) });
+    const res = await driveCall('redate', { batchId: data.get('b'), date: toBuddhistDate(iso), userId: source.userId || '', chatId: chatIdOf(source) });
+    if (res.forbidden) {
+      await replyLine(event.replyToken, '🔒 เปลี่ยนวันที่ได้เฉพาะคนที่ส่งไฟล์ชุดนี้');
+      return;
+    }
     await replyLine(event.replyToken, '📅 ย้าย ' + res.count + ' ไฟล์ ไปวันที่ ' + res.date + ' แล้ว\n📂 ' + res.folderUrl);
   }
 }

@@ -149,10 +149,17 @@ function finalize_(req) {
   }
   const date = req.date || today_();
   const dest = folder_(topic, date);
-  const res = placeFiles_(pending, dest, topic.getName(), date);
-  props.deleteProperty(pkey);
+  // Each file leaves the pending list as soon as it is done, so a retry after a failure
+  // only processes the files that are left (no duplicate log rows or zip extraction).
   const batchId = String(Date.now());
-  props.setProperty('b:' + batchId, JSON.stringify({ ids: res.ids, topicId: topic.getId() }));
+  const res = placeFiles_(pending.slice(), dest, topic.getName(), date, batchId, id => {
+    const left = JSON.parse(props.getProperty(pkey) || '[]').filter(x => x !== id);
+    if (left.length) props.setProperty(pkey, JSON.stringify(left)); else props.deleteProperty(pkey);
+  });
+  props.setProperty('b:' + batchId, JSON.stringify({
+    top: res.top, folders: res.folders, topicId: topic.getId(),
+    userId: req.userId || '', chatId: req.chatId || ''
+  }));
   return Object.assign({ ok: true, batchId: batchId, topicName: topic.getName(), topicCreated: created, date: date, folderUrl: dest.getUrl() }, res.summary);
 }
 
@@ -183,14 +190,15 @@ function redate_(req) {
   const props = PropertiesService.getScriptProperties();
   const b = JSON.parse(props.getProperty('b:' + req.batchId) || 'null');
   if (!b) return { ok: false, error: 'batch not found' };
+  // Only the sender of the batch, in the same chat, may change its date.
+  if (!b.userId || b.userId !== req.userId || b.chatId !== req.chatId) return { ok: true, forbidden: true };
   const topic = DriveApp.getFolderById(b.topicId);
   const dest = folder_(topic, req.date);
-  b.ids.forEach(id => {
-    const f = DriveApp.getFileById(id);
-    f.moveTo(dest);
-  });
-  relog_(b.ids, req.date);
-  return { ok: true, count: b.ids.length, topicName: topic.getName(), date: req.date, folderUrl: dest.getUrl() };
+  (b.top || []).forEach(id => DriveApp.getFileById(id).moveTo(dest));
+  // Zip extraction folders move as a whole, keeping their inner folder structure.
+  (b.folders || []).forEach(id => DriveApp.getFolderById(id).moveTo(dest));
+  relog_(req.batchId, req.date);
+  return { ok: true, count: (b.top || []).length, topicName: topic.getName(), date: req.date, folderUrl: dest.getUrl() };
 }
 
 function list_(req) {
@@ -209,36 +217,46 @@ function list_(req) {
 
 // ---------- helpers ----------
 
-function placeFiles_(ids, dest, topicName, date) {
-  const placed = [];
+// Moves each file to dest, logs it and extracts zips. onDone(id) runs after each file is fully
+// handled. Safe to re-run on the same files: log rows are skipped when the fileId is already
+// logged, and a zip already extracted (unzippedTo in its description) is not extracted again.
+function placeFiles_(ids, dest, topicName, date, batchId, onDone) {
+  const res = { top: [], folders: [] };
   const summary = { count: 0, files: [], extracted: 0, zipErrors: [] };
+  const logged = loggedIds_();
   ids.forEach(id => {
     const f = DriveApp.getFileById(id);
     f.moveTo(dest);
     const meta = JSON.parse(f.getDescription() || '{}');
     meta.topic = topicName;
     f.setDescription(JSON.stringify(meta));
-    placed.push(id);
+    res.top.push(id);
     summary.count++;
     summary.files.push({ name: f.getName(), url: f.getUrl() });
-    log_(meta, topicName, date, f.getName(), '', f.getUrl(), id);
+    log_(meta, topicName, date, f.getName(), '', f.getUrl(), id, logged, batchId);
     if (/\.zip$/i.test(meta.originalName || f.getName())) {
       try {
-        const n = unzipInto_(f, dest, meta, topicName, date, placed);
-        summary.extracted += n;
+        const z = unzipInto_(f, dest, meta, topicName, date, logged, batchId);
+        if (z.folderId) res.folders.push(z.folderId);
+        summary.extracted += z.count;
       } catch (err) {
         summary.zipErrors.push(f.getName() + ': ' + (err && err.message || err));
       }
     }
+    if (onDone) onDone(id);
   });
-  return { ids: placed, summary: summary };
+  return Object.assign(res, { summary: summary });
 }
 
-function unzipInto_(zipFile, dest, meta, topicName, date, placed) {
+function unzipInto_(zipFile, dest, meta, topicName, date, logged, batchId) {
+  const zmeta = JSON.parse(zipFile.getDescription() || '{}');
+  if (zmeta.unzippedTo) {
+    try { return { folderId: DriveApp.getFolderById(zmeta.unzippedTo).getId(), count: 0 }; } catch (e) {}
+  }
   const blob = zipFile.getBlob().setContentType('application/zip');
   const parts = Utilities.unzip(blob);
-  const base = folder_(dest, zipFile.getName().replace(/\.zip$/i, ''));
-  let n = 0;
+  const base = dest.createFolder(zipFile.getName().replace(/\.zip$/i, ''));
+  let count = 0;
   parts.forEach(p => {
     const name = p.getName();
     if (!name || name.endsWith('/') || /(^|\/)(__MACOSX|\.DS_Store)/.test(name)) return;
@@ -247,32 +265,44 @@ function unzipInto_(zipFile, dest, meta, topicName, date, placed) {
     segs.slice(0, -1).forEach(s => { target = folder_(target, s); });
     const f = target.createFile(p.setName(segs[segs.length - 1]));
     f.setDescription(JSON.stringify(Object.assign({}, meta, { topic: topicName, fromZip: zipFile.getName() })));
-    placed.push(f.getId());
-    log_(meta, topicName, date, name, zipFile.getName(), f.getUrl(), f.getId());
-    n++;
+    count++;
+    log_(meta, topicName, date, name, zipFile.getName(), f.getUrl(), f.getId(), logged, batchId);
   });
-  return n;
+  zmeta.unzippedTo = base.getId();
+  zipFile.setDescription(JSON.stringify(zmeta));
+  return { folderId: base.getId(), count: count };
 }
 
-function log_(meta, topic, date, fileName, fromZip, url, id) {
-  logSheet_().appendRow([new Date(), date, topic, meta.senderName || '', meta.chatName || meta.chatType || '', fileName, fromZip, url, id, meta.userId || '']);
+function loggedIds_() {
+  const sh = logSheet_();
+  const n = sh.getLastRow();
+  if (n < 2) return new Set();
+  return new Set(sh.getRange(2, 9, n - 1, 1).getValues().map(r => r[0]).filter(Boolean));
 }
 
-function relog_(ids, date) {
+function log_(meta, topic, date, fileName, fromZip, url, id, logged, batchId) {
+  if (logged && logged.has(id)) return;
+  logSheet_().appendRow([new Date(), date, topic, meta.senderName || '', meta.chatName || meta.chatType || '', fileName, fromZip, url, id, meta.userId || '', batchId || '']);
+  if (logged) logged.add(id);
+}
+
+function relog_(batchId, date) {
   const sh = logSheet_();
   const data = sh.getDataRange().getValues();
-  const set = new Set(ids);
-  for (let i = 1; i < data.length; i++) if (set.has(data[i][8])) sh.getRange(i + 1, 2).setValue(date);
+  for (let i = 1; i < data.length; i++) if (String(data[i][10]) === String(batchId)) sh.getRange(i + 1, 2).setValue(date);
 }
 
 function logSheet_() {
   const it = root_().getFilesByName(LOG_NAME);
   let ss;
-  if (it.hasNext()) ss = SpreadsheetApp.open(it.next());
-  else {
+  if (it.hasNext()) {
+    ss = SpreadsheetApp.open(it.next());
+    const head = ss.getSheets()[0].getRange(1, 11);
+    if (!head.getValue()) head.setValue('batchId'); // sheets created before batchId existed
+  } else {
     ss = SpreadsheetApp.create(LOG_NAME);
     DriveApp.getFileById(ss.getId()).moveTo(root_());
-    ss.getSheets()[0].appendRow(['เวลารับ', 'วันที่งาน', 'หัวข้อ', 'ผู้ส่ง', 'แชต', 'ชื่อไฟล์', 'แตกจาก zip', 'ลิงก์', 'fileId', 'userId']);
+    ss.getSheets()[0].appendRow(['เวลารับ', 'วันที่งาน', 'หัวข้อ', 'ผู้ส่ง', 'แชต', 'ชื่อไฟล์', 'แตกจาก zip', 'ลิงก์', 'fileId', 'userId', 'batchId']);
   }
   return ss.getSheets()[0];
 }
