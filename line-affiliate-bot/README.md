@@ -68,3 +68,9 @@ Python helper (stdlib only): `D:\createmap\OpenAreas_AI\ai_model\line_notify.py`
 - Files left without a topic for 7 days move from `_รอเลือกหัวข้อ` to `_ค้างไม่มีหัวข้อ` (checked at most every 6 h).
 - Owner: `ปิดงาน <ชื่อ>` hides a topic (folder renamed with a leading `_`), `เปิดงาน <ชื่อ>` shows it again.
 - Files over 20 MB get a link to the Drive folder to upload directly.
+
+## To-do notes (owner)
+- `เพิ่มงาน` asks: 📁 เพิ่มหัวข้อ (new upload topic) or 📝 จดงาน (to-do note). `จดงาน <ข้อความ>` notes in one go.
+- `งานที่จด` lists open notes; `เสร็จ <เลข>` marks one done. Notes live in the `งานที่ต้องทำ` sheet of the log spreadsheet.
+- PC: `desktop/show_line_notes.py` opens the open notes as a local page at Windows login
+  (`python show_line_notes.py --install` adds it to the Startup folder; `--uninstall` removes it).

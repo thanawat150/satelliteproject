@@ -97,11 +97,19 @@ export async function handleFile(event) {
 
 // Questions are never taken as topic names (e.g. "วันนี้ใครส่งงานบ้าง").
 const LOOKS_LIKE_QUESTION = /[?？]|ไหม|มั้ย|หรือเปล่า|อะไร|ใคร|บ้าง|ยังไง|อย่างไร|เท่าไร|กี่|ทำไม|เมื่อไร|ที่ไหน|ขอ|ช่วย/;
-const NOT_TOPIC = /^(เมนู|menu|help|ช่วย|ช่วยเหลือ|วิธีส่งงาน|หัวข้องาน|งานที่ฉันส่ง|ใครส่งงาน|งานวันนี้|ปฏิทิน|ถาม AI|ส่งงาน|เพิ่มงาน.*|ปิดงาน.*|เปิดงาน.*|userid|user id|id)$/i;
+const NOT_TOPIC = /^(เมนู|menu|help|ช่วย|ช่วยเหลือ|วิธีส่งงาน|หัวข้องาน|งานที่ฉันส่ง|ใครส่งงาน|งานวันนี้|ปฏิทิน|ถาม AI|ส่งงาน|เพิ่มงาน.*|เพิ่มหัวข้อ|จดงาน.*|งานที่จด|เสร็จ\s*\d+|ปิดงาน.*|เปิดงาน.*|userid|user id|id)$/i;
 
 async function finalizeAndReply(event, payload) {
   const source = event.source || {};
   const res = await driveCall('finalize', { chatId: chatIdOf(source), userId: source.userId || '', ...payload });
+  if (res.note) {
+    await replyLine(event.replyToken, {
+      type: 'text',
+      text: '📝 จดแล้ว: ' + res.noteText + '\nงานรอทำ ' + res.openNotes + ' งาน (เปิดคอมแล้วจะเด้งรายการให้ดู)',
+      quickReply: { items: [{ type: 'action', action: { type: 'message', label: '📋 งานที่จด', text: 'งานที่จด' } }] }
+    });
+    return true;
+  }
   if (!res.count && res.awaited) {
     await replyLine(event.replyToken, (res.topicCreated ? '✅ สร้างงาน "' : 'ℹ️ มีงาน "') + res.topicName + '" ' + (res.topicCreated ? 'แล้ว' : 'อยู่แล้ว') + '\nส่งไฟล์แล้วเลือกหัวข้อนี้ได้เลย\n📂 ' + res.folderUrl);
     return true;
@@ -121,10 +129,15 @@ async function finalizeAndReply(event, payload) {
 
 // Text typed while the sender has files waiting = a topic name (new folder if needed).
 // Returns true when the text was used as a topic.
+// In a 1:1 chat the raw text also goes along as noteText: right after "จดงาน" it becomes a
+// to-do note (any wording, questions included). Returns true when the text was used.
 export async function handleTopicText(event, text) {
   const name = String(text || '').trim();
-  if (!driveConfigured() || !name || name.length > 60 || NOT_TOPIC.test(name) || LOOKS_LIKE_QUESTION.test(name)) return false;
-  return finalizeAndReply(event, { topicName: name });
+  if (!driveConfigured() || !name || NOT_TOPIC.test(name)) return false;
+  const topicOk = name.length <= 60 && !LOOKS_LIKE_QUESTION.test(name);
+  const oneToOne = event.source?.type === 'user';
+  if (!topicOk && !oneToOne) return false;
+  return finalizeAndReply(event, { topicName: topicOk ? name : undefined, noteText: oneToOne ? name.slice(0, 1000) : undefined });
 }
 
 export async function handlePostback(event) {
