@@ -1,0 +1,8 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "description": "Date-specific water-independent vegetation/soil/wetness/stress geometries from classified and QA-checked Sentinel-2 rasters only. Empty until actual processing.",
+    "generated_at": null
+  },
+  "features": []
+}
