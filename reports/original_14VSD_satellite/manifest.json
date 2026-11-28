@@ -1,0 +1,68 @@
+{
+  "title": "Unmodified satellite preview files extracted byte-for-byte from the monitoring system",
+  "source": "docs/data/full_preview_part_2.json",
+  "plot": "14-VSD",
+  "preservation": "Original encoded image bytes preserved; no image transformations. GIS PDD outline deliberately not burned in.",
+  "files": [
+    {
+      "name": "S2_14-VSD_20260803_RGB432.jpg",
+      "path": "docs/reports/original_14VSD_satellite/S2_14-VSD_20260803_RGB432.jpg",
+      "date": "2026-08-03",
+      "mode": "true_color",
+      "media": "image/jpeg",
+      "width_px": 55,
+      "height_px": 32,
+      "original_source_suffix": "HIST_CLEAR_RECT_SCL0",
+      "bytes": 1382,
+      "sha256": "5c35e63fb827dc54c8ea072bb3a7cf67b3e56505a82bb932ae2065d5057c86da"
+    },
+    {
+      "name": "S2_14-VSD_20260803_RGB843.jpg",
+      "path": "docs/reports/original_14VSD_satellite/S2_14-VSD_20260803_RGB843.jpg",
+      "date": "2026-08-03",
+      "mode": "false_color",
+      "media": "image/jpeg",
+      "width_px": 55,
+      "height_px": 32,
+      "original_source_suffix": "HIST_CLEAR_RECT_SCL0",
+      "bytes": 1513,
+      "sha256": "42d5a2d1b725a0f1efb6d05c71b948cb7e4b8782b0bd34df3a270a22811db47d"
+    },
+    {
+      "name": "S2_14-VSD_20260803_MNDWI.png",
+      "path": "docs/reports/original_14VSD_satellite/S2_14-VSD_20260803_MNDWI.png",
+      "date": "2026-08-03",
+      "mode": "mndwi",
+      "media": "image/png",
+      "width_px": 28,
+      "height_px": 17,
+      "original_source_suffix": "HIST_CLEAR_RECT_SCL0",
+      "bytes": 1348,
+      "sha256": "57dc743f056e6be9d36e365b8a3f108da26adb03e7f74fbfe6c1ce17e9582077"
+    },
+    {
+      "name": "S2_14-VSD_20260929_MNDWI.png",
+      "path": "docs/reports/original_14VSD_satellite/S2_14-VSD_20260929_MNDWI.png",
+      "date": "2026-09-29",
+      "mode": "mndwi",
+      "media": "image/png",
+      "width_px": 28,
+      "height_px": 17,
+      "original_source_suffix": "LATEST_RECT",
+      "bytes": 1487,
+      "sha256": "9a520b0eba4fded81a789726ec95f1e0cdd310c22cd53485d3b377ae701dc8de"
+    },
+    {
+      "name": "S2_14-VSD_20261007_MNDWI.png",
+      "path": "docs/reports/original_14VSD_satellite/S2_14-VSD_20261007_MNDWI.png",
+      "date": "2026-10-07",
+      "mode": "mndwi",
+      "media": "image/png",
+      "width_px": 28,
+      "height_px": 16,
+      "original_source_suffix": "DIRECT",
+      "bytes": 1492,
+      "sha256": "9f650995cef3448c38be34665755b33b9e45d88e3a63d080ee5b277ae2611385"
+    }
+  ]
+}

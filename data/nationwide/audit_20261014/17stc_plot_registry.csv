@@ -1,0 +1,2 @@
+﻿plot_id,legacy_plot_code,province,source_path,boundary_source,boundary_role,pdd_verified_geometry,pdd_base_member,geometry_conflict,identity_status
+gis:0124,17-STC,ระยอง,STC/Shapefile/STC PDD/Standard.shp,MOC.zip native PDD shapefile,primary,True,True,False,SOURCE_FEATURE_RETAINED_NO_ALIAS_MERGE
